@@ -34,7 +34,7 @@ def run(protocol: protocol_api.ProtocolContext):
         8,
         '1.5mL_tubes')
     tubes_5mL = protocol.load_labware(
-        'opentrons_15_tuberack_falcon_15ml_conical', 
+        'eppendorf_15_tuberack_5000ul', 
         6, 
         '5mL_tubes')
     
@@ -46,6 +46,9 @@ def run(protocol: protocol_api.ProtocolContext):
     
 # Distribute mastermix from 5ml_tubes (6) to plate_96 (9) using p300
 # with 200_tips (7)
+    
+    #turn light on
+    protocol.set_rail_lights(True)
 
     p300.distribute(
         24,
@@ -87,3 +90,5 @@ def run(protocol: protocol_api.ProtocolContext):
                   air_gap=1
                   )
     
+    #turn light off
+    protocol.set_rail_lights(False)

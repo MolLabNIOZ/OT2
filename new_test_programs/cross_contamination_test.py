@@ -8,8 +8,7 @@ from opentrons import protocol_api
 # Metadata
 metadata = {
     'protocolName': 'cross_contamination_test.py',
-    'author1': 'SV <sanne.vreugdenhil@nioz.nl>',
-    'author2': 'MB <maartje.brouwer@nioz.nl>',
+    'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
     'description': 'Test for cross-contamination.',
     'apiLevel': '2.9'}
 

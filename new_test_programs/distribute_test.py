@@ -3,6 +3,7 @@
 
 # Import statements
 from opentrons import protocol_api
+import math
 
 # Metadata
 metadata = {
@@ -34,7 +35,7 @@ def run(protocol: protocol_api.ProtocolContext):
         8,
         '1.5mL_tubes')
     tubes_5mL = protocol.load_labware(
-        'opentrons_15_tuberack_falcon_15ml_conical', 
+        'eppendorf_15_tuberack_5000ul', 
         6, 
         '5mL_tubes')
     
@@ -44,12 +45,27 @@ def run(protocol: protocol_api.ProtocolContext):
     p20 = protocol.load_instrument(
         'p20_single_gen2', 'left',  tip_racks=[tips_20])
     
+    min_height = 1
+    compensation_coeff = 1.1
+    initial_heights = 30
+    heights = {tube: initial_heights for tube in tubes_5mL.wells()}
+    
+    def h_track(vol, tube):
+        nonlocal heights
+        
+        dh = ((math.pi*((tube.diameter/2)**2))/vol)*compensation_coeff
+        h = heights[tube] - dh if heights[tube] - dh > min_height else min_height
+        heights[tube] = h
+        
+        return h
+
 # Distribute mastermix from 5ml_tubes (6) to plate_96 (9) using p300
 # with 200_tips (7)
-
+    h = h_track(188, tubes_5mL['A1'])
+    source = tubes_5mL['A1'].bottom(h)
     p300.distribute(
         24,
-        tubes_5mL['A1'],
+        source,
         plate_96.wells(),
         blow_out = True,
         blowout_location = 'source well',
@@ -59,31 +75,31 @@ def run(protocol: protocol_api.ProtocolContext):
 # Distribute samples from std_tubes (8) to plate_96 (9) using p20
 # with 20_tips (4).
     
-    #transfer undiluted sample from A1 std_tubes to multiple in plate_96   
-    p20.transfer(1, 
-                  std_tubes['A1'], 
-                  [plate_96.wells_by_name()[well_name] for well_name in 
-                  ['A2', 'D4', 'B5', 'F5', 'D6', 'B7', 'F7', 'D8', 'B9', 'F9',
-                    'A11']], 
-                  new_tip='always',
-                  touch_tip=True,
-                  blow_out=True,
-                  blowout_location='destination well',
-                  mix_after=(3, 5),
-                  air_gap=1
-                  )
+    # #transfer undiluted sample from A1 std_tubes to multiple in plate_96   
+    # p20.transfer(1, 
+    #               std_tubes['A1'], 
+    #               [plate_96.wells_by_name()[well_name] for well_name in 
+    #               ['A2', 'D4', 'B5', 'F5', 'D6', 'B7', 'F7', 'D8', 'B9', 'F9',
+    #                 'A11']], 
+    #               new_tip='always',
+    #               touch_tip=True,
+    #               blow_out=True,
+    #               blowout_location='destination well',
+    #               mix_after=(3, 5),
+    #               air_gap=1
+    #               )
               
-    #transfer diluted sample from B1-B6 std_tubes to multiple in plate_96   
-    p20.transfer(1, 
-                  [std_tubes.wells_by_name()[well_name] for well_name in 
-                  ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']], 
-                  [plate_96.wells_by_name()[well_name] for well_name in 
-                  ['B2', 'C2', 'D2', 'E2', 'F2', 'G2']], 
-                  new_tip='always',
-                  touch_tip=True,
-                  blow_out=True,
-                  blowout_location='destination well',
-                  mix_after=(3, 5),
-                  air_gap=1
-                  )
+    # #transfer diluted sample from B1-B6 std_tubes to multiple in plate_96   
+    # p20.transfer(1, 
+    #               [std_tubes.wells_by_name()[well_name] for well_name in 
+    #               ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']], 
+    #               [plate_96.wells_by_name()[well_name] for well_name in 
+    #               ['B2', 'C2', 'D2', 'E2', 'F2', 'G2']], 
+    #               new_tip='always',
+    #               touch_tip=True,
+    #               blow_out=True,
+    #               blowout_location='destination well',
+    #               mix_after=(3, 5),
+    #               air_gap=1
+    #               )
     

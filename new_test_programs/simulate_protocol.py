@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
     #read file
-protocol_file = open('cross_contamination_test.py')
+protocol_file = open('C:/Users/svreugdenhil/Documents/GitHub/OT2/new_test_programs/distribute_test.py')
     #simulate protocol
 runlog, _bundle = simulate(protocol_file)
     #print runlog

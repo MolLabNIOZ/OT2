@@ -61,7 +61,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # Distribute mastermix from 5ml_tubes (6) to plate_96 (9) using p300
 # with 200_tips (7)
-    h = h_track(188, tubes_5mL['A1'])
+    h = h_track(1000, tubes_5mL['A1'])
     source = tubes_5mL['A1'].bottom(h)
     p300.distribute(
         24,

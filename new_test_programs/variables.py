@@ -19,3 +19,5 @@ destination_column = 1
 destination_well = destination_row + str(destination_column)
 print(destination_well)
 
+delta_height = (math.pi*((13.3/2)**2))/188
+print(height)

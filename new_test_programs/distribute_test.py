@@ -8,8 +8,7 @@ import math
 # Metadata
 metadata = {
     'protocolName': 'distribute_test.py',
-    'author1': 'SV <sanne.vreugdenhil@nioz.nl>',
-    'author2': 'MB <maartje.brouwer@nioz.nl>',
+    'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
     'description': 'check if distribute function can blow-out in source well',
     'apiLevel': '2.9'}
 
@@ -35,7 +34,7 @@ def run(protocol: protocol_api.ProtocolContext):
         8,
         '1.5mL_tubes')
     tubes_5mL = protocol.load_labware(
-        'opentrons_15_tuberack_falcon_15ml_conical', #!!!
+        'eppendorf_15_tuberack_5000ul', #!!!
         6, 
         '5mL_tubes')
     

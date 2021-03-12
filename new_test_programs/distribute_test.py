@@ -35,7 +35,7 @@ def run(protocol: protocol_api.ProtocolContext):
         8,
         '1.5mL_tubes')
     tubes_5mL = protocol.load_labware(
-        'eppendorf_15_tuberack_5000ul', 
+        'opentrons_15_tuberack_falcon_15ml_conical', #!!!
         6, 
         '5mL_tubes')
     
@@ -45,31 +45,18 @@ def run(protocol: protocol_api.ProtocolContext):
     p20 = protocol.load_instrument(
         'p20_single_gen2', 'left',  tip_racks=[tips_20])
     
-    min_height = 1
-    compensation_coeff = 1.1
-    initial_heights = 30
-    heights = {tube: initial_heights for tube in tubes_5mL.wells()}
-    
-    def h_track(vol, tube):
-        nonlocal heights
-        
-        dh = ((math.pi*((tube.diameter/2)**2))/vol)*compensation_coeff
-        h = heights[tube] - dh if heights[tube] - dh > min_height else min_height
-        heights[tube] = h
-        
-        return h
+
 
 # Distribute mastermix from 5ml_tubes (6) to plate_96 (9) using p300
 # with 200_tips (7)
-    h = h_track(1000, tubes_5mL['A1'])
-    source = tubes_5mL['A1'].bottom(h)
+
     p300.distribute(
         24,
-        source,
+        tubes_5mL['A1'],
         plate_96.wells(),
         blow_out = True,
         blowout_location = 'source well',
-        touch_tip = True,
+        liquid_tracking = True
         )
 
 # Distribute samples from std_tubes (8) to plate_96 (9) using p20

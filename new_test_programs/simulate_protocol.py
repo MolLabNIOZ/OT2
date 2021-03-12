@@ -4,10 +4,9 @@
 from opentrons.simulate import simulate, format_runlog
 
     #read file
-protocol_file = open("C:/Users/dnalab/Desktop/OT2/repository/new_test_programs/distribute_test.py")
-labware = "C:/Users/dnalab/Desktop/OT2"
+protocol_file = open("C:/Users/svreugdenhil/Documents/GitHub/OT2/new_test_programs/distribute_test.py")
     #simulate protocol
-runlog, _bundle = simulate(protocol_file, custom_labware_paths = labware)
+runlog, _bundle = simulate(protocol_file)
     #print runlog
 print(format_runlog(runlog))
 

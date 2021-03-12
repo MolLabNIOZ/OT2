@@ -19,6 +19,7 @@ destination_column = 1
 destination_well = destination_row + str(destination_column)
 print(destination_well)
 
+<<<<<<< Updated upstream
 delta_height = (math.pi*((13.3/2)**2))/188
 print(height)
 
@@ -33,3 +34,9 @@ print(delta_height)
 
 
     
+=======
+radius_tip = 3.3/2
+radius_top = 13.3/2
+height_conical = 55.4 - 2.2 - 34.12
+volume_conical = (1/3) * math.pi * height_conical * (radius_tip**2 + radius_tip*radius_top + radius_top**2)
+>>>>>>> Stashed changes

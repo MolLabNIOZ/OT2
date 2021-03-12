@@ -3,7 +3,11 @@
 
 # Import statements
 from opentrons import protocol_api
-import math
+import json
+with open("C:/Users/svreugdenhil/Documents/GitHub/OT2/" 
+          "custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
+          "eppendorf_15_tuberack_5000ul.json") as labware_file:
+    labware_def_5mL = json.load(labware_file)
 
 # Metadata
 metadata = {
@@ -33,8 +37,8 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', 
         8,
         '1.5mL_tubes')
-    tubes_5mL = protocol.load_labware(
-        'eppendorf_15_tuberack_5000ul', #!!!
+    tubes_5mL = protocol.load_labware_from_definition(
+        labware_def_5mL,
         6, 
         '5mL_tubes')
     

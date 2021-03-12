@@ -21,3 +21,15 @@ print(destination_well)
 
 delta_height = (math.pi*((13.3/2)**2))/188
 print(height)
+
+#%%
+start_vol = 3000 #starting volume at the beginning of the protocol in ul
+diameter = 13.3 #diameter of the top of the tube in mm
+start_height = start_vol/(math.pi*((diameter/2)**2))
+transfer_vol = 24
+delta_height =  transfer_vol/(math.pi*((diameter/2)**2))
+current_height = start_height
+print(delta_height)
+
+
+    

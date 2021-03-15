@@ -2,7 +2,7 @@
 # Module for tracking volume in different liquid containers
 import math
 
-def volume_tracking(container, current_volume, aspiration_volume):
+def volume_tracking(container, current_vol, aspiration_vol):
     """A function to make volume tracking possible for of conical tubes"""
     
     # Depending on kind of tube, define the dimensions
@@ -35,39 +35,39 @@ def volume_tracking(container, current_volume, aspiration_volume):
     
     # if liquid level is in the conical part of tube
     # use calculations for conical shapes (h = v / (1/3*pi*(r_tip**2)+(r_tip+r_top)+(r_top**2)))
-    if current_volume <= vol_conical_tip: 
+    if current_vol <= vol_conical_tip: 
         current_height = (
-            current_volume / 
+            current_vol / 
             ((1/3) * math.pi * 
             (radius_tip**2 + radius_tip*radius_top + radius_top**2))
             )       
         delta_height = (
-            aspiration_volume /
+            aspiration_vol /
             ((1/3) * math.pi * 
             (radius_tip**2 + radius_tip*radius_top + radius_top**2))
             )
     # if liquid level is in straight part of tube
     # use calculations for cylinder (h = total_vol - vol_in_con_part / (pi*r**2))
     else:
-        cylinder_volume = current_volume - vol_conical_tip
+        cylinder_vol = current_vol - vol_conical_tip
         current_height = (
             height_conical_tip + 
-            (cylinder_volume / 
+            (cylinder_vol / 
             (math.pi*((radius_top)**2)))
             ) 
         delta_height =  (
-            aspiration_volume /
+            aspiration_vol /
             (math.pi*((radius_top)**2))
             )
     # after aspiration, update the current height and volume
     current_height = current_height - delta_height #calculate new hight after pipetting step
-    current_volume = current_volume - aspiration_volume
-    return current_height, current_volume
+    current_vol = current_vol - aspiration_vol
+    return current_height, current_vol, delta_height
     
-# current_height, current_volume = volume_tracking('tube_5mL', 2500, 24)
+# current_height, current_vol = volume_tracking('tube_5mL', 2500, 24)
 
 # print (current_height)
-# print (current_volume)
+# print (current_vol)
 
 
 

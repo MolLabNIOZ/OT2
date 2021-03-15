@@ -1,6 +1,10 @@
 # SV 210315 a module for calculating the volume that the pipette should 
 # aspirate = dispense volume + dispense, keeping the maximum volumes of
-# each pipette in mind.
+# each pipette in mind. 
+
+# import opentrons
+# protocol = opentrons.execute.get_protocol_api('2.9')
+
 
 
 def disposal_volume_p300(dispension_vol):
@@ -12,10 +16,7 @@ def disposal_volume_p300(dispension_vol):
     
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
     
-    if aspiration_vol <= max_vol_pipette:
-        return aspiration_vol
-    else: 
-        print("WARNING: aspiration volume exceeds max volume of the pipette")
+    return aspiration_vol
     
 
 def disposal_volume_p20(dispension_vol):
@@ -27,7 +28,4 @@ def disposal_volume_p20(dispension_vol):
     
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
     
-    if aspiration_vol <= max_vol_pipette:
-        return aspiration_vol
-    else:
-        print("WARNING: aspiration volume exceeds max volume of the pipette")
+    return aspiration_vol

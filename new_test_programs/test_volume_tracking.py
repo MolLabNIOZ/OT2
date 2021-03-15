@@ -7,11 +7,11 @@ from opentrons import protocol_api
 #so that we can use the simulate_protocol with custom labware
 import json
 
-filepath = "C:/Users/svreugdenhil/Documents/GitHub/OT2/modules"
+
 #import module for disposal aspiration volume
-import "C:/Users/svreugdenhil/Documents/GitHub/OT2/modules/disposal_volume.py" as dv
+from modules import disposal_volume as dv
 # import module for volume tracking
-import filepath + "/volume_tracking.py" as vol_track
+from modules import volume_tracking as vol_track
 
 
 # Metadata
@@ -42,8 +42,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #for simulator
     #open json file of 5mL tube rack and set as variable
-    with open("C:/Users/svreugdenhil/Documents/GitHub/OT2/" 
-          "custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
+    with open("custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
           "eppendorf_15_tuberack_5000ul.json") as labware_file:
         labware_def_5mL = json.load(labware_file)
     tubes_5mL = protocol.load_labware_from_definition( 
@@ -58,8 +57,8 @@ def run(protocol: protocol_api.ProtocolContext):
     # Set variables 
     container = 'tube_5mL'
     #container options: 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'
-    start_vol = 1500 #volume in ul that is in your tube at the beginning
-    dispension_vol = 196 #volume that is dispensed each time
+    start_vol = 2600 #volume in ul that is in your tube at the beginning
+    dispension_vol = 24 #volume that is dispensed each time
     aspiration_vol = dv.disposal_volume_p300(dispension_vol) #volume that is aspirated each time
     #NOTE: for aspiration volume you can choose whether you want to have
     #a disposal volume or not - for aliquoting liquids we advise to use it
@@ -92,8 +91,3 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #set lights off
     protocol.set_rail_lights(False)
-
-    
-    
-    
-    

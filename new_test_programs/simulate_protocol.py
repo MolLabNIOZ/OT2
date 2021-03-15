@@ -4,10 +4,8 @@
 from opentrons.simulate import simulate, format_runlog
 
     #read file
-protocol_file = open("C:/Users/svreugdenhil/Documents/GitHub/OT2/new_test_programs/test_volume_tracking.py")
+protocol_file = open("new_test_programs/test_volume_tracking.py")
     #simulate protocol
 runlog, _bundle = simulate(protocol_file)
     #print runlog
 print(format_runlog(runlog))
-
-

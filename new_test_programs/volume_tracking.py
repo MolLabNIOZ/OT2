@@ -6,6 +6,8 @@ from opentrons import protocol_api
 #import json to import custom labware with labware_from_definition, 
 #so that we can use the simulate_protocol with custom labware
 import json
+#import module for disposal aspiration volume
+import disposal_volume as dv
 #import math for tracking calculations
 import math
 
@@ -30,48 +32,59 @@ def run(protocol: protocol_api.ProtocolContext):
         'biorad_96_wellplate_200ul_pcr', 
         3, 
         '96well_plate')
-    #for robot
-    tubes_5mL = protocol.load_labware(
-        'eppendorf_15_tuberack_5000ul', 
-        2, 
-        '5mL_tubes')
-    
-    # #for simulator
-    # #open json file of 5mL tube rack and set as variable
-    # with open("C:/Users/svreugdenhil/Documents/GitHub/OT2/" 
-    #       "custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
-    #       "eppendorf_15_tuberack_5000ul.json") as labware_file:
-    #     labware_def_5mL = json.load(labware_file)
-    # tubes_5mL = protocol.load_labware_from_definition( 
-    #     labware_def_5mL, #variable derived from opening json
+    # #for robot
+    # tubes_5mL = protocol.load_labware(
+    #     'eppendorf_15_tuberack_5000ul', 
     #     2, 
     #     '5mL_tubes')
+    
+    #for simulator
+    #open json file of 5mL tube rack and set as variable
+    with open("C:/Users/svreugdenhil/Documents/GitHub/OT2/" 
+          "custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
+          "eppendorf_15_tuberack_5000ul.json") as labware_file:
+        labware_def_5mL = json.load(labware_file)
+    tubes_5mL = protocol.load_labware_from_definition( 
+        labware_def_5mL, #variable derived from opening json
+        2, 
+        '5mL_tubes')
     
     # Loading pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2', 'right', tip_racks=[tips_200])
     
-    # Set variables for volume_tracking
-    start_vol = 3000 #starting volume at the beginning of the protocol in ul
+    # Set variables 
+    start_vol = 3000 #volume in ul that is in your tube at the beginning
+    dispension_vol = 24 #volume that is dispensed each time
+    aspiration_vol = dv.disposal_volume_p300(dispension_vol) #volume that is aspirated each time
+    #NOTE: for aspiration volume you can choose whether you want to have
+    #a disposal volume or not - for aliquoting liquids we advise to use it
+    #When using a disposal volume use: 
+    # dv.disposal_volume_p300(dispension_vol) 
+    # dv.disposal_volume_p20(dispension_vol)
+    #When NOT using a disposal volume
+    # aspiration_vol = dispension_vol
+    
+    # Set variables for volume_tracking    
     diameter = 13.3 #diameter of the top of the tube in mm
     start_height = start_vol/(math.pi*((diameter/2)**2)) #height of the starting volume
-    transfer_vol = 200 #volume that is transfered each time
-    delta_height =  transfer_vol/(math.pi*((diameter/2)**2)) # height of the transferred volume
+    delta_height =  aspiration_vol/(math.pi*((diameter/2)**2)) # height of the transferred volume
     current_height = start_height - 1 #height - something to make sure pipette is submerged
+    
+    aspiration_location = tubes_5mL['A1'].bottom(current_height) #where to get the mastermix from
+    #If you want to use volume tracking
+    # use module
+    #If you don't want to use volume tracking ommit the .bottom() 
     
     #set lights on
     protocol.set_rail_lights(True)
     
+    # Aliquoting mix from 5 mL tube to entire 96-wells plate
     p300.pick_up_tip(tips_200['A3'])
     for well in plate_96.wells():
-        p300.transfer(
-            transfer_vol, 
-            tubes_5mL['A1'].bottom(current_height), 
-            well,
-            new_tip='never',
-            blow_out='true',
-            blowout_location='source well'
-            )
+        p300.aspirate(aspiration_vol, aspiration_location)
+        p300.dispense(dispension_vol, well)
+        p300.blow_out(tubes_5mL['A1'])
         if current_height - delta_height >= 1: #make sure bottom is never reached
             current_height = current_height - delta_height #calculate new hight after pipetting step
         else: 

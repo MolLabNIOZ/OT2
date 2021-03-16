@@ -1,0 +1,46 @@
+Labware currently available for the Opentrons OT2 pipetting robot.
+
+Pipettes:
+  p300 --->>> 300 ul pipette
+    name: 'p300_single_gen2'
+    mounted: 'right'
+  p20 --->>> 20 ul pipette
+    name: 'p20_single_gen2'
+    mounted: 'left'
+
+Pipette tips:
+  Opentrons 200 ul filtertips
+    name: 'opentrons_96_filtertiprack_200ul'
+    custom reference: '200tips'
+  Opentrons 20 ul filtertips
+    name: 'opentrons_96_filtertiprack_20ul'
+    custom reference: '20tips'
+  Opentrons 300 ul NON filtertips
+    name: 'opentrons_96_tiprack_300ul'
+    custom reference: '300tipsNON'
+  Opentrons 20 ul NON filtertips
+    name: 'opentrons_96_tiprack_20ul'
+    custom reference: '20tipsNON'
+
+Tube racks & well plates:
+  BioRad 96-wells qPCR plate
+    name: 'biorad_96_wellplate_200ul_pcr'
+    custom reference: '96well_plate'
+  1.5 mL tubes + tube 24 rack:
+    name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
+    custom reference: '1.5mL_tubes'
+  5 mL tubes + 15 tube rack:
+    name: 'eppendorf_15_tuberack_5000ul'
+    custom reference: '5mL_tubes'
+    for simulator you need to open using json in the following way:
+        with open("labware/eppendorf_15_tuberack_5000ul/"
+              "eppendorf_15_tuberack_5000ul.json") as labware_file:
+            labware_def_5mL = json.load(labware_file)
+        tubes_5mL = protocol.load_labware_from_definition( 
+            labware_def_5mL, #variable derived from opening json
+            2, 
+            '5mL_tubes') 
+    
+
+
+

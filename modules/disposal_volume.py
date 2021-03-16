@@ -7,12 +7,10 @@
 
 
 
-def disposal_volume_p300(dispension_vol):
+def disposal_volume_p300_200(dispension_vol):
     """A function to calculate the volume to aspirate for the p300. 
     Aspiration volume = dispense volume + 2%, this volume should not 
     exceed the maximum aspiration volume of the pipette.""" 
-    
-    max_vol_pipette = 200 + (200/100*2)
     
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
     
@@ -23,8 +21,6 @@ def disposal_volume_p20(dispension_vol):
     """A function to calculate the volume to aspirate for the p20. 
     Aspiration volume = dispense volume + 2%, this volume should not 
     exceed the maximum aspiration volume of the pipette."""
-    
-    max_vol_pipette = 20 + (20/100*2)
     
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
     

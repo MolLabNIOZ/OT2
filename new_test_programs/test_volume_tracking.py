@@ -1,93 +1,152 @@
-# SV&MB 210312
-# Script to test if we can implement volume tracking
+# =============================================================================
+# Author(s): Maartje Brouwer & Sanne Vreugdenhil
+# Creation date: 210312
+# Description: Script to test if we can implement volume tracking.
+# =============================================================================
 
-# Import statements
+##### Import statements
 from opentrons import protocol_api
-#import json to import custom labware with labware_from_definition, 
-#so that we can use the simulate_protocol with custom labware
-import json
-
-
-#import module for disposal aspiration volume
+  ## Import opentrons protocol API v2.                                      ##
+import json 
+  ## Import json to import custom labware with labware_from_definition, so  ##
+  ## that we can use the simulate_protocol with custom labware.             ##
 from modules import disposal_volume as dv
-# import module for volume tracking
+  ## Import module that calculates 2% disposal aspiration volume.           ##
 from modules import volume_tracking as vol_track
+  ## Import module that calculates how much the pipette should decrease     ##
+  ## it's height after each aspiration-dispension step.                     ##
 
-
-# Metadata
+##### Metadata
 metadata = {
     'protocolName': 'distribute_test.py',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
     'description': 'check if distribute function can blow-out in source well',
     'apiLevel': '2.9'}
 
-# Define function
+##### Define function
 def run(protocol: protocol_api.ProtocolContext):
-    """check if distribute function can blow-out in source well"""
+    """Aliquoting liquid from a 5 mL tube to an entire 96-wells plate; 
+    using volume tracking so that the pipette starts aspirating at the
+    starting height of the liquid and goes down as the volume decreases."""
     
-    # Loading labware
+    ##### !!! Loading labware
+    ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', 
-        1, 
-        '200tips')
+        'opentrons_96_filtertiprack_200ul', #labware definition
+        1,                                  #deck position
+        '200tips')                          #custom name
     plate_96 = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr', 
-        3, 
-        '96well_plate')
-    # #for robot
+        'biorad_96_wellplate_200ul_pcr',    #labware definition
+        3,                                  #deck position
+        '96well_plate')                     #custom name
+    ## The 5mL tubes are custom labware, because the protocol simulator     ##
+    ## handles the import of custom labware different than the robot does,  ##
+    ## we have 2 options for handling this. Comment out the option that you ##
+    ## are not using (select + ctrl-1 in spyder).                           ##
+   #### !!! OPTION 1: ROBOT                                                 ###
     # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul', 
-    #     2, 
-    #     '5mL_tubes')
-    
-    #for simulator
-    #open json file of 5mL tube rack and set as variable
-    with open("custom_labware_definitions/eppendorf_15_tuberack_5000ul/"
+    #     'eppendorf_15_tuberack_5000ul',     #labware definition
+    #     2,                                  #deck position
+    #     '5mL_tubes')                        #custom name
+   #### !!! OPTION 2: SIMULATOR
+    with open("labware/eppendorf_15_tuberack_5000ul/"
           "eppendorf_15_tuberack_5000ul.json") as labware_file:
         labware_def_5mL = json.load(labware_file)
+      ## Import the file that contains all the information about the custom ##
+      ## labware. Load the file using json, store it in a variable.         ##
     tubes_5mL = protocol.load_labware_from_definition( 
-        labware_def_5mL, #variable derived from opening json
-        2, 
-        '5mL_tubes')
+        labware_def_5mL,                    #labware definition
+        2,                                  #deck position
+        '5mL_tubes')                        #custom name
+      ## Load the labware using load_labware_from_definition() instead of   ##
+      ## load_labware(). Then use the variable you just set with the opened ##
+      ## json file to define which labware to use.                          ##
     
-    # Loading pipettes
+    ##### !!! Loading pipettes
     p300 = protocol.load_instrument(
-        'p300_single_gen2', 'right', tip_racks=[tips_200])
+        'p300_single_gen2',                 #instrument definition
+        'right',                            #mount position
+        tip_racks=[tips_200])               #assigned tiprack
     
-    # Set variables 
+    ##### !!! Variables to set 
     container = 'tube_5mL'
-    #container options: 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'
-    start_vol = 2600 #volume in ul that is in your tube at the beginning
-    dispension_vol = 24 #volume that is dispensed each time
-    aspiration_vol = dv.disposal_volume_p300(dispension_vol) #volume that is aspirated each time
-    #NOTE: for aspiration volume you can choose whether you want to have
-    #a disposal volume or not - for aliquoting liquids we advise to use it
-    #When using a disposal volume use: 
-    # dv.disposal_volume_p300(dispension_vol) 
-    # dv.disposal_volume_p20(dispension_vol)
-    # MAX = dispension_volume = 196 ul
-    #When NOT using a disposal volume
-    # aspiration_vol = dispension_vol
-    
-    # Volume tracking
+      ## The container variable is needed for the volume tracking module.   ##
+      ## It tells the module which dimensions to use for the calculations   ##
+      ## of the pipette height. It is the labware from which liquid is      ##
+      ## aliquoted.                                                         ##
+      ## There are several options to choose from:                          ##
+      ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
+    start_vol = 2600 
+      ## The start_vol is the volume (ul) that is in your tube at the       ##
+      ## beginning of your pipetting step.                                  ##
+    dispension_vol = 24 
+      ## The dispension_vol is the volume (ul) that needs to be aliquoted   ##
+      ## into the destination wells/tubes.                                  ##
+    aspiration_vol = dv.disposal_volume_p300_200(dispension_vol) 
+      ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
+      ## container. For aliquoting liquids it may be nice to aspirate a bit ##
+      ## more volume than you want to dispense (mimicking reverse           ##
+      ## pipetting). For this you can use the disposal_volume module,       ##
+      ## containing functions (for both pipettes) that calculate a 2% extra ##
+      ## aspiration volume. The functions for these are:                    ##
+      ##   dv.disposal_volume_p300(dispension_vol)                          ##
+      ##   dv.disposal_volume_p20(dispension_vol)                           ##
+      ## NOTE: the aspiration volume can not be more then the pipette +     ##
+      ## pipette tip limit!!!                                               ##
+      ## When NOT using a disposal volume:                                  ##
+      ##   aspiration_vol = dispension_vol                                  ##
+    p300_tip_loc = tips_200['A3'] 
+      ## The p300_tip_loc is the location of which the pipette should get   ##
+      ## the first tip. You need to check the pipette tip box where the     ##
+      ## next available tip is.                                             ##
+   
+    ##### Volume tracking
     current_vol = start_vol
-    #If you don't want to use volume tracking ommit the .bottom() 
+      ## The current_vol is a variable that is used in the volume_tracking  ##
+      ## module. Before beginning the loop trough all the wells that need   ##
+      ## to be filled, we need to set the current_vol equal to the start_vol##
     
-    #set lights on
+    ##### The actual protocol
     protocol.set_rail_lights(True)
-    
-    # Aliquoting mix from 5 mL tube to entire 96-wells plate
-    p300.pick_up_tip(tips_200['A3'])
+      ## Start by turning the lights on                                     ##
+    p300.pick_up_tip(p300_tip_loc)
+      ## p300 picks up tip from location specified in variable p300_tip_loc ##
     for well in plate_96.wells():
-        current_height, current_vol, delta_height = vol_track.volume_tracking(container, current_vol, aspiration_vol)
-        aspiration_location = tubes_5mL['A1'].bottom(current_height) #where to get the mastermix from
+      ## Name all the wells in the plate 'well', for all these do:          ##  
+        tv = vol_track.volume_tracking(container, current_vol, aspiration_vol)  
+        current_height, current_vol, delta_height = tv
+          ## The volume_tracking function needs the arguments container,    ##
+          ## current_vol (which we set to start_vol), and aspiration_vol    ##
+          ## that we have set in this protocol, so that it can calculate    ##
+          ## each step down. The volume_tracking function returns the       ##
+          ## current_height, current_vol and the delta_height, we store     ##
+          ## these in tv and then assign tv to the those variables.         ##
+        current_height = current_height - 1
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 1 mm below its actual height                ##
+        aspiration_location = tubes_5mL['A1'].bottom(current_height) 
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
         p300.aspirate(aspiration_vol, aspiration_location)
+         ## Aspirate the amount specified in aspiration_vol from the        ##
+         ## location specified in aspiration_location.                      ##
         p300.dispense(dispension_vol, well)
+          ## Dispense the amount specified in dispension_vol to the location##
+          ## specified in well (so a new well every time the loop restarts) ##
         p300.blow_out(tubes_5mL['A1'])
+          ## Blow out any remaining liquid (disposal volume) in the source  ##
+          ## tube before we want to aspirate again.                         ##
         if current_height - delta_height <= 1: #make sure bottom is never reached
             protocol.home()
             protocol.pause('Your mix is finished.')
+          ## If the height of the pipette, relative to the bottom of the    ##
+          ## tube, is smaller than 1 we have reached the bottom. To prevent ##
+          ## the pipette from crashing into the bottom, we tell it to go    ##
+          ## home and pause the protocol so that this can never happen.     ##
     p300.drop_tip()
-    
-    #set lights off
+      ## Drop the tip in the trash bin.                                     ##
     protocol.set_rail_lights(False)
+      ## Finish by turning the lights off.                                  ##
+    
+##### We have now filled an entire plate, hopefully with volume tracking :D!

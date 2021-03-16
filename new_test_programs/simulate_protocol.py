@@ -1,11 +1,13 @@
 #SV200907 - module for simulating opentrons protocols
 
-#import statements
+# Import statements
 from opentrons.simulate import simulate, format_runlog
 
-    #read file
+# Read file
 protocol_file = open("new_test_programs/test_volume_tracking.py")
-    #simulate protocol
+
+# Simulate protocol
 runlog, _bundle = simulate(protocol_file)
-    #print runlog
+
+# Print runlog
 print(format_runlog(runlog))

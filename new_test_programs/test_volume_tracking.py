@@ -10,7 +10,7 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-from modules import volume_tracking as vol_track
+import volume_tracking as vol_track
   ## Import module that calculates how much the pipette should decrease     ##
   ## it's height before each aspiration-dispension step.                    ##
 

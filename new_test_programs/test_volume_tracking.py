@@ -10,8 +10,6 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-from modules import disposal_volume as dv
-  ## Import module that calculates 2% disposal on top of aspiration volume. ##
 from modules import volume_tracking as vol_track
   ## Import module that calculates how much the pipette should decrease     ##
   ## it's height before each aspiration-dispension step.                    ##
@@ -44,24 +42,24 @@ def run(protocol: protocol_api.ProtocolContext):
     ## handles the import of custom labware different than the robot does,  ##
     ## we have 2 options for handling this. Comment out the option that you ##
     ## are not using (in spyder: select + ctrl-1).                          ##
-    #### !!! OPTION 1: ROBOT                                               ###
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul',     #labware definition
-    #     2,                                  #deck position
-    #     '5mL_tubes')                        #custom name
-    #### !!! OPTION 2: SIMULATOR
-    with open("labware/eppendorf_15_tuberack_5000ul/"
-          "eppendorf_15_tuberack_5000ul.json") as labware_file:
-        labware_def_5mL = json.load(labware_file)
-      ## Import the file that contains all the information about the custom ##
-      ## labware. Load the file using json, store it in a variable.         ##
-    tubes_5mL = protocol.load_labware_from_definition( 
-        labware_def_5mL,                    #labware definition
+   ##### !!! OPTION 1: ROBOT                                               ###
+    tubes_5mL = protocol.load_labware(
+        'eppendorf_15_tuberack_5000ul',     #labware definition
         2,                                  #deck position
         '5mL_tubes')                        #custom name
-      ## Load the labware using load_labware_from_definition() instead of   ##
-      ## load_labware(). Then use the variable you just set with the opened ##
-      ## json file to define which labware to use.                          ##
+   ##### !!! OPTION 2: SIMULATOR
+    # with open("labware/eppendorf_15_tuberack_5000ul/"
+    #       "eppendorf_15_tuberack_5000ul.json") as labware_file:
+    #     labware_def_5mL = json.load(labware_file)
+    #   ## Import the file that contains all the information about the custom ##
+    #   ## labware. Load the file using json, store it in a variable.         ##
+    # tubes_5mL = protocol.load_labware_from_definition( 
+    #     labware_def_5mL,                    #labware definition
+    #     2,                                  #deck position
+    #     '5mL_tubes')                        #custom name
+    #   ## Load the labware using load_labware_from_definition() instead of   ##
+    #   ## load_labware(). Then use the variable you just set with the opened ##
+    #   ## json file to define which labware to use.                          ##
     
     ##### !!! Loading pipettes
     p300 = protocol.load_instrument(
@@ -83,15 +81,11 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol = 24 
       ## The dispension_vol is the volume (ul) that needs to be aliquoted   ##
       ## into the destination wells/tubes.                                  ##
-    aspiration_vol = dv.disposal_volume_p300_200(dispension_vol) 
+    aspiration_vol = dispension_vol + (dispension_vol/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container. For aliquoting liquids it may be nice to aspirate a bit ##
       ## more volume than you want to dispense (mimicking reverse           ##
-      ## pipetting). For this you can use the disposal_volume module,       ##
-      ## containing functions (for both pipettes) that calculate a 2% extra ##
-      ## aspiration volume. The functions for these are:                    ##
-      ##   dv.disposal_volume_p300(dispension_vol)                          ##
-      ##   dv.disposal_volume_p20(dispension_vol)                           ##
+      ## pipetting). Now we have 2% extra aspiration volume.                ## 
       ## NOTE: the aspiration volume can not be higher than the pipette or  ##
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
@@ -125,7 +119,7 @@ def run(protocol: protocol_api.ProtocolContext):
         current_height = current_height - 1
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 1 mm below its actual height                ##
-        aspiration_location = tubes_5mL['A1'].bottom(current_height) 
+        aspiration_location = tubes_5mL['A1'].bottom(current_height) #!!!
           ## Set the location of where to aspirate from. Because we put this##
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
@@ -135,10 +129,10 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the location##
           ## specified in well (so a new well every time the loop restarts) ##
-        p300.blow_out(tubes_5mL['A1'])
+        p300.blow_out(tubes_5mL['A1']) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
-        if current_height - delta_height <= 1: #make sure bottom is never reached
+        if current_height - delta_height <= 1: 
             protocol.home()
             protocol.pause('Your mix is finished.')
           ## If the level of the liquid in the next run of the loop will be ##

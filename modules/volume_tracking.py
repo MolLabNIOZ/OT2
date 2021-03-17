@@ -85,7 +85,7 @@ def volume_tracking(container, current_vol, aspiration_vol):
     ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
 
     ## If liquid level is below vol_conical_tip the delta_height is based on##
-    ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))
+    ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))               ##
     if current_vol <= vol_conical_tip: 
         current_height = (
             current_vol / 

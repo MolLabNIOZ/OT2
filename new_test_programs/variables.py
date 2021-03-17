@@ -118,4 +118,13 @@ else:
 print (current_height)
 print (delta_height)
 
+#%%
+current_height = 5
+height_conical_tip = 20
+radius_top = 10
+radius_tip = 2
+
+radius_top = radius_top = (
+            (radius_tip*(height_conical_tip - current_height))+
+            (radius_top*(current_height-0)))/height_conical_tip
 

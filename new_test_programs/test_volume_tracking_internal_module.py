@@ -10,7 +10,7 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-
+  
 # =============================================================================
 # Volume Tracking Module
 ## Because we could not manage to get the robot working with separate       ##
@@ -22,7 +22,37 @@ import math
   ## Import math module to allow using π in calculations                    ##
 
 ##### Define function
-def volume_tracking(container, current_vol, aspiration_vol):
+def cal_start_height(container, start_vol):
+    """Module to calculate the liquid height in a tube at the start"""
+    ##### Defining container dimensions
+    ## Depending on the type of container, these are the dimensions         ##
+    if container == 'tube_5mL':
+        diameter_top = 13.3         #diameter of the top of the tube in mm
+        diameter_tip = 3.3          #diameter of the tip of the tube in mm
+        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
+    elif container == 'tube_1.5mL':
+        diameter_top = 8.7       #diameter of the top of the tube in mm
+        diameter_tip = 3.6   #diamerer of the tip of the tube in mm
+        height_conical_tip = 37.8 - 20 #tube - straight part
+    
+    radius_top = diameter_top / 2         #radius of the top of the tube in mm
+    radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
+    vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
+                    (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+    ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
+    
+    ##### Calculating start height
+    cylinder_vol = start_vol - vol_conical_tip    # vol in straight part
+    start_height = (
+            height_conical_tip +        # current_height = height conical part 
+            (cylinder_vol /             # + height cylindrical part
+            (math.pi*((radius_top)**2)))
+            )
+    
+    return start_height
+    
+
+def volume_tracking(container, current_vol, aspiration_vol, current_height):
     """
     At this moment the OT-2 doesn't have a volume tracking function.
     By default, aspiration occurs from the bottom of a container. When a
@@ -99,7 +129,12 @@ def volume_tracking(container, current_vol, aspiration_vol):
 
     ## If liquid level is below vol_conical_tip the delta_height is based on##
     ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))               ##
-    if current_vol <= vol_conical_tip: 
+    if current_vol <= vol_conical_tip:
+        radius_top = radius_top = (
+            (radius_tip*(height_conical_tip - current_height))+
+            (radius_top*(current_height-0)))/height_conical_tip
+          ## The radius_top decreases with each pipetting step, so we       ##
+          ## calculate a new radius_top for each step.                      ##
         current_height = (
             current_vol / 
             ((1/3) * math.pi * 
@@ -139,7 +174,7 @@ def volume_tracking(container, current_vol, aspiration_vol):
 metadata = {
     'protocolName': 'test_volume_tracking.py',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
-    'description': ('Testing the volume_tracking module by aliquoting liquid'
+    'description': ('Testing the volume_tracking module by aliquoting liquid '
                     'from a 5mL tube to an entire 96-wells plate'),
     'apiLevel': '2.9'}
 
@@ -178,9 +213,9 @@ def run(protocol: protocol_api.ProtocolContext):
         labware_def_5mL,                    #labware definition
         2,                                  #deck position
         '5mL_tubes')                        #custom name
-    #   ## Load the labware using load_labware_from_definition() instead of   ##
-    #   ## load_labware(). Then use the variable you just set with the opened ##
-    #   ## json file to define which labware to use.                          ##
+      ## Load the labware using load_labware_from_definition() instead of   ##
+      ## load_labware(). Then use the variable you just set with the opened ##
+      ## json file to define which labware to use.                          ##
     
     ##### !!! Loading pipettes
     p300 = protocol.load_instrument(
@@ -196,7 +231,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
-    start_vol = 2600 
+    start_vol = 2400 
       ## The start_vol is the volume (ul) that is in the source labware at  ##
       ## the start of the protocol.                                         ##
     dispension_vol = 24 
@@ -211,13 +246,15 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300_tip_loc = tips_200['A3'] 
+    p300_tip_loc = tips_200['D1'] 
       ## The p300_tip_loc is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##
    
     ##### Volume tracking
     current_vol = start_vol
+    start_height = cal_start_height(container, start_vol)
+    current_height = start_height
       ## The current_vol is a variable that is used in the volume_tracking  ##
       ## module. At the start of the protocol, the current_vol is equal to  ## 
       ## the start_vol.                                                     ##
@@ -227,9 +264,12 @@ def run(protocol: protocol_api.ProtocolContext):
       ## Start by turning the lights on                                     ##
     p300.pick_up_tip(p300_tip_loc)
       ## p300 picks up tip from location specified in variable p300_tip_loc ##
+    p300.flow_rate.blow_out = 600
+      ## slow down default flowrate of the blow_out
     for well in plate_96.wells():
       ## Name all the wells in the plate 'well', for all these do:          ##  
-        tv = volume_tracking(container, current_vol, aspiration_vol)  
+        tv = volume_tracking(
+            container, current_vol, aspiration_vol, current_height)  
         current_height, current_vol, delta_height = tv
           ## The volume_tracking function needs the arguments container,    ##
           ## current_vol and the aspiration_vol which we have set in this   ##
@@ -250,7 +290,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the location##
           ## specified in well (so a new well every time the loop restarts) ##
-        p300.blow_out(tubes_5mL['A1']) #!!!
+        p300.blow_out(tubes_5mL['A1'].top(z=-10)) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
         if current_height - delta_height <= 1: 

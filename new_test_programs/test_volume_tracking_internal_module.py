@@ -26,16 +26,39 @@ def cal_start_height(container, start_vol):
     """Module to calculate the liquid height in a tube at the start"""
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
-        diameter_top = 13.3         #diameter of the top of the tube in mm
-        diameter_tip = 3.3          #diameter of the tip of the tube in mm
-        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diamerer of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
+    if container == 'tube_1.5mL':
+        diameter_top = 9.85     #diameter of the top of the tube in mm
+        diameter_top2 = 8.7     #diameter of the tipstart in mm
+        diameter_tip = 3.6      #diameter of the tip of the tube in mm
+        height_tube = 37.8      #height of inside of entire tube
+        height_conical_tip = 17.8
+    elif container == 'tube_2mL_roundbottom':
+        diameter_top = 9.85     #diameter of the top of the tube in mm
+        diameter_top2 = 8.8     #diameter of the tipstart in mm
+        diameter_tip = 2.4      #diameter of the tip of the tube in mm
+        height_tube = 39.1      #height of inside of entire tube
+        height_conical_tip = 6.8
+    elif container == 'tube_5mL':
+        diameter_top = 14.8     #diameter of the top of the tube in mm
+        diameter_top2 = 13.3    #diameter of the tipstart in mm
+        diameter_tip = 3.3      #diameter of the tip of the tube in mm
+        height_tube = 55.4      #height of inside of entire tube
+        height_conical_tip = 19.08
+    elif container == 'tube_15mL':
+        diameter_top =  15.16   #diameter of the top of the tube in mm
+        diameter_top2 = 13.35   #diameter of the tipstart in mm
+        diameter_tip = 2.16     #diameter of the tip of the tube in mm
+        height_tube = 118.1     #height of inside of entire tube
+        height_conical_tip = 22.1 
+    elif container == 'tube_50mL':
+        diameter_top = 27.48    #diameter of the top of the tube in mm
+        diameter_top2 = 25.65   #diameter of the tipstart in mm
+        diameter_tip = 4.7     #diameter of the tip of the tube in mm
+        height_tube = 113.3     #height of inside of entire tube
+        height_conical_tip = 15.3
     
     radius_top = diameter_top / 2         #radius of the top of the tube in mm
+    radius_top2 = diameter_top2 / 2       #radius of the start op tip in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
     vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
                     (radius_tip**2 + radius_tip*radius_top + radius_top**2))
@@ -89,27 +112,36 @@ def volume_tracking(container, current_vol, aspiration_vol, current_height):
 
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
-        diameter_top = 13.3         #diameter of the top of the tube in mm
-        diameter_tip = 3.3          #diameter of the tip of the tube in mm
-        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diamerer of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
-    ## From the following labware we do not have the dimensions yet         ##
-    # elif container == 'tube_2mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim    
-    # elif container == 'tube_15mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim
-    # elif container == 'tube_50mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim
+    if container == 'tube_1.5mL':
+        diameter_top = 9.85     #diameter of the top of the tube in mm
+        diameter_top2 = 8.7     #diameter of the tipstart in mm
+        diameter_tip = 3.6      #diameter of the tip of the tube in mm
+        height_tube = 37.8      #height of inside of entire tube
+        height_conical_tip = 17.8
+    elif container == 'tube_2mL_roundbottom':
+        diameter_top = 9.85     #diameter of the top of the tube in mm
+        diameter_top2 = 8.8     #diameter of the tipstart in mm
+        diameter_tip = 2.4      #diameter of the tip of the tube in mm
+        height_tube = 39.1      #height of inside of entire tube
+        height_conical_tip = 6.8
+    elif container == 'tube_5mL':
+        diameter_top = 14.8     #diameter of the top of the tube in mm
+        diameter_top2 = 13.3    #diameter of the tipstart in mm
+        diameter_tip = 3.3      #diameter of the tip of the tube in mm
+        height_tube = 55.4      #height of inside of entire tube
+        height_conical_tip = 19.08
+    elif container == 'tube_15mL':
+        diameter_top =  15.16   #diameter of the top of the tube in mm
+        diameter_top2 = 13.35   #diameter of the tipstart in mm
+        diameter_tip = 2.16     #diameter of the tip of the tube in mm
+        height_tube = 118.1     #height of inside of entire tube
+        height_conical_tip = 22.1 
+    elif container == 'tube_50mL':
+        diameter_top = 27.48    #diameter of the top of the tube in mm
+        diameter_top2 = 25.65   #diameter of the tipstart in mm
+        diameter_tip = 4.7     #diameter of the tip of the tube in mm
+        height_tube = 113.3     #height of inside of entire tube
+        height_conical_tip = 15.3
 
     ##### basic volume calculations for cylinder and cone shape
     ## volume of a cylinder is calculated as follows:                       ##
@@ -122,17 +154,19 @@ def volume_tracking(container, current_vol, aspiration_vol, current_height):
     ## a cylindrical shape, below this volume the delta_height is based on  ##
     ## a truncated cone shape.                                              ##
     radius_top = diameter_top / 2         #radius of the top of the tube in mm
+    radius_top2 = diameter_top2 / 2       #radius of the top of the tip in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
     vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
-                    (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+                    (radius_tip**2 + radius_tip*radius_top2 + radius_top2**2))
     ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
 
-    ## If liquid level is below vol_conical_tip the delta_height is based on##
-    ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))               ##
+    ## delta_height is based on a truncated cone shape                      ##
+    ## (h = v / ((1/3)*π*(r²+r*R+R²)))                                      ##
+    ## If liquid level is below vol_conical_tip the R=radius_top2, r=radius_tip              
     if current_vol <= vol_conical_tip:
-        radius_top = radius_top = (
+        radius_top = (
             (radius_tip*(height_conical_tip - current_height))+
-            (radius_top*(current_height-0)))/height_conical_tip
+            (radius_top2*(current_height)))/height_conical_tip
           ## The radius_top decreases with each pipetting step, so we       ##
           ## calculate a new radius_top for each step.                      ##
         current_height = (
@@ -145,19 +179,25 @@ def volume_tracking(container, current_vol, aspiration_vol, current_height):
             ((1/3) * math.pi * 
             (radius_tip**2 + radius_tip*radius_top + radius_top**2))
             )
-    ## If liquid level is above vol_conical_tip the delta_height is based on##
-    ## a cylindrical shape (h = v/(π*r²), v = (total_vol - vol_conical_tip) ##
+    ## If liquid level is above vol_conical_tip R=radius_top, r=radius_top2 ##
     else:
-        cylinder_vol = current_vol - vol_conical_tip    # vol in straight part
-        current_height = (
-            height_conical_tip +        # current_height = height conical part 
-            (cylinder_vol /             # + height cylindrical part
-            (math.pi*((radius_top)**2)))
-            ) 
-        delta_height =  (
+        cylinder_vol = current_vol - vol_conical_tip
+        cylinder_height = height_tube - height_conical_tip
+        current_cyl_height = current_height - height_conical_tip
+        radius_top = (
+            (radius_top2*(cylinder_height - current_cyl_height))+
+            (radius_top*(current_cyl_height)))/cylinder_height
+          ## The radius_top decreases with each pipetting step, so we       ##
+          ## calculate a new radius_top for each step.                      ##
+        current_height = (height_conical_tip + (
+            cylinder_vol / 
+            ((1/3) * math.pi * 
+            (radius_top2**2 + radius_top2*radius_top + radius_top**2)))
+            )       
+        delta_height = (
             aspiration_vol /
-            (math.pi*((radius_top)**2))
-            )
+            ((1/3) * math.pi * 
+            (radius_top2**2 + radius_top2*radius_top + radius_top**2)))
     
     ##### Update current_height and current_volume
     current_height = current_height - delta_height

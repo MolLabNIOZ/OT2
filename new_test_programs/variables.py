@@ -4,8 +4,9 @@ Created on Wed Mar 10 14:41:44 2021
 
 @author: svreugdenhil
 """
+#%%
 import math
-
+#%%
 reaction_vol = 25
 DNA_vol = 1
 disp_vol = reaction_vol - DNA_vol
@@ -47,7 +48,7 @@ elif current_volume <= volume_conical_tip:
     
 #%%
 container = 'tube_5mL'
-start_volume = 3000
+start_vol = 1100
 aspiration_volume = 24
 
 # Depending on kind of tube, define the dimensions
@@ -79,25 +80,31 @@ radius_top = diameter_top / 2
 radius_tip = diameter_tip / 2
 vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
                (radius_tip**2 + radius_tip*radius_top + radius_top**2))
-
-# set variables that change during the run
-current_volume = start_volume
     
+##### Calculating start height
+cylinder_vol = start_vol - vol_conical_tip    # vol in straight part
+start_height = 19
+# set variables that change during the run
+current_height = start_height
+current_volume = start_vol
+current_radius_top = (
+            (radius_tip*(height_conical_tip - current_height))+
+            (radius_top*current_height))/height_conical_tip   
+
 if current_volume - aspiration_volume < 5: #make sure bottom is never reached
-    protocol.home() 
-    protocol.pause('Your mix is finished.')
+    print('Your mix is finished.')
     
 else: 
-    if current_volume <= vol_conical_tip: 
+    if current_volume <= vol_conical_tip:
         current_height = (
             current_volume / 
             ((1/3) * math.pi * 
-            (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+            (radius_tip**2 + radius_tip*current_radius_top + current_radius_top**2))
             )
         delta_height = (
             aspiration_volume /
             ((1/3) * math.pi * 
-            (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+            (radius_tip**2 + radius_tip*current_radius_top + current_radius_top**2))
             )
        
     else:
@@ -117,14 +124,15 @@ else:
      
 print (current_height)
 print (delta_height)
+print(current_radius_top)
 
 #%%
-current_height = 5
+current_height = 10
 height_conical_tip = 20
 radius_top = 10
 radius_tip = 2
 
-radius_top = radius_top = (
-            (radius_tip*(height_conical_tip - current_height))+
-            (radius_top*(current_height-0)))/height_conical_tip
+radius_top = (
+    (radius_tip*(height_conical_tip - current_height))+
+    (radius_top*(current_height-0)))/height_conical_tip
 

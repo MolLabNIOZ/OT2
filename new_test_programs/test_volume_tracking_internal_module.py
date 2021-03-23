@@ -61,7 +61,7 @@ def cal_start_height(container, start_vol):
     radius_top2 = diameter_top2 / 2       #radius of the start op tip in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
     vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
-                    (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+                    (radius_tip**2 + radius_tip*radius_top2 + radius_top2**2))
     ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
     
     ##### Calculating start height

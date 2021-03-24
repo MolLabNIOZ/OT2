@@ -27,26 +27,32 @@ def cal_start_height(container, start_vol):
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
     if container == 'tube_5mL':
-        diameter_top = 13.3         #diameter of the top of the tube in mm
-        diameter_tip = 3.3          #diameter of the tip of the tube in mm
-        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diameter of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
+        diameter_top = 14.8     #diameter of the top of the tube in mm
+        diameter_top_c = 13.3   #diameter of the top of the conical tip in mm
+        diameter_tip = 3.3      #diameter of the tip of the tube in mm
+        height_cylinder = 34.12 #height in mm of the cylinder part
+        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - rim - cylinder part
     
-    radius_top = diameter_top / 2         #radius of the top of the tube in mm
-    radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
+    
+    radius_top = diameter_top / 2     #radius of the top of the tube in mm
+    radius_top_c = diameter_top_c / 2 #radius of the top of the conical tip in mm
+    radius_tip = diameter_tip / 2     #radius of the tip of the tube in mm
     vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
-                    (radius_tip**2 + radius_tip*radius_top + radius_top**2))
+                (radius_tip**2 + radius_tip*radius_top_c + radius_top_c**2))
+    max_vol_cylinder = ((1/3) * math.pi * height_cylinder *
+                (radius_top_c**2 + radius_top_c*radius_top + radius_top**2))
     ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
     
     ##### Calculating start height
     cylinder_vol = start_vol - vol_conical_tip    # vol in straight part
+    
+    start_radius_top = (
+            (radius_top_c*(height_cylinder - current_height))+
+            (radius_top*current_height))/height_cylinder
     start_height = (
             height_conical_tip +        # current_height = height conical part 
             (cylinder_vol /             # + height cylindrical part
-            (math.pi*((radius_top)**2)))
+            (math.pi*((radius_top_c)**2)))
             )
     
     return start_height
@@ -90,26 +96,9 @@ def volume_tracking(container, dispension_vol, current_height):
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
     if container == 'tube_5mL':
-        diameter_top = 13.3         #diameter of the top of the tube in mm
+        diameter_top_c = 13.3         #diameter of the top of the tube in mm
         diameter_tip = 3.3          #diameter of the tip of the tube in mm
         height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diamerer of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
-    ## From the following labware we do not have the dimensions yet         ##
-    # elif container == 'tube_2mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim    
-    # elif container == 'tube_15mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim
-    # elif container == 'tube_50mL':
-    #     diameter_top =       #diameter of the top of the tube in mm
-    #     diameter_tip =       #diameter of the tip of the tube in mm
-    #     height_conical_tip = #tube - straight part - rim
 
     ##### basic volume calculations for cylinder and cone shape
     ## volume of a cylinder is calculated as follows:                       ##
@@ -121,34 +110,36 @@ def volume_tracking(container, dispension_vol, current_height):
     ## tip of the container. Above this volume the delta_height is based on ##
     ## a cylindrical shape, below this volume the delta_height is based on  ##
     ## a truncated cone shape.                                              ##
-    radius_top = diameter_top / 2         #radius of the top of the tube in mm
-    radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
+    radius_top = diameter_top / 2     #radius of the top of the tube in mm
+    radius_top_c = diameter_top_c / 2 #radius of the top of the conical tip in mm
+    radius_tip = diameter_tip / 2     #radius of the tip of the tube in mm
     ## How much volume fills up the conical tip: v = (1/3)*π*h*(r²+r*R+R²)  ##
 
     ## If liquid level is below vol_conical_tip the delta_height is based on##
     ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))               ##
     if current_height <= height_conical_tip:
-        current_radius_top = (
+        current_radius_top_c = (
             (radius_tip*(height_conical_tip - current_height))+
-            (radius_top*current_height))/height_conical_tip
+            (radius_top_c*current_height))/height_conical_tip
           ## lineair interpolation formula derived from                     ##
           ## https://en.wikipedia.org/wiki/Linear_interpolation             ##
           ## r = radius (r is tip R is top)                                 ##
           ## h = height                                                     ##
           ## current_r = (r(conical_h - current_h)+ (R*current_h))/conical_h##
-          ## The radius_top decreases with each pipetting step, so we       ##
-          ## calculate a new radius_top for each step.                      ##
+          ## The radius_top_c decreases with each pipetting step, so we       ##
+          ## calculate a new radius_top_c for each step.                      ##
         delta_height = (
             dispension_vol /
             ((1/3) * math.pi * 
-            (radius_tip**2 + radius_tip*current_radius_top + current_radius_top**2))
+            (radius_tip**2 + radius_tip*current_radius_top_c + current_radius_top_c**2))
             )
     ## If liquid level is above vol_conical_tip the delta_height is based on##
     ## a cylindrical shape (h = v/(π*r²), v = (total_vol - vol_conical_tip) ##
-    else:
-        delta_height =  (
+    else:!!!
+        delta_height = (
             dispension_vol /
-            (math.pi*((radius_top)**2))
+            ((1/3) * math.pi * 
+            (radius_tp**2 + radius_tip*current_radius_top_c + current_radius_top_c**2))
             )
     
     ##### Update current_height and current_volume

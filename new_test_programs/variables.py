@@ -136,3 +136,16 @@ radius_top = (
     (radius_tip*(height_conical_tip - current_height))+
     (radius_top*(current_height-0)))/height_conical_tip
 
+#%%
+
+Rtop = 10      #Radius of the top of the tube
+r = 2          #Radius of the bottom of the tube
+t_h = 20       #Height of the tube
+c_h = 20       #Current height
+
+# calcultating the radius top at a certain height:
+R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h
+
+for c_h in range(21):
+    R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h
+    print(str(c_h) + "\t" + str(R))

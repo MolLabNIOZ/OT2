@@ -238,24 +238,24 @@ def run(protocol: protocol_api.ProtocolContext):
     ## handles the import of custom labware different than the robot does,  ##
     ## we have 2 options for handling this. Comment out the option that you ##
     ## are not using (in spyder: select + ctrl-1).                          ##
-   ##### !!! OPTION 1: ROBOT                                               
-    tubes_5mL = protocol.load_labware(
-         'eppendorf_15_tuberack_5000ul',     #labware definition
-         2,                                  #deck position
-         '5mL_tubes')                        #custom name
+   ##### !!! OPTION 1: ROBOT                                               ###
+    # tubes_5mL = protocol.load_labware(
+    #     'eppendorf_15_tuberack_5000ul',     #labware definition
+    #     2,                                  #deck position
+    #     '5mL_tubes')                        #custom name
    ##### !!! OPTION 2: SIMULATOR
-    # with open("labware/eppendorf_15_tuberack_5000ul/"
-    #        "eppendorf_15_tuberack_5000ul.json") as labware_file:
-    #      labware_def_5mL = json.load(labware_file)
-    #   ## Import the file that contains all the information about the custom ##
-    #   ## labware. Load the file using json, store it in a variable.         ##
-    # tubes_5mL = protocol.load_labware_from_definition( 
-    #     labware_def_5mL,                     #labware definition
-    #      2,                                  #deck position
-    #      '5mL_tubes')                        #custom name
-    #   ## Load the labware using load_labware_from_definition() instead of   ##
-    #   ## load_labware(). Then use the variable you just set with the opened ##
-    #   ## json file to define which labware to use.                          ##
+    with open("labware/eppendorf_15_tuberack_5000ul/"
+          "eppendorf_15_tuberack_5000ul.json") as labware_file:
+        labware_def_5mL = json.load(labware_file)
+      ## Import the file that contains all the information about the custom ##
+      ## labware. Load the file using json, store it in a variable.         ##
+    tubes_5mL = protocol.load_labware_from_definition( 
+        labware_def_5mL,                    #labware definition
+        2,                                  #deck position
+        '5mL_tubes')                        #custom name
+      ## Load the labware using load_labware_from_definition() instead of   ##
+      ## load_labware(). Then use the variable you just set with the opened ##
+      ## json file to define which labware to use.                          ##
     
     ##### !!! Loading pipettes
     p300 = protocol.load_instrument(
@@ -286,7 +286,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300_tip_loc = tips_200['E1'] 
+    p300_tip_loc = tips_200['D1'] 
       ## The p300_tip_loc is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##

@@ -127,6 +127,7 @@ radius_tip = 2
 radius_top = radius_top = (
             (radius_tip*(height_conical_tip - current_height))+
             (radius_top*(current_height-0)))/height_conical_tip
+<<<<<<< HEAD
 
 #%%
 
@@ -137,6 +138,8 @@ c_h = 20       #Current height
 
 # calcultating the radius top at a certain height:
 R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h
+=======
+>>>>>>> parent of b21e09a (Restored old volume tracking module)
 
 for c_h in range(21):
     R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h

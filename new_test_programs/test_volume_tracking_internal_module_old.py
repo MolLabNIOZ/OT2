@@ -176,17 +176,26 @@ def run(protocol: protocol_api.ProtocolContext):
     """Aliquoting liquid from a 5 mL tube to an entire 96-wells plate; 
     using volume tracking so that the pipette starts aspirating at the
     starting height of the liquid and goes down as the volume decreases."""
-    
-    ##### !!! Loading labware
+      
+# =============================================================================
+    ##### Loading labware
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
         1,                                  #deck position
         '200tips')                          #custom name
+    tips_20 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul',  #labware definition
+        7,                                  #deck position
+        '20tips')                           #custom name
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',    #labware definition
         3,                                  #deck position
         '96well_plate')                     #custom name
+    sample_tubes = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
+        6,                                                       #deck position
+        'sample_tubes')                                          #custom name
     ## The 5mL tubes are custom labware, because the protocol simulator     ##
     ## handles the import of custom labware different than the robot does,  ##
     ## we have 2 options for handling this. Comment out the option that you ##
@@ -210,12 +219,18 @@ def run(protocol: protocol_api.ProtocolContext):
       ## load_labware(). Then use the variable you just set with the opened ##
       ## json file to define which labware to use.                          ##
     
-    ##### !!! Loading pipettes
+    ##### Loading pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',                 #instrument definition
         'right',                            #mount position
         tip_racks=[tips_200])               #assigned tiprack
-    
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',                  #instrument definition
+        'left',                             #mount position
+        tip_racks=[tips_20])               #assigned tiprack
+# =============================================================================
+        
+# =============================================================================
     ##### !!! Variables to set 
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##
@@ -224,7 +239,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
-    start_vol = 2400 
+    start_vol = 2544 
       ## The start_vol is the volume (ul) that is in the source labware at  ##
       ## the start of the protocol.                                         ##
     dispension_vol = 24 
@@ -239,23 +254,26 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300.starting_tip = tips_200.well('A2') 
-      ## The p300_tip_loc is the location of first pipette tip in the box   ##
+    p300.starting_tip = tips_200.well('G2')
+    p20.starting_tip = tips_20.well('B3')
+      ## The starting_tip is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##
+# =============================================================================
    
+# =============================================================================
     ##### Volume tracking
     start_height = cal_start_height(container, start_vol)
     current_height = start_height
       ## The current_vol is a variable that is used in the volume_tracking  ##
       ## module. At the start of the protocol, the current_vol is equal to  ## 
       ## the start_vol.                                                     ##
+# =============================================================================
     
-    ##### The actual protocol
-    protocol.set_rail_lights(True)
-      ## Start by turning the lights on                                     ##
+# =============================================================================
+    ##### Aliquoting the mix
     p300.pick_up_tip()
-      ## p300 picks up tip from location specified in variable p300_tip_loc ##
+      ## p300 picks up tip from location specified in variable starting_tip ##
     p300.flow_rate.blow_out = 100
       ## slow down default flowrate of the blow_out
     for well in plate_96.wells():
@@ -273,8 +291,8 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 1 mm below its actual height                ##
         if current_height - delta_height <= 1: 
-            aspiration_location = tubes_5mL['A1']
-            blow_out_location = tubes_5mL['A1'].bottom()
+            aspiration_location = tubes_5mL['A1'].bottom(z=1)
+            blow_out_location = tubes_5mL['A1'].bottom(z=1)
         else:
             aspiration_location = tubes_5mL['A1'].bottom(pip_height) #!!!
             blow_out_location = aspiration_location 
@@ -303,10 +321,35 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.blow_out(blow_out_location) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
-
-      ## Drop the tip in the trash bin.                 
-    p300.drop_tip()                    ##
-    protocol.set_rail_lights(False)
-      ## Finish by turning the lights off.                                  ##
-    
-##### We have now filled an entire plate, hopefully with volume tracking :D!
+    p300.drop_tip()                    
+      ## Drop the final tip in the trash bin.                               ##
+# =============================================================================
+      
+# =============================================================================
+    ##### Transferring samples
+    ## Transfer undiluted sample from specified tube in sample_tubes to     ##
+    ## specified well in 96_wells plate.                                    ##
+    p20.transfer(1, 
+                  sample_tubes['A1'], 
+                  [plate_96.wells_by_name()[well_name] for well_name in 
+                  ['A2', 'D4', 'B5', 'F5', 'D6', 'B7', 'F7', 'D8', 'B9', 'F9',
+                    'A11']], 
+                  new_tip='always',
+                  blow_out=True,
+                  blowout_location='destination well',
+                  mix_after=(3, 5),
+                  air_gap=1
+                  )
+              
+    ## Transfer diluted sample from B1-B6 std_tubes to multiple in plate_96 ## 
+    p20.transfer(1, 
+                  [sample_tubes.wells_by_name()[well_name] for well_name in 
+                  ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']], 
+                  [plate_96.wells_by_name()[well_name] for well_name in 
+                  ['B2', 'C2', 'D2', 'E2', 'F2', 'G2']], 
+                  new_tip='always',
+                  blow_out=True,
+                  blowout_location='destination well',
+                  mix_after=(3, 5),
+                  air_gap=1
+                  )

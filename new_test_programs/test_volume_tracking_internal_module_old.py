@@ -192,20 +192,20 @@ def run(protocol: protocol_api.ProtocolContext):
     ## we have 2 options for handling this. Comment out the option that you ##
     ## are not using (in spyder: select + ctrl-1).                          ##
    ##### !!! OPTION 1: ROBOT                                               ###
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul',     #labware definition
-    #     2,                                  #deck position
-    #     '5mL_tubes')                        #custom name
-   ##### !!! OPTION 2: SIMULATOR
-    with open("labware/eppendorf_15_tuberack_5000ul/"
-          "eppendorf_15_tuberack_5000ul.json") as labware_file:
-        labware_def_5mL = json.load(labware_file)
-      ## Import the file that contains all the information about the custom ##
-      ## labware. Load the file using json, store it in a variable.         ##
-    tubes_5mL = protocol.load_labware_from_definition( 
-        labware_def_5mL,                    #labware definition
+    tubes_5mL = protocol.load_labware(
+        'eppendorf_15_tuberack_5000ul',     #labware definition
         2,                                  #deck position
         '5mL_tubes')                        #custom name
+   ##### !!! OPTION 2: SIMULATOR
+    # with open("labware/eppendorf_15_tuberack_5000ul/"
+    #       "eppendorf_15_tuberack_5000ul.json") as labware_file:
+    #     labware_def_5mL = json.load(labware_file)
+    #   ## Import the file that contains all the information about the custom ##
+    #   ## labware. Load the file using json, store it in a variable.         ##
+    # tubes_5mL = protocol.load_labware_from_definition( 
+    #     labware_def_5mL,                    #labware definition
+    #     2,                                  #deck position
+    #     '5mL_tubes')                        #custom name
       ## Load the labware using load_labware_from_definition() instead of   ##
       ## load_labware(). Then use the variable you just set with the opened ##
       ## json file to define which labware to use.                          ##
@@ -239,7 +239,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300.starting_tip = tips_200.well('F1') 
+    p300.starting_tip = tips_200.well('A2') 
       ## The p300_tip_loc is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##
@@ -256,7 +256,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## Start by turning the lights on                                     ##
     p300.pick_up_tip()
       ## p300 picks up tip from location specified in variable p300_tip_loc ##
-    p300.flow_rate.blow_out = 500
+    p300.flow_rate.blow_out = 100
       ## slow down default flowrate of the blow_out
     for well in plate_96.wells():
       ## Name all the wells in the plate 'well', for all these do:          ##  
@@ -274,9 +274,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## the current height 1 mm below its actual height                ##
         if current_height - delta_height <= 1: 
             aspiration_location = tubes_5mL['A1']
-            protocol.comment("You've reached the bottom!!!")
+            blow_out_location = tubes_5mL['A1'].bottom()
         else:
             aspiration_location = tubes_5mL['A1'].bottom(pip_height) #!!!
+            blow_out_location = aspiration_location 
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
           ## prevent the pipette from crashing into the bottom, we tell it  ##
@@ -285,20 +286,21 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well)
-        if well_c == ('A3 of 96well_plate on 3' or 
-                      'A5 of 96well_plate on 3' or 
-                      'A7 of 96well_plate on 3' or
-                      'A9 of 96well_plate on 3' or
-                      'A11 of 96well_plate on 3'):
+        if (well_c == 'A3 of 96well_plate on 3' or 
+            well_c == 'A5 of 96well_plate on 3' or 
+            well_c == 'A7 of 96well_plate on 3' or
+            well_c == 'A9 of 96well_plate on 3' or
+            well_c == 'A11 of 96well_plate on 3'):
             p300.drop_tip()
             p300.pick_up_tip()
+          ## Pick up a new tip every two rows.                              ##
         p300.aspirate(aspiration_vol, aspiration_location)
          ## Aspirate the amount specified in aspiration_vol from the        ##
          ## location specified in aspiration_location.                      ##
         p300.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the location##
           ## specified in well (so a new well every time the loop restarts) ##
-        p300.blow_out(tubes_5mL['A1'].bottom(pip_height)) #!!!
+        p300.blow_out(blow_out_location) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
 

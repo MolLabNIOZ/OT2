@@ -182,19 +182,19 @@ def run(protocol: protocol_api.ProtocolContext):
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
-        1,                                  #deck position
+        7,                                  #deck position
         '200tips')                          #custom name
     tips_20 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
-        7,                                  #deck position
+        10,                                  #deck position
         '20tips')                           #custom name
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',    #labware definition
-        3,                                  #deck position
+        9,                                  #deck position
         '96well_plate')                     #custom name
     sample_tubes = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        6,                                                       #deck position
+        11,                                                       #deck position
         'sample_tubes')                                          #custom name
     ## The 5mL tubes are custom labware, because the protocol simulator     ##
     ## handles the import of custom labware different than the robot does,  ##
@@ -203,7 +203,7 @@ def run(protocol: protocol_api.ProtocolContext):
    ##### !!! OPTION 1: ROBOT                                               ###
     tubes_5mL = protocol.load_labware(
         'eppendorf_15_tuberack_5000ul',     #labware definition
-        2,                                  #deck position
+        8,                                  #deck position
         '5mL_tubes')                        #custom name
    ##### !!! OPTION 2: SIMULATOR
     # with open("labware/eppendorf_15_tuberack_5000ul/"
@@ -213,11 +213,11 @@ def run(protocol: protocol_api.ProtocolContext):
     #   ## labware. Load the file using json, store it in a variable.         ##
     # tubes_5mL = protocol.load_labware_from_definition( 
     #     labware_def_5mL,                    #labware definition
-    #     2,                                  #deck position
+    #     3,                                  #deck position
     #     '5mL_tubes')                        #custom name
-      ## Load the labware using load_labware_from_definition() instead of   ##
-      ## load_labware(). Then use the variable you just set with the opened ##
-      ## json file to define which labware to use.                          ##
+      # Load the labware using load_labware_from_definition() instead of   ##
+      # load_labware(). Then use the variable you just set with the opened ##
+      # json file to define which labware to use.                          ##
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -254,8 +254,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300.starting_tip = tips_200.well('G2')
-    p20.starting_tip = tips_20.well('B3')
+    p300.starting_tip = tips_200.well('F3')
+    p20.starting_tip = tips_20.well('C5')
       ## The starting_tip is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##
@@ -291,10 +291,11 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 1 mm below its actual height                ##
         if current_height - delta_height <= 1: 
-            aspiration_location = tubes_5mL['A1'].bottom(z=1)
-            blow_out_location = tubes_5mL['A1'].bottom(z=1)
+            aspiration_location = tubes_5mL['C3'].bottom(z=1)
+            blow_out_location = aspiration_location
+            protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = tubes_5mL['A1'].bottom(pip_height) #!!!
+            aspiration_location = tubes_5mL['C3'].bottom(pip_height) #!!!
             blow_out_location = aspiration_location 
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
@@ -304,11 +305,11 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well)
-        if (well_c == 'A3 of 96well_plate on 3' or 
-            well_c == 'A5 of 96well_plate on 3' or 
-            well_c == 'A7 of 96well_plate on 3' or
-            well_c == 'A9 of 96well_plate on 3' or
-            well_c == 'A11 of 96well_plate on 3'):
+        if (well_c == 'A3 of 96well_plate on 9' or 
+            well_c == 'A5 of 96well_plate on 9' or 
+            well_c == 'A7 of 96well_plate on 9' or
+            well_c == 'A9 of 96well_plate on 9' or
+            well_c == 'A11 of 96well_plate on 9'):
             p300.drop_tip()
             p300.pick_up_tip()
           ## Pick up a new tip every two rows.                              ##

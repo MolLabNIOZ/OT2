@@ -5,7 +5,7 @@ Created on Wed Mar 10 14:41:44 2021
 @author: svreugdenhil
 """
 import math
-
+#%%
 reaction_vol = 25
 DNA_vol = 1
 disp_vol = reaction_vol - DNA_vol
@@ -127,7 +127,7 @@ radius_tip = 2
 radius_top = radius_top = (
             (radius_tip*(height_conical_tip - current_height))+
             (radius_top*(current_height-0)))/height_conical_tip
-<<<<<<< HEAD
+
 
 #%%
 
@@ -144,3 +144,38 @@ R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h
 for c_h in range(21):
     R = ((r*(t_h - c_h))+(Rtop*c_h))/t_h
     print(str(c_h) + "\t" + str(R))
+    
+#%%
+diameter_top = 14.8     #diameter of the top of the tube in mm
+diameter_tip = 13.3          #diameter of the tip of the tube in mm
+diameter_con_top = 13.3
+diameter_con_tip = 3.3
+radius_top = diameter_top/2
+radius_tip = diameter_tip/2
+radius_con_top = diameter_con_top/2
+radius_con_tip = diameter_con_tip/2
+
+height_conical_tip = (55.4 - 2.2 - 34.12) #tube - rim - straight part
+height_cylinder = 34.12
+vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
+                    (radius_con_tip**2 + radius_con_tip*radius_con_top + radius_con_top**2))
+vol_conical_tip = int(vol_conical_tip)
+start_height_volume = {} 
+
+for height in range(34000):
+    current_radius_top = (
+        radius_tip*(height_cylinder - (height/1000))
+        +(radius_top*(height/1000)))/height_cylinder
+    volume = ((1/3) * math.pi * (height/1000) * 
+              (radius_tip**2 + radius_tip*current_radius_top + current_radius_top**2))
+    volume = int(volume)
+    start_height_volume.update({height: volume})
+    
+start_volume = 6000
+
+for height, volume in start_height_volume.items():
+    if volume == (start_volume - vol_conical_tip):
+        start_height = height_conical_tip + (height/1000)
+
+#%%
+volume = ((1/3) * math.pi * (34.12) * (6.65**2 + 6.65*7.4 + 7.4**2))

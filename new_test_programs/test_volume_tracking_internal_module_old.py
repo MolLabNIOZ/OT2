@@ -287,11 +287,9 @@ def run(protocol: protocol_api.ProtocolContext):
           ## the current height 1 mm below its actual height                ##
         if current_height - delta_height <= 1: 
             aspiration_location = tubes_5mL['C3'].bottom(z=1)
-            blow_out_location = aspiration_location
             protocol.comment("You've reached the bottom!")
         else:
             aspiration_location = tubes_5mL['C3'].bottom(pip_height) #!!!
-            blow_out_location = aspiration_location 
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
           ## prevent the pipette from crashing into the bottom, we tell it  ##
@@ -314,7 +312,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the location##
           ## specified in well (so a new well every time the loop restarts) ##
-        p300.dispense(10, blow_out_location) #!!!
+        p300.dispense(10, aspiration_location) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
     p300.drop_tip()                    

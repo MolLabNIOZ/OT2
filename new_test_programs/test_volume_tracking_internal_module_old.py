@@ -254,8 +254,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300.starting_tip = tips_200.well('F3')
-    p20.starting_tip = tips_20.well('C5')
+    p300.starting_tip = tips_200.well('H5')
+    p20.starting_tip = tips_20.well('E7')
       ## The starting_tip is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##

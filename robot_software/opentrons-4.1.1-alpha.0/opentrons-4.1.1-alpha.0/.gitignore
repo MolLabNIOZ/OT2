@@ -1,0 +1,121 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache
+**/.python-version
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+venv/
+env/
+.env/
+
+# Generated files for local API server config paths
+api/.env
+api/index.json
+
+# MyPy caches
+.mypy_cache
+
+build/
+!app-shell/build
+api/docs/build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+pyinstaller/build
+pyinstaller/dist
+
+# Crossbar
+#  Usually these files are written by the Crossbar server
+*.priv
+*.pub
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# node packages
+node_modules
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+coverage
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+docs/build/
+
+# PyBuilder
+target/
+.idea/
+.setup_litter
+/Pipfile
+
+# Testing
+api/tests/opentrons/data/configs/
+api/tests/opentrons/data/labware-def/
+api/opentrons/config/*.json
+sample_protocol.py
+api/opentrons/server/endpoints/ignore.json
+labware-library/cypress/screenshots/
+labware-library/cypress/videos/
+protocol-designer/cypress/screenshots/
+protocol-designer/cypress/videos/
+protocol-designer/benchmarks/output
+
+# Local Calibration Data
+calibrations/
+*/calibrations
+
+# SDK logs
+*.log
+*.log.*
+
+# app api assets
+*.pid
+
+*.DS_Store
+.ipynb_checkpoints
+*.ipynb
+
+# local IDE configs
+.vscode
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# TODO(mc, 2020-10-30): remove this ignore when we need pyproject.toml
+# recent versions of setuptools create pyproject.toml automatically
+# we're ignoring the file for now to avoid confusion
+api/pyproject.toml

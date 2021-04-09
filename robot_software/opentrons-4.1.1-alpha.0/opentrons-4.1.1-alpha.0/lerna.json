@@ -1,0 +1,19 @@
+{
+  "command": {
+    "version": {
+      "allowBranch": [
+        "chore_bump-*"
+      ],
+      "conventionalCommits": true,
+      "exact": true,
+      "includeMergedTags": true,
+      "gitTagVersion": false,
+      "push": false,
+      "preid": "alpha",
+      "forcePublish": "*"
+    }
+  },
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "4.1.1-alpha.0"
+}

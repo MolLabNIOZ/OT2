@@ -1,0 +1,12 @@
+fixes:
+  - 'api/src/opentrons/::opentrons/'
+ignore:
+  - 'audio'
+  - 'compute'
+  - '**/node_modules'
+  - 'protocol-library-kludge'
+  - 'shared-data/deck/definitions'
+  - 'shared-data/labware/definitions'
+  - 'shared-data/module/definitions'
+  - 'shared-data/pipette/definitions'
+  - 'webpack-config'

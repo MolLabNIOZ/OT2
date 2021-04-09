@@ -1,0 +1,10 @@
+@import '@opentrons/components';
+
+.analytics_settings {
+  width: 100%;
+}
+
+.modal_button {
+  float: right;
+  margin: 0.75rem;
+}

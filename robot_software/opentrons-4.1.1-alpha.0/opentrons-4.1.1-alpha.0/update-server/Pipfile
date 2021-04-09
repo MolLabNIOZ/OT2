@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+"e1839a8" = {path = ".", editable = true}
+virtualenv = "*"
+aiohttp = "==3.4.4"
+
+[dev-packages]
+pylama = "*"
+pytest = "==6.1.0"
+pytest-watch = "~=4.2.0"
+pytest-cov = "*"
+pytest-aiohttp = "*"
+twine = ">=1.12.0"
+wheel = "==0.30.0"
+coverage = "==4.4.2"
+colorama = "*"
+mypy = "==0.740"
+typing-extensions = "*"
+
+[requires]
+python_version = "3.7"

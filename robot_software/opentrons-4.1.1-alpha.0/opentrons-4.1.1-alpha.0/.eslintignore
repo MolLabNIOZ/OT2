@@ -1,0 +1,26 @@
+api/**
+update-server/**
+robot-server/**
+shared-data/python/**
+**/node_modules/**
+**/coverage/**
+**/dist/**
+**/build/**
+**/venv/**
+
+# flow
+flow-typed/npm/**
+
+# compiled
+app-shell/lib/**
+discovery-client/lib/**
+
+# prettier
+**/package.json
+**/CHANGELOG.md
+lerna.json
+!api/release-notes.md
+!app-shell/build/release-notes.md
+
+# mypy
+**/.mypy_cache/**

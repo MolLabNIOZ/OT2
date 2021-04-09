@@ -254,11 +254,10 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
+
     p300.starting_tip = tips_200.well('H5')
     p20.starting_tip = tips_20.well('E7')
       ## The starting_tip is the location of first pipette tip in the box   ##
-      ## at the start of the protocol. Check the pipette tip box where the  ##
-      ## next available tip is. The robot takes tips column by column.      ##
 # =============================================================================
    
 # =============================================================================
@@ -296,7 +295,6 @@ def run(protocol: protocol_api.ProtocolContext):
             protocol.comment("You've reached the bottom!")
         else:
             aspiration_location = tubes_5mL['C3'].bottom(pip_height) #!!!
-            blow_out_location = aspiration_location 
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
           ## prevent the pipette from crashing into the bottom, we tell it  ##
@@ -305,6 +303,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well)
+
         if (well_c == 'A3 of 96well_plate on 9' or 
             well_c == 'A5 of 96well_plate on 9' or 
             well_c == 'A7 of 96well_plate on 9' or

@@ -128,30 +128,27 @@ def volume_tracking(container, dispension_vol, current_height):
 
     ## If liquid level is below vol_conical_tip the delta_height is based on##
     ## a truncated cone shape (h = v / ((1/3)*π*(r²+r*R+R²)))               ##
-    if current_height <= height_conical_tip:
-        current_radius_top = (
-            (radius_tip*(height_conical_tip - current_height))+
-            (radius_top*current_height))/height_conical_tip
-          ## lineair interpolation formula derived from                     ##
-          ## https://en.wikipedia.org/wiki/Linear_interpolation             ##
-          ## r = radius (r is tip R is top)                                 ##
-          ## h = height                                                     ##
-          ## current_r = (r(conical_h - current_h)+ (R*current_h))/conical_h##
-          ## The radius_top decreases with each pipetting step, so we       ##
-          ## calculate a new radius_top for each step.                      ##
-        delta_height = (
-            dispension_vol /
-            ((1/3) * math.pi * 
-            ((radius_tip**2) + (radius_tip*current_radius_top) + 
-             (current_radius_top**2)))
-            )
-    ## If liquid level is above vol_conical_tip the delta_height is based on##
-    ## a cylindrical shape (h = v/(π*r²), v = (total_vol - vol_conical_tip) ##
-    else:
-        delta_height =  (
-            dispension_vol /
-            (math.pi*((radius_top)**2))
-            )
+    # if current_height <= height_conical_tip:
+    #     current_radius_top = (
+    #         (radius_tip*(height_conical_tip - current_height))+
+    #         (radius_top*current_height))/height_conical_tip
+    #       ## lineair interpolation formula derived from                     ##
+    #       ## https://en.wikipedia.org/wiki/Linear_interpolation             ##
+    #       ## r = radius (r is tip R is top)                                 ##
+    #       ## h = height                                                     ##
+    #       ## current_r = (r(conical_h - current_h)+ (R*current_h))/conical_h##
+    #       ## The radius_top decreases with each pipetting step, so we       ##
+    #       ## calculate a new radius_top for each step.                      ##
+    #     delta_height = (
+    #         dispension_vol /
+    #         ((1/3) * math.pi * 
+    #         ((radius_tip**2) + (radius_tip*current_radius_top) + 
+    #          (current_radius_top**2)))
+    #         )
+    # ## If liquid level is above vol_conical_tip the delta_height is based on##
+    # ## a cylindrical shape (h = v/(π*r²), v = (total_vol - vol_conical_tip) ##
+    # else:
+    delta_height =  (dispension_vol/(math.pi*((radius_top)**2)))
     
     ##### Update current_height and current_volume
     current_height = current_height - delta_height
@@ -200,24 +197,24 @@ def run(protocol: protocol_api.ProtocolContext):
     ## handles the import of custom labware different than the robot does,  ##
     ## we have 2 options for handling this. Comment out the option that you ##
     ## are not using (in spyder: select + ctrl-1).                          ##
-   ##### !!! OPTION 1: ROBOT                                               ###
+    ##### !!! OPTION 1: ROBOT                                               ###
     tubes_5mL = protocol.load_labware(
         'eppendorf_15_tuberack_5000ul',     #labware definition
         8,                                  #deck position
         '5mL_tubes')                        #custom name
-   ##### !!! OPTION 2: SIMULATOR
-    # with open("labware/eppendorf_15_tuberack_5000ul/"
-    #       "eppendorf_15_tuberack_5000ul.json") as labware_file:
-    #     labware_def_5mL = json.load(labware_file)
-    #   ## Import the file that contains all the information about the custom ##
-    #   ## labware. Load the file using json, store it in a variable.         ##
-    # tubes_5mL = protocol.load_labware_from_definition( 
-    #     labware_def_5mL,                    #labware definition
-    #     3,                                  #deck position
-    #     '5mL_tubes')                        #custom name
-      # Load the labware using load_labware_from_definition() instead of   ##
-      # load_labware(). Then use the variable you just set with the opened ##
-      # json file to define which labware to use.                          ##
+   # #### !!! OPTION 2: SIMULATOR
+   #  with open("labware/eppendorf_15_tuberack_5000ul/"
+   #            "eppendorf_15_tuberack_5000ul.json") as labware_file: 
+   #      labware_def_5mL = json.load(labware_file)
+   #    ## Import the file that contains all the information about the custom ##
+   #    ## labware. Load the file using json, store it in a variable.         ##
+   #      tubes_5mL = protocol.load_labware_from_definition( 
+   #          labware_def_5mL,                    #labware definition
+   #          3,                                  #deck position
+   #          '5mL_tubes')                        #custom name
+   #     ##Load the labware using load_labware_from_definition() instead of   ##
+   #     ##load_labware(). Then use the variable you just set with the opened ##
+   #     ##json file to define which labware to use.                          ##
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -254,8 +251,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## pipette tip limit!!!                                               ##
       ## When NOT using a disposal volume:                                  ##
       ##   aspiration_vol = dispension_vol                                  ##
-    p300.starting_tip = tips_200.well('H5')
-    p20.starting_tip = tips_20.well('E7')
+    p300.starting_tip = tips_200.well('F6')
+    p20.starting_tip = tips_20.well('F7')
       ## The starting_tip is the location of first pipette tip in the box   ##
       ## at the start of the protocol. Check the pipette tip box where the  ##
       ## next available tip is. The robot takes tips column by column.      ##
@@ -287,7 +284,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## current_height, current_vol and delta_height of the liquid     ##
           ## after the next aspiration step. The outcome is stored as tv and##
           ## then the specific variables are updated.                       ##
-        pip_height = current_height - 1
+        pip_height = current_height - 2
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 1 mm below its actual height                ##
         if current_height - delta_height <= 1: 
@@ -319,7 +316,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the location##
           ## specified in well (so a new well every time the loop restarts) ##
-        p300.blow_out(blow_out_location) #!!!
+        p300.dispense(10, blow_out_location) #!!!
           ## Blow out any remaining liquid (disposal volume) in the source  ##
           ## tube before we want to aspirate again.                         ##
     p300.drop_tip()                    

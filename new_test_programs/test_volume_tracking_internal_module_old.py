@@ -271,8 +271,6 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Aliquoting the mix
     p300.pick_up_tip()
       ## p300 picks up tip from location specified in variable starting_tip ##
-    p300.flow_rate.blow_out = 100
-      ## slow down default flowrate of the blow_out
     for well in plate_96.wells():
       ## Name all the wells in the plate 'well', for all these do:          ##  
         tv = volume_tracking(

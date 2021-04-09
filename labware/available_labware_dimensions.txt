@@ -1,0 +1,30 @@
+1.5 mL Eppendorf tubes:
+    diameter_top = 9.85         #diameter of the top of the tube in mm
+    diameter_top2 = 8.7         #diameter of the tipstart in mm
+    diameter_tip = 3.6          #diameter of the tip of the tube in mm
+    height_tube = 37.8          #height of inside of entire tube
+    height_conical_tip = 17.8   #height conical part
+2.0 mL Eppendorf tubes:
+    diameter_top = 9.85         #diameter of the top of the tube in mm
+    diameter_top2 = 8.8         #diameter of the tipstart in mm
+    diameter_tip = 2.4          #diameter of the tip of the tube in mm
+    height_tube = 39.1          #height of inside of entire tube
+    height_conical_tip = 6.8    #height conical part
+5.0 mL Eppendorf tubes:
+    diameter_top = 14.8         #diameter of the top of the tube in mm
+    diameter_top2 = 13.3        #diameter of the tipstart in mm
+    diameter_tip = 3.3          #diameter of the tip of the tube in mm
+    height_tube = 55.4          #height of inside of entire tube
+    height_conical_tip = 19.08  #height conical part
+15 mL GreinerBio tubes:
+    diameter_top =  15.16       #diameter of the top of the tube in mm
+    diameter_top2 = 13.35       #diameter of the tipstart in mm
+    diameter_tip = 2.16         #diameter of the tip of the tube in mm
+    height_tube = 118.1         #height of inside of entire tube
+    height_conical_tip = 22.1   #height conical part
+50 mL GreinerBio tubes:
+    diameter_top = 27.48        #diameter of the top of the tube in mm
+    diameter_top2 = 25.65       #diameter of the tipstart in mm
+    diameter_tip = 4.7          #diameter of the tip of the tube in mm
+    height_tube = 113.3         #height of inside of entire tube
+    height_conical_tip = 15.3   #height conical part

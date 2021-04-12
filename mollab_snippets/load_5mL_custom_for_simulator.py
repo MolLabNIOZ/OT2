@@ -20,10 +20,10 @@ import json
         labware_def_5mL = json.load(labware_file)
       ## Import the file that contains all the information about the custom ##
       ## labware. Load the file using json, store it in a variable.         ##
-        tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL,                    #labware definition
-            3,                                  #deck position
-            '5mL_tubes')                        #custom name
+      tubes_5mL = protocol.load_labware_from_definition( 
+         labware_def_5mL,                    #labware definition
+         3,                                  #deck position
+         '5mL_tubes')                        #custom name
         ##Load the labware using load_labware_from_definition() instead of   ##
         ##load_labware(). Then use the variable you just set with the opened ##
         ##json file to define which labware to use.                          ##

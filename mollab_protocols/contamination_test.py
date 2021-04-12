@@ -115,8 +115,7 @@ def volume_tracking(container, dispension_vol, current_height):
 metadata = {
     'protocolName': 'Contamination_testOT2 210409',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
-    'description': ('Testing the volume_tracking module by aliquoting liquid '
-                    'from a 5mL tube to an entire 96-wells plate'),
+    'description': ('Testing cross-contamination in a 96wells plate'),
     'apiLevel': '2.9'}
 
 ##### Define function

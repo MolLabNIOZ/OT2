@@ -3,6 +3,11 @@
     ## we have 2 options for handling this. Comment out the option that you ##
     ## are not using (in spyder: select + ctrl-1).                          ##
 
+import json 
+  ## Import json to import custom labware with labware_from_definition,     ##
+  ## so that we can use the simulate_protocol with custom labware.          ##
+  
+
 ##### !!! OPTION 1: ROBOT                                               ###
     tubes_5mL = protocol.load_labware(
         'eppendorf_15_tuberack_5000ul',     #labware definition

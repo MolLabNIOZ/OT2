@@ -1,17 +1,14 @@
 # =============================================================================
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210409
-# Description: Testing whether the robot causes contamination due to it's 
+# Description: Testing whether the robot causes contamination due to its 
 #   movements with a 16S rRNA PCR (phusion reagents, 515F/806R, full plate)
 # =============================================================================
 
 ##### Import statements
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
-  
+
 # =============================================================================
 # Volume Tracking Module
 ## Because we could not manage to get the robot working with separate       ##
@@ -30,11 +27,11 @@ def cal_start_height(container, start_vol):
     if container == 'tube_5mL':
         diameter_top = 13.3         #diameter of the top of the tube in mm
         diameter_tip = 3.3          #diameter of the tip of the tube in mm
-        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
+        height_conical_tip = 55.4 - 34.12 - 2.2 #tube - straight part - rim
     elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diameter of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
+        diameter_top = 8.7          #diameter of the top of the tube in mm
+        diameter_tip = 3.6          #diameter of the tip of the tube in mm
+        height_conical_tip = 37.8 - 20          #tube - straight part
     
     radius_top = diameter_top / 2         #radius of the top of the tube in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
@@ -46,10 +43,10 @@ def cal_start_height(container, start_vol):
     ##### Calculating start height
     cylinder_vol = start_vol - vol_conical_tip    # vol in straight part
     start_height = (
-            height_conical_tip +        # current_height = height conical part 
-            (cylinder_vol /             # + height cylindrical part
-            (math.pi*((radius_top)**2)))
+            height_conical_tip +         
+            (cylinder_vol / (math.pi*((radius_top)**2)))
             )
+    # current_height = height conical part + height cylindrical part
     
     return start_height
     
@@ -177,9 +174,11 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol = 24 
       ## The dispension_vol is the volume (ul) that needs to be aliquoted   ##
       ## into the destination wells/tubes.                                  ##
-    
-    p300.starting_tip = tips_200.well('F6')
-    p20.starting_tip = tips_20.well('F7')
+    sample_vol = 1 
+      ## The sample_vol is the volume (ul) of sample added to the PCR       ##
+      ## reaction.                                                          ##
+    p300.starting_tip = tips_200.well('C8')
+    p20.starting_tip = tips_20.well('D9')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================        
 # =============================================================================
@@ -264,7 +263,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Transferring samples
     ## Transfer undiluted sample from specified tube in sample_tubes to     ##
     ## specified well in 96_wells plate.                                    ##
-    p20.transfer(1, 
+    p20.transfer(sample_vol, 
                   sample_tubes['A1'], 
                   [plate_96.wells_by_name()[well_name] for well_name in 
                   ['A2', 'D4', 'B5', 'F5', 'D6', 'B7', 'F7', 'D8', 'B9', 'F9',
@@ -277,7 +276,7 @@ def run(protocol: protocol_api.ProtocolContext):
                   )
               
     ## Transfer diluted sample from B1-B6 std_tubes to multiple in plate_96 ## 
-    p20.transfer(1, 
+    p20.transfer(sample_vol, 
                   [sample_tubes.wells_by_name()[well_name] for well_name in 
                   ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']], 
                   [plate_96.wells_by_name()[well_name] for well_name in 

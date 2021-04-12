@@ -287,3 +287,15 @@ def run(protocol: protocol_api.ProtocolContext):
                   mix_after=(3, 5),
                   air_gap=1
                   )
+    p20.transfer(sample_vol, 
+                  [sample_tubes.wells_by_name()[well_name] for well_name in 
+                  ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']], 
+                  [plate_96.wells_by_name()[well_name] for well_name in 
+                  ['B11', 'C11', 'D11', 'E11', 'F11', 'G11']], 
+                  new_tip='always',
+                  blow_out=True,
+                  blowout_location='destination well',
+                  mix_after=(3, 5),
+                  air_gap=1
+                  )
+    

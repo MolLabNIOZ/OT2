@@ -200,8 +200,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol = 2.5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A1')
-    p20.starting_tip = tips_20_1.well('A1')
+    p300.starting_tip = tips_200.well('E2')
+    p20.starting_tip = tips_20_1.well('H3')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================        
 # =============================================================================
@@ -342,7 +342,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 air_gap=1
                 )
     
-    #NTCs
+    #H2O to NTCs
     p20.transfer(sample_vol, 
                 sample_tubes_2['D3'],
                 [plate_96.wells_by_name()[well_name] for well_name in 

@@ -45,12 +45,13 @@ def run(protocol: protocol_api.ProtocolContext):
         tip_racks=[tips_20])                #assigned tiprack
 # =============================================================================
     
-    p20.starting_tip = tips_20.well('E11')
+    protocol.set_rail_lights(True)
+    p20.starting_tip = tips_20.well('A1')
     p20.pick_up_tip()
     p20.aspirate(10, sample_tubes['D1'])
     p20.dispense(10, sample_tubes['D1'])
     p20.blow_out(sample_tubes['D1'])
     p20.drop_tip()
-    
+    protocol.set_rail_lights(False)
     
     

@@ -157,24 +157,24 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         5,                                                      #deck position
         'sample_tubes_2')                                          #custom name
-    # ##### !!! OPTION 1: ROBOT      
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul',     #labware definition
-    #     6,                                  #deck position
-    #     '5mL_tubes')                        #custom name
-    ##### !!! OPTION 2: SIMULATOR
-    with open("labware/eppendorf_15_tuberack_5000ul/"
-              "eppendorf_15_tuberack_5000ul.json") as labware_file: 
-        labware_def_5mL = json.load(labware_file)
-      # Import the file that contains all the information about the custom ##
-      # labware. Load the file using json, store it in a variable.         ##
-    tubes_5mL = protocol.load_labware_from_definition(
-        labware_def_5mL,                    #labware definition
+    ##### !!! OPTION 1: ROBOT      
+    tubes_5mL = protocol.load_labware(
+        'eppendorf_15_tuberack_5000ul',     #labware definition
         6,                                  #deck position
         '5mL_tubes')                        #custom name
-        #Load the labware using load_labware_from_definition() instead of  ##
-        #load_labware(). Then use the variable you just set with the opened##
-        #json file to define which labware to use.                         ##
+    ##### !!! OPTION 2: SIMULATOR
+    # with open("labware/eppendorf_15_tuberack_5000ul/"
+    #           "eppendorf_15_tuberack_5000ul.json") as labware_file: 
+    #     labware_def_5mL = json.load(labware_file)
+    #   # Import the file that contains all the information about the custom ##
+    #   # labware. Load the file using json, store it in a variable.         ##
+    # tubes_5mL = protocol.load_labware_from_definition(
+    #     labware_def_5mL,                    #labware definition
+    #     6,                                  #deck position
+    #     '5mL_tubes')                        #custom name
+    #     #Load the labware using load_labware_from_definition() instead of  ##
+    #     #load_labware(). Then use the variable you just set with the opened##
+    #     #json file to define which labware to use.                         ##
     
     
     ##### Loading pipettes
@@ -246,10 +246,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 2 mm below its actual height                ##
         if current_height - delta_height <= 1: 
-            aspiration_location = tubes_5mL['C3'].bottom(z=1) #!!!
+            aspiration_location = tubes_5mL['B5'].bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = tubes_5mL['C3'].bottom(pip_height) #!!!
+            aspiration_location = tubes_5mL['B5'].bottom(pip_height) #!!!
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
           ## prevent the pipette from crashing into the bottom, we tell it  ##
@@ -303,7 +303,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 air_gap=1
                 )
     p20.transfer(sample_vol, 
-                [sample_tubes_1.wells_by_name()[well_name] for well_name in 
+                [sample_tubes_2.wells_by_name()[well_name] for well_name in 
                   ['A3', 'B3', 'C3']],
                 [plate_96.wells_by_name()[well_name] for well_name in 
                   ['A5', 'B5', 'C5']], 
@@ -333,7 +333,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 air_gap=1
                 )
     p20.transfer(sample_vol, 
-                [sample_tubes_1.wells_by_name()[well_name] for well_name in 
+                [sample_tubes_2.wells_by_name()[well_name] for well_name in 
                   ['A3', 'B3', 'C3']],
                 [plate_96.wells_by_name()[well_name] for well_name in 
                   ['A10', 'B10', 'C10']], 
@@ -341,3 +341,13 @@ def run(protocol: protocol_api.ProtocolContext):
                 mix_after=(3, 5),
                 air_gap=1
                 )
+    
+    #NTCs
+    p20.transfer(sample_vol, 
+                sample_tubes_2['D3'],
+                [plate_96.wells_by_name()[well_name] for well_name in 
+                  ['D5', 'E5', 'F5', 'G5', 'H5', 
+                   'D10', 'E10', 'F10', 'G10', 'H10']], 
+                new_tip='always',
+                mix_after=(3, 5),
+                air_gap=1)

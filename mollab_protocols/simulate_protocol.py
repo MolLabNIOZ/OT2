@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("mollab_protocols/contamination_test_2.py")
+protocol_file = open("mollab_protocols/210413_eDNA_fish_testPCR.py")
 
 # Simulate protocol
 runlog, _bundle = simulate(protocol_file)

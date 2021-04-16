@@ -30,7 +30,8 @@ metadata = {
 def run(protocol: protocol_api.ProtocolContext):
     """
     Aliquoting Illumina primers from 1 tube rack filled with 1.5 mL tubes,
-    to 3 PCR strips in a BioRad 96-well plate, calibrated with PCR strips.
+    to 3 PCR strips in a BioRad 96-well plate, calibrated with Westburg
+    PCR strips.
     """
       
 # =============================================================================
@@ -57,18 +58,18 @@ def run(protocol: protocol_api.ProtocolContext):
         3,                                                       #deck position
         'primer_tubes')                                        #custom name
     ##### !!! OPTION 1: ROBOT      
-    # pcr_strips = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     6,                                  #deck position
-    #     'pcr_strips')                        #custom name
+    pcr_strips = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',     #labware definition
+        6,                                  #deck position
+        'pcr_strips')                        #custom name
     ##### !!! OPTION 2: SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    pcr_strips = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            6, 
-            'pcr_strips') 
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    # pcr_strips = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         6, 
+    #         'pcr_strips') 
         #Load the labware using load_labware_from_definition() instead of  ##
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
@@ -78,11 +79,12 @@ def run(protocol: protocol_api.ProtocolContext):
         'p300_single_gen2',                 #instrument definition
         'right',                            #mount position
         tip_racks=[tips_200_1, tips_200_2, tips_200_3, tips_200_4])#as tiprack
+    
 # =============================================================================
 
 # =============================================================================
 #     ##### !!! Variables to set       
-    p300.starting_tip = tips_200_1.well('A1')     
+    p300.starting_tip = tips_200_1.well('H1')     
     primer_volume = 30
 # =============================================================================
 
@@ -91,7 +93,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
     protocol.set_rail_lights(True)
     
-    protocol.pause('Put F primers F1 to F47 in + '
+    protocol.pause('Put F primers F1 to F47 in, and'
                    '3 empty PCR strips in columns 2, 7, and 11 with the caps '
                    'to the right.')
     

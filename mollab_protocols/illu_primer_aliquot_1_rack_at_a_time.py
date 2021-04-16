@@ -98,7 +98,18 @@ def run(protocol: protocol_api.ProtocolContext):
                    'to the right.')
     
     # F1 to F47 + corresponding R primers
-    p300.transfer(
+    for well in primer_tubes.wells():
+        p300.aspirate(primer_volume, well)
+        
+        if well == 'A1 of primer_tubes on 3':
+            destination = 'A1 of pcr_strips on 6'
+
+        p300.dispense(primer_volume, destination)
+        
+        
+       
+        
+        p300.transfer(
         primer_volume,
         primer_tubes.wells(),
         [pcr_strips.columns_by_name()[column_name] for column_name in 

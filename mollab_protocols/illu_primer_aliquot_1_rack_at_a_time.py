@@ -84,159 +84,224 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # =============================================================================
 #     ##### !!! Variables to set       
-    p300.starting_tip = tips_200_1.well('H1')     
+    p300.starting_tip = tips_200_1.well('D2')     
     primer_volume = 30
 # =============================================================================
 
 # =============================================================================
+
     ##### Aliquoting the primers
     
     protocol.set_rail_lights(True)
     
     protocol.pause('Put F primers F1 to F47 in, and'
-                   '3 empty PCR strips in columns 2, 7, and 11 with the caps '
-                   'to the right.')
+                    '3 empty PCR strips in columns 2, 7, and 11 with the caps '
+                    'to the right.')
     
     # F1 to F47 + corresponding R primers
-    for well in primer_tubes.wells():
-        p300.aspirate(primer_volume, well)
-        
-        if well == 'A1 of primer_tubes on 3':
-            destination = 'A1 of pcr_strips on 6'
-
-        p300.dispense(primer_volume, destination)
-        
-        
-       
-        
-        p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+             ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+         ## simultanious loop through primer_tubes and PCR_strips           ##
+         ## From wells to columns doesn't work, therefore all PCRstrip      ##
+         ## wells are given.                                                ##
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+         ## air_gap to suck up any liquid that remains in the tip           ##
+        p300.drop_tip()
+     ## Used aspirate/dipense instead of transfer, to allow for more        ##
+     ## customization.  ##
     protocol.pause('Remove F primers and put corresponding'
-                   ' R primers on slot 3.')
-    
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+                    ' R primers on slot 3.')       
+        
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
-                   'put new strips in columns 2, 7 and 11 with caps to '
-                   'the right and put F49 to F95 on slot 3.')
+                    'put new strips in columns 2, 7 and 11 with caps to '
+                    'the right and put F49 to F95 on slot 3.')
     
     # F49 to F95 + corresponding R primers
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
-                   ' R primers on slot 3.')
+                    ' R primers on slot 3.')
     
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
-                   'put new strips in columns 2, 7 and 11 with caps to '
-                   'the right and put F97 to F143 on slot 3.')
+                    'put new strips in columns 2, 7 and 11 with caps to '
+                    'the right and put F97 to F143 on slot 3.')
     
     # F97 to F143 + corresponding R primers
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
-                   ' R primers on slot 3.')
+                    ' R primers on slot 3.')
     
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
-                   'put new strips in columns 2, 7 and 11 with caps to '
-                   'the right and put F145 to F191 on slot 3.')
+                    'put new strips in columns 2, 7 and 11 with caps to '
+                    'the right and put F145 to F191 on slot 3.')
     
     # F145 to F191 + corresponding R primers
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
-                   ' R primers on slot 3.')
+                    ' R primers on slot 3.')
     
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
-                   'put new strips in columns 2, 7 and 11 with caps to '
-                   'the right and put F193 to F239 on slot 3.')
+                    'put new strips in columns 2, 7 and 11 with caps to '
+                    'the right and put F193 to F239 on slot 3.')
     
     # F193 to F239 + corresponding R primers
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
-                   ' R primers on slot 3.')
+                    ' R primers on slot 3.')
     
-    p300.transfer(
-        primer_volume,
-        primer_tubes.wells(),
-        [pcr_strips.columns_by_name()[column_name] for column_name in 
-         ['2', '7', '11']], 
-        new_tip='always',
-        air_gap=1)
+    for primer_tube, pcr_strip_tube in zip(
+            primer_tubes.wells(), 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+              ]]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
-                   'put new strips in column 7 with caps to '
-                   'the right and put F241 to F255 in columns 1+2'
-                   ' + corresponding R primers in columns 5+6 on slot 3.')
+                    'put new strips in column 7 with caps to '
+                    'the right and put F241 to F255 in columns 1+2'
+                    ' + corresponding R primers in columns 5+6 on slot 3.')
     
     # F241 to F255 + corresponding R primers
-     #Forward:
-    p300.transfer(
-        primer_volume,
-        [primer_tubes.columns_by_name()[column_name] for column_name in 
-         ['1', '2']],
-        pcr_strips.columns_by_name()['7'],
-        new_tip='always',
-        air_gap=1)
-     #Reverse:
-    p300.transfer(
-        primer_volume,
-        [primer_tubes.columns_by_name()[column_name] for column_name in 
-         ['5', '6']],
-        pcr_strips.columns_by_name()['7'],
-        new_tip='always',
-        air_gap=1)
-    
+      #Forward:
+    for primer_tube, pcr_strip_tube in zip(
+            [primer_tubes.wells_by_name()[well_name] for well_name in 
+              ['A1', 'B1', 'C1', 'D1','A2', 'B2', 'C2', 'D2']], 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
+      #Reverse:
+    for primer_tube, pcr_strip_tube in zip(
+            [primer_tubes.wells_by_name()[well_name] for well_name in 
+              ['A5', 'B5', 'C5', 'D5','A6', 'B6', 'C6', 'D6']], 
+            [pcr_strips.wells_by_name()[well_name] for well_name in 
+              ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']]):
+        p300.pick_up_tip()
+        p300.aspirate(primer_volume, primer_tube)
+        p300.air_gap(10)
+        p300.dispense(primer_volume + 50, pcr_strip_tube)
+        p300.air_gap()
+        p300.drop_tip()
+
+
     protocol.set_rail_lights(False)
     
 # =============================================================================

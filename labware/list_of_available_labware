@@ -39,9 +39,11 @@ Tube racks & well plates:
         tubes_5mL = protocol.load_labware_from_definition( 
             labware_def_5mL, #variable derived from opening json
             2, 
-            '5mL_tubes') 
+            '5mL_tubes')
+  15 mL tubes + 15 tube rack:
+    name: 
   PCR strips (Westburg) + BioRad 96-wells plate
-    name: pcrstrips_96_wellplate_200ul
+    name: 'pcrstrips_96_wellplate_200ul'
     custum_reference: 'pcr_strips'
     for simulator you need to open using json in the following way:
         with open("labware/pcrstrips_96_wellplate_200ul/"

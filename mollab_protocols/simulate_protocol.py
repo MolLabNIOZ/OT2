@@ -10,4 +10,4 @@ protocol_file = open("mollab_protocols/illu_PCR_mix_primers.py")
 runlog, _bundle = simulate(protocol_file)
 
 # Print runlog
-print(format_runlog(runlog))
+print(format_runlog(runlog)) 

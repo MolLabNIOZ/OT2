@@ -175,7 +175,7 @@ def run(protocol: protocol_api.ProtocolContext):
         'eppendorf_15_tuberack_5000ul',     #labware definition
         6,                                  #deck position
         '5mL_tubes')                        #custom name
-    ##### !!! OPTION 2: SIMULATOR
+    #### !!! OPTION 2: SIMULATOR
     # with open("labware/eppendorf_15_tuberack_5000ul/"
     #           "eppendorf_15_tuberack_5000ul.json") as labware_file: 
     #     labware_def_5mL = json.load(labware_file)
@@ -205,7 +205,7 @@ def run(protocol: protocol_api.ProtocolContext):
     start_vol_m = 2790 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
-    start_vol_w = 1000
+    start_vol_w = 500
       ## The start_vol_m is the volume (ul) of water that is in the source  ##
       ## labware at the start of the protocol.                              ##
     dispension_vol = 45 
@@ -220,7 +220,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol = 5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('E2')
+    p300.starting_tip = tips_200.well('A9')
     p20.starting_tip = tips_20_1.well('H3')
       ## The starting_tip is the location of first pipette tip in the box   ##
     destination_wells_w = (
@@ -287,8 +287,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A1 of 96well_plate_dil on 8' or 
-            well_c == 'A2 of 96well_plate_dil on 8' or 
+        if (well_c == 'A2 of 96well_plate_dil on 8' or 
             well_c == 'A3 of 96well_plate_dil on 8' or
             well_c == 'A4 of 96well_plate_dil on 8' or
             well_c == 'A5 of 96well_plate_dil on 8'):

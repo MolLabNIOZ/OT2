@@ -421,6 +421,27 @@ def run(protocol: protocol_api.ProtocolContext):
       ## dest_sample_tubes_1_mix = the list of wells with mix where the     ##
       ## samples from dest_sample_tubes_1_dil should go                     ##
     
+    sample_tubes_2 = (
+        [sample_tubes_1.wells_by_name()[well_name] for well_name in
+        ['A1', 'B1', 'C1', 'D1',
+         'A2', 'B2', 'C2', 'D2',
+         'A3', 'B3', 'C3', 'D3', 'D3', 'D3'          
+         ]])
+    dest_sample_tubes_2_dil = (
+        [plate_96_dil.wells_by_name()[well_name] for well_name in
+         ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
+          'A5', 'B5', 'C5', 'D5', 'E5', 'F5'
+          ]])
+      ## dest_sample_tubes_2_dil = the list of wells with water where the   ##
+      ## samples from sample_tubes_2 should go                              ##
+    dest_sample_tubes_2_mix = (
+         [plate_96_mix.wells_by_name()[well_name] for well_name in
+         ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
+          'A5', 'B5', 'C5', 'D5', 'E5', 'F5'
+          ]])
+      ## dest_sample_tubes_2_mix = the list of wells with mix where the     ##
+      ## samples from dest_sample_tubes_2_dil should go                     ##
+    
     for sample_tube, dil_well, mix_well in zip(
             sample_tubes_1.wells(), 
             dest_sample_tubes_1_dil,
@@ -460,5 +481,45 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Dispese the mix volume + 3 in the well.                        ##
         p20.drop_tip()
           ## Drop tip in trashbin on 12.                                    ##
-        
+
+    for sample_tube, dil_well, mix_well in zip(
+            sample_tubes_2, 
+            dest_sample_tubes_2_dil,
+            dest_sample_tubes_2_mix,
+            ):
+          ## for the all the wells in sample_tubes_1, specified wells in    ##
+          ## dest_sample_tubes_1 dil and mix, call each separate well       ##
+          ## sample tube (sample_tubes_1), dil_well                         ##
+          ## (dest_sample_tubes_1_dil), mix_well                            ##
+          ## (dest_sample_tubes_1_mix) and do the following:                ##
+        p20.pick_up_tip()
+          ## p20 picks up tip from location of specified starting_tip       ##
+          ## or following                                                   ##
+        p20.aspirate(sample_vol_dil, sample_tube)
+          ## aspirate sample_volume_dil = volume for dilution from sample_tube
+        p20.dispense(sample_vol_dil, dil_well)
+          ## dispense sample_volume_dil = volume for dilution into dil_well
+        mix_vol = sample_vol_dil + 3
+          ## Set volume for mixing up and down.                             ##
+        for i in range (3):
+            p20.aspirate(mix_vol, dil_well)
+            p20.dispense(mix_vol, dil_well)
+              ## Mix 3 times up and down with sample volume +3.             ##
+        p20.aspirate(sample_vol_mix, dil_well)
+          ## aspirate sample_vol_mix = volume for in mastermix from dill_well
+        p20.dispense(sample_vol_mix, mix_well)
+          ## dispense sample_vol_mix = volume for in mastermix into mix_well##
+        mix_vol = sample_vol_mix + 3
+          ## Set volume for mixing up and down.                             ##
+        for i in range (3):
+            p20.aspirate(mix_vol, mix_well)
+            p20.dispense(mix_vol, mix_well)
+              ## Mix 3 times up and down with sample volume +3.             ##
+        sample_dispense = mix_vol + 3
+          ## Set extra dispension volume after mixing to mix volume +3.     ##
+        p20.dispense(sample_dispense, mix_well)
+          ## Dispese the mix volume + 3 in the well.                        ##
+        p20.drop_tip()
+          ## Drop tip in trashbin on 12.                                    ##
+                
 # =============================================================================

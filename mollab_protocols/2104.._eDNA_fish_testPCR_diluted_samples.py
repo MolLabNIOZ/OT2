@@ -185,9 +185,9 @@ def run(protocol: protocol_api.ProtocolContext):
     #     labware_def_5mL,                    #labware definition
     #     6,                                  #deck position
     #     '5mL_tubes')                        #custom name
-    #     #Load the labware using load_labware_from_definition() instead of  ##
-    #     #load_labware(). Then use the variable you just set with the opened##
-    #     #json file to define which labware to use.                         ##
+        #Load the labware using load_labware_from_definition() instead of  ##
+        #load_labware(). Then use the variable you just set with the opened##
+        #json file to define which labware to use.                         ##
     
     
     ##### Loading pipettes
@@ -202,9 +202,12 @@ def run(protocol: protocol_api.ProtocolContext):
     
 # =============================================================================
     ##### !!! Variables to set    
-    start_vol = 2790 
-      ## The start_vol is the volume (ul) that is in the source labware at  ##
-      ## the start of the protocol.                                         ##
+    start_vol_m = 2790 
+      ## The start_vol_m is the volume (ul) of mix that is in the source    ##
+      ## labware at the start of the protocol.                              ##
+    start_vol_w = 1000
+      ## The start_vol_m is the volume (ul) of water that is in the source  ##
+      ## labware at the start of the protocol.                              ##
     dispension_vol = 45 
       ## The dispension_vol is the volume (ul) that needs to be aliquoted   ##
       ## into the destination wells/tubes.                                  ##
@@ -220,25 +223,89 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('E2')
     p20.starting_tip = tips_20_1.well('H3')
       ## The starting_tip is the location of first pipette tip in the box   ##
+    destination_wells_w = (
+        [plate_96_dil.wells_by_name()[well_name] for well_name in
+         ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1',
+          'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+          'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3',
+          'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
+          'A5', 'B5', 'C5'
+          ]])
 # =============================================================================        
 # =============================================================================
     ##### Predifined variables 
-    container = 'tube_5mL'
+    container_m = 'tube_5mL'
+    container_w = 'tube_1.5mL'
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
       ## of the pipette height. It is the source labware from which liquid  ##
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
-    aspiration_vol = dispension_vol + (dispension_vol/100*2)
+    aspiration_vol_m = dispension_vol + (dispension_vol/100*2)
+    aspiration_vol_w = dil_vol_w + (dil_vol_w/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
 # =============================================================================       
 # =============================================================================
     ##### Variables for volume tracking
-    start_height = cal_start_height(container, start_vol)
+    start_height = cal_start_height(container_w, start_vol_w)
       ## Call start height calculation function from volume tracking module.##
     current_height = start_height
       ## Set the current height to start height at the beginning of the     ##
       ## protocol.                                                          ##
+# =============================================================================
+
+# =============================================================================
+    ##### Aliquoting the water
+    p300.pick_up_tip()
+      ## p300 picks up tip from location specified in variable starting_tip ##
+    for well in destination_wells_w:
+      ## Name all the wells in the plate 'well', for all these do:          ##  
+        tv = volume_tracking(
+            container_w, dil_vol_w, current_height)  
+        current_height, delta_height = tv
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol and the current_height which we have set in this##
+          ## protocol. With those variables, the function updates the       ##
+          ## current_height and calculates the delta_height of the liquid   ##
+          ## after the next aspiration step. The outcome is stored as tv and##
+          ## then the specific variables are updated.                       ##
+        pip_height = current_height - 2
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 2 mm below its actual height                ##
+        if current_height - delta_height <= 1: 
+            aspiration_location = sample_tubes_2['D3'].bottom(z=1) #!!!
+            protocol.comment("You've reached the bottom!")
+        else:
+            aspiration_location = sample_tubes_2['D3'].bottom(pip_height) #!!!
+          ## If the level of the liquid in the next run of the loop will be ##
+          ## smaller than 1 we have reached the bottom of the tube. To      ##
+          ## prevent the pipette from crashing into the bottom, we tell it  ##
+          ## to go home and pause the protocol so that this can never happen##
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
+        well_c = str(well) #set location of the well to str (if takes only str)
+        if (well_c == 'A1 of 96well_plate_dil on 8' or 
+            well_c == 'A2 of 96well_plate_dil on 8' or 
+            well_c == 'A3 of 96well_plate_dil on 8' or
+            well_c == 'A4 of 96well_plate_dil on 8' or
+            well_c == 'A5 of 96well_plate_dil on 8'):
+            p300.drop_tip()
+            p300.pick_up_tip()
+          ## Pick up a new tip every two rows.                              ##
+        p300.aspirate(aspiration_vol_w, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the        ##
+          ## location specified in aspiration_location.                      ##
+        p300.dispense(dil_vol_w, well)
+          ## Dispense the amount specified in dispension_vol to the location##
+          ## specified in well (so a new well every time the loop restarts) ##
+        p300.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill       ##
+          ## completely when using a disposal volume by dispensing some     ##
+          ## of the volume after each pipetting step. (blow-out to many     ##
+          ## bubbles)                                                       ##
+    p300.drop_tip()                    
+      ## Drop the final tip in the trash bin.                               ##
 # =============================================================================

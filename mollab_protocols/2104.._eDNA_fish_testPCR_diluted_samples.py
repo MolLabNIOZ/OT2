@@ -236,7 +236,7 @@ def run(protocol: protocol_api.ProtocolContext):
           'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
           'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3',
           'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
-          'A5', 'B5', 'C5'
+          'A5', 'B5', 'C5', 'D5', 'E5', 'F5'
           ]])
     destination_wells_m = (
         [plate_96_mix.wells_by_name()[well_name] for well_name in
@@ -422,11 +422,12 @@ def run(protocol: protocol_api.ProtocolContext):
       ## samples from dest_sample_tubes_1_dil should go                     ##
     
     sample_tubes_2 = (
-        [sample_tubes_1.wells_by_name()[well_name] for well_name in
+        [sample_tubes_2.wells_by_name()[well_name] for well_name in
         ['A1', 'B1', 'C1', 'D1',
          'A2', 'B2', 'C2', 'D2',
          'A3', 'B3', 'C3', 'D3', 'D3', 'D3'          
          ]])
+         ## D3 = dilution water, used as NegContr (3x)                      ##
     dest_sample_tubes_2_dil = (
         [plate_96_dil.wells_by_name()[well_name] for well_name in
          ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
@@ -487,11 +488,11 @@ def run(protocol: protocol_api.ProtocolContext):
             dest_sample_tubes_2_dil,
             dest_sample_tubes_2_mix,
             ):
-          ## for the all the wells in sample_tubes_1, specified wells in    ##
-          ## dest_sample_tubes_1 dil and mix, call each separate well       ##
-          ## sample tube (sample_tubes_1), dil_well                         ##
-          ## (dest_sample_tubes_1_dil), mix_well                            ##
-          ## (dest_sample_tubes_1_mix) and do the following:                ##
+          ## for specified wells in sample_tubes_2, dest_sample_tubes_2 dil ##
+          ## and mix, call each separate well                               ##
+          ## sample tube (sample_tubes_2), dil_well                         ##
+          ## (dest_sample_tubes_2_dil), mix_well                            ##
+          ## (dest_sample_tubes_2_mix) and do the following:                ##
         p20.pick_up_tip()
           ## p20 picks up tip from location of specified starting_tip       ##
           ## or following                                                   ##

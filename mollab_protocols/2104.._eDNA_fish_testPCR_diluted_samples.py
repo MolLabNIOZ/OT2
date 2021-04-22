@@ -176,7 +176,7 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         5,                                                       #deck position
         'sample_tubes_2')                                        #custom name
-    ##### !!! OPTION 1: ROBOT      
+    ##### !!ON 1: ROBOT      
     # tubes_5mL = protocol.load_labware(
     #     'eppendorf_15_tuberack_5000ul',     #labware definition
     #     6,                                  #deck position
@@ -212,7 +212,7 @@ def run(protocol: protocol_api.ProtocolContext):
     start_vol_m = 2790 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
-    start_vol_w = 500
+    start_vol_w = 1000
       ## The start_vol_m is the volume (ul) of water that is in the source  ##
       ## labware at the start of the protocol.                              ##
     dispension_vol_m = 45 
@@ -227,8 +227,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_mix = 5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A9')
-    p20.starting_tip = tips_20_1.well('H3')
+    p300.starting_tip = tips_200.well('A10')
+    p20.starting_tip = tips_20_1.well('F2')
       ## The starting_tip is the location of first pipette tip in the box   ##
     destination_wells_w = (
         [plate_96_dil.wells_by_name()[well_name] for well_name in
@@ -249,6 +249,8 @@ def run(protocol: protocol_api.ProtocolContext):
           'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
           ]]
         )
+      ## set wells for where dilution_water and mastermix should end up in  ##
+      ## the specified plates                                               ##
 # =============================================================================        
 
 
@@ -267,29 +269,21 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##      
 # =============================================================================
-    ##### Variables for volume tracking
-    start_height_w = cal_start_height(container_w, start_vol_w)
-      ## Call start height calculation function from volume tracking module.##
-    current_height_w = start_height_w
-      ## Set the current height to start height at the beginning of the     ##
-      ## protocol.    
-    start_height_m = cal_start_height(container_m, start_vol_m)
-      ## Call start height calculation function from volume tracking module.##
-    current_height_m = start_height_m
-      ## Set the current height to start height at the beginning of the     ##
-      ## protocol.                                                  ##
-# =============================================================================
 
 
 # ===================== ALIQUOTING WATER FOR DILUTIONS ========================
 # =============================================================================
+    start_height = cal_start_height(container_w, start_vol_w)
+      ## Call start height calculation function from volume tracking module.##
+    current_height = start_height
+      ## Set the current height to start height at the beginning of the     ##
+      ## protocol.  
     p300.pick_up_tip()
       ## p300 picks up tip from location specified in variable starting_tip ##
     for well in destination_wells_w:
       ## Name all the wells in the plate 'well', for all these do:          ##  
         container = container_w 
         dispension_vol = dispension_vol_w 
-        current_height = current_height_w 
         aspiration_vol = aspiration_vol_w
           ## Set variables to correct volumes.                              ##
         tv = volume_tracking(
@@ -337,18 +331,25 @@ def run(protocol: protocol_api.ProtocolContext):
           ## bubbles)                                                       ##
     p300.drop_tip()                    
       ## Drop the final tip in the trash bin.                               ##
+    water_height = current_height
+      ## set a variable for current height of the water, to be able to use  ##
+      ## this height later on, for aspirating Negative Controls             ##
 # =============================================================================
 
 
 # ===============================ALIQUOTING MIX================================
 # =============================================================================
+    start_height = cal_start_height(container_m, start_vol_m)
+      ## Call start height calculation function from volume tracking module.##
+    current_height = start_height
+      ## Set the current height to start height at the beginning of the     ##
+      ## protocol.                                                          ##
     p300.pick_up_tip()
       ## p300 picks up tip from location specified in variable starting_tip ##
     for well in destination_wells_m:
       ## Name all the wells in the plate 'well', for all these do:          ##
         container = container_m
         dispension_vol = dispension_vol_m 
-        current_height = current_height_m 
         aspiration_vol = aspiration_vol_m
           ## Set variables to correct volumes.                              ##
         tv = volume_tracking(
@@ -495,7 +496,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## (dest_sample_tubes_2_mix) and do the following:                ##
         p20.pick_up_tip()
           ## p20 picks up tip from location of specified starting_tip       ##
-          ## or following                                                   ##
+          ## or following
+        sample_tube_string = str(sample_tube)                                                   ##
+        if sample_tube_string == 'D3 of sample_tubes_2 on 5':
+            sample_tube = sample_tubes_2[11].bottom(water_height)
         p20.aspirate(sample_vol_dil, sample_tube)
           ## aspirate sample_volume_dil = volume for dilution from sample_tube
         p20.dispense(sample_vol_dil, dil_well)

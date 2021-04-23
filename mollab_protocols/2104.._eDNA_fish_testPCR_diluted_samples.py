@@ -156,41 +156,37 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
         'tips_20_1')                           #custom name
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        7,                                  #deck position
-        'tips_20_2')                           #custom name
     plate_96_dil = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',    #labware definition
-        8,                                  #deck position
+        4,                                  #deck position
         'plate_96_dil')                     #custom name
     plate_96_mix = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',    #labware definition
-        9,                                  #deck position
+        5,                                  #deck position
         'plate_96_mix')                     #custom name
     sample_tubes_1 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        11,                                                      #deck position
+        7,                                                      #deck position
         'sample_tubes_1')                                        #custom name
     sample_tubes_2 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        5,                                                       #deck position
+        1,                                                       #deck position
         'sample_tubes_2')                                        #custom name
     ##### !!ON 1: ROBOT      
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul',     #labware definition
+    tubes_5mL = protocol.load_labware(
+        'eppendorf_15_tuberack_5000ul',     #labware definition
+        2,                                  #deck position
+        'tubes_5mL')                        #custom name
+    #### !!! OPTION 2: SIMULATOR
+    # with open("labware/eppendorf_15_tuberack_5000ul/"
+    #           "eppendorf_15_tuberack_5000ul.json") as labware_file: 
+    #     labware_def_5mL = json.load(labware_file)
+    #   # Import the file that contains all the information about the custom ##
+    #   # labware. Load the file using json, store it in a variable.         ##
+    # tubes_5mL = protocol.load_labware_from_definition(
+    #     labware_def_5mL,                    #labware definition
     #     6,                                  #deck position
     #     'tubes_5mL')                        #custom name
-    #### !!! OPTION 2: SIMULATOR
-    with open("labware/eppendorf_15_tuberack_5000ul/"
-              "eppendorf_15_tuberack_5000ul.json") as labware_file: 
-        labware_def_5mL = json.load(labware_file)
-      # Import the file that contains all the information about the custom ##
-      # labware. Load the file using json, store it in a variable.         ##
-    tubes_5mL = protocol.load_labware_from_definition(
-        labware_def_5mL,                    #labware definition
-        6,                                  #deck position
-        'tubes_5mL')                        #custom name
         #Load the labware using load_labware_from_definition() instead of  ##
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
@@ -203,7 +199,7 @@ def run(protocol: protocol_api.ProtocolContext):
     p20 = protocol.load_instrument(
         'p20_single_gen2',                  #instrument definition
         'left',                             #mount position
-        tip_racks=[tips_20_1, tips_20_2])   #assigned tiprack
+        tip_racks=[tips_20_1])   #assigned tiprack
 # =============================================================================
 
 
@@ -227,8 +223,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_mix = 5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A10')
-    p20.starting_tip = tips_20_1.well('F2')
+    p300.starting_tip = tips_200.well('D11')
+    p20.starting_tip = tips_20_1.well('B3')
       ## The starting_tip is the location of first pipette tip in the box   ##
     destination_wells_w = (
         [plate_96_dil.wells_by_name()[well_name] for well_name in
@@ -331,7 +327,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## bubbles)                                                       ##
     p300.drop_tip()                    
       ## Drop the final tip in the trash bin.                               ##
-    water_height = current_height
+    water_height = current_height - 2
       ## set a variable for current height of the water, to be able to use  ##
       ## this height later on, for aspirating Negative Controls             ##
 # =============================================================================

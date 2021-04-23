@@ -84,7 +84,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # =============================================================================
 #     ##### !!! Variables to set       
-    p300.starting_tip = tips_200_1.well('D2')     
+    p300.starting_tip = tips_200_1.well('E4')     
     primer_volume = 30
 # =============================================================================
 
@@ -94,9 +94,9 @@ def run(protocol: protocol_api.ProtocolContext):
     
     protocol.set_rail_lights(True)
     
-    protocol.pause('Put F primers F1 to F47 in, and'
+    protocol.pause('Put F primers F1 to F47 in slot 6, and'
                     '3 empty PCR strips in columns 2, 7, and 11 with the caps '
-                    'to the right.')
+                    'to the right in slot 3.')
     
     # F1 to F47 + corresponding R primers
     for primer_tube, pcr_strip_tube in zip(

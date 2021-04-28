@@ -30,9 +30,13 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Loading labware
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul',  #labware definition
-        10,                                 #deck position
+        'opentrons_96_tiprack_300ul',  #labware definition
+        10,                                  #deck position
         '200tips')                           #custom name
+    tips_20 = protocol.load_labware(
+        'opentrons_96_tiprack_20ul',  #labware definition
+        11,                                 #deck position
+        '20tips')                           #custom name
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',
         1,
@@ -44,18 +48,25 @@ def run(protocol: protocol_api.ProtocolContext):
     pcr_strips = protocol.load_labware(
         'pcrstrips_96_wellplate_200ul',     #labware definition
         3,                                  #deck position
-        'pcr_strips')                        #custom name
+        'pcr_strips')                       #custom name
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',                  #instrument definition
         'right',                             #mount position
         tip_racks=[tips_200])                #assigned tiprack
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',                  #instrument definition
+        'left',                             #mount position
+        tip_racks=[tips_20])                #assigned tiprack
+    
 # =============================================================================
     
     protocol.set_rail_lights(True)
     p300.starting_tip = tips_200.well('A1')
+    p20.starting_tip = tips_20.well('A1')
     p300.pick_up_tip()
+    p20.pick_up_tip()
     
 # =============================================================================
 # test PCR plate
@@ -63,12 +74,21 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.aspirate(10, plate_96['A1'])
     p300.dispense(10, plate_96['A1'])
     p300.blow_out(plate_96['A1'])
+    p20.aspirate(10, plate_96['A1'])
+    p20.dispense(10, plate_96['A1'])
+    p20.blow_out(plate_96['A1'])
     p300.aspirate(10, plate_96['A7'])
     p300.dispense(10, plate_96['A7'])
     p300.blow_out(plate_96['A7'])
+    p20.aspirate(10, plate_96['A7'])
+    p20.dispense(10, plate_96['A7'])
+    p20.blow_out(plate_96['A7'])
     p300.aspirate(10, plate_96['A11'])
     p300.dispense(10, plate_96['A11'])
-    p300.blow_out(plate_96['A11']) 
+    p300.blow_out(plate_96['A11'])
+    p20.aspirate(10, plate_96['A11'])
+    p20.dispense(10, plate_96['A11'])
+    p20.blow_out(plate_96['A11']) 
 
     protocol.pause('was this ok?')    
     
@@ -98,6 +118,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
       
     p300.return_tip()
+    p20.return_tip()
     protocol.set_rail_lights(False)
     
     

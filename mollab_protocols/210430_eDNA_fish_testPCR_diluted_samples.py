@@ -172,12 +172,12 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         1,                                                       #deck position
         'sample_tubes_2')                                        #custom name
-    ##### !!ON 1: ROBOT      
+    ##### !!!OPTION 1: ROBOT      
     tubes_5mL = protocol.load_labware(
         'eppendorf_15_tuberack_5000ul',     #labware definition
         2,                                  #deck position
         'tubes_5mL')                        #custom name
-    #### !!! OPTION 2: SIMULATOR
+    #####    !!! OPTION 2: SIMULATOR
     # with open("labware/eppendorf_15_tuberack_5000ul/"
     #           "eppendorf_15_tuberack_5000ul.json") as labware_file: 
     #     labware_def_5mL = json.load(labware_file)
@@ -223,8 +223,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_mix = 5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('D11')
-    p20.starting_tip = tips_20_1.well('B3')
+    p300.starting_tip = tips_200.well('B1')
+    p20.starting_tip = tips_20_1.well('H1')
       ## The starting_tip is the location of first pipette tip in the box   ##
     destination_wells_w = (
         [plate_96_dil.wells_by_name()[well_name] for well_name in
@@ -266,6 +266,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## container.                                                         ##      
 # =============================================================================
 
+    protocol.pause('Open lids of dilution plate on 4, sample tubes 2 on 1'
+                    ' and tips 200 on 3.')
 
 # ===================== ALIQUOTING WATER FOR DILUTIONS ========================
 # =============================================================================
@@ -307,10 +309,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A2 of plate_96_dil on 8' or 
-            well_c == 'A3 of plate_96_dil on 8' or
-            well_c == 'A4 of plate_96_dil on 8' or
-            well_c == 'A5 of plate_96_dil on 8'):
+        if (well_c == 'A2 of plate_96_dil on 4' or 
+            well_c == 'A3 of plate_96_dil on 4' or
+            well_c == 'A4 of plate_96_dil on 4' or
+            well_c == 'A5 of plate_96_dil on 4'):
             p300.drop_tip()
             p300.pick_up_tip()
           ## Pick up a new tip every two rows.                              ##
@@ -332,6 +334,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## this height later on, for aspirating Negative Controls             ##
 # =============================================================================
 
+    protocol.pause('Close lids of dilution plate on 4, sample tubes 2 on 1'
+                   ' and open lids of mix plate on 5 and 5 ml tubes on 2.')
 
 # ===============================ALIQUOTING MIX================================
 # =============================================================================
@@ -361,10 +365,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Make sure that the pipette tip is always submerged by setting  ##
           ## the current height 2 mm below its actual height                ##
         if current_height - delta_height <= 1: 
-            aspiration_location = tubes_5mL['B5'].bottom(z=1) #!!!
+            aspiration_location = tubes_5mL['C3'].bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = tubes_5mL['B5'].bottom(pip_height) #!!!
+            aspiration_location = tubes_5mL['C3'].bottom(pip_height) #!!!
           ## If the level of the liquid in the next run of the loop will be ##
           ## smaller than 1 we have reached the bottom of the tube. To      ##
           ## prevent the pipette from crashing into the bottom, we tell it  ##
@@ -373,12 +377,12 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A2 of plate_96_mix on 9' or 
-            well_c == 'A3 of plate_96_mix on 9' or
-            well_c == 'A4 of plate_96_mix on 9' or
-            well_c == 'A5 of plate_96_mix on 9' or
-            well_c == 'A6 of plate_96_mix on 9' or
-            well_c == 'A7 of plate_96_mix on 9'):
+        if (well_c == 'A2 of plate_96_mix on 5' or 
+            well_c == 'A3 of plate_96_mix on 5' or
+            well_c == 'A4 of plate_96_mix on 5' or
+            well_c == 'A5 of plate_96_mix on 5' or
+            well_c == 'A6 of plate_96_mix on 5' or
+            well_c == 'A7 of plate_96_mix on 5'):
             p300.drop_tip()
             p300.pick_up_tip()
           ## Pick up a new tip every two rows.                              ##
@@ -397,6 +401,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## Drop the final tip in the trash bin.                               ##
 # =============================================================================
 
+    protocol.pause('Close lids of tips 200 on 3 and open all other labware.')
 
 # =====================DILUTING AND DISTRIBUTING SAMPLES=======================
 # =============================================================================
@@ -494,7 +499,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## p20 picks up tip from location of specified starting_tip       ##
           ## or following
         sample_tube_string = str(sample_tube)                                                   ##
-        if sample_tube_string == 'D3 of sample_tubes_2 on 5':
+        if sample_tube_string == 'D3 of sample_tubes_2 on 1':
             sample_tube = sample_tubes_2[11].bottom(water_height)
         p20.aspirate(sample_vol_dil, sample_tube)
           ## aspirate sample_volume_dil = volume for dilution from sample_tube

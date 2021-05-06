@@ -150,6 +150,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
+
         3,                                  #deck position
         'tips_200')                          #custom name
     tips_20_1 = protocol.load_labware(

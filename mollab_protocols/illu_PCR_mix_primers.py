@@ -6,17 +6,19 @@
 #   and then add barcoded primers to them.
 # =============================================================================
 
-##### Import statements
+# ==========================IMPORT STATEMENTS==================================
+# =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-
+  
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-
-
 # =============================================================================
-# Volume Tracking Module
+
+
+# =====================VOLUME TRACKING FUNCTIONS===============================
+# =============================================================================
 ## Because we could not manage to get the robot working with separate       ##
 ## modules and we do want to try-out the protocol, in this version the      ##
 ## module is integrated into the main protocol.                             ##
@@ -25,7 +27,6 @@ import json
 import math
   ## Import math module to allow using π in calculations                    ##
 
-##### Define function
 def cal_start_height(container, start_vol):
     """Module to calculate the liquid height in a tube at the start"""
     ##### Defining container dimensions
@@ -128,7 +129,8 @@ def volume_tracking(container, dispension_vol, current_height):
     return current_height, delta_height
 # =============================================================================
 
-##### Metadata
+# ================================METADATA=====================================
+# =============================================================================
 metadata = {
     'protocolName': 'illu_PCR_mix_primers',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
@@ -144,9 +146,11 @@ def run(protocol: protocol_api.ProtocolContext):
     Adding primers from PCR strips (with 10 uM primer F&R primer mix)
     to PCR strips (with mastermix).
     """
-      
 # =============================================================================
-    ##### Loading labware
+
+
+# ======================LOADING LABWARE AND PIPETTES===========================
+# =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
@@ -209,8 +213,9 @@ def run(protocol: protocol_api.ProtocolContext):
         tip_racks=[tips_20_1])     #assigned tiprack
 # =============================================================================
 
+
+# ==========================VARIABLES TO SET#!!!===============================
 # =============================================================================
-    ##### !!! Variables to set    
     start_vol = 1800 
       ## The start_vol is the volume (ul) that is in the source labware at  ##
       ## the start of the protocol.                                         ##
@@ -223,9 +228,11 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('A1')
     p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
-# =============================================================================  
 # =============================================================================
-    ##### Predifined variables 
+
+  
+# ==========================PREDIFINED VARIABLES===============================
+# =============================================================================
     container = 'tube_2mL'
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
@@ -248,8 +255,7 @@ def run(protocol: protocol_api.ProtocolContext):
           'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
           'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
           ]]
-        )
-# =============================================================================       
+        )      
 # =============================================================================
     ##### Variables for volume tracking
     start_height = cal_start_height(container, start_vol)
@@ -259,11 +265,13 @@ def run(protocol: protocol_api.ProtocolContext):
       ## protocol.                                                          ##
 # =============================================================================
 
+
+# ===============================ALIQUOTING MIX================================
 # =============================================================================
-    ##### Aliquoting the mix
     p300.pick_up_tip()
       ## p300 picks up tip from location specified in variable starting_tip ##
-    for well in destination_wells_1 + destination_wells_2:
+   ##### mix_strips_1: 
+    for well in destination_wells_1:
       ## Name all the wells in the plate 'well', for all these do:          ##  
         tv = volume_tracking(
             container, dispension_vol, current_height)  
@@ -290,11 +298,9 @@ def run(protocol: protocol_api.ProtocolContext):
           ## in the loop, the location will change to the newly calculated  ##
           ## height after each pipetting step.                              ##
         well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A3 of 96well_plate on 9' or 
-            well_c == 'A5 of 96well_plate on 9' or 
-            well_c == 'A7 of 96well_plate on 9' or
-            well_c == 'A9 of 96well_plate on 9' or
-            well_c == 'A11 of 96well_plate on 9'):
+        if (well_c == 'A7 of mix_strips_1 on 8' or 
+            well_c == 'A11 of mix_strips_1 on 8'
+            ):
             p300.drop_tip()
             p300.pick_up_tip()
           ## Pick up a new tip every two rows.                              ##
@@ -309,6 +315,54 @@ def run(protocol: protocol_api.ProtocolContext):
           ## completely when using a disposal volume by dispensing some     ##
           ## of the volume after each pipetting step. (blow-out to many     ##
           ## bubbles)                                                       ##
+   ##### mix_strips_2: 
+    start_height = current_height
+      ## Set start_height to current_height so that you continue at the     ##
+      ## liquid level where we ended after mix_strips_1.                    ##
+    for well in destination_wells_2:
+      ## Name all the wells in the plate 'well', for all these do:          ##  
+        tv = volume_tracking(
+            container, dispension_vol, current_height)  
+        current_height, delta_height = tv
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol and the current_height which we have set in this##
+          ## protocol. With those variables, the function updates the       ##
+          ## current_height and calculates the delta_height of the liquid   ##
+          ## after the next aspiration step. The outcome is stored as tv and##
+          ## then the specific variables are updated.                       ##
+        pip_height = current_height - 2
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 2 mm below its actual height                ##
+        if current_height - delta_height <= 1: 
+            aspiration_location = tubes_2mL['A1'].bottom(z=1) #!!!
+            protocol.comment("You've reached the bottom!")
+        else:
+            aspiration_location = tubes_2mL['A1'].bottom(pip_height) #!!!
+          ## If the level of the liquid in the next run of the loop will be ##
+          ## smaller than 1 we have reached the bottom of the tube. To      ##
+          ## prevent the pipette from crashing into the bottom, we tell it  ##
+          ## to go home and pause the protocol so that this can never happen##
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
+        well_c = str(well) #set location of the well to str (if takes only str)
+        if (well_c == 'A7 of mix_strips_2 on 9' or 
+            well_c == 'A11 of mix_strips_2 on 9'
+            ):
+            p300.drop_tip()
+            p300.pick_up_tip()
+          ## Pick up a new tip every two rows.                              ##
+        p300.aspirate(aspiration_vol, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the        ##
+          ## location specified in aspiration_location.                      ##
+        p300.dispense(dispension_vol, well)
+          ## Dispense the amount specified in dispension_vol to the location##
+          ## specified in well (so a new well every time the loop restarts) ##
+        p300.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill       ##
+          ## completely when using a disposal volume by dispensing some     ##
+          ## of the volume after each pipetting step. (blow-out to many     ##
+          ## bubbles) 
     p300.drop_tip()                    
       ## Drop the final tip in the trash bin.                               ##
 # =============================================================================

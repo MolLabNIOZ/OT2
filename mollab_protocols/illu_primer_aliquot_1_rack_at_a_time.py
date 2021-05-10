@@ -84,7 +84,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # =============================================================================
 #     ##### !!! Variables to set       
-    p300.starting_tip = tips_200_1.well('E4')     
+    p300.starting_tip = tips_200_1.well('A1')     
     primer_volume = 30
 # =============================================================================
 

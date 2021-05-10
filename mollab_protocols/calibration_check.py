@@ -30,11 +30,11 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Loading labware
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200 = protocol.load_labware(
-        'opentrons_96_tiprack_300ul',  #labware definition
+        'opentrons_96_filtertiprack_200ul',  #labware definition
         10,                                  #deck position
         '200tips')                           #custom name
     tips_20 = protocol.load_labware(
-        'opentrons_96_tiprack_20ul',  #labware definition
+        'opentrons_96_filtertiprack_20ul',  #labware definition
         11,                                 #deck position
         '20tips')                           #custom name
     plate_96 = protocol.load_labware(
@@ -95,26 +95,39 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 # test 1.5mL tubes
 # =============================================================================
-    # p300.aspirate(10, sample_tubes['D1'])
-    # p300.dispense(10, sample_tubes['D1'])
-    # p300.blow_out(sample_tubes['D1'])
+    p300.aspirate(10, sample_tubes['A1'])
+    p300.dispense(10, sample_tubes['A1'])
+    p300.blow_out(sample_tubes['A1'])
+    p20.aspirate(10, sample_tubes['A1'])
+    p20.dispense(10, sample_tubes['A1'])
+    p20.blow_out(sample_tubes['A1'])
     
-    # protocol.pause('was this ok?')
+
+    protocol.pause('was this ok?')    
     
 # =============================================================================
 # test PCR tube strips
 # =============================================================================
-    # p300.aspirate(10, pcr_strips['A1'])
-    # p300.dispense(10, pcr_strips['A1'])
-    # p300.blow_out(pcr_strips['A1'])
-    # p300.aspirate(10, pcr_strips['A7'])
-    # p300.dispense(10, pcr_strips['A7'])
-    # p300.blow_out(pcr_strips['A7'])
-    # p300.aspirate(10, pcr_strips['A11'])
-    # p300.dispense(10, pcr_strips['A11'])
-    # p300.blow_out(pcr_strips['A11'])
+    p300.aspirate(10, pcr_strips['A1'])
+    p300.dispense(10, pcr_strips['A1'])
+    p300.blow_out(pcr_strips['A1'])
+    p20.aspirate(10, pcr_strips['A1'])
+    p20.dispense(10, pcr_strips['A1'])
+    p20.blow_out(pcr_strips['A1'])
+    p300.aspirate(10, pcr_strips['A7'])
+    p300.dispense(10, pcr_strips['A7'])
+    p300.blow_out(pcr_strips['A7'])
+    p20.aspirate(10, pcr_strips['A7'])
+    p20.dispense(10, pcr_strips['A7'])
+    p20.blow_out(pcr_strips['A7'])
+    p300.aspirate(10, pcr_strips['A11'])
+    p300.dispense(10, pcr_strips['A11'])
+    p300.blow_out(pcr_strips['A11'])
+    p20.aspirate(10, pcr_strips['A11'])
+    p20.dispense(10, pcr_strips['A11'])
+    p20.blow_out(pcr_strips['A11']) 
 
-    # protocol.pause('was this ok?')
+    protocol.pause('was this ok?') 
 
       
     p300.return_tip()

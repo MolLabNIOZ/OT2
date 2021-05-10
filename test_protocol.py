@@ -6,7 +6,7 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext): 
 	tiprack = protocol.load_labware('opentrons_96_filtertiprack_200ul', '1')
-	plate =protocol.load_labware('opentrons_24_tuberack_nest_1.5ml_snapcap', '2')
+	plate =protocol.load_labware('biorad_96_wellplate_200ul_pcr', '2')
     
  
 	p300 = protocol.load_instrument('p300_single_gen2', 'right', tip_racks=[tiprack])

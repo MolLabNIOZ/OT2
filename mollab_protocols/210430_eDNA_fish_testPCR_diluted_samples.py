@@ -192,7 +192,6 @@ def run(protocol: protocol_api.ProtocolContext):
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
     
-    ##### Loading pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',                 #instrument definition
         'right',                            #mount position

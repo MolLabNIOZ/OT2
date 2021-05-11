@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("test_protocol.py")
+protocol_file = open("mollab_protocols/illu_primer_12S_6_aliquots.py")
 
 # Simulate protocol
 runlog, _bundle = simulate(protocol_file)

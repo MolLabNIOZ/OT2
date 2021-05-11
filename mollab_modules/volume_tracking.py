@@ -17,14 +17,27 @@ def cal_start_height(container, start_vol):
     """Module to calculate the liquid height in a tube at the start"""
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
+    if container == 'tube_1.5mL':
+        diameter_top = 8.7          #diameter of the top of the tube in mm
+        diameter_tip = 3.6          #diameter of the tip of the tube in mm
+        height_conical_tip = 17.8   #tube - straight part
+    elif container == 'tube_2mL':
+        diameter_top = 9.85         #diameter of the top of the tube in mm
+        diameter_tip = 2.4          #diameter of the tip of the tube in mm
+        height_conical_tip = 6.8    #tube - straight part
+    elif container == 'tube_5mL':
         diameter_top = 13.3         #diameter of the top of the tube in mm
         diameter_tip = 3.3          #diameter of the tip of the tube in mm
         height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter_top = 8.7       #diameter of the top of the tube in mm
-        diameter_tip = 3.6   #diameter of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
+    elif container == 'tube_15mL':
+        diameter_top = 15.16        #diameter of the top of the tube in mm
+        diameter_tip = 2.16         #diameter of the tip of the tube in mm
+        height_conical_tip = 22.1   #tube - straight part
+    elif container == 'tube_50mL':
+        diameter_top = 27.48        #diameter of the top of the tube in mm
+        diameter_tip = 4.7          #diameter of the tip of the tube in mm
+        height_conical_tip = 15.3   #tube - straight part
+        
     
     radius_top = diameter_top / 2         #radius of the top of the tube in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
@@ -78,12 +91,16 @@ def volume_tracking(container, dispension_vol, current_height):
 
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
+    if container == 'tube_1.5mL':
+        diameter = 8.7          #diameter of the top of the tube in mm
+    elif container == 'tube_2mL':
+        diameter = 9.85         #diameter of the top of the tube in mm
+    elif container == 'tube_5mL':
         diameter = 13.3         #diameter of the top of the tube in mm
-        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
-        diameter = 8.7       #diameter of the top of the tube in mm
-        height_conical_tip = 37.8 - 20 #tube - straight part
+    elif container == 'tube_15mL':
+        diameter = 15.16        #diameter of the top of the tube in mm
+    elif container == 'tube_50mL':
+        diameter = 27.48        #diameter of the top of the tube in mm
     
     ## volume of a cylinder is calculated as follows:                       ##
     ## v = π*r²*h  -->  h = v/(π*r²)                                        ##

@@ -63,18 +63,18 @@ def run(protocol: protocol_api.ProtocolContext):
         3,                                                       #deck position
         'primer_tubes')                                        #custom name
     ##### !!! OPTION 1: ROBOT      
-    # pcr_strips = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     6,                                  #deck position
-    #     'pcr_strips')                        #custom name
+    pcr_strips = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',     #labware definition
+        6,                                  #deck position
+        'pcr_strips')                        #custom name
     ##### !!! OPTION 2: SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    pcr_strips = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            6, 
-            'pcr_strips') 
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    # pcr_strips = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         6, 
+    #         'pcr_strips') 
      ##   Load the labware using load_labware_from_definition() instead of  ##
      ##   load_labware(). Then use the variable you just set with the opened##
      ##   json file to define which labware to use.                         ##
@@ -88,8 +88,11 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ===========================VARIABLES TO SET#!!!==============================
 # =============================================================================      
-    p300.starting_tip = tips_200_1.well('A1')     
+    p300.starting_tip = tips_200_1.well('A2')     
     primer_volume = 30
+    asp_height = z=8
+     ## asp_height = mm from the bottom from where to aspirate.             ##
+     ## depending on the volume in the tube, for larger volumes.            ##
 # =============================================================================
 
 
@@ -105,24 +108,24 @@ def run(protocol: protocol_api.ProtocolContext):
     for primer_tube, pcr_strip_tube in zip(
             primer_tubes.wells(), 
             [pcr_strips.wells_by_name()[well_name] for well_name in 
-             ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+              ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-         ## simultanious loop through primer_tubes and PCR_strips           ##
-         ## From wells to columns doesn't work, therefore all PCRstrip      ##
-         ## wells are given.                                                ##
+          ## simultanious loop through primer_tubes and PCR_strips           ##
+          ## From wells to columns doesn't work, therefore all PCRstrip      ##
+          ## wells are given.                                                ##
         p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
+        p300.aspirate(primer_volume, primer_tube.bottom(asp_height))
         p300.air_gap(10)
         p300.dispense(primer_volume + 50, pcr_strip_tube)
         p300.air_gap()
-         ## air_gap to suck up any liquid that remains in the tip           ##
+          ## air_gap to suck up any liquid that remains in the tip           ##
         p300.drop_tip()
-     ## Used aspirate/dipense instead of transfer, to allow for more        ##
-     ## customization.  ##
+      ## Used aspirate/dipense instead of transfer, to allow for more        ##
+      ## customization.  ##
     protocol.pause('Remove F primers and put corresponding'
-                    ' R primers on slot 3.')       
+                   ' R primers on slot 3.')       
         
     for primer_tube, pcr_strip_tube in zip(
             primer_tubes.wells(), 
@@ -132,7 +135,7 @@ def run(protocol: protocol_api.ProtocolContext):
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
         p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
+        p300.aspirate(primer_volume, primer_tube.bottom(asp_height))
         p300.air_gap(10)
         p300.dispense(primer_volume + 50, pcr_strip_tube)
         p300.air_gap()
@@ -150,7 +153,7 @@ def run(protocol: protocol_api.ProtocolContext):
               'A11', 'B11'
               ]]):
         p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
+        p300.aspirate(primer_volume, primer_tube.bottom(asp_height))
         p300.air_gap(10)
         p300.dispense(primer_volume + 50, pcr_strip_tube)
         p300.air_gap()
@@ -166,7 +169,7 @@ def run(protocol: protocol_api.ProtocolContext):
               'A11', 'B11'
               ]]):
         p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
+        p300.aspirate(primer_volume, primer_tube.bottom(asp_height))
         p300.air_gap(10)
         p300.dispense(primer_volume + 50, pcr_strip_tube)
         p300.air_gap()

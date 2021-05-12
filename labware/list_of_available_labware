@@ -29,6 +29,9 @@ Tube racks & well plates:
   1.5 mL tubes + tube 24 rack:
     name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
     custom reference: '1.5mL_tubes'
+  2 mL tubes + tube 24 rack:
+    name:
+    custom reference: 
   5 mL tubes + 15 tube rack:
     name: 'eppendorf_15_tuberack_5000ul'
     custom reference: '5mL_tubes'
@@ -52,7 +55,12 @@ Tube racks & well plates:
         pcr_strips = protocol.load_labware_from_definition( 
             labware_def_pcrstrips, #variable derived from opening json
             2, 
-            'pcr_strips') 
+            'pcr_strips')
+
+  15mL and 50mL tubes in same rack:
+    name: 'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical'
+    custom reference: '15mL_50mL_tubes'
+
     
 
 

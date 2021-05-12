@@ -44,7 +44,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ## For available labware see "labware/list_of_available_labware".       ##
     tips_200_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
-        10,                                  #deck position
+        10,                                 #deck position
         '200tips')                          #custom name
     tips_200_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
@@ -61,7 +61,7 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_tubes = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         3,                                                       #deck position
-        'primer_tubes')                                        #custom name
+        'primer_tubes')                                          #custom name
     ##### !!! OPTION 1: ROBOT      
     pcr_strips = protocol.load_labware(
         'pcrstrips_96_wellplate_200ul',     #labware definition

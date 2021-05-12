@@ -22,8 +22,8 @@ metadata = {
 ##### Define function
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Pick-up tip, followed by aspiration and dispension in a 1.5mL tube. 
-    Then drop-tip.
+    Pick up tip, followed by aspiration and dispension in a 1.5mL tube. 
+    Then drop tip.
     """
       
 # =============================================================================

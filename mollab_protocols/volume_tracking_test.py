@@ -161,6 +161,8 @@ def run(protocol: protocol_api.ProtocolContext):
 ##### Initializing
     protocol.set_rail_lights(True)
     p300.starting_tip = tips_200.well('E12')
+    p300.flow_rate.aspirate = 300
+    p300.flow_rate.dispense = 300
       
 # =============================================================================
 # Check volume tracking in 15mL tube

@@ -55,18 +55,18 @@ def run(protocol: protocol_api.ProtocolContext):
         'p300_single_gen2',                  #instrument definition
         'right',                             #mount position
         tip_racks=[tips_200])                #assigned tiprack
-    # p20 = protocol.load_instrument(
-    #     'p20_single_gen2',                  #instrument definition
-    #     'left',                             #mount position
-    #     tip_racks=[tips_20])                #assigned tiprack
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',                  #instrument definition
+        'left',                             #mount position
+        tip_racks=[tips_20])                #assigned tiprack
     
 # =============================================================================
     
     protocol.set_rail_lights(True)
     p300.starting_tip = tips_200.well('A1')
-    # p20.starting_tip = tips_20.well('A1')
+    p20.starting_tip = tips_20.well('A1')
     p300.pick_up_tip()
-    # p20.pick_up_tip()
+    p20.pick_up_tip()
     
 # =============================================================================
 # test PCR plate
@@ -74,21 +74,21 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.aspirate(10, plate_96['A1'])
     p300.dispense(10, plate_96['A1'])
     p300.blow_out(plate_96['A1'])
-    # p20.aspirate(10, plate_96['A1'])
-    # p20.dispense(10, plate_96['A1'])
-    # p20.blow_out(plate_96['A1'])
+    p20.aspirate(10, plate_96['A1'])
+    p20.dispense(10, plate_96['A1'])
+    p20.blow_out(plate_96['A1'])
     p300.aspirate(10, plate_96['A7'])
     p300.dispense(10, plate_96['A7'])
     p300.blow_out(plate_96['A7'])
-    # p20.aspirate(10, plate_96['A7'])
-    # p20.dispense(10, plate_96['A7'])
-    # p20.blow_out(plate_96['A7'])
+    p20.aspirate(10, plate_96['A7'])
+    p20.dispense(10, plate_96['A7'])
+    p20.blow_out(plate_96['A7'])
     p300.aspirate(10, plate_96['A11'])
     p300.dispense(10, plate_96['A11'])
     p300.blow_out(plate_96['A11'])
-    # p20.aspirate(10, plate_96['A11'])
-    # p20.dispense(10, plate_96['A11'])
-    # p20.blow_out(plate_96['A11']) 
+    p20.aspirate(10, plate_96['A11'])
+    p20.dispense(10, plate_96['A11'])
+    p20.blow_out(plate_96['A11']) 
 
     protocol.pause('was this ok?')    
     
@@ -98,9 +98,9 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.aspirate(10, sample_tubes['A1'])
     p300.dispense(10, sample_tubes['A1'])
     p300.blow_out(sample_tubes['A1'])
-    # p20.aspirate(10, sample_tubes['A1'])
-    # p20.dispense(10, sample_tubes['A1'])
-    # p20.blow_out(sample_tubes['A1'])
+    p20.aspirate(10, sample_tubes['A1'])
+    p20.dispense(10, sample_tubes['A1'])
+    p20.blow_out(sample_tubes['A1'])
     
 
     protocol.pause('was this ok?')    
@@ -111,27 +111,27 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.aspirate(10, pcr_strips['A1'])
     p300.dispense(10, pcr_strips['A1'])
     p300.blow_out(pcr_strips['A1'])
-    # p20.aspirate(10, pcr_strips['A1'])
-    # p20.dispense(10, pcr_strips['A1'])
-    # p20.blow_out(pcr_strips['A1'])
+    p20.aspirate(10, pcr_strips['A1'])
+    p20.dispense(10, pcr_strips['A1'])
+    p20.blow_out(pcr_strips['A1'])
     p300.aspirate(10, pcr_strips['A7'])
     p300.dispense(10, pcr_strips['A7'])
     p300.blow_out(pcr_strips['A7'])
-    # p20.aspirate(10, pcr_strips['A7'])
-    # p20.dispense(10, pcr_strips['A7'])
-    # p20.blow_out(pcr_strips['A7'])
+    p20.aspirate(10, pcr_strips['A7'])
+    p20.dispense(10, pcr_strips['A7'])
+    p20.blow_out(pcr_strips['A7'])
     p300.aspirate(10, pcr_strips['A11'])
     p300.dispense(10, pcr_strips['A11'])
     p300.blow_out(pcr_strips['A11'])
-    # p20.aspirate(10, pcr_strips['A11'])
-    # p20.dispense(10, pcr_strips['A11'])
-    # p20.blow_out(pcr_strips['A11']) 
+    p20.aspirate(10, pcr_strips['A11'])
+    p20.dispense(10, pcr_strips['A11'])
+    p20.blow_out(pcr_strips['A11']) 
 
     protocol.pause('was this ok?') 
 
       
     p300.return_tip()
-    # p20.return_tip()
+    p20.return_tip()
     protocol.set_rail_lights(False)
     
     

@@ -87,9 +87,11 @@ def volume_tracking(container, dispension_vol, current_height):
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
     if container == 'tube_15mL':
-        diameter = 15.16        #diameter of the top of the tube in mm
+        diameter = 15.16            #diameter of the top of the tube in mm
         height_conical_tip = 22.1   #tube - straight part
-        offset_height = height_conical_tip + 18
+        offset_height = height_conical_tip + 18 
+        ## offset_height = height from where to start using                 ##
+        ## current_height - 1 so that the pipette tip stays submerged.      ##
     elif container == 'tube_50mL':
         diameter = 27.48        #diameter of the top of the tube in mm
     

@@ -1,7 +1,7 @@
 # =============================================================================
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210312
-# Version: 2 (210409)
+# Version: 3 (210517)
 # Description: Module for volume tracking in different liquid containers
 #   Treats the entire tube as a cylindrical shape. Works good for
 #   volume tracking in 5mL Eppendorf with 25 ul reactions to a full
@@ -53,6 +53,12 @@ def cal_start_height(container, start_vol):
             (cylinder_vol /             # + height cylindrical part
             (math.pi*((radius_top)**2)))
             )
+    ## Initially start higher in a 15mL tube. Due to the shape of the tube, ##
+    ## volume tracking doesn't work perfect when assuming that the entire   ##
+    ## tube is cylindrical. This is partly solved by adding 7 mm to the     ##
+    ## start_height.                                                        ##
+    if container == 'tube_15mL':
+        start_height = start_height + 7
     
     return start_height
 
@@ -99,6 +105,10 @@ def volume_tracking(container, dispension_vol, current_height):
         diameter = 13.3         #diameter of the top of the tube in mm
     elif container == 'tube_15mL':
         diameter = 15.16        #diameter of the top of the tube in mm
+        height_conical_tip = 22.1   #tube - straight part
+        offset_height = height_conical_tip + 18 
+        ## offset_height = height from where to start using                 ##
+        ## current_height - 1 so that the pipette tip stays submerged.      ##
     elif container == 'tube_50mL':
         diameter = 27.48        #diameter of the top of the tube in mm
     
@@ -115,5 +125,14 @@ def volume_tracking(container, dispension_vol, current_height):
     ## The current_height (after aspiration) must be updated before the     ##
     ## actual aspiration, because during aspiration the liquid will reach   ## 
     ## that level.                                                          ##
+    if container == 'tube_15mL' and current_height < offset_height:
+        current_height = current_height - 1
+    ## Volume tracking when assuming the entire tube is cylindrical doesn't ##
+    ## work very well with a 15 mL tube. Therefore, we need to adjust some  ##
+    ## values so that we do the volume tracking as good as possible.        ##
+    ## start_height is already adjusted so that we start a little heigher,  ##
+    ## however at the offset_height the pipette didn't reach the liquid     ##
+    ## anymore. So we lower the current_height with 1 so that the pipette   ##
+    ## tip is always submerged and the entire tube is emptied.              ##
     
     return current_height, delta_height

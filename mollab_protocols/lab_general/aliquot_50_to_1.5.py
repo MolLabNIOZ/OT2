@@ -157,8 +157,9 @@ metadata = {
 # =============================================================================
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Pick up 200µL filter tip. Aspirate 200µL from 2mL tube, 15mL tube and
-    50mL tube and transfer 5x to 1.5mL tube (1mL aliquots)
+    Pick up 200µL filter tip. Aspirate 200µL from 50mL tube and transfer
+    5x to 1x 1.5mL tube (1mL aliquots) - repeat for 24x 1.5mL tubes.
+    Drop tip, pick up new tip and repeat.
     """      
 # =============================================================================
 
@@ -253,7 +254,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
 
-# ===============================PROTOCOL 50mL=================================
+# ==================================PROTOCOL===================================
 # =============================================================================
 
 # 1 x 50mL tube================================================================

@@ -23,15 +23,19 @@ Pipette tips:
     custom reference: '20tipsNON'
 
 Tube racks & well plates:
+  
   BioRad 96-wells qPCR plate
     name: 'biorad_96_wellplate_200ul_pcr'
     custom reference: '96well_plate'
+  
   1.5 mL tubes + tube 24 rack:
     name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
     custom reference: '1.5mL_tubes'
+  
   2 mL tubes + tube 24 rack:
     name:
     custom reference: 
+  
   5 mL tubes + 15 tube rack:
     name: 'eppendorf_15_tuberack_5000ul'
     custom reference: '5mL_tubes'
@@ -43,8 +47,15 @@ Tube racks & well plates:
             labware_def_5mL, #variable derived from opening json
             2, 
             '5mL_tubes')
+  
   15 mL tubes + 15 tube rack:
-    name: 
+    name: 'opentrons_15_tuberack_falcon_15ml_conical'
+    custom reference: '15mL_tubes'
+  
+  50 mL tubes + 50 tube rack:
+    name: 'opentrons_6_tuberack_falcon_50ml_conical'
+    custom refrence: '50mL_tubes'
+    
   PCR strips (Westburg) + BioRad 96-wells plate
     name: 'pcrstrips_96_wellplate_200ul'
     custum_reference: 'pcr_strips'

@@ -237,129 +237,129 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
 
-# # Check volume tracking in 50mL tube===========================================
-# # ==========================VARIABLES TO SET 50mL#!!!==========================
-# # =============================================================================
-#     start_vol = 50000 
-#       ## The start_vol is the volume (ul) that is in the source labware at  ##
-#       ## the start of the protocol.                                         ##
-#     source_well = stock_tubes['B3']
-#       ## Where do you place the 50mL tube
-# # =============================================================================
+# Check volume tracking in 50mL tube===========================================
+# ==========================VARIABLES TO SET 50mL#!!!==========================
+# =============================================================================
+    start_vol = 50000 
+      ## The start_vol is the volume (ul) that is in the source labware at  ##
+      ## the start of the protocol.                                         ##
+    source_well = stock_tubes['B3']
+      ## Where do you place the 50mL tube
+# =============================================================================
 
   
-# # ==========================PREDIFINED VARIABLES 50mL==========================
-# # =============================================================================
-#     container = 'tube_50mL'
-#       ## The container variable is needed for the volume tracking module.   ##
-#       ## It tells the module which dimensions to use for the calculations   ##
-#       ## of the pipette height. It is the source labware from which liquid  ##
-#       ## is aliquoted.                                                      ##
-# # =============================================================================
-#     ##### Variables for volume tracking
-#     start_height = cal_start_height(container, start_vol)
-#       ## Call start height calculation function from volume tracking module.##
-#     current_height = start_height
-#       ## Set the current height to start height at the beginning of the     ##
-#       ## protocol.                                                          ##
-# # =============================================================================
+# ==========================PREDIFINED VARIABLES 50mL==========================
+# =============================================================================
+    container = 'tube_50mL'
+      ## The container variable is needed for the volume tracking module.   ##
+      ## It tells the module which dimensions to use for the calculations   ##
+      ## of the pipette height. It is the source labware from which liquid  ##
+      ## is aliquoted.                                                      ##
+# =============================================================================
+    ##### Variables for volume tracking
+    start_height = cal_start_height(container, start_vol)
+      ## Call start height calculation function from volume tracking module.##
+    current_height = start_height
+      ## Set the current height to start height at the beginning of the     ##
+      ## protocol.                                                          ##
+# =============================================================================
 
 
-# # ===============================PROTOCOL 50mL=================================
-# # =============================================================================
-#     p300.pick_up_tip()
-#     for well in aliquot_tubes_2.wells():
-#         for i in range(5): 
-#           ## Pipette 5 x 200µL for 1mL aliquots
-#             current_height, delta_height = volume_tracking(
-#                 container, 200, current_height)
-#           ## The volume_tracking function needs the arguments container,    ##
-#           ## dispension_vol and the current_height which we have set in this##
-#           ## protocol. With those variables, the function updates the       ##
-#           ## current_height and calculates the delta_height of the liquid   ##
-#           ## after the next aspiration step. The outcome is stored as tv and##
-#           ## then the specific variables are updated.                       ##
-#             pip_height = current_height - 2
-#           ## Make sure that the pipette tip is always submerged by setting  ##
-#           ## the current height 2 mm below its actual height                ##
-#             if current_height - delta_height <= 1:
-#                 protocol.pause("the 50mL tube is empty!")
-#             else:
-#                 aspiration_location = source_well.bottom(pip_height)
-#           ## Set the location of where to aspirate from. Because we put this##
-#           ## in the loop, the location will change to the newly calculated  ##
-#           ## height after each pipetting step.                              ##
-#           ## If the level of the liquid in the next run of the loop will be ##
-#           ## smaller than 1 we have reached the bottom of the tube.         ##
-#                 p300.aspirate(200, aspiration_location)
-#           ## Aspirate 200µL from the set aspiration location                ##
-#                 p300.dispense(200, well.top(z=-2))
-#           ## Dispense 200µL in the destination well     
-#     p300.drop_tip()
+# ===============================PROTOCOL 50mL=================================
+# =============================================================================
+    p300.pick_up_tip()
+    for well in aliquot_tubes_2.wells():
+        for i in range(5): 
+          ## Pipette 5 x 200µL for 1mL aliquots
+            current_height, delta_height = volume_tracking(
+                container, 200, current_height)
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol and the current_height which we have set in this##
+          ## protocol. With those variables, the function updates the       ##
+          ## current_height and calculates the delta_height of the liquid   ##
+          ## after the next aspiration step. The outcome is stored as tv and##
+          ## then the specific variables are updated.                       ##
+            pip_height = current_height - 2
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 2 mm below its actual height                ##
+            if current_height - delta_height <= 1:
+                protocol.pause("the 50mL tube is empty!")
+            else:
+                aspiration_location = source_well.bottom(pip_height)
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
+          ## If the level of the liquid in the next run of the loop will be ##
+          ## smaller than 1 we have reached the bottom of the tube.         ##
+                p300.aspirate(200, aspiration_location)
+          ## Aspirate 200µL from the set aspiration location                ##
+                p300.dispense(200, well.top(z=-2))
+          ## Dispense 200µL in the destination well     
+    p300.drop_tip()
    
-#     start_height = current_height
+    start_height = current_height
    
-#     p300.pick_up_tip()
-#     for well in aliquot_tubes_3.wells():
-#         for i in range(5): 
-#           ## Pipette 5 x 200µL for 1mL aliquots
-#             current_height, delta_height = volume_tracking(
-#                 container, 200, current_height)
-#           ## The volume_tracking function needs the arguments container,    ##
-#           ## dispension_vol and the current_height which we have set in this##
-#           ## protocol. With those variables, the function updates the       ##
-#           ## current_height and calculates the delta_height of the liquid   ##
-#           ## after the next aspiration step. The outcome is stored as tv and##
-#           ## then the specific variables are updated.                       ##
-#             pip_height = current_height - 2
-#           ## Make sure that the pipette tip is always submerged by setting  ##
-#           ## the current height 2 mm below its actual height                ##
-#             if current_height - delta_height <= 1:
-#                 protocol.pause("the 50mL tube is empty!")
-#             else:
-#                 aspiration_location = source_well.bottom(pip_height)
-#           ## Set the location of where to aspirate from. Because we put this##
-#           ## in the loop, the location will change to the newly calculated  ##
-#           ## height after each pipetting step.                              ##
-#           ## If the level of the liquid in the next run of the loop will be ##
-#           ## smaller than 1 we have reached the bottom of the tube.         ##
-#                 p300.aspirate(200, aspiration_location)
-#           ## Aspirate 200µL from the set aspiration location                ##
-#                 p300.dispense(200, well.top(z=-2))
-#           ## Dispense 200µL in the destination well         
-#     p300.drop_tip()
+    p300.pick_up_tip()
+    for well in aliquot_tubes_3.wells():
+        for i in range(5): 
+          ## Pipette 5 x 200µL for 1mL aliquots
+            current_height, delta_height = volume_tracking(
+                container, 200, current_height)
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol and the current_height which we have set in this##
+          ## protocol. With those variables, the function updates the       ##
+          ## current_height and calculates the delta_height of the liquid   ##
+          ## after the next aspiration step. The outcome is stored as tv and##
+          ## then the specific variables are updated.                       ##
+            pip_height = current_height - 2
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 2 mm below its actual height                ##
+            if current_height - delta_height <= 1:
+                protocol.pause("the 50mL tube is empty!")
+            else:
+                aspiration_location = source_well.bottom(pip_height)
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
+          ## If the level of the liquid in the next run of the loop will be ##
+          ## smaller than 1 we have reached the bottom of the tube.         ##
+                p300.aspirate(200, aspiration_location)
+          ## Aspirate 200µL from the set aspiration location                ##
+                p300.dispense(200, well.top(z=-2))
+          ## Dispense 200µL in the destination well         
+    p300.drop_tip()
    
-#     start_height = current_height
+    start_height = current_height
    
-#     p300.pick_up_tip()
-#     for well in aliquot_tubes_4.wells():
-#         for i in range(5): 
-#           ## Pipette 5 x 200µL for 1mL aliquots
-#             current_height, delta_height = volume_tracking(
-#                 container, 200, current_height)
-#           ## The volume_tracking function needs the arguments container,    ##
-#           ## dispension_vol and the current_height which we have set in this##
-#           ## protocol. With those variables, the function updates the       ##
-#           ## current_height and calculates the delta_height of the liquid   ##
-#           ## after the next aspiration step. The outcome is stored as tv and##
-#           ## then the specific variables are updated.                       ##
-#             pip_height = current_height - 2
-#           ## Make sure that the pipette tip is always submerged by setting  ##
-#           ## the current height 2 mm below its actual height                ##
-#             if current_height - delta_height <= 1:
-#                 protocol.pause("the 50mL tube is empty!")
-#             else:
-#                 aspiration_location = source_well.bottom(pip_height)
-#           ## Set the location of where to aspirate from. Because we put this##
-#           ## in the loop, the location will change to the newly calculated  ##
-#           ## height after each pipetting step.                              ##
-#           ## If the level of the liquid in the next run of the loop will be ##
-#           ## smaller than 1 we have reached the bottom of the tube.         ##
-#                 p300.aspirate(200, aspiration_location)
-#           ## Aspirate 200µL from the set aspiration location                ##
-#                 p300.dispense(200, well.top(z=-2))
-#           ## Dispense 200µL in the destination well         
-#     p300.drop_tip()
+    p300.pick_up_tip()
+    for well in aliquot_tubes_4.wells():
+        for i in range(5): 
+          ## Pipette 5 x 200µL for 1mL aliquots
+            current_height, delta_height = volume_tracking(
+                container, 200, current_height)
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol and the current_height which we have set in this##
+          ## protocol. With those variables, the function updates the       ##
+          ## current_height and calculates the delta_height of the liquid   ##
+          ## after the next aspiration step. The outcome is stored as tv and##
+          ## then the specific variables are updated.                       ##
+            pip_height = current_height - 2
+          ## Make sure that the pipette tip is always submerged by setting  ##
+          ## the current height 2 mm below its actual height                ##
+            if current_height - delta_height <= 1:
+                protocol.pause("the 50mL tube is empty!")
+            else:
+                aspiration_location = source_well.bottom(pip_height)
+          ## Set the location of where to aspirate from. Because we put this##
+          ## in the loop, the location will change to the newly calculated  ##
+          ## height after each pipetting step.                              ##
+          ## If the level of the liquid in the next run of the loop will be ##
+          ## smaller than 1 we have reached the bottom of the tube.         ##
+                p300.aspirate(200, aspiration_location)
+          ## Aspirate 200µL from the set aspiration location                ##
+                p300.dispense(200, well.top(z=-2))
+          ## Dispense 200µL in the destination well         
+    p300.drop_tip()
     
-#     protocol.set_rail_lights(False)   
-# # =============================================================================
+    protocol.set_rail_lights(False)   
+# =============================================================================

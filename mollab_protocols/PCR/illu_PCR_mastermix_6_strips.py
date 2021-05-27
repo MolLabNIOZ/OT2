@@ -1,4 +1,3 @@
-
 # =============================================================================
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210419
@@ -31,23 +30,32 @@ def cal_start_height(container, start_vol):
     """Module to calculate the liquid height in a tube at the start"""
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
-        diameter_top = 13.3         #diameter of the top of the tube in mm
-        diameter_tip = 3.3          #diameter of the tip of the tube in mm
-        height_conical_tip = 55.4 - 34.12 - 2.2 #tube - straight part - rim
-    elif container == 'tube_1.5mL':
+    if container == 'tube_1.5mL':
         diameter_top = 8.7          #diameter of the top of the tube in mm
         diameter_tip = 3.6          #diameter of the tip of the tube in mm
-        height_conical_tip = 37.8 - 20          #tube - straight part
-    elif container == 'tube_15mL':
-        diameter_top =  13.35       #diameter of the top of the tube in mm
-        diameter_tip = 2.16         #diameter of the tip of the tube in mm
-        height_conical_tip = 22.1   #height conical part
+        height_conical_tip = 17.8   #tube - straight part
     elif container == 'tube_2mL':
-        diameter_top = 8.8         #diameter of the tipstart in mm
-        diameter_tip = 2.4         #diameter of the tip of the tube in mm
-        height_conical_tip = 6.8    #height conical part
+        diameter_top = 9.85         #diameter of the top of the tube in mm
+        diameter_tip = 2.4          #diameter of the tip of the tube in mm
+        height_conical_tip = 6.8    #tube - straight part
+    elif container == 'tube_5mL':
+        diameter_top = 13           #diameter of the top of the tube in mm
+        diameter_tip = 3.3          #diameter of the tip of the tube in mm
+        height_conical_tip = 66.1 - 43.6 - 1.3 #tube - straight part - bottom wall
+    elif container == 'tube_5mL_snap':
+        diameter_top = 13.3         #diameter of the top of the tube in mm
+        diameter_tip = 3.3          #diameter of the tip of the tube in mm
+        height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
+    elif container == 'tube_15mL':
+        diameter_top = 15.16        #diameter of the top of the tube in mm
+        diameter_tip = 2.16         #diameter of the tip of the tube in mm
+        height_conical_tip = 22.1   #tube - straight part
+    elif container == 'tube_50mL':
+        diameter_top = 27.48        #diameter of the top of the tube in mm
+        diameter_tip = 4.7          #diameter of the tip of the tube in mm
+        height_conical_tip = 15.3   #tube - straight part
         
+    
     radius_top = diameter_top / 2         #radius of the top of the tube in mm
     radius_tip = diameter_tip / 2         #radius of the tip of the tube in mm
     vol_conical_tip = ((1/3) * math.pi * height_conical_tip *
@@ -58,13 +66,18 @@ def cal_start_height(container, start_vol):
     ##### Calculating start height
     cylinder_vol = start_vol - vol_conical_tip    # vol in straight part
     start_height = (
-            height_conical_tip +         
-            (cylinder_vol / (math.pi*((radius_top)**2)))
+            height_conical_tip +        # current_height = height conical part 
+            (cylinder_vol /             # + height cylindrical part
+            (math.pi*((radius_top)**2)))
             )
-    # current_height = height conical part + height cylindrical part
+    ## Initially start higher in a 15mL tube. Due to the shape of the tube, ##
+    ## volume tracking doesn't work perfect when assuming that the entire   ##
+    ## tube is cylindrical. This is partly solved by adding 7 mm to the     ##
+    ## start_height.                                                        ##
+    if container == 'tube_15mL':
+        start_height = start_height + 7
     
     return start_height
-    
 
 def volume_tracking(container, dispension_vol, current_height):
     """
@@ -84,10 +97,12 @@ def volume_tracking(container, dispension_vol, current_height):
     
     Input for this function is:
         container = type of container. Several options are available:
-            'tube_5mL'
             'tube_1.5mL'
-            'tube_15mL'
             'tube_2mL'
+            'tube_5mL'
+            'tube_5mL_snap'
+            'tube_15mL'
+            'tube_50mL'
         current_vol = current volume during the run. At the start of the
         protocol this should be set at the start_vol of the protocol.
         aspiration_vol = the volume that will be aspirated in the tracked steps
@@ -103,15 +118,23 @@ def volume_tracking(container, dispension_vol, current_height):
 
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
-    if container == 'tube_5mL':
-        diameter = 13.3         #diameter of the top of the tube in mm
-    elif container == 'tube_1.5mL':
-        diameter = 8.7       #diameter of the top of the tube in mm
-    elif container == 'tube_15mL':
-        diameter = 13.35       #diameter of the tipstart in mm
+    if container == 'tube_1.5mL':
+        diameter = 8.7          #diameter of the top of the tube in mm
     elif container == 'tube_2mL':
-        diameter = 8.8         #diameter of the tipstart in mm
-        
+        diameter = 9.85         #diameter of the top of the tube in mm
+    elif container == 'tube_5mL':
+        diameter = 13           #diameter of the top of the tube in mm
+    elif container == 'tube_5mL_snap':
+        diameter = 13.3         #diameter of the top of the tube in mm
+    elif container == 'tube_15mL':
+        diameter = 15.16        #diameter of the top of the tube in mm
+        height_conical_tip = 22.1   #tube - straight part
+        offset_height = height_conical_tip + 18 
+        ## offset_height = height from where to start using                 ##
+        ## current_height - 1 so that the pipette tip stays submerged.      ##
+    elif container == 'tube_50mL':
+        diameter = 27.48        #diameter of the top of the tube in mm
+    
     ## volume of a cylinder is calculated as follows:                       ##
     ## v = π*r²*h  -->  h = v/(π*r²)                                        ##
     
@@ -125,9 +148,19 @@ def volume_tracking(container, dispension_vol, current_height):
     ## The current_height (after aspiration) must be updated before the     ##
     ## actual aspiration, because during aspiration the liquid will reach   ## 
     ## that level.                                                          ##
+    if container == 'tube_15mL' and current_height < offset_height:
+        current_height = current_height - 1
+    ## Volume tracking when assuming the entire tube is cylindrical doesn't ##
+    ## work very well with a 15 mL tube. Therefore, we need to adjust some  ##
+    ## values so that we do the volume tracking as good as possible.        ##
+    ## start_height is already adjusted so that we start a little heigher,  ##
+    ## however at the offset_height the pipette didn't reach the liquid     ##
+    ## anymore. So we lower the current_height with 1 so that the pipette   ##
+    ## tip is always submerged and the entire tube is emptied.              ##
     
     return current_height, delta_height
 # =============================================================================
+
 
 # ================================METADATA=====================================
 # =============================================================================
@@ -200,7 +233,7 @@ def run(protocol: protocol_api.ProtocolContext):
     mix_strips_2 = protocol.load_labware_from_definition( 
         labware_def_pcrstrips, #variable derived from opening json
         9,                     #deck position
-        'mix_strips_1')        #custom name                  
+        'mix_strips_2')        #custom name                  
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -243,19 +276,18 @@ def run(protocol: protocol_api.ProtocolContext):
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
-    destination_wells_1 = (
-        [mix_strips_1.wells_by_name()[well_name] for well_name in 
-         ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
-          'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
-          'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
-          ]])
-    destination_wells_2 = (
-        [mix_strips_2.wells_by_name()[well_name] for well_name in 
-         ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
-          'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
-          'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
-          ]]
-        )      
+    source_wells = (
+        [primer_strips_1.columns_by_name()[column_name] for column_name in
+         ['2', '7', '11']] + 
+        [primer_strips_2.columns_by_name()[column_name] for column_name in
+         ['2', '7', '11']]
+        )
+    destination_wells = (
+        [mix_strips_1.columns_by_name()[column_name] for column_name in
+         ['2', '7', '11']] + 
+        [mix_strips_2.columns_by_name()[column_name] for column_name in
+         ['2', '7', '11']]
+        )
 # =============================================================================
     ##### Variables for volume tracking
     start_height = cal_start_height(container, start_vol)
@@ -268,101 +300,65 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ===============================ALIQUOTING MIX================================
 # =============================================================================
-    p300.pick_up_tip()
-      ## p300 picks up tip from location specified in variable starting_tip ##
-   ##### mix_strips_1: 
-    for well in destination_wells_1:
-      ## Name all the wells in the plate 'well', for all these do:          ##  
-        tv = volume_tracking(
-            container, dispension_vol, current_height)  
-        current_height, delta_height = tv
-          ## The volume_tracking function needs the arguments container,    ##
-          ## dispension_vol and the current_height which we have set in this##
-          ## protocol. With those variables, the function updates the       ##
-          ## current_height and calculates the delta_height of the liquid   ##
-          ## after the next aspiration step. The outcome is stored as tv and##
-          ## then the specific variables are updated.                       ##
-        pip_height = current_height - 2
-          ## Make sure that the pipette tip is always submerged by setting  ##
-          ## the current height 2 mm below its actual height                ##
-        if current_height - delta_height <= 1: 
-            aspiration_location = tubes_2mL['A1'].bottom(z=1) #!!!
-            protocol.comment("You've reached the bottom!")
-        else:
-            aspiration_location = tubes_2mL['A1'].bottom(pip_height) #!!!
-          ## If the level of the liquid in the next run of the loop will be ##
-          ## smaller than 1 we have reached the bottom of the tube. To      ##
-          ## prevent the pipette from crashing into the bottom, we tell it  ##
-          ## to go home and pause the protocol so that this can never happen##
-          ## Set the location of where to aspirate from. Because we put this##
-          ## in the loop, the location will change to the newly calculated  ##
-          ## height after each pipetting step.                              ##
-        well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A7 of mix_strips_1 on 8' or 
-            well_c == 'A11 of mix_strips_1 on 8'
-            ):
-            p300.drop_tip()
-            p300.pick_up_tip()
-          ## Pick up a new tip every two rows.                              ##
-        p300.aspirate(aspiration_vol, aspiration_location)
-          ## Aspirate the amount specified in aspiration_vol from the        ##
-          ## location specified in aspiration_location.                      ##
-        p300.dispense(dispension_vol, well)
-          ## Dispense the amount specified in dispension_vol to the location##
-          ## specified in well (so a new well every time the loop restarts) ##
-        p300.dispense(10, aspiration_location)
-          ## Alternative for blow-out, make sure the tip doesn't fill       ##
-          ## completely when using a disposal volume by dispensing some     ##
-          ## of the volume after each pipetting step. (blow-out to many     ##
-          ## bubbles)                                                       ##
-   ##### mix_strips_2: 
-    start_height = current_height
-      ## Set start_height to current_height so that you continue at the     ##
-      ## liquid level where we ended after mix_strips_1.                    ##
-    for well in destination_wells_2:
-      ## Name all the wells in the plate 'well', for all these do:          ##  
-        tv = volume_tracking(
-            container, dispension_vol, current_height)  
-        current_height, delta_height = tv
-          ## The volume_tracking function needs the arguments container,    ##
-          ## dispension_vol and the current_height which we have set in this##
-          ## protocol. With those variables, the function updates the       ##
-          ## current_height and calculates the delta_height of the liquid   ##
-          ## after the next aspiration step. The outcome is stored as tv and##
-          ## then the specific variables are updated.                       ##
-        pip_height = current_height - 2
-          ## Make sure that the pipette tip is always submerged by setting  ##
-          ## the current height 2 mm below its actual height                ##
-        if current_height - delta_height <= 1: 
-            aspiration_location = tubes_2mL['A1'].bottom(z=1) #!!!
-            protocol.comment("You've reached the bottom!")
-        else:
-            aspiration_location = tubes_2mL['A1'].bottom(pip_height) #!!!
-          ## If the level of the liquid in the next run of the loop will be ##
-          ## smaller than 1 we have reached the bottom of the tube. To      ##
-          ## prevent the pipette from crashing into the bottom, we tell it  ##
-          ## to go home and pause the protocol so that this can never happen##
-          ## Set the location of where to aspirate from. Because we put this##
-          ## in the loop, the location will change to the newly calculated  ##
-          ## height after each pipetting step.                              ##
-        well_c = str(well) #set location of the well to str (if takes only str)
-        if (well_c == 'A7 of mix_strips_2 on 9' or 
-            well_c == 'A11 of mix_strips_2 on 9'
-            ):
-            p300.drop_tip()
-            p300.pick_up_tip()
-          ## Pick up a new tip every two rows.                              ##
-        p300.aspirate(aspiration_vol, aspiration_location)
-          ## Aspirate the amount specified in aspiration_vol from the        ##
-          ## location specified in aspiration_location.                      ##
-        p300.dispense(dispension_vol, well)
-          ## Dispense the amount specified in dispension_vol to the location##
-          ## specified in well (so a new well every time the loop restarts) ##
-        p300.dispense(10, aspiration_location)
-          ## Alternative for blow-out, make sure the tip doesn't fill       ##
-          ## completely when using a disposal volume by dispensing some     ##
-          ## of the volume after each pipetting step. (blow-out to many     ##
-          ## bubbles) 
-    p300.drop_tip()                    
-      ## Drop the final tip in the trash bin.                               ##
+    ## For each column in destination_wells, pick up a tip, than for each   ##
+    ## well in these columns pipette mix, and after the+ column drop the tip##
+    ## Repeat untill all columns in the list are done.                      ##
+    for column in destination_wells:
+        p300.pick_up_tip()
+        for well in column:
+          ## Name all the wells in the plate 'well', for all these do:      ##  
+            tv = volume_tracking(
+                container, dispension_vol, current_height)  
+            current_height, delta_height = tv
+              ## The volume_tracking function needs the arguments container ##
+              ## dispension_vol and the current_height which we have set in ##
+              ## this protocol. With those variables, the function updates  ##
+              ## the current_height and calculates the delta_height of the  ## 
+              ## liquid after the next aspiration step. The outcome is      ##
+              ## stored as tv and then the specific variables are updated.  ##
+            pip_height = current_height - 2
+              ## Make sure that the pipette tip is always submerged by      ##
+              ## setting the current height 2 mm below its actual height    ##
+            if current_height - delta_height <= 1: 
+                aspiration_location = tubes_2mL['A1'].bottom(z=1) #!!!
+                protocol.comment("You've reached the bottom!")
+            else:
+                aspiration_location = tubes_2mL['A1'].bottom(pip_height) #!!!
+              ## If the level of the liquid in the next run of the loop will## 
+              ## be smaller than 1 we have reached the bottom of the tube.  ##
+              ## To prevent the pipette from crashing into the bottom, we   ##
+              ## tell it to go home and pause the protocol so that this can ##
+              ## never happen. Set the location of where to aspirate from.  ##
+              ## Because we put this in the loop, the location will change  ##
+              ## to the newly calculated height after each pipetting step.  ##
+            p300.aspirate(aspiration_vol, aspiration_location)
+              ## Aspirate the amount specified in aspiration_vol from the   ##
+              ## location specified in aspiration_location.                 ##
+            p300.dispense(dispension_vol, well)
+              ## Dispense the amount specified in dispension_vol to the     ##
+              ## location specified in well (so a new well every time the   ##
+              ## loop restarts)                                             ##
+            p300.dispense(10, aspiration_location)
+              ## Alternative for blow-out, make sure the tip doesn't fill   ##
+              ## completely when using a disposal volume by dispensing some ##
+              ## of the volume after each pipetting step. (blow-out to many ##
+              ## bubbles)                                                   ##
+        p300.drop_tip()      
+# =============================================================================
+
+
+# ===============================ADDING PRIMERS================================
+# =============================================================================
+    for primer_column, mix_column in zip(source_wells, destination_wells):
+        for primer_tube, mix_tube in zip(primer_column, mix_column):
+            p20.pick_up_tip()
+            p20.aspirate(primer_vol, primer_tube)
+            p20.dispense(primer_vol, mix_tube)
+            primer_mix_vol = primer_vol + 3
+            for i in range(3):
+                p20.aspirate(primer_mix_vol, mix_tube)
+                p20.dispense(primer_mix_vol, mix_tube)
+            primer_dispense_vol = primer_mix_vol + 3
+            p20.dispense(primer_dispense_vol, mix_tube)
+            p20.drop_tip()
 # =============================================================================

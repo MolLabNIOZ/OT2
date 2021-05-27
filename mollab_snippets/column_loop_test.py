@@ -33,8 +33,15 @@ def run(protocol: protocol_api.ProtocolContext):
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',                         #labware def
         3,                                                       #deck position
-        'plate_96')                                          #custom name
-
+        'plate_96')                                              #custom name
+    plate_96_1 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',                         #labware def
+        4,                                                       #deck position
+        'plate_96_1')                                            #custom name
+    plate_96_2 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',                         #labware def
+        5,                                                       #deck position
+        'plate_96_2')                                            #custom name
 
     p300 = protocol.load_instrument(
         'p300_single_gen2',                 #instrument definition
@@ -70,7 +77,7 @@ def run(protocol: protocol_api.ProtocolContext):
         
     # columns = (
     #     [plate_96.columns_by_name()[column_name] for column_name in
-    #      ['2', '4', '6']])
+    #       ['2', '4', '6']])
     # for column in columns:
     #     for well in column:         
     #         p300.aspirate(100, source_well)
@@ -106,14 +113,30 @@ def run(protocol: protocol_api.ProtocolContext):
 # Flatten List of Lists Using sum
 # This works
 # =============================================================================
-    columns = (
-        [plate_96.columns_by_name()[column_name] for column_name in
-          ['2', '4', '6']])
-    wells = sum(columns, [])
-    for well in wells:
-        p300.aspirate(100, source_well)
-        p300.dispense(100, well)
+    # columns = (
+    #     [plate_96.columns_by_name()[column_name] for column_name in
+    #       ['2', '4', '6']])
+    # wells = sum(columns, [])
+    # for well in wells:
+    #     p300.aspirate(100, source_well)
+    #     p300.dispense(100, well)
         
-
+# =============================================================================
+# Flatten List of Lists Using Nested for Loops
+# 2 destination plates!!!!
+# This works!!! :D:D:D:D
+# =============================================================================
+        
+    columns = (
+        [plate_96_1.columns_by_name()[column_name] for column_name in
+          ['2', '4', '6']] +
+        [plate_96_2.columns_by_name()[column_name] for column_name in
+          ['2', '4', '6']]
+        )
+    
+    for column in columns:
+        for well in column:         
+            p300.aspirate(100, source_well)
+            p300.dispense(100, well)
 
                 

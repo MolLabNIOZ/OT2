@@ -26,6 +26,10 @@ def cal_start_height(container, start_vol):
         diameter_tip = 2.4          #diameter of the tip of the tube in mm
         height_conical_tip = 6.8    #tube - straight part
     elif container == 'tube_5mL':
+        diameter_top = 13           #diameter of the top of the tube in mm
+        diameter_tip = 3.3          #diameter of the tip of the tube in mm
+        height_conical_tip = 66.1 - 43.6 - 1.3 #tube - straight part - bottom wall
+    elif container == 'tube_5mL_snap':
         diameter_top = 13.3         #diameter of the top of the tube in mm
         diameter_tip = 3.3          #diameter of the tip of the tube in mm
         height_conical_tip = 55.4 - 2.2 - 34.12 #tube - straight part - rim
@@ -80,8 +84,12 @@ def volume_tracking(container, dispension_vol, current_height):
     
     Input for this function is:
         container = type of container. Several options are available:
-            'tube_5mL'
             'tube_1.5mL'
+            'tube_2mL'
+            'tube_5mL'
+            'tube_5mL_snap'
+            'tube_15mL'
+            'tube_50mL'
         current_vol = current volume during the run. At the start of the
         protocol this should be set at the start_vol of the protocol.
         aspiration_vol = the volume that will be aspirated in the tracked steps
@@ -102,6 +110,8 @@ def volume_tracking(container, dispension_vol, current_height):
     elif container == 'tube_2mL':
         diameter = 9.85         #diameter of the top of the tube in mm
     elif container == 'tube_5mL':
+        diameter = 13           #diameter of the top of the tube in mm
+    elif container == 'tube_5mL_snap':
         diameter = 13.3         #diameter of the top of the tube in mm
     elif container == 'tube_15mL':
         diameter = 15.16        #diameter of the top of the tube in mm

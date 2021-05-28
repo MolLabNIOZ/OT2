@@ -283,7 +283,7 @@ def run(protocol: protocol_api.ProtocolContext):
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
-    primers =[]
+    primers = []
       ## Create an empty list to append wells to for the primer wells.      ##
     primer_columns = (
         [primer_strips_1.columns_by_name()[column_name] for column_name in

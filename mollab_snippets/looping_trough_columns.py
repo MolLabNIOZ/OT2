@@ -127,16 +127,48 @@ def run(protocol: protocol_api.ProtocolContext):
 # This works!!! :D:D:D:D
 # =============================================================================
         
+    # columns = (
+    #     [plate_96_1.columns_by_name()[column_name] for column_name in
+    #       ['2', '4', '6']] +
+    #     [plate_96_2.columns_by_name()[column_name] for column_name in
+    #       ['2', '4', '6']]
+    #     )
+    
+    # for column in columns:
+    #     for well in column:         
+    #         p300.aspirate(100, source_well)
+    #         p300.dispense(100, well)
+
+
+# =============================================================================
+# Making a list with separate wells without placing it within the main loop,
+# so that you can also loop trough 2 lists simultaniously AND so that you can
+# add separate wells as well as columns to the list.
+# =============================================================================
+    destination = []
+      ## Create an empty list to append wells to.                           ##
     columns = (
         [plate_96_1.columns_by_name()[column_name] for column_name in
-          ['2', '4', '6']] +
+         ['2', '7', '11']] + 
         [plate_96_2.columns_by_name()[column_name] for column_name in
-          ['2', '4', '6']]
+         ['2', '7']] 
         )
-    
+      ## Make a list of columns, this is a list of lists!                   ##
     for column in columns:
-        for well in column:         
-            p300.aspirate(100, source_well)
-            p300.dispense(100, well)
-
-                
+        for well in column:
+            destination.append(well)
+      ## Separate the columns into wells and append them to the empty list  ##                                                       ##
+    wells = (
+        [plate_96_2.wells_by_name()[well_name] for well_name in
+         ['A11', 'B11']]
+        ) 
+      ## Make a list of separate wells.                                     ## 
+    for well in wells:
+        destination.append(well)
+      ## Append the wells to the list of primer wells.                      ##
+     
+        
+    for well in destination:
+        p300.aspirate(100, source_well)
+        p300.dispense(100, well)
+        

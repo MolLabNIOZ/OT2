@@ -36,9 +36,21 @@ Tube racks & well plates:
     name:
     custom reference: 
   
-  5 mL tubes + 15 tube rack:
+  5 mL tubes screw_cap
+      name: 'eppendorfscrewcap_15_tuberack_5000ul'
+      custom reference: '5mL_tubes'
+      or simulator you need to open using json in the following way:
+        with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+            labware_def_5mL = json.load(labware_file)
+        tubes_5mL = protocol.load_labware_from_definition( 
+            labware_def_5mL, #variable derived from opening json
+            2, 
+            '5mL_tubes')
+  
+  5 mL tubes snap_cap + 15 tube rack:
     name: 'eppendorf_15_tuberack_5000ul'
-    custom reference: '5mL_tubes'
+    custom reference: '5mL_tubes_snap'
     for simulator you need to open using json in the following way:
         with open("labware/eppendorf_15_tuberack_5000ul/"
               "eppendorf_15_tuberack_5000ul.json") as labware_file:
@@ -46,8 +58,8 @@ Tube racks & well plates:
         tubes_5mL = protocol.load_labware_from_definition( 
             labware_def_5mL, #variable derived from opening json
             2, 
-            '5mL_tubes')
-  
+            '5mL_tubes_snap')
+            
   15 mL tubes + 15 tube rack:
     name: 'opentrons_15_tuberack_falcon_15ml_conical'
     custom reference: '15mL_tubes'

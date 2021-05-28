@@ -2,7 +2,7 @@
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210527
 # Description: protocol to aliquot PCR mix into PCR strips
-#   and then add barcoded primers to them.
+#   and then add barcoded primers to them - specific for 12S PCR.
 # =============================================================================
 
 # ==========================IMPORT STATEMENTS==================================
@@ -165,14 +165,14 @@ def volume_tracking(container, dispension_vol, current_height):
 # ================================METADATA=====================================
 # =============================================================================
 metadata = {
-    'protocolName': 'illu_PCR_mastermix_6_strips',
+    'protocolName': '12S_illumina_PCR_mastermix',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
-    'description': ('Illumina PCR - aliquoting mix and primers'),
+    'description': ('Illumina PCR - aliquoting mix and primers - 12S'),
     'apiLevel': '2.9'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Aliquoting Phusion mastermix from a 2 mL tube to 6 PCR strips in 
+    Aliquoting mastermix from a 2 mL tube to 5x + 2 wells PCR strips in 
     2x 96-wells plates; using volume tracking so that the pipette starts 
     aspirating at the starting height of the liquid and goes down as the 
     volume decreases.
@@ -191,13 +191,13 @@ def run(protocol: protocol_api.ProtocolContext):
         '200tips')                          #custom name
     tips_20 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
-        4,                                  #deck position
-        '20tips')                           #custom name   
-   ##### !!! OPTION 1: ROBOT      
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
-    #     5,                                      #deck position
-    #     '5mL_tubes')                            #custom name
+        4,                                 #deck position
+        '20tips')                           #custom name
+    tubes_2mL = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_2ml_safelock_snapcap',#labware def
+        5,                                                     #deck position
+        '2 mL tubes')                                          #custom name
+    ##### !!! OPTION 1: ROBOT      
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     6,                                 #deck position
@@ -214,14 +214,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     9,                                 #deck position
     #     'mix strips 2')                    #custom name                      
-   ##### !!! OPTION 2: SIMULATOR      
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-    tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL,   #variable derived from opening json
-            2,                 #deck position
-            '5mL_tubes')       #custom name 
+    ##### !!! OPTION 2: SIMULATOR      
     with open("labware/pcrstrips_96_wellplate_200ul/"
               "pcrstrips_96_wellplate_200ul.json") as labware_file:
             labware_def_pcrstrips = json.load(labware_file)
@@ -233,14 +226,14 @@ def run(protocol: protocol_api.ProtocolContext):
         labware_def_pcrstrips, #variable derived from opening json
         7,                     #deck position
         'primer_strips_2')     #custom name                            
-    mix_strips_1 = protocol.load_labware_from_definition( 
+    mm_strips_1 = protocol.load_labware_from_definition( 
         labware_def_pcrstrips, #variable derived from opening json
         8,                     #deck position
-        'mix_strips_1')        #custom name   
-    mix_strips_2 = protocol.load_labware_from_definition( 
+        'mm_strips_1')        #custom name   
+    mm_strips_2 = protocol.load_labware_from_definition( 
         labware_def_pcrstrips, #variable derived from opening json
         9,                     #deck position
-        'mix_strips_2')        #custom name                  
+        'mm_strips_2')        #custom name                  
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -256,7 +249,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ==========================VARIABLES TO SET#!!!===============================
 # =============================================================================
-    start_vol = 2060 
+    start_vol = 1802 
       ## The start_vol is the volume (ul) that is in the source labware at  ##
       ## the start of the protocol.                                         ##
     dispension_vol = 39 
@@ -270,10 +263,10 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
-  
+
 # ==========================PREDIFINED VARIABLES===============================
 # =============================================================================
-    container = 'tube_5mL'
+    container = 'tube_2mL'
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
       ## of the pipette height. It is the source labware from which liquid  ##
@@ -283,18 +276,52 @@ def run(protocol: protocol_api.ProtocolContext):
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
-    primers = (
+# =========================creating primer-well list===========================
+    primers = []
+      ## Create an empty list to append wells to for the primer wells.      ##
+    primer_columns = (
         [primer_strips_1.columns_by_name()[column_name] for column_name in
          ['2', '7', '11']] + 
         [primer_strips_2.columns_by_name()[column_name] for column_name in
-         ['2', '7', '11']]
+         ['2', '7']] 
         )
-    mastermix = (
-        [mix_strips_1.columns_by_name()[column_name] for column_name in
+      ## Make a list of columns for the primers, this is a list of lists!   ##
+    for column in primer_columns:
+        for well in column:
+            primers.append(well)
+      ## Separate the columns into wells and append them to the empty primer## 
+      ## wells list                                                         ##
+    primer_wells = (
+        [primer_strips_2.wells_by_name()[well_name] for well_name in
+         ['A11', 'B11']]
+        ) 
+      ## Make a list of the remaining primer wells.                         ## 
+    for well in primer_wells:
+        primers.append(well)
+      ## Append the wells to the list of primer wells.                      ##
+# ==========================creating mix well list==============================
+    mastermix = []
+      ## Create an empty list to append wells to for the mastermix wells.   ##
+    mm_columns = (
+        [mm_strips_1.columns_by_name()[column_name] for column_name in
          ['2', '7', '11']] + 
-        [mix_strips_2.columns_by_name()[column_name] for column_name in
-         ['2', '7', '11']]
+        [mm_strips_2.columns_by_name()[column_name] for column_name in
+         ['2', '7']] 
         )
+      ## Make a list of columns for the mastermix, this is a list of lists! ##
+    for column in mm_columns:
+        for well in column:
+            mastermix.append(well)
+      ## Separate the columns into wells and append them to the empty       ##
+      ## mastermix wells list                                               ##
+    mm_wells = (
+        [mm_strips_2.wells_by_name()[well_name] for well_name in
+         ['A11', 'B11']]
+        )
+      ## Make a list of the remaining mastermix wells.                      ## 
+    for well in mm_wells:
+        mastermix.append(well)
+      ## Append the wells to the list of mastermix wells.                   ##
 # =============================================================================
     ##### Variables for volume tracking
     start_height = cal_start_height(container, start_vol)
@@ -309,31 +336,31 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     ## For each column in destination_wells, pick up a tip, than for each   ##
     ## well in these columns pipette mix, and after the+ column drop the tip##
-    ## Repeat untill all columns in the list are done.                      ##
+    ## Repeat untill all columns in the list are done.                      ##      
     for i, well in enumerate(mastermix):
-      ## Name all the wells in the plate 'well', for all these do:      ## 
-        if i == 0: 
+    ## Name all the wells in the plate 'well', for all these do:            ## 
+        ## If we are at the first well, start by picking up a tip.          ##
+        if i == 0:
             p300.pick_up_tip()
+        ## Then, after every 8th well, drop tip and pick up a new one.      ##
         elif i % 8 == 0:
             p300.drop_tip()
-            p300.pick_up_tip()
-        tv = volume_tracking(
-            container, dispension_vol, current_height)  
-        current_height, delta_height = tv
+            p300.pick_up_tip() 
+        current_height, delta_height = volume_tracking(
+            container, dispension_vol, current_height)
           ## The volume_tracking function needs the arguments container ##
           ## dispension_vol and the current_height which we have set in ##
           ## this protocol. With those variables, the function updates  ##
           ## the current_height and calculates the delta_height of the  ## 
-          ## liquid after the next aspiration step. The outcome is      ##
-          ## stored as tv and then the specific variables are updated.  ##
+          ## liquid after the next aspiration step.                     ##
         pip_height = current_height - 2
           ## Make sure that the pipette tip is always submerged by      ##
           ## setting the current height 2 mm below its actual height    ##
         if current_height - delta_height <= 1: 
-            aspiration_location = tubes_5mL['A1'].bottom(z=1) #!!!
+            aspiration_location = tubes_2mL['A1'].bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = tubes_5mL['A1'].bottom(pip_height) #!!!
+            aspiration_location = tubes_2mL['A1'].bottom(pip_height) #!!!
           ## If the level of the liquid in the next run of the loop will## 
           ## be smaller than 1 we have reached the bottom of the tube.  ##
           ## To prevent the pipette from crashing into the bottom, we   ##
@@ -360,19 +387,18 @@ def run(protocol: protocol_api.ProtocolContext):
 # ===============================ADDING PRIMERS================================
 # =============================================================================
     ## For the columns in both the source (primers) and the destination     ##
-    ## (mix): loop trough the wells in those columns.                       ##
-    for primer_column, mix_column in zip(source, destination):
-        for primer_tube, mix_tube in zip(primer_column, mix_column):
-            p20.pick_up_tip()
-            p20.aspirate(primer_vol, primer_tube)
-            p20.dispense(primer_vol, mix_tube)
-            ## primer_mix_vol = volume for pipetting up and down            ##
-            primer_mix_vol = primer_vol + 3
-            for i in range(3):
-                p20.aspirate(primer_mix_vol, mix_tube)
-                p20.dispense(primer_mix_vol, mix_tube)
-            ## primer_dispense_vol = volume to dispense that was mixed      ##
-            primer_dispense_vol = primer_mix_vol + 3
-            p20.dispense(primer_dispense_vol, mix_tube)
-            p20.drop_tip()
+    ## (mix): loop trough the wells in those columns.                       #
+    for primer_tube, mix_tube in zip(primers, mastermix):
+        p20.pick_up_tip()
+        p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
+        ## primer_mix_vol = volume for pipetting up and down            ##
+        primer_mix_vol = primer_vol + 3
+        for i in range(3):
+            p20.aspirate(primer_mix_vol, mix_tube)
+            p20.dispense(primer_mix_vol, mix_tube)
+        ## primer_dispense_vol = volume to dispense that was mixed      ##
+        primer_dispense_vol = primer_mix_vol + 3
+        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.drop_tip()
 # =============================================================================

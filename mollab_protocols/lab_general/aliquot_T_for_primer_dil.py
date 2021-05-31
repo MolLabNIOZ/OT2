@@ -279,6 +279,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     p300.aspirate(180, aspiration_location)
               ## Aspirate 200µL from the set aspiration location                ##
                     p300.dispense(180, well.top(z=-2))
+                    p300.blow_out(well.top(z=-2))
               ## Dispense 200µL in the destination well     
         p300.drop_tip()
            

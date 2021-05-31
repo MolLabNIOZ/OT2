@@ -255,7 +255,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.pick_up_tip()
         for well in rack.wells():
             for i in range(2): 
-              ## Pipette 5 x 200µL for 1mL aliquots
+              ## Pipette 2 x 180µL for 360µL aliquots
                 current_height, delta_height = volume_tracking(
                     container, 180, current_height)
               ## The volume_tracking function needs the arguments container,    ##

@@ -49,7 +49,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #     'pcrstrips_96_wellplate_200ul',     #labware definition
     #     3,                                  #deck position
     #     'pcr_strips')                       #custom name
-    tubes_5mL = protocol.load(
+    tubes_5mL = protocol.load_labware(
         'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
         4,                                      #deck position 
         'tubes_5mL')                            #custom name
@@ -151,3 +151,6 @@ def run(protocol: protocol_api.ProtocolContext):
 
     protocol.pause('was this ok?')    
     
+    p300.return_tip()
+    p20.return_tip()
+    protocol.set_rail_lights(False)

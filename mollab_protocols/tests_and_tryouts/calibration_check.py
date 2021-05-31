@@ -37,10 +37,10 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_96_filtertiprack_20ul',  #labware definition
         11,                                 #deck position
         '20tips')                           #custom name
-    # plate_96 = protocol.load_labware(
-    #     'biorad_96_wellplate_200ul_pcr',
-    #     1,
-    #     '96well_plate')
+    plate_96 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',
+        1,
+        '96well_plate')
     # sample_tubes = protocol.load_labware(
     #     'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
     #     2,                                                       #deck position
@@ -49,10 +49,10 @@ def run(protocol: protocol_api.ProtocolContext):
     #     'pcrstrips_96_wellplate_200ul',     #labware definition
     #     3,                                  #deck position
     #     'pcr_strips')                       #custom name
-    tubes_5mL = protocol.load_labware(
-        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-        4,                                      #deck position 
-        'tubes_5mL')                            #custom name
+    # tubes_5mL = protocol.load_labware(
+    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+    #     4,                                      #deck position 
+    #     'tubes_5mL')                            #custom name
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -75,26 +75,26 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 # test PCR plate
 # =============================================================================
-    # p300.aspirate(10, plate_96['A1'])
-    # p300.dispense(10, plate_96['A1'])
-    # p300.blow_out(plate_96['A1'])
-    # p20.aspirate(10, plate_96['A1'])
-    # p20.dispense(10, plate_96['A1'])
-    # p20.blow_out(plate_96['A1'])
-    # p300.aspirate(10, plate_96['A7'])
-    # p300.dispense(10, plate_96['A7'])
-    # p300.blow_out(plate_96['A7'])
-    # p20.aspirate(10, plate_96['A7'])
-    # p20.dispense(10, plate_96['A7'])
-    # p20.blow_out(plate_96['A7'])
-    # p300.aspirate(10, plate_96['A11'])
-    # p300.dispense(10, plate_96['A11'])
-    # p300.blow_out(plate_96['A11'])
-    # p20.aspirate(10, plate_96['A11'])
-    # p20.dispense(10, plate_96['A11'])
-    # p20.blow_out(plate_96['A11']) 
+    p300.aspirate(10, plate_96['A1'])
+    p300.dispense(10, plate_96['A1'])
+    p300.blow_out(plate_96['A1'])
+    p20.aspirate(10, plate_96['A1'])
+    p20.dispense(10, plate_96['A1'])
+    p20.blow_out(plate_96['A1'])
+    p300.aspirate(10, plate_96['A7'])
+    p300.dispense(10, plate_96['A7'])
+    p300.blow_out(plate_96['A7'])
+    p20.aspirate(10, plate_96['A7'])
+    p20.dispense(10, plate_96['A7'])
+    p20.blow_out(plate_96['A7'])
+    p300.aspirate(10, plate_96['A11'])
+    p300.dispense(10, plate_96['A11'])
+    p300.blow_out(plate_96['A11'])
+    p20.aspirate(10, plate_96['A11'])
+    p20.dispense(10, plate_96['A11'])
+    p20.blow_out(plate_96['A11']) 
 
-    # protocol.pause('was this ok?')    
+    protocol.pause('was this ok?')    
     
 # =============================================================================
 # test 1.5mL tubes
@@ -133,24 +133,23 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # protocol.pause('was this ok?') 
 
-      
-    # p300.return_tip()
-    # p20.return_tip()
-    # protocol.set_rail_lights(False)
     
 # =============================================================================
 # test 5mL (screw cap) tube
 # =============================================================================
-    p300.aspirate(10, tubes_5mL['A1'])
-    p300.dispense(10, tubes_5mL['A1'])
-    p300.blow_out(tubes_5mL['A1'])
-    p20.aspirate(10, tubes_5mL['A1'])
-    p20.dispense(10, tubes_5mL['A1'])
-    p20.blow_out(tubes_5mL['A1'])
+    # p300.aspirate(10, tubes_5mL['A1'])
+    # p300.dispense(10, tubes_5mL['A1'])
+    # p300.blow_out(tubes_5mL['A1'])
+    # p20.aspirate(10, tubes_5mL['A1'])
+    # p20.dispense(10, tubes_5mL['A1'])
+    # p20.blow_out(tubes_5mL['A1'])
     
 
-    protocol.pause('was this ok?')    
+    # protocol.pause('was this ok?')    
+ 
     
+# =============================================================================
+# =============================================================================
     p300.return_tip()
     p20.return_tip()
     protocol.set_rail_lights(False)

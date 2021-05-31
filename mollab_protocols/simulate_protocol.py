@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("mollab_snippets/looping_trough_columns.py")
+protocol_file = open("C:/Users/svreugdenhil/Documents/GitHub/OT2/mollab_protocols/tests_and_tryouts/volume_tracking_test.py")
 
 # Simulate protocol
 runlog, _bundle = simulate(protocol_file)

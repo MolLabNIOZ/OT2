@@ -327,8 +327,6 @@ def run(protocol: protocol_api.ProtocolContext):
         for well in column:
             unlabeled_primer_dest.append(well)
 # =============================================================================
-# ==============================create a variable for ===============================================
-
     ##### Variables for volume tracking
     start_height = cal_start_height(container, start_vol)
       ## Call start height calculation function from volume tracking module.##
@@ -392,15 +390,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ==========================ADDING LABELED PRIMERS=============================
 # =============================================================================
-## For the columns in both the source (primers) and the destination     ##
-    ## (mix): loop trough the wells in those columns.                       #
+## For the columns in both the source (primers) and the destination:        ##
+## loop trough the wells in those columns.                                  ##
     for primer_tube, mix_tube in zip(labeled_primers, mastermix):
         p20.pick_up_tip()
-        p20.aspirate(primer_vol, primer_tube)
-        ## primer_mix_vol = volume for pipetting up and down            ##
-        primer_mix_vol = primer_vol + 3
+        p20.aspirate(primer_vol_label, primer_tube)
+        ## primer_mix_vol = volume for pipetting up and down                ##
+        primer_mix_vol = primer_vol_label + 3
         p20.mix(3, primer_mix_vol, mix_tube)
-        ## primer_dispense_vol = volume to dispense that was mixed      ##
+        ## primer_dispense_vol = volume to dispense that was mixed          ##
         primer_dispense_vol = primer_mix_vol + 3
         p20.dispense(primer_dispense_vol, mix_tube)
         p20.drop_tip()
@@ -409,17 +407,27 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ==========================ADDING UNLABELED PRIMERS===========================
 # =============================================================================
-## For the columns in both the source (primers) and the destination     ##
-    ## (mix): loop trough the wells in those columns.                       #
+## For the wells in unlabeld_primer_dest (the wells with unlabeled primers) do:
+    ##FORWARD
     for well in unlabeled_primer_dest:
         p20.pick_up_tip()
-        p20.aspirate(primer_vol, [primer_tubes.wells_by_name()[well_name]
-                                  for well_name in ])
+        p20.aspirate(primer_vol, primer_tubes['A1'])
         ## primer_mix_vol = volume for pipetting up and down            ##
         primer_mix_vol = primer_vol + 3
         p20.mix(3, primer_mix_vol, well)
         ## primer_dispense_vol = volume to dispense that was mixed      ##
         primer_dispense_vol = primer_mix_vol + 3
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(primer_dispense_vol, well)
+        p20.drop_tip()
+    ##REVERSE
+    for well in unlabeled_primer_dest:
+        p20.pick_up_tip()
+        p20.aspirate(primer_vol, primer_tubes['B1'])
+        ## primer_mix_vol = volume for pipetting up and down            ##
+        primer_mix_vol = primer_vol + 3
+        p20.mix(3, primer_mix_vol, well)
+        ## primer_dispense_vol = volume to dispense that was mixed      ##
+        primer_dispense_vol = primer_mix_vol + 3
+        p20.dispense(primer_dispense_vol, well)
         p20.drop_tip()
 # =============================================================================

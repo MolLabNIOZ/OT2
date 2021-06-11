@@ -13,7 +13,7 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-from mollab_modules import volume_tracking as vt
+from data.user_storage.mollab_modules import volume_tracking as vt
 # =============================================================================
 
 

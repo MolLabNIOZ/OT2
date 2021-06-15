@@ -63,12 +63,14 @@ def cal_start_height(container, start_vol):
     ## volume tracking doesn't work perfect when assuming that the entire   ##
     ## tube is cylindrical. This is partly solved by adding 7 mm to the     ##
     ## start_height.                                                        ##
+    ## For 5mL screwcap tubes we substract 5 mm to solve a similar problem. ##
     if container == 'tube_15mL':
         start_height = start_height + 7
     if container == 'tube_5mL':
         start_height = start_height - 5
     
     return start_height
+
 
 def volume_tracking(container, dispension_vol, current_height):
     """
@@ -148,8 +150,17 @@ def volume_tracking(container, dispension_vol, current_height):
     ## however at the offset_height the pipette didn't reach the liquid     ##
     ## anymore. So we lower the current_height with 1 so that the pipette   ##
     ## tip is always submerged and the entire tube is emptied.              ##
+    pip_height = current_height - 2
+    ## Make sure that the pipette tip is always submerged by                ##
+    ## setting the current height 2 mm below its actual height              ##
+    if container == 'tube_5mL':
+        bottom_reached = (current_height - delta_height <= 6)
+    else:
+        bottom_reached = (current_height - delta_height <= 2)
+    # not thoroughly tested for other tubes yet!!!
+        
     
-    return current_height, delta_height
+    return current_height, pip_height, bottom_reached
 
 # ================================METADATA=====================================
 # =============================================================================
@@ -168,27 +179,27 @@ def run(protocol: protocol_api.ProtocolContext):
 # ======================LOADING LABWARE AND PIPETTES===========================
 # =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
+    plate_96 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',        #labware definition
+        1,                                      #deck position
+        'plate_96')                             #custom name
+    #### !!! OPTION 1: ROBOT      
+    tubes_5mL = protocol.load_labware(
+         'eppendorfscrewcap_15_tuberack_5000ul', #labware def
+         2,                                      #deck position
+         '5mL_tubes')                            #custom name
+   # #### !!! OPTION 2: SIMULATOR      
+   #  with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+   #            "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+   #          labware_def_5mL = json.load(labware_file)
+   #  tubes_5mL = protocol.load_labware_from_definition( 
+   #          labware_def_5mL,   #variable derived from opening json
+   #          2,                 #deck position
+   #          '5mL_tubes')       #custom name
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul',     #labware definition
         3,                                      #deck position
         'tips_200')                             #custom name
-    plate_96 = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',        #labware definition
-        4,                                      #deck position
-        'plate_96')                             #custom name
-   #### !!! OPTION 1: ROBOT      
-    tubes_5mL = protocol.load_labware(
-        'eppendorfscrewcap_15_tuberack_5000ul', #labware def
-        2,                                      #deck position
-        '5mL_tubes')                            #custom name
-   ##### !!! OPTION 2: SIMULATOR      
-    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-    #         labware_def_5mL = json.load(labware_file)
-    # tubes_5mL = protocol.load_labware_from_definition( 
-    #         labware_def_5mL,   #variable derived from opening json
-    #         2,                 #deck position
-    #         '5mL_tubes')       #custom name
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -204,7 +215,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The start_vol is the volume (ul) that is in the source labware at  ##
       ## the start of the protocol.                                         ##
 
-    p300.starting_tip = tips_200.well('E2')
+    p300.starting_tip = tips_200.well('E3')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
@@ -230,13 +241,12 @@ def run(protocol: protocol_api.ProtocolContext):
     #         p300.drop_tip()
     #         p300.pick_up_tip()
     
-    #     current_height, delta_height = volume_tracking(
+    #     current_height, pip_height, bottom_reached = volume_tracking(
     #             container, 100, current_height)
-    #     ## then the specific variables are updated.                          ##
-    #     pip_height = current_height - 2
     #       ## Make sure that the pipette tip is always submerged by setting   ##
     #       ## the current height 2 mm below its actual height                 ##
-    #     if current_height - delta_height <= 1:
+    #     if bottom_reached:
+    #         protocol.home()
     #         protocol.pause("the tube is empty!")
     #     else:
     #         aspiration_location = tubes_5mL['C1'].bottom(pip_height)
@@ -245,11 +255,10 @@ def run(protocol: protocol_api.ProtocolContext):
     #       ## height after each pipetting step.                               ##
     #       ## If the level of the liquid in the next run of the loop will be  ##
     #       ## smaller than 1 we have reached the bottom of the tube.          ##
-    #     p300.aspirate(100, aspiration_location)
+    #         p300.aspirate(100, aspiration_location)
     #       ## Aspirate 200µL from the set aspiration location                 ##
-    #     p300.dispense(100, well.top(z=-2))
-    #       ## Dispense 200µL in the destination well                          ##
-    # p300.drop_tip()
+    #         p300.dispense(100, well.top(z=-2))
+    #       ## Dispense 200µL in the destination wel                           ##
 
     # protocol.pause('change plate')
 
@@ -264,13 +273,11 @@ def run(protocol: protocol_api.ProtocolContext):
             p300.drop_tip()
             p300.pick_up_tip()
     
-        current_height, delta_height = volume_tracking(
+        current_height, pip_height, bottom_reached = volume_tracking(
                 container, 100, current_height)
-        ## then the specific variables are updated.                          ##
-        pip_height = current_height - 2
           ## Make sure that the pipette tip is always submerged by setting   ##
           ## the current height 2 mm below its actual height                 ##
-        if current_height - delta_height <= 1:
+        if bottom_reached:
             protocol.home()
             protocol.pause("the tube is empty!")
         else:

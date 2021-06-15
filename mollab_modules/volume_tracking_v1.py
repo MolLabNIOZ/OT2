@@ -149,7 +149,10 @@ def volume_tracking(container, dispension_vol, current_height):
     pip_height = current_height - 2
     ## Make sure that the pipette tip is always submerged by                ##
     ## setting the current height 2 mm below its actual height              ##
-    bottom_reached = (current_height - delta_height <= 2)
-        
+    if container == 'tube_5mL':
+        bottom_reached = (current_height - delta_height <= 6)
+    else:
+        bottom_reached = (current_height - delta_height <= 2)
+    # not thoroughly tested for other tubes yet!!!
     
-    return pip_height, bottom_reached
+    return current_height, pip_height, bottom_reached

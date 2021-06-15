@@ -1,12 +1,10 @@
 # =============================================================================
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210312
-# Version: 3 (210517)
+# Version: 1 (210615)
 # Description: Module for volume tracking in different liquid containers
 #   Treats the entire tube as a cylindrical shape. Works good for
-#   volume tracking in 5mL Eppendorf with 25 ul reactions to a full
-#   96 wells plate with water - IF set the pip_height in the protocol itself
-#   to current_height - 2.
+#   volume tracking in 1.5mL, 5mL, 5mL screwcap, 15mL and 50mL tubes.
 # =============================================================================
 
 ##### Import statements
@@ -61,10 +59,14 @@ def cal_start_height(container, start_vol):
     ## volume tracking doesn't work perfect when assuming that the entire   ##
     ## tube is cylindrical. This is partly solved by adding 7 mm to the     ##
     ## start_height.                                                        ##
+    ## For 5mL screwcap tubes we substract 5 mm to solve a similar problem. ##
     if container == 'tube_15mL':
         start_height = start_height + 7
+    if container == 'tube_5mL':
+        start_height = start_height - 5
     
     return start_height
+
 
 def volume_tracking(container, dispension_vol, current_height):
     """
@@ -144,5 +146,10 @@ def volume_tracking(container, dispension_vol, current_height):
     ## however at the offset_height the pipette didn't reach the liquid     ##
     ## anymore. So we lower the current_height with 1 so that the pipette   ##
     ## tip is always submerged and the entire tube is emptied.              ##
+    pip_height = current_height - 2
+    ## Make sure that the pipette tip is always submerged by                ##
+    ## setting the current height 2 mm below its actual height              ##
+    bottom_reached = (current_height - delta_height <= 2)
+        
     
-    return current_height, delta_height
+    return pip_height, bottom_reached

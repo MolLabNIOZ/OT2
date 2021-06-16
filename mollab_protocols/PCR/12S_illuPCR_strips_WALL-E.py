@@ -1,5 +1,5 @@
 # =============================================================================
-# Author(s): Maartje Brouwer & Sanne Vreugdenhil
+# Author(s): Sanne Vreugdenhil
 # Creation date: 210527
 # Description: protocol to aliquot PCR mix into PCR strips
 #   and then add barcoded primers to them - specific for 12S PCR.
@@ -53,7 +53,7 @@ def run(protocol: protocol_api.ProtocolContext):
         4,                                 #deck position
         '20tips')                           #custom name                               #custom name
     ##### !!! OPTION 1: ROBOT      
-    # mm_tube_5mL = protocol.load_labware(
+    # mm_tube = protocol.load_labware(
     #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
     #      5,                                     #deck position
     #      'mm_tube')                             #custom name          
@@ -77,7 +77,7 @@ def run(protocol: protocol_api.ProtocolContext):
     with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
              labware_def_5mL = json.load(labware_file)
-    mm_tube_5mL = protocol.load_labware_from_definition( 
+    mm_tube = protocol.load_labware_from_definition( 
              labware_def_5mL,   #variable derived from opening json
              5,                 #deck position
              'mm_tube')       #custom name 
@@ -214,16 +214,16 @@ def run(protocol: protocol_api.ProtocolContext):
             p300.pick_up_tip() 
         current_height, pip_height, bottom_reached = vt.volume_tracking(
             container, dispension_vol, current_height)  
-                    ## The volume_tracking function needs the arguments container ##
+          ## The volume_tracking function needs the arguments container ##
           ## dispension_vol and the current_height which we have set in ##
           ## this protocol. With those variables, the function updates  ##
           ## the current_height and calculates the delta_height of the  ## 
           ## liquid after the next aspiration step.                     ##
         if bottom_reached: 
-            aspiration_location = mm_tube_5mL['C1'].bottom(z=1) #!!!
+            aspiration_location = mm_tube['C1'].bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = mm_tube_5mL['C1'].bottom(pip_height) #!!!
+            aspiration_location = mm_tube['C1'].bottom(pip_height) #!!!
           ## If the level of the liquid in the next run of the loop will## 
           ## be smaller than 1 we have reached the bottom of the tube.  ##
           ## To prevent the pipette from crashing into the bottom, we   ##

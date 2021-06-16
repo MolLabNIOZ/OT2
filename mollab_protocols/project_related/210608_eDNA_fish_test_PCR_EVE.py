@@ -62,7 +62,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol = 5
       ## The primer_vol is the volume (ul) of NON barcoded F or R primer    ##
       ## that needs to be added to the reactions that do NOT get a barcode. ##
-    p20.starting_tip = tips_20.well('A1')
+    p20.starting_tip = tips_20.well('F6')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

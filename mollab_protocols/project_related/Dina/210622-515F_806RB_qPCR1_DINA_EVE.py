@@ -135,8 +135,11 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('A1')
     p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
+    PCR_plate = plate_96_qPCR.wells()
+    dilution_plate = plate_96_dil.wells()
     mastermix = tubes_5mL['C1']
-    H2O = tubes_5mL['B1', 'B2', 'B3', 'B4']
+    H2O = (tubes_5mL.wells_by_name()[well_name] for well_name in
+         ['B1', 'B2', 'B3', 'B4'])
 # =============================================================================
 
 
@@ -152,11 +155,9 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ALIQUOTING MASTERMIX=========================================================
 # =============================================================================
-    p300.pick_up_tip()
-      ## p300 picks up tip from location specified in variable starting_tip ##
     current_height = start_height_mix
       ## current height of mix in the mix tube is calculated start_height_mix
-    for i, well in enumerate(plate_96_qPCR):
+    for i, well in enumerate(PCR_plate):
       ## aliquot mix in entire qPCR plate, for each well do the following:  
         
         container = container_mix
@@ -167,7 +168,6 @@ def run(protocol: protocol_api.ProtocolContext):
         if i == 0: 
             p300.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.    ##
-
         elif i % 8 == 0:
             p300.drop_tip()
             p300.pick_up_tip()
@@ -179,11 +179,36 @@ def run(protocol: protocol_api.ProtocolContext):
               ## pip_height and whether bottom_reached.                     ##
         
         if bottom_reached: 
-            aspiration_location = tubes_5mL['C1'].bottom(z=1) #!!!
+            aspiration_location = mastermix.bottom(z=1)
             protocol.comment("You've reached the bottom of the MM-tube!")
         else:
-            aspiration_location = tubes_5mL['C1'].bottom(pip_height) #!!!
-        
+            aspiration_location = mastermix.bottom(pip_height)
+              ## Set the location of where to aspirate from.                ##
+              ## Because we put this in the loop, the location will change  ##
+              ## to the newly calculated height after each pipetting step.  ##  
+              ## To prevent the pipette from crashing into the bottom, we   ##
+              ## tell it to keep pipetting from right above the bottom.     ##
+
+        #### The actual aliquoting of mastermix
+        p300.aspirate(aspiration_vol, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the       ##
+          ## location specified in aspiration_location.                     ##
+        p300.dispense(dispension_vol, well)
+          ## Dispense the amount specified in dispension_vol to the         ##
+          ## location specified in well (looping through plate)             ##
+        p300.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill       ##
+          ## completely when using a disposal volume by dispensing some     ##
+          ## of the volume after each pipetting step. (blow-out too many    ##
+          ## bubbles)                                                       ##
+    p300.drop_tip()
+      ## when entire plate is full, drop tip                                ##
+# =============================================================================
+
+
+# ALIQUOTING WATER FOR DILUTIONS===============================================            
+# =============================================================================
+    current_height = start_height_water        
         
         
         

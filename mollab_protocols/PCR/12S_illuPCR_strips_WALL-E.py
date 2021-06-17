@@ -24,7 +24,7 @@ from mollab_modules import volume_tracking_v1 as vt
 # ================================METADATA=====================================
 # =============================================================================
 metadata = {
-    'protocolName': '12S_illumina_PCR_mastermix',
+    'protocolName': '12S_illuPCR_strips_WALL-E',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
     'description': ('Illumina PCR - aliquoting mix and primers - 12S'),
     'apiLevel': '2.9'}
@@ -50,8 +50,8 @@ def run(protocol: protocol_api.ProtocolContext):
         '200tips')                          #custom name
     tips_20 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
-        4,                                 #deck position
-        '20tips')                           #custom name                               #custom name
+        4,                                  #deck position
+        '20tips')                           #custom name                    
     ##### !!! OPTION 1: ROBOT      
     # mm_tube = protocol.load_labware(
     #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
@@ -63,7 +63,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #     'primer strips 1')                 #custom name
     # primer_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     7,                                #deck position
+    #     7,                                 #deck position
     #     'primer strips 2')                 #custom name                  
     # mix_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
@@ -109,7 +109,7 @@ def run(protocol: protocol_api.ProtocolContext):
     p20 = protocol.load_instrument(
         'p20_single_gen2',                  #instrument definition
         'left',                             #mount position
-        tip_racks=[tips_20])     #assigned tiprack
+        tip_racks=[tips_20])                #assigned tiprack
 # =============================================================================
 
 

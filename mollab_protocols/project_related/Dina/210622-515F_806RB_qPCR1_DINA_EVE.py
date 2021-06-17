@@ -135,11 +135,23 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('A1')
     p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
+      
+    #### Which wells / tubes are present / used 
     PCR_plate = plate_96_qPCR.wells()
     dilution_plate = plate_96_dil.wells()
+    aliquots = ['PCR_plate', 'dilution_plate']
+      ## Which wells are used (in this case entire plates)
     mastermix = tubes_5mL['C1']
-    H2O = (tubes_5mL.wells_by_name()[well_name] for well_name in
-         ['B1', 'B2', 'B3', 'B4'])
+    H2O = ([tubes_5mL.wells_by_name()[well_name] for well_name in
+         ['B1', 'B2', 'B3', 'B4']])
+    samples = (                                                           
+        ([sample_strips_1.columns_by_name()[collumn_name] 
+          for collumn_name in ['1','3', '5', '7', '9', '11']]) 
+        + 
+        ([sample_strips_2.columns_by_name()[collumn_name] 
+          for collumn_name in ['1','3', '5', '7', '9', '11']])
+        )
+      ## Placement of different tubes on deck
 # =============================================================================
 
 
@@ -153,15 +165,28 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================    
 
 
-# ALIQUOTING MASTERMIX=========================================================
+# ALIQUOTING DILUTION WATER AND MASTERMIX======================================
 # =============================================================================
-    current_height = start_height_mix
-      ## current height of mix in the mix tube is calculated start_height_mix
-    for i, well in enumerate(PCR_plate):
-      ## aliquot mix in entire qPCR plate, for each well do the following:  
+    for aliquot in aliquots:
+        if aliquot == 'PCR_plate':
+            source = mastermix
+            destination = PCR_plate
+            current_height = start_height_mix
+            container = container_mix
+            dispension_vol = dispension_vol_mix
         
-        container = container_mix
-        dispension_vol = dispension_vol_mix
+        elif aliquot == 'dilution_plate':
+            source = H2O[0]
+            counter = 0 # how many tubes emptied
+            destination = dilution_plate
+            current_height = start_height_water
+            container = container_water
+            dispension_vol = dispension_vol_water
+            
+      ## current height of mix in the mix tube is calculated start_height_mix
+    for i, well in enumerate(destination):
+      ## aliquot mix in entire qPCR plate, for each well do the following:  
+       
         aspiration_vol = dispension_vol + (dispension_vol/100*2)
           ## Set correct variables for volume_tracking
         
@@ -178,11 +203,24 @@ def run(protocol: protocol_api.ProtocolContext):
               ## call volume_tracking function, obtain current_height,      ##
               ## pip_height and whether bottom_reached.                     ##
         
-        if bottom_reached: 
-            aspiration_location = mastermix.bottom(z=1)
-            protocol.comment("You've reached the bottom of the MM-tube!")
+        if bottom_reached:
+            if aliquot == 'dilution_plate':
+                  ## continue with next tube, reset vt
+                current_height = start_height_water
+                current_height, pip_height, bottom_reached = (
+                    vt.volume_tracking(
+                        container, dispension_vol, current_height))
+                counter = counter + 1
+                source = H2O[counter]
+                aspiration_location = source.bottom(current_height)
+                protocol.comment("Continue with next tube of water")
+                
+            elif source == mastermix:    
+                aspiration_location = source.bottom(z=1)
+                protocol.comment("You've reached the bottom of the MM-tube!")
+        
         else:
-            aspiration_location = mastermix.bottom(pip_height)
+            aspiration_location = source.bottom(pip_height)
               ## Set the location of where to aspirate from.                ##
               ## Because we put this in the loop, the location will change  ##
               ## to the newly calculated height after each pipetting step.  ##  
@@ -206,9 +244,6 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
 
-# ALIQUOTING WATER FOR DILUTIONS===============================================            
-# =============================================================================
-    current_height = start_height_water        
         
         
         

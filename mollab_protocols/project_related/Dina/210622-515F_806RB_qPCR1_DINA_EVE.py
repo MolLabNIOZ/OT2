@@ -183,64 +183,64 @@ def run(protocol: protocol_api.ProtocolContext):
             container = container_water
             dispension_vol = dispension_vol_water
             
-      ## current height of mix in the mix tube is calculated start_height_mix
-    for i, well in enumerate(destination):
-      ## aliquot mix in entire qPCR plate, for each well do the following:  
-       
-        aspiration_vol = dispension_vol + (dispension_vol/100*2)
-          ## Set correct variables for volume_tracking
-        
-        if i == 0: 
-            p300.pick_up_tip()
-              ## If we are at the first well, start by picking up a tip.    ##
-        elif i % 8 == 0:
-            p300.drop_tip()
-            p300.pick_up_tip()
-              ## Then, after every 8th well, drop tip and pick up a new one.##
-        
-        current_height, pip_height, bottom_reached = vt.volume_tracking(
-            container, dispension_vol, current_height)
-              ## call volume_tracking function, obtain current_height,      ##
-              ## pip_height and whether bottom_reached.                     ##
-        
-        if bottom_reached:
-            if aliquot == 'dilution_plate':
-                  ## continue with next tube, reset vt
-                current_height = start_height_water
-                current_height, pip_height, bottom_reached = (
-                    vt.volume_tracking(
-                        container, dispension_vol, current_height))
-                counter = counter + 1
-                source = H2O[counter]
-                aspiration_location = source.bottom(current_height)
-                protocol.comment("Continue with next tube of water")
-                
-            elif source == mastermix:    
-                aspiration_location = source.bottom(z=1)
-                protocol.comment("You've reached the bottom of the MM-tube!")
-        
-        else:
-            aspiration_location = source.bottom(pip_height)
-              ## Set the location of where to aspirate from.                ##
-              ## Because we put this in the loop, the location will change  ##
-              ## to the newly calculated height after each pipetting step.  ##  
-              ## To prevent the pipette from crashing into the bottom, we   ##
-              ## tell it to keep pipetting from right above the bottom.     ##
-
-        #### The actual aliquoting of mastermix
-        p300.aspirate(aspiration_vol, aspiration_location)
-          ## Aspirate the amount specified in aspiration_vol from the       ##
-          ## location specified in aspiration_location.                     ##
-        p300.dispense(dispension_vol, well)
-          ## Dispense the amount specified in dispension_vol to the         ##
-          ## location specified in well (looping through plate)             ##
-        p300.dispense(10, aspiration_location)
-          ## Alternative for blow-out, make sure the tip doesn't fill       ##
-          ## completely when using a disposal volume by dispensing some     ##
-          ## of the volume after each pipetting step. (blow-out too many    ##
-          ## bubbles)                                                       ##
-    p300.drop_tip()
-      ## when entire plate is full, drop tip                                ##
+          ## current height of mix in the mix tube is calculated start_height_mix
+        for i, well in enumerate(destination):
+          ## aliquot mix in entire qPCR plate, for each well do the following:  
+           
+            aspiration_vol = dispension_vol + (dispension_vol/100*2)
+              ## Set correct variables for volume_tracking
+            
+            if i == 0: 
+                p300.pick_up_tip()
+                  ## If we are at the first well, start by picking up a tip.    ##
+            elif i % 8 == 0:
+                p300.drop_tip()
+                p300.pick_up_tip()
+                  ## Then, after every 8th well, drop tip and pick up a new one.##
+            
+            current_height, pip_height, bottom_reached = vt.volume_tracking(
+                container, dispension_vol, current_height)
+                  ## call volume_tracking function, obtain current_height,      ##
+                  ## pip_height and whether bottom_reached.                     ##
+            
+            if bottom_reached:
+                if aliquot == 'dilution_plate':
+                      ## continue with next tube, reset vt
+                    current_height = start_height_water
+                    current_height, pip_height, bottom_reached = (
+                        vt.volume_tracking(
+                            container, dispension_vol, current_height))
+                    counter = counter + 1
+                    source = H2O[counter]
+                    aspiration_location = source.bottom(current_height)
+                    protocol.comment("Continue with next tube of water")
+                    
+                elif aliquot == 'PCR_plate':    
+                    aspiration_location = source.bottom(z=1)
+                    protocol.comment("You've reached the bottom of the MM-tube!")
+            
+            else:
+                aspiration_location = source.bottom(pip_height)
+                  ## Set the location of where to aspirate from.                ##
+                  ## Because we put this in the loop, the location will change  ##
+                  ## to the newly calculated height after each pipetting step.  ##  
+                  ## To prevent the pipette from crashing into the bottom, we   ##
+                  ## tell it to keep pipetting from right above the bottom.     ##
+    
+            #### The actual aliquoting of mastermix
+            p300.aspirate(aspiration_vol, aspiration_location)
+              ## Aspirate the amount specified in aspiration_vol from the       ##
+              ## location specified in aspiration_location.                     ##
+            p300.dispense(dispension_vol, well)
+              ## Dispense the amount specified in dispension_vol to the         ##
+              ## location specified in well (looping through plate)             ##
+            p300.dispense(10, aspiration_location)
+              ## Alternative for blow-out, make sure the tip doesn't fill       ##
+              ## completely when using a disposal volume by dispensing some     ##
+              ## of the volume after each pipetting step. (blow-out too many    ##
+              ## bubbles)                                                       ##
+        p300.drop_tip()
+          ## when entire plate is full, drop tip                                ##
 # =============================================================================
 
 

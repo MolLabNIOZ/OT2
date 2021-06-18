@@ -126,13 +126,13 @@ def run(protocol: protocol_api.ProtocolContext):
     p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
-    mastermix_source = mastermix_tube['C1']
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
       ## of the pipette height. It is the source labware from which liquid  ##
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
+    mastermix_source = mastermix_tube['C1']
     std_dilution_primer = primer_strips_2['B11']
 # Mastermix destination wells==================================================
     mastermix_destination_wells = plate_96.wells()
@@ -235,11 +235,11 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Name all the wells in destination 'well', for all these do:          ## 
         if i == 0:
             p300.pick_up_tip()
-        ## If we are at the first well, start by picking up a tip.          ##
+          ## If we are at the first well, start by picking up a tip.        ##
         elif i % 8 == 0:
             p300.drop_tip()
             p300.pick_up_tip() 
-        ## After every 8th well, drop tip and pick up a new one.            ##
+          ## After every 8th well, drop tip and pick up a new one.          ##
         current_height, pip_height, bottom_reached = vt.volume_tracking(
             container, dispension_vol, current_height)  
           ## The volume_tracking function needs the arguments container,    ##

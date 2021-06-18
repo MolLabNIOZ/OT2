@@ -55,11 +55,11 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         7,                                  #deck position
-        '20tips')                           #custom name       
+        '20tips_1')                           #custom name       
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
-        '20tips')                           #custom name    
+        '20tips_2')                           #custom name    
        
     # Tube racks & plates
     plate_96 = protocol.load_labware(
@@ -74,11 +74,11 @@ def run(protocol: protocol_api.ProtocolContext):
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     4,                                 #deck position
-    #     'primer strips 1')                 #custom name
+    #     'primer_strips_1')                 #custom name
     # primer_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     1,                                 #deck position
-    #     'primer strips 2')                 #custom name                  
+    #     'primer_strips_2')                 #custom name                  
    ##### !!! OPTION 2: SIMULATOR      
     with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:

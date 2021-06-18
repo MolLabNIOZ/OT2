@@ -1,4 +1,4 @@
-# =============================================================================
+well# =============================================================================
 # Author(s): Maartje Brouwer
 # Creation date: 210616
 # Description: qPCR protocol. First qPCR of a batch, including 3x std curve
@@ -139,18 +139,26 @@ def run(protocol: protocol_api.ProtocolContext):
     #### Which wells / tubes are present / used 
     PCR_plate = plate_96_qPCR.wells()
     dilution_plate = plate_96_dil.wells()
-    aliquots = ['PCR_plate', 'dilution_plate']
+    aliquots = ['dilution_plate', 'PCR_plate']
       ## Which wells are used (in this case entire plates)
     mastermix = tubes_5mL['C1']
     H2O = ([tubes_5mL.wells_by_name()[well_name] for well_name in
-         ['B1', 'B2', 'B3', 'B4']])
+         ['B1', 'B2', 'B3']])
     samples = (                                                           
         ([sample_strips_1.columns_by_name()[collumn_name] 
           for collumn_name in ['1','3', '5', '7', '9', '11']]) 
         + 
         ([sample_strips_2.columns_by_name()[collumn_name] 
-          for collumn_name in ['1','3', '5', '7', '9', '11']])
+          for collumn_name in ['1','3']]) 
+        # for 88 samples to 9, for 64 samples to 3
         )
+    sample_mix = sample_strips_2['A11']
+    sample_dest = (
+        [plate_96_qPCR.collumns_by_name()[collumn_name] for collumn_name in
+         ['5','6', '7', '8', '9', '10', '11', '12']
+        ])
+        # For PCR with std dilution series, start at 5, otherwise at 2
+    sample_mix_dest = plate_96_qPCR.collumns_by_name()['4']
       ## Placement of different tubes on deck
 # =============================================================================
 
@@ -176,8 +184,8 @@ def run(protocol: protocol_api.ProtocolContext):
             dispension_vol = dispension_vol_mix
         
         elif aliquot == 'dilution_plate':
-            source = H2O[0]
             counter = 0 # how many tubes emptied
+            source = H2O[counter]
             destination = dilution_plate
             current_height = start_height_water
             container = container_water
@@ -244,6 +252,13 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
 
-        
+# DILUTING AND DISTRIBUTING SAMPLES============================================
+# =============================================================================
+    for sample, dest_well, dilution_well in zip(
+            samples, 
+            sample_dest, 
+            dilution_plate
+            ):
+      ## Combine each sample with a dilution_well,       
         
         

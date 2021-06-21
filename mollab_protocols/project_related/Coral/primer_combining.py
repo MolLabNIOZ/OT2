@@ -60,11 +60,11 @@ def run(protocol: protocol_api.ProtocolContext):
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',     #labware definition
     #     2,                                  #deck position
-    #     'sample_strips_1')                  #custom name
+    #     'primer_strips_1')                  #custom name
     # primer_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',     #labware definition
     #     5,                                  #deck position
-    #     'sample_strips_2')                  #custom name
+    #     'primer_strips_2')                  #custom name
     
     ####    !!! FOR SIMULATOR
     with open("labware/pcrstrips_96_wellplate_200ul/"
@@ -73,16 +73,16 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_strips_1 = protocol.load_labware_from_definition( 
             labware_def_pcrstrips, #variable derived from opening json
             2, 
-            'sample_strips_1')
+            'primer_strips_1')
             primer_strips_2 = protocol.load_labware_from_definition( 
             labware_def_pcrstrips, #variable derived from opening json
             5, 
-            'sample_strips_2')
+            'primer_strips_2')
 
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
-        'p300_single_gen2',                 #instrument definition
+        'p300_single_gen2',                 # instrument definition
         'right',                            #mount position
         tip_racks=[tips_200_1, tips_200_2]) #assigned tiprack
    
@@ -96,182 +96,73 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
-    #### primer combinations
+    #### primer destinations
+    fwd_primers = []
+    for column in ([fwd_primer_stocks.columns_by_name()[column_name] 
+                    for column_name in ['1', '2', '3']]):
+        for well in column:
+            fwd_primers.append(well)
     
+    rev_primers = []
+    for column in ([rev_primer_stocks.columns_by_name()[column_name] 
+                    for column_name in ['1', '2']]):
+        for well in column:
+            rev_primers.append(well)
     
+    fwd_columns = (
+        [primer_strips_1.columns_by_name()[column_name] for column_name in 
+         ['1', '3', '5', '7', '9', '11']]
+        +
+        [primer_strips_2.columns_by_name()[column_name] for column_name in 
+         ['1', '3', '5', '7', '9', '11']]
+        )
     
+    rev_rows1 = (
+        [primer_strips_1.rows_by_name()[row_name] for row_name in 
+         ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']]
+        )
+    rev_rows2 = (
+        [primer_strips_2.rows_by_name()[row_name] for row_name in 
+         ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']]
+        )
 
-    
+# =============================================================================
+
+   
 # ALIQUOTING===================================================================
 # =============================================================================
 
-    ## F1
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['A1']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['1']]            
-        )
-    ## F2
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['B1']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['3']]            
-        )
-    ## F3
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['C1']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['5']]            
-        )
-    ## F4
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['D1']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['7']]            
-        )
-    ## F5
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['A2']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['9']]            
-        )
-    ## F6
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['B2']],
-        [primer_strips_1.columns_by_name()[column_name] for column_name in ['11']]            
-        )
-    ## F7
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['C2']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['1']]            
-        )
-    ## F8
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['D2']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['3']]            
-        )
-    ## F9
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['A3']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['5']]            
-        )
-    ## F10
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['B3']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['7']]            
-        )
-    ## F11
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['C3']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['9']]            
-        )
-    ## F12
-    p300.distribute(
-        primer_volume, 
-        [fwd_primer_stocks.wells_by_name()[well_name] for well_name in ['C4']],
-        [primer_strips_2.columns_by_name()[column_name] for column_name in ['11']]            
-        )
+    # #### aliquoting 12 unique fwd primers in 12 strips
+    # for i, fwd_primer in enumerate(fwd_primers):
+    #     p300.distribute(
+    #         primer_volume,
+    #         fwd_primer,
+    #         fwd_columns[i],
+    #         air_gap = True
+    #         )
+    
+    #### aliquoting 8 unique rev primers in 8 rows of 12 strips
+    for i, rev_primer in enumerate(rev_primers):
+      
+        for well in rev_rows11[i] + rev_rows22[i]:
+            p300.transfer(
+                primer_volume,
+                rev_primer,
+                well,
+                air_gap = True,
+                mix_after = True
+                )
+            
+            # p300.pick_up_tip()
+            # p300.aspirate(
+            #     primer_volume, 
+            #     rev_primer)
+            # p300.dispense(
+            #     primer_volume + 5, # to make sure tips is really empty
+            #     well)
+            # p300.drop_tip()
+            
+            
+ 
+    
 
-# =============================================================================
-
-    ## R1
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['A1']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['A1', 'A3', 'A5', 'A7', 'A9', 'A11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['A1']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['A1', 'A3', 'A5', 'A7', 'A9', 'A11']]            
-        )
-
-    ## R2
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['B1']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['B1', 'B3', 'B5', 'B7', 'B9', 'B11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['B1']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['B1', 'B3', 'B5', 'B7', 'B9', 'B11']]            
-        )
-    
-    ## R3
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['C1']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['C1', 'C3', 'C5', 'C7', 'C9', 'C11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['C1']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['C1', 'C3', 'C5', 'C7', 'C9', 'C11']]            
-        )
-    
-    ## R4
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['D1']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['D1', 'D3', 'D5', 'D7', 'D9', 'D11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['D1']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['D1', 'D3', 'D5', 'D7', 'D9', 'D11']]            
-        )
-
-    ## R5
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['A2']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['E1', 'E3', 'E5', 'E7', 'E9', 'E11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['A2']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['E1', 'E3', 'E5', 'E7', 'E9', 'E11']]            
-        )
-    
-    ## R6
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['B2']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['F1', 'F3', 'F5', 'F7', 'F9', 'F11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['B2']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['F1', 'F3', 'F5', 'F7', 'F9', 'F11']]            
-        )
-    
-    ## R7
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['C2']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['G1', 'G3', 'G5', 'G7', 'G9', 'G11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['C2']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['G1', 'G3', 'G5', 'G7', 'G9', 'G11']]            
-        )
-    
-    ## R8
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['D2']],
-        [primer_strips_1.wells_by_name()[well_name] for well_name in ['H1', 'H3', 'H5', 'H7', 'H9', 'H11']]            
-        )
-    p300.distribute(
-        primer_volume, 
-        [rev_primer_stocks.wells_by_name()[well_name] for well_name in ['D2']],
-        [primer_strips_2.wells_by_name()[well_name] for well_name in ['H1', 'H3', 'H5', 'H7', 'H9', 'H11']]            
-        )

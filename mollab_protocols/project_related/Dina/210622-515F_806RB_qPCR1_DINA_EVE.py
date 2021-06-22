@@ -12,10 +12,10 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module that is on the OT2                       ##
-from mollab_modules import volume_tracking_v1 as vt
- ## Import volume_tracking module for simulator                             ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                       ##
+# from mollab_modules import volume_tracking_v1 as vt
+#  ## Import volume_tracking module for simulator                             ##
 # =============================================================================
 
 
@@ -48,59 +48,59 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     ##### Loading labware
     tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
-        3,                                 #deck position
-        'tips_200')                         #custom name
+        'opentrons_96_filtertiprack_200ul',     #labware definition
+        3,                                      #deck position
+        'tips_200')                             #custom name
     tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        10,                                 #deck position
-        'tips_20')                          #custom name       
+        'opentrons_96_filtertiprack_20ul',      #labware definition
+        10,                                     #deck position
+        'tips_20')                              #custom name       
     tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        7,                                 #deck position
-        'tips_20')                          #custom name       
+        'opentrons_96_filtertiprack_20ul',      #labware definition
+        7,                                      #deck position
+        'tips_20')                              #custom name       
     plate_96_qPCR = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',    #labware definition
-        5,                                  #deck position
-        'plate_96_qPCR')                     #custom name
+        'biorad_96_wellplate_200ul_pcr',        #labware definition
+        5,                                      #deck position
+        'plate_96_qPCR')                        #custom name
     plate_96_dil = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',    #labware definition
-        4,                                  #deck position
-        'plate_96_dil')                     #custom name   
+        'biorad_96_wellplate_200ul_pcr',        #labware definition
+        4,                                      #deck position
+        'plate_96_dil')                         #custom name   
 
-    # ##### !!! FOR ROBOT      
-    # sample_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     1,                                  #deck position
-    #     'sample_strips_1')                  #custom name
-    # sample_strips_2 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     2,                                  #deck position
-    #     'sample_strips_2')                  #custom name
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorf_15_tuberack_5000ul',     #labware definition
-    #     6,                                  #deck position
-    #     'tubes_5mL')                        #custom name    
+    ##### !!! FOR ROBOT      
+    sample_strips_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        1,                                      #deck position
+        'sample_strips_1')                      #custom name
+    sample_strips_2 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        2,                                      #deck position
+        'sample_strips_2')                      #custom name
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+        6,                                      #deck position
+        'tubes_5mL')                            #custom name    
     
-    ####    !!! FOR SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-            sample_strips_1 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            1, 
-            'sample_strips_1')
-            sample_strips_2 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            2, 
-            'sample_strips_2')
-    with open("labware/eppendorf_15_tuberack_5000ul/"
-              "eppendorf_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-            tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, #variable derived from opening json
-            6, 
-            'tubes_5mL')        
+    # ####    !!! FOR SIMULATOR
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    #         sample_strips_1 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         1, 
+    #         'sample_strips_1')
+    #         sample_strips_2 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         2, 
+    #         'sample_strips_2')
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #         labware_def_5mL = json.load(labware_file)
+    #         tubes_5mL = protocol.load_labware_from_definition( 
+    #         labware_def_5mL, #variable derived from opening json
+    #         6, 
+    #         '5mL_tubes')      
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -120,7 +120,7 @@ def run(protocol: protocol_api.ProtocolContext):
     start_vol_mix = 2332 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
-    start_vol_water = 5000
+    start_vol_water = 5000 
       ## The start_vol_w is the volume (ul) of water that is in the source  ##
       ## labware at the start of the protocol.                              ##
     dispension_vol_mix = 22 
@@ -135,8 +135,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_pcr = 3 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A1')
-    p20.starting_tip = tips_20_1.well('A1')
+    p300.starting_tip = tips_200.well('H4')
+    p20.starting_tip = tips_20_1.well('A8')
       ## The starting_tip is the location of first pipette tip in the box   ##
       
     #### Which wells / tubes are present / used 

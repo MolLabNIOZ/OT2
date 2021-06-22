@@ -133,35 +133,34 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
     # #### aliquoting 12 unique fwd primers in 12 strips
-    # for i, fwd_primer in enumerate(fwd_primers):
-    #     p300.distribute(
-    #         primer_volume,
-    #         fwd_primer,
-    #         fwd_columns[i],
-    #         air_gap = True
-    #         )
+    for i, fwd_primer in enumerate(fwd_primers):
+        source = fwd_primer
+        destination = fwd_columns[i]
+        p300.distribute(
+            primer_volume,
+            source,
+            destination,
+            air_gap = True
+            )
     
     #### aliquoting 8 unique rev primers in 8 rows of 12 strips
-    for i, rev_primer in enumerate(rev_primers):
-      
-        for well in rev_rows11[i] + rev_rows22[i]:
-            p300.transfer(
-                primer_volume,
-                rev_primer,
-                well,
-                air_gap = True,
-                mix_after = True
-                )
-            
-            # p300.pick_up_tip()
-            # p300.aspirate(
-            #     primer_volume, 
-            #     rev_primer)
-            # p300.dispense(
-            #     primer_volume + 5, # to make sure tips is really empty
-            #     well)
-            # p300.drop_tip()
-            
+    for i1, rev_primer in enumerate(rev_primers):
+        for i2, well in enumerate(rev_rows1[i1] + rev_rows2[i1]):
+            source = rev_primer
+            destination = well
+            if i2 % 2 == 0:
+                ## every other, because strips are only in every other row  ##
+                p300.pick_up_tip()
+                p300.aspirate(primer_volume, source)
+                p300.air_gap(10)
+                  ## air_gap to avoid dripping                              ##
+                p300.dispense(primer_volume + 10, destination)
+                  ## volume + 10 to completely empty tip                    ##
+                p300.air_gap(50)
+                  ## air_gap to suck up any liquid that remains in the tip  ##
+                p300.drop_tip()            
+                
+                
             
  
     

@@ -93,7 +93,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     primer_volume = 50
       ## How much volume of each forward and each reverse primer to combine ##
-    p300.starting_tip = tips_200_1.well('B3')
+    p300.starting_tip = tips_200_1.well('E3')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### primer destinations

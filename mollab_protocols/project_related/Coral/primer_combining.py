@@ -132,7 +132,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # ALIQUOTING===================================================================
 # =============================================================================
 
-    # #### aliquoting 12 unique fwd primers in 12 strips
+    #### aliquoting 12 unique fwd primers in 12 strips
+      ## strips are in every odd row of 2 96_wells plates
     for i, fwd_primer in enumerate(fwd_primers):
         source = fwd_primer
         destination = fwd_columns[i]
@@ -144,6 +145,7 @@ def run(protocol: protocol_api.ProtocolContext):
             )
     
     #### aliquoting 8 unique rev primers in 8 rows of 12 strips
+      ## strips are in every odd row of 2 96_wells plates
     for i1, rev_primer in enumerate(rev_primers):
         for i2, well in enumerate(rev_rows1[i1] + rev_rows2[i1]):
             source = rev_primer

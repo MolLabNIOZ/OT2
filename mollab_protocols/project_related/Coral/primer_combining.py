@@ -56,28 +56,28 @@ def run(protocol: protocol_api.ProtocolContext):
         3,                                  	#deck position
         'rev_primers')                           #custom name      
 
-    # ##### !!! FOR ROBOT      
-    # primer_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     2,                                  #deck position
-    #     'primer_strips_1')                  #custom name
-    # primer_strips_2 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     5,                                  #deck position
-    #     'primer_strips_2')                  #custom name
+    ##### !!! FOR ROBOT      
+    primer_strips_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',     #labware definition
+        5,                                  #deck position
+        'primer_strips_1')                  #custom name
+    primer_strips_2 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',     #labware definition
+        2,                                  #deck position
+        'primer_strips_2')                  #custom name
     
-    ####    !!! FOR SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-            primer_strips_1 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            2, 
-            'primer_strips_1')
-            primer_strips_2 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            5, 
-            'primer_strips_2')
+    # ####    !!! FOR SIMULATOR
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    #         primer_strips_1 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         5, 
+    #         'primer_strips_1')
+    #         primer_strips_2 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         2, 
+    #         'primer_strips_2')
 
 
     ##### Loading pipettes
@@ -93,7 +93,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     primer_volume = 50
       ## How much volume of each forward and each reverse primer to combine ##
-    p300.starting_tip = tips_200_1.well('A1')
+    p300.starting_tip = tips_200_1.well('B3')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### primer destinations
@@ -140,8 +140,13 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_volume,
             source,
             destination,
-            air_gap = True
+            air_gap = True,
+            blow_out = True,
+            blowout_location = 'source well'
             )
+          ## takes up 170, distributes over a couple of wells
+          ## You must specify blow_out=True in order to utilize 
+          ## the new argument blowout_location
     
     #### aliquoting 8 unique rev primers in 8 rows of 12 strips
     for i1, rev_primer in enumerate(rev_primers):
@@ -154,8 +159,8 @@ def run(protocol: protocol_api.ProtocolContext):
                 p300.aspirate(primer_volume, source)
                 p300.air_gap(10)
                   ## air_gap to avoid dripping                              ##
-                p300.dispense(primer_volume + 10, destination)
-                  ## volume + 10 to completely empty tip                    ##
+                p300.dispense(primer_volume + 20, destination)
+                  ## volume + 20 to completely empty tip                    ##
                 p300.air_gap(50)
                   ## air_gap to suck up any liquid that remains in the tip  ##
                 p300.drop_tip()            

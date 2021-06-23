@@ -14,10 +14,10 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-#   # Import volume_tracking module that is on the OT2                       ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                             ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+# from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
 # =============================================================================
 
 
@@ -75,39 +75,39 @@ def run(protocol: protocol_api.ProtocolContext):
         4,                                      #deck position
         'plate_96_dil')                         #custom name   
 
-    # ##### !!! FOR ROBOT      
-    # sample_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',         #labware definition
-    #     1,                                      #deck position
-    #     'sample_strips_1')                      #custom name
-    # sample_strips_2 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',         #labware definition
-    #     2,                                      #deck position
-    #     'sample_strips_2')                      #custom name
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-    #     6,                                      #deck position
-    #     'tubes_5mL')                            #custom name    
+    ##### !!! FOR ROBOT      
+    sample_strips_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        1,                                      #deck position
+        'sample_strips_1')                      #custom name
+    sample_strips_2 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        2,                                      #deck position
+        'sample_strips_2')                      #custom name
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+        6,                                      #deck position
+        'tubes_5mL')                            #custom name    
     
-    ####    !!! FOR SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-            sample_strips_1 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            1, 
-            'sample_strips_1')
-            sample_strips_2 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            2, 
-            'sample_strips_2')
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-            tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, #variable derived from opening json
-            6, 
-            '5mL_tubes')      
+    # ####    !!! FOR SIMULATOR
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    #         sample_strips_1 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         1, 
+    #         'sample_strips_1')
+    #         sample_strips_2 = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         2, 
+    #         'sample_strips_2')
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #         labware_def_5mL = json.load(labware_file)
+    #         tubes_5mL = protocol.load_labware_from_definition( 
+    #         labware_def_5mL, #variable derived from opening json
+    #         6, 
+    #         '5mL_tubes')      
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -134,6 +134,7 @@ def run(protocol: protocol_api.ProtocolContext):
     start_vol_water = 5000 
       ## The start_vol_w is the volume (ul) of water that is in the source  ##
       ## labware at the start of the protocol.                              ##
+      ##!!! Fill up to above 5mL line                                       ##
     dispension_vol_mix = 22 
       ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
       ## be aliquoted into the destination wells/tubes.                     ##
@@ -146,8 +147,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_pcr = 3 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('H4')
-    p20.starting_tip = tips_20_1.well('A8')
+    p300.starting_tip = tips_200.well('G6')
+    p20.starting_tip = tips_20_1.well('H8')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### Which wells/tubes are used 
@@ -265,7 +266,7 @@ def run(protocol: protocol_api.ProtocolContext):
                   ## pip_height and whether bottom_reached.                 ##
             
             if bottom_reached:
-                if aliquot == 'dilution_plate':
+                if aliquot == 'water':
                       ## continue with next tube, reset vt
                     current_height = start_height_water
                     current_height, pip_height, bottom_reached = (
@@ -276,7 +277,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     aspiration_location = source.bottom(current_height)
                     protocol.comment("Continue with next tube of water")
                     
-                elif aliquot == 'PCR_plate':    
+                elif aliquot == 'PCR_mix':    
                     aspiration_location = source.bottom(z=1)
                     protocol.comment("You've reached the bottom of the tube!")
             

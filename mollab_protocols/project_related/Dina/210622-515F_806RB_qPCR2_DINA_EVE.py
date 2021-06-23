@@ -1,7 +1,9 @@
 # =============================================================================
 # Author(s): Maartje Brouwer
-# Creation date: 210623
-# Description: qPCR protocol. Second qPCR of a batch, all need diluting
+# Creation date: 2106123
+# Description: general qPCR protocol. Samples will be diluted, than added to
+# PCR. Adjust number of samples and diltion series as desired. Locations n
+# plates will be updated accordingly.
 # =============================================================================
 
 
@@ -24,8 +26,9 @@ from mollab_modules import volume_tracking_v1 as vt
 metadata = {
     'protocolName': '210622-515F_806RB_qPCR1_DINA_EVE',
     'author': 'MB <maartje.brouwer@nioz.nl>',
-    'description': ('16S qPCR - aliquoting water and mix,'
-                    'then diluting + adding samples. second PCR, no stds'),
+    'description': ('qPCR - aliquoting water and mix,'
+                    'then diluting + adding samples. adding std sample.' 
+                    'Std dilution series should be added by hand.'),
     'apiLevel': '2.9'}
 
 def run(protocol: protocol_api.ProtocolContext):
@@ -117,6 +120,10 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
+    number_of_samples = 64
+      ## How many samples will you include in this PCR                      ##
+    number_std_series = 3
+      ## How many dilution series do you want to include in this PCR        ##    
     start_vol_mix = 2332 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
@@ -138,43 +145,12 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('H4')
     p20.starting_tip = tips_20_1.well('A8')
       ## The starting_tip is the location of first pipette tip in the box   ##
-      
-    #### Which wells / tubes are present / used 
-    PCR_plate = plate_96_qPCR.wells()
-    dilution_plate = plate_96_dil.wells()
-    aliquots = ['dilution_plate', 'PCR_plate']
-      ## Which wells are used (in this case entire plates)
+
+    #### Which wells/tubes are used 
     mastermix = tubes_5mL['C1']
     H2O = ([tubes_5mL.wells_by_name()[well_name] for well_name in
          ['B1', 'B2', 'B3']])
-    
-    samples = []
-    sample_columns = (                                                           
-        ([sample_strips_1.columns_by_name()[column_name] 
-          for column_name in ['1','3', '5', '7', '9', '11']]) 
-        + 
-        ([sample_strips_2.columns_by_name()[column_name] 
-          for column_name in ['1','3']]))
-        # for 88 samples to 9, for 64 samples to 3
-    for column in sample_columns:
-        for well in column:
-            samples.append(well)
-        
-    sample_dest = []
-    sample_dest_columns = (
-        [plate_96_qPCR.columns_by_name()[column_name] for column_name in
-         ['5','6', '7', '8', '9', '10', '11', '12']
-        ])
-      # For PCR with std dilution series, start at 5, otherwise at 2
-    for column in sample_dest_columns:
-        for well in column:
-            sample_dest.append(well)
-        
-    
-    sample_mix = sample_strips_2['A11']
-    sample_mix_dest = []
-    for well in plate_96_qPCR.columns_by_name()['4']:
-        sample_mix_dest.append(well)
+    sample_mix = sample_strips_2['H12']
       
 # =============================================================================
 
@@ -186,20 +162,78 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Variables for volume tracking
     start_height_mix = vt.cal_start_height(container_mix, start_vol_mix)
     start_height_water = vt.cal_start_height(container_water, start_vol_water)
+    
+    ##### Location determination for different steps
+    columns_odd = ['1','3','5','7','9','11']
+    columns_all = ['1','2','3','4','5','6','7','8','9','10','11','12']
+    
+      ## Where the samples are located                                      ##
+    samples = []
+    sample_columns = (                                                           
+        ([sample_strips_1.columns_by_name()[column_name] 
+          for column_name in columns_odd]) 
+        + 
+        ([sample_strips_2.columns_by_name()[column_name] 
+          for column_name in columns_odd])
+        )
+    for column in sample_columns:
+        for well in column:
+            samples.append(well)
+      ## makes a list of all wells in 2 full plates of PCR strips           ##
+    samples = samples[:number_of_samples]
+      ## cuts off the list after certain number of samples                  ##
+
+      ## Where the samples go in the PCR plate                              ##
+    sample_dest = []
+    sample_dest_columns = (
+        [plate_96_qPCR.columns_by_name()[column_name] for column_name in
+         columns_all[number_std_series+1:]]
+         )
+      ## skip columns for dilution series and 1 column for sample_mix       ##
+    for column in sample_dest_columns:
+        for well in column:
+            sample_dest.append(well)
+      ## makes a list of all wells after dilution series and sample_mix     ##
+    sample_dest = sample_dest[:number_of_samples]
+      ## cuts off the list after a certain number of samples                ##
+    
+      ## Where the sample_mix will go in the PCR plate                      ##
+    sample_mix_dest = []
+    sample_mix_column = str(number_std_series+1)
+    for well in plate_96_qPCR.columns_by_name()[sample_mix_column]:
+        sample_mix_dest.append(well)
+      ## PCR will start with dilution series (if desired), followed by an   ## 
+      ## entire column with sample mix. This is used to normalize between   ##
+      ## PCRs                                                               ##
 # =============================================================================    
 
 
 # ALIQUOTING DILUTION WATER AND MASTERMIX======================================
 # =============================================================================
+    number_of_mix_wells = number_of_samples + 8 + (number_std_series * 8)
+      ## number of wells in the plate, mastermix will be aliquoted to       ##
+      ## number_of_samples + 8x sample_mix for uniforming over PCRs         ##
+      ## + 8 wells per dilution series                                      ##
+    
+    PCR_plate = plate_96_qPCR.wells()
+    PCR_plate = PCR_plate[:number_of_mix_wells]
+    dilution_plate = plate_96_dil.wells()
+    dilution_plate = dilution_plate[:number_of_samples+1]  
+      ## How many wells do need to be filled depends on the number of       ##
+      ## samples and dilution series. (+1 is for sample_mix                 ##
+
+    aliquots = ['water', 'PCR_mix']
+      ## what will be aliquoted in this protocol
+      
     for aliquot in aliquots:
-        if aliquot == 'PCR_plate':
+        if aliquot == 'PCR_mix':
             source = mastermix
             destination = PCR_plate
             current_height = start_height_mix
             container = container_mix
             dispension_vol = dispension_vol_mix
         
-        elif aliquot == 'dilution_plate':
+        elif aliquot == 'water':
             counter = 0 # how many tubes emptied
             source = H2O[counter]
             destination = dilution_plate
@@ -310,20 +344,20 @@ def run(protocol: protocol_api.ProtocolContext):
       ## the following.                                                     ##
     p20.aspirate(sample_vol_dil, sample_mix)
       ## aspirate sample_volume_dil = volume for dil. from sample_mix       ##
-    p20.dispense(sample_vol_dil, plate_96_dil.wells_by_name()['A12'])
+    p20.dispense(sample_vol_dil, dilution_plate[-1])
       ## dispense sample_volume_dil = volume for dilution into dil_well     ##
     mix_vol = sample_vol_dil + 3
       ## Set volume for mixing up and down.                                 ##
     for i in range (3):
-        p20.aspirate(mix_vol, plate_96_dil.wells_by_name()['A12'])
-        p20.dispense(mix_vol, plate_96_dil.wells_by_name()['A12'])
+        p20.aspirate(mix_vol, dilution_plate[-1])
+        p20.dispense(mix_vol, dilution_plate[-1])
           ## Mix 3 times up and down with sample volume +3.                 ##
     p20.drop_tip()
     
     #### Distribute from dilution plate to entire column in PCR plate       ##
     for well in sample_mix_dest:
         p20.pick_up_tip()
-        p20.aspirate(sample_vol_pcr, plate_96_dil.wells_by_name()['A12'])
+        p20.aspirate(sample_vol_pcr, dilution_plate[-1])
           ## aspirate sample_vol_pcr = volume for in mastermix from dil_well##
         p20.dispense(sample_vol_pcr, well)
           ## dispense sample_vol_mix = volume for in mastermix into pcr_well##

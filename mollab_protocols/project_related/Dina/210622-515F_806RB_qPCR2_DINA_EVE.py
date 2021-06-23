@@ -33,8 +33,11 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Second qPCR of a batch. Still all first reactions. All need to be diluted.
-    First aliquot water for diluting samples into a 96_wells plate. 
+    general protocol for multiple qPCRs of a batch. 
+    Samples will be diluted. 
+        Define if and how many dilution series you want to include. Usually only
+    in the first PCR of a batch, 3 dilution series are included.
+    First aliquot water for diluting samples into a 96_wells plate.
     The source = 3 5mL tubes. Use volume tracking, which resets after every
     tube. 
     Then aliquoting Phusion PCRmix with EvaGreen added from a 5 mL tube to a 
@@ -42,7 +45,8 @@ def run(protocol: protocol_api.ProtocolContext):
     After that, dilute samples 100x and add to PCR mix.
     Also include a standard sample mix (dilute one time but distribute to an
     entire column.
-    No dilution series.
+    Dilution series should be added by hand in the first (how many you chose) 
+    columns.
     """
 # =============================================================================
 

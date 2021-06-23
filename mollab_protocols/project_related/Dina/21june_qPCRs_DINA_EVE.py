@@ -147,8 +147,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_pcr = 3 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('G6')
-    p20.starting_tip = tips_20_1.well('H8')
+    p300.starting_tip = tips_200.well('C1')
+    p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### Which wells/tubes are used 

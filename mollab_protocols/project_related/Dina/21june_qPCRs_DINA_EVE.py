@@ -35,7 +35,7 @@ def run(protocol: protocol_api.ProtocolContext):
     """
     general protocol for multiple qPCRs of a batch. 
     Samples will be diluted. 
-        Define if and how many dilution series you want to include. Usually only
+    Define if and how many dilution series you want to include. Usually only
     in the first PCR of a batch, 3 dilution series are included.
     First aliquot water for diluting samples into a 96_wells plate.
     The source = 3 5mL tubes. Use volume tracking, which resets after every
@@ -44,7 +44,7 @@ def run(protocol: protocol_api.ProtocolContext):
     96-wells plate; use volume tracking.
     After that, dilute samples 100x and add to PCR mix.
     Also include a standard sample mix (dilute one time but distribute to an
-    entire column.
+    entire column).
     Dilution series should be added by hand in the first (how many you chose) 
     columns.
     """
@@ -124,11 +124,11 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_samples = 64
+    number_of_samples = 80
       ## How many samples will you include in this PCR                      ##
-    number_std_series = 3
+    number_std_series = 0
       ## How many dilution series do you want to include in this PCR        ##    
-    start_vol_mix = 2332 
+    start_vol_mix = 2134 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
     start_vol_water = 5000 
@@ -147,8 +147,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_pcr = 3 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('C1')
-    p20.starting_tip = tips_20_1.well('A1')
+    p300.starting_tip = tips_200.well('H3')
+    p20.starting_tip = tips_20_1.well('A10')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### Which wells/tubes are used 

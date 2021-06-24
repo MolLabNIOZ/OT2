@@ -175,7 +175,7 @@ def run(protocol: protocol_api.ProtocolContext):
         unlabeled_primer_dest.append(well)
     unlabeled_primer_columns = (
         [plate_96.columns_by_name()[column_name] for column_name in
-         ['5', '6']]
+         ['4', '5', '6']]
         )
     for column in unlabeled_primer_columns:
         for well in column:

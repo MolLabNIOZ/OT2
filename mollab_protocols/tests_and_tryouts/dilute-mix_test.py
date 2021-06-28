@@ -255,8 +255,7 @@ def run(protocol: protocol_api.ProtocolContext):
         ## where to dilute
         dilution = dilution_plate[mix_method]
         
-        
-          ## set variables per mix_method
+        ## set variables per mix_method
         if mix_method == 0:
             ## 1: Mixing 3x with sample_vol +3. Distribute in 24 wells
             mix_vol = sample_vol_dil + 3
@@ -298,44 +297,34 @@ def run(protocol: protocol_api.ProtocolContext):
             number_of_mixes = 10
             destination = PCR_plate[72:80]     
 
-        
-
-
-        #### diluting sample                                                    ##
+        #### diluting sample                                                ##
         p20.pick_up_tip()
-          ## p20 picks up tip from location of specified starting_tip or        ##
-          ## the following.                                                     ##
+          ## p20 picks up tip from location of specified starting_tip or    ##
+          ## the following.                                                 ##
         p20.aspirate(sample_vol_dil, sample)
-          ## aspirate sample_volume_dil = volume for dil. from sample_mix       ##
+          ## aspirate sample_volume_dil = volume for dil. from sample_mix   ##
         p20.dispense(sample_vol_dil, dilution)
-          ## dispense sample_volume_dil = volume for dilution into dil_well     ##
-        
-          ## Set volume for mixing up and down.                                 ##
-        for i in range (number_of_mixes):
-            p20.aspirate(mix_vol, dilution)
-            p20.dispense(mix_vol, dilution)
-              ## Mix 3 times up and down with sample volume +3.                 ##
+          ## dispense in dilution tube
+        p20.mix(number_of_mixes, mix_vol, dilution)
+          ## mix according to mix_method
+        p20.dispense(10, dilution)
+          ## instead of blow-out                                            ##
         p20.drop_tip()
+          ## Drop tip in trashbin on 12.                                    ##
         
-        #### Distribute from dilution to PCR plate                              ##
+        #### Distribute from dilution to PCR plate                          ##
         for well in destination:
             p20.pick_up_tip()
             p20.aspirate(sample_vol_pcr, dilution)
-              ## aspirate sample_vol_pcr = volume for in mastermix from dil_well##
+              ## aspirate sample_vol_pcr from dilution                      ##
             p20.dispense(sample_vol_pcr, well)
-              ## dispense sample_vol_mix = volume for in mastermix into pcr_well##
-            mix_vol = sample_vol_pcr + 3
-              ## Set volume for mixing up and down.                             ##
-            for i in range (3):
-                p20.aspirate(mix_vol, well)
-                p20.dispense(mix_vol, well)
-                  ## Mix 3 times up and down with sample volume +3.             ##
-            sample_dispense = mix_vol + 3
-              ## Set extra dispension volume after mixing to mix volume +3.     ##
-            p20.dispense(sample_dispense, well)
-              ## Dispese the mix volume + 3 in the well.                        ##
+              ## dispense into pcr_well                                     ##
+            p20.mix(3, 20, well)
+              ## Mix 3 times up and down with max pipette vol               ##
+            p20.dispense(10, well)
+              ## instead of blow-out.                                       ##
             p20.drop_tip()
-              ## Drop tip in trashbin on 12.                                    ##
+              ## Drop tip in trashbin on 12.                                ##
             
         
               

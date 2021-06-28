@@ -55,11 +55,11 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         7,                                  #deck position
-        '20tips')                           #custom name       
+        '20tips_1')                           #custom name       
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
-        '20tips')                           #custom name    
+        '20tips_2')                           #custom name    
        
     # Tube racks & plates
     plate_96 = protocol.load_labware(
@@ -74,11 +74,11 @@ def run(protocol: protocol_api.ProtocolContext):
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     4,                                 #deck position
-    #     'primer strips 1')                 #custom name
+    #     'primer_strips_1')                 #custom name
     # primer_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     1,                                 #deck position
-    #     'primer strips 2')                 #custom name                  
+    #     'primer_strips_2')                 #custom name                  
    ##### !!! OPTION 2: SIMULATOR      
     with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
@@ -126,13 +126,13 @@ def run(protocol: protocol_api.ProtocolContext):
     p20.starting_tip = tips_20_1.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
-    mastermix_source = mastermix_tube['C1']
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
       ## of the pipette height. It is the source labware from which liquid  ##
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
+    mastermix_source = mastermix_tube['C1']
     std_dilution_primer = primer_strips_2['B11']
 # Mastermix destination wells==================================================
     mastermix_destination_wells = plate_96.wells()
@@ -235,11 +235,11 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Name all the wells in destination 'well', for all these do:          ## 
         if i == 0:
             p300.pick_up_tip()
-        ## If we are at the first well, start by picking up a tip.          ##
+          ## If we are at the first well, start by picking up a tip.        ##
         elif i % 8 == 0:
             p300.drop_tip()
             p300.pick_up_tip() 
-        ## After every 8th well, drop tip and pick up a new one.            ##
+          ## After every 8th well, drop tip and pick up a new one.          ##
         current_height, pip_height, bottom_reached = vt.volume_tracking(
             container, dispension_vol, current_height)  
           ## The volume_tracking function needs the arguments container,    ##
@@ -284,12 +284,11 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_source_tubes, odd_primer_destinations):
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, mix_tube)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed          ##
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(10, mix_tube)
         p20.drop_tip()
 # ==============adding primers to 2nd half of the sample wells=================    
     ## For the columns in both the source (primers) and the destination     ##
@@ -298,12 +297,11 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_source_tubes, even_primer_destinations):
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, mix_tube)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed          ##
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(10, mix_tube)
         p20.drop_tip()
 # ==================adding primers to std dilution series======================
     ## For the columns in both the source (primers) and the destination     ##
@@ -311,11 +309,10 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in standard_dil_primer_destinations:
         p20.pick_up_tip()
         p20.aspirate(primer_vol, std_dilution_primer)
+        p20.dispense(primer_vol, well)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, well)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed      ##
-        p20.dispense(primer_dispense_vol, well)
+        p20.dispense(10, well)
         p20.drop_tip()
 # =============================================================================

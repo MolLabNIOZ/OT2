@@ -44,6 +44,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # ======================LOADING LABWARE AND PIPETTES===========================
 # =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
+    # Pipette tips
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
         3,                                  #deck position
@@ -51,36 +52,38 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         4,                                  #deck position
-        '20tips')                           #custom name                    
+        '20tips')                           #custom name   
+
+    # Tube racks & plates                 
     ##### !!! OPTION 1: ROBOT      
-    # mm_tube = protocol.load_labware(
+    # mastermix_tube = protocol.load_labware(
     #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
     #      5,                                     #deck position
-    #      'mm_tube')                             #custom name          
+    #      'mastermix_tube')                             #custom name          
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     6,                                 #deck position
-    #     'primer strips 1')                 #custom name
+    #     'primer_strips_1')                 #custom name
     # primer_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     7,                                 #deck position
-    #     'primer strips 2')                 #custom name                  
-    # mix_strips_1 = protocol.load_labware(
+    #     'primer_strips_2')                 #custom name                  
+    # mastermix_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     8,                                 #deck position
-    #     'mix strips 1')                    #custom name    
-    # mix_strips_2 = protocol.load_labware(
+    #     'mastermix_strips_1')                    #custom name    
+    # mastermix_strips_2 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     9,                                 #deck position
-    #     'mix strips 2')                    #custom name                      
+    #     'mastermix_strips_2')                    #custom name                      
     ##### !!! OPTION 2: SIMULATOR      
     with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
              labware_def_5mL = json.load(labware_file)
-    mm_tube = protocol.load_labware_from_definition( 
+    mastermix_tube = protocol.load_labware_from_definition( 
              labware_def_5mL,   #variable derived from opening json
              5,                 #deck position
-             'mm_tube')       #custom name 
+             'mastermix_tube')       #custom name 
     with open("labware/pcrstrips_96_wellplate_200ul/"
               "pcrstrips_96_wellplate_200ul.json") as labware_file:
             labware_def_pcrstrips = json.load(labware_file)
@@ -92,16 +95,16 @@ def run(protocol: protocol_api.ProtocolContext):
         labware_def_pcrstrips, #variable derived from opening json
         7,                     #deck position
         'primer_strips_2')     #custom name                            
-    mm_strips_1 = protocol.load_labware_from_definition( 
+    mastermix_strips_1 = protocol.load_labware_from_definition( 
         labware_def_pcrstrips, #variable derived from opening json
         8,                     #deck position
-        'mm_strips_1')        #custom name   
-    mm_strips_2 = protocol.load_labware_from_definition( 
+        'mastermix_strips_1')        #custom name   
+    mastermix_strips_2 = protocol.load_labware_from_definition( 
         labware_def_pcrstrips, #variable derived from opening json
         9,                     #deck position
-        'mm_strips_2')         #custom name                  
+        'mastermix_strips_2')         #custom name                  
     
-    ##### Loading pipettes
+    # Pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',                 #instrument definition
         'right',                            #mount position
@@ -127,11 +130,6 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.starting_tip = tips_200.well('A1')
     p20.starting_tip = tips_20.well('A1')
       ## The starting_tip is the location of first pipette tip in the box   ##
-# =============================================================================
-
-
-# ==========================PREDIFINED VARIABLES===============================
-# =============================================================================
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##
       ## It tells the module which dimensions to use for the calculations   ##
@@ -139,6 +137,13 @@ def run(protocol: protocol_api.ProtocolContext):
       ## is aliquoted.                                                      ##
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
+    mastermix_source = mastermix_tube['C1']
+# =============================================================================
+
+
+# ==========================PREDIFINED VARIABLES===============================
+# =============================================================================
+
     aspiration_vol = dispension_vol + (dispension_vol/100*2)
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
@@ -220,10 +225,10 @@ def run(protocol: protocol_api.ProtocolContext):
           ## the current_height and calculates the delta_height of the  ## 
           ## liquid after the next aspiration step.                     ##
         if bottom_reached: 
-            aspiration_location = mm_tube['C1'].bottom(z=1) #!!!
+            aspiration_location = mastermix_tube.bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = mm_tube['C1'].bottom(pip_height) #!!!
+            aspiration_location = mastermix_tube.bottom(pip_height) #!!!
           ## If the level of the liquid in the next run of the loop will## 
           ## be smaller than 1 we have reached the bottom of the tube.  ##
           ## To prevent the pipette from crashing into the bottom, we   ##

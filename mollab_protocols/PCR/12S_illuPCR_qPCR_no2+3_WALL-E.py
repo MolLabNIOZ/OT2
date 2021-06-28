@@ -284,12 +284,11 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_source_tubes, odd_primer_destinations):
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, mix_tube)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed          ##
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(10, mix_tube)
         p20.drop_tip()
 # ==============adding primers to 2nd half of the sample wells=================    
     ## For the columns in both the source (primers) and the destination     ##
@@ -298,12 +297,11 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_source_tubes, even_primer_destinations):
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, mix_tube)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed          ##
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(10, mix_tube)
         p20.drop_tip()
 # ==================adding primers to std dilution series======================
     ## For the columns in both the source (primers) and the destination     ##
@@ -311,11 +309,10 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in standard_dil_primer_destinations:
         p20.pick_up_tip()
         p20.aspirate(primer_vol, std_dilution_primer)
+        p20.dispense(primer_vol, well)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, well)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed      ##
-        p20.dispense(primer_dispense_vol, well)
+        p20.dispense(10, well)
         p20.drop_tip()
 # =============================================================================

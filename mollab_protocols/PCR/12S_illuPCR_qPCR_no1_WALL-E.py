@@ -137,23 +137,23 @@ def run(protocol: protocol_api.ProtocolContext):
 # Mastermix destination wells==================================================
     mastermix = []
       ## Create an empty list to append wells to                            ##
-    mm_columns = (
+    mastermix_columns = (
         [plate_96.columns_by_name()[column_name] for column_name in
          ['1', '2', '3', '4', '5']]
         )
       ## Make a list of columns, this is a list of lists!                   ##
-    for column in mm_columns:
+    for column in mastermix_columns:
         for well in column:
             mastermix.append(well)
       ## Separate the columns into wells and append them to list            ##
-    mm_wells = (
+    mastermix_wells = (
         [plate_96.wells_by_name()[well_name] for well_name in
          ['A6', 'B6',
           'A11', 'B11', 'C11', 'D11', 'E11', 'F11',
           'A12', 'B12', 'C12', 'D12', 'E12', 'F12']]
         )
       ## Make a list of separate wells                                      ## 
-    for well in mm_wells:
+    for well in mastermix_wells:
         mastermix.append(well)
       ## Append the wells to the list                                       ## 
 # Primer source tubes==========================================================
@@ -169,7 +169,7 @@ def run(protocol: protocol_api.ProtocolContext):
     for column in primer_columns:
         for well in column:
             primers.append(well)
-      ## Separate the columns into wells and append them to list            ##                                                    ##
+      ## Separate the columns into wells and append them to list            ##                                       
     primer_wells = (
         [primer_strips_2.wells_by_name()[well_name] for well_name in
          ['A11', 'B11']]

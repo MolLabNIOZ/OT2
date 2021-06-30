@@ -55,11 +55,11 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         7,                                  #deck position
-        '20tips_1')                           #custom name       
+        '20tips_1')                         #custom name       
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
-        '20tips_2')                           #custom name           
+        '20tips_2')                         #custom name           
     
     # Tube_racks & plates
     plate_96 = protocol.load_labware(
@@ -68,9 +68,9 @@ def run(protocol: protocol_api.ProtocolContext):
         'plate_96')                         #custom name     
    ##### !!! OPTION 1: ROBOT      
     # mastermix_tube = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
+    #     'eppendorfscrewcap_15_tuberack_5000ul',  #labware def
     #       3,                                     #deck position
-    #       'mastermix_tube')                             #custom name          
+    #       'mastermix_tube')                      #custom name          
     # primer_strips_1 = protocol.load_labware(
     #     'pcrstrips_96_wellplate_200ul',    #labware definition
     #     4,                                 #deck position
@@ -86,7 +86,7 @@ def run(protocol: protocol_api.ProtocolContext):
     mastermix_tube = protocol.load_labware_from_definition( 
         labware_def_5mL,   #variable derived from opening json
         3,                 #deck position
-        'mastermix_tube')         #custom name 
+        'mastermix_tube')  #custom name 
     with open("labware/pcrstrips_96_wellplate_200ul/"
               "pcrstrips_96_wellplate_200ul.json") as labware_file:
             labware_def_pcrstrips = json.load(labware_file)
@@ -137,23 +137,23 @@ def run(protocol: protocol_api.ProtocolContext):
 # Mastermix destination wells==================================================
     mastermix = []
       ## Create an empty list to append wells to                            ##
-    mm_columns = (
+    mastermix_columns = (
         [plate_96.columns_by_name()[column_name] for column_name in
          ['1', '2', '3', '4', '5']]
         )
       ## Make a list of columns, this is a list of lists!                   ##
-    for column in mm_columns:
+    for column in mastermix_columns:
         for well in column:
             mastermix.append(well)
       ## Separate the columns into wells and append them to list            ##
-    mm_wells = (
+    mastermix_wells = (
         [plate_96.wells_by_name()[well_name] for well_name in
          ['A6', 'B6',
           'A11', 'B11', 'C11', 'D11', 'E11', 'F11',
           'A12', 'B12', 'C12', 'D12', 'E12', 'F12']]
         )
       ## Make a list of separate wells                                      ## 
-    for well in mm_wells:
+    for well in mastermix_wells:
         mastermix.append(well)
       ## Append the wells to the list                                       ## 
 # Primer source tubes==========================================================
@@ -169,7 +169,7 @@ def run(protocol: protocol_api.ProtocolContext):
     for column in primer_columns:
         for well in column:
             primers.append(well)
-      ## Separate the columns into wells and append them to list            ##                                                    ##
+      ## Separate the columns into wells and append them to list            ##                                       
     primer_wells = (
         [primer_strips_2.wells_by_name()[well_name] for well_name in
          ['A11', 'B11']]

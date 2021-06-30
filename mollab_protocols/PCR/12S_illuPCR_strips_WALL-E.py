@@ -138,62 +138,59 @@ def run(protocol: protocol_api.ProtocolContext):
       ## There are several options to choose from:                          ##
       ## 'tube_1.5ml', 'tube_2mL', 'tube_5mL', 'tube_15mL', 'tube_50mL'   	##
     mastermix_source = mastermix_tube['C1']
-# =============================================================================
-
-
-# ==========================PREDIFINED VARIABLES===============================
-# =============================================================================
-
-    aspiration_vol = dispension_vol + (dispension_vol/100*2)
-      ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
-      ## container.                                                         ##
-# =========================creating primer-well list===========================
+# Mastermix destination wells==================================================
+    mastermix = []
+      ## Create an empty list to append wells to                            ##
+    mastermix_columns = (
+        [mastermix_strips_1.columns_by_name()[column_name] for column_name in
+         ['2', '7', '11']] + 
+        [mastermix_strips_2.columns_by_name()[column_name] for column_name in
+         ['2', '7']] 
+        )
+      ## Make a list of columns, this is a list of lists!                   ##
+    for column in mastermix_columns:
+        for well in column:
+            mastermix.append(well)
+      ## Separate the columns into wells and append them to list            ##
+    mastermix_wells = (
+        [mastermix_strips_2.wells_by_name()[well_name] for well_name in
+         ['A11', 'B11']]
+        )
+      ## Make a list of separate wells                                      ## 
+    for well in mastermix_wells:
+        mastermix.append(well)
+      ## Append the wells to the list                                       ##
+# Primer source tubes==========================================================
     primers = []
-      ## Create an empty list to append wells to for the primer wells.      ##
+      ## Create an empty list to append wells to                            ##
     primer_columns = (
         [primer_strips_1.columns_by_name()[column_name] for column_name in
          ['2', '7', '11']] + 
         [primer_strips_2.columns_by_name()[column_name] for column_name in
          ['2', '7']] 
         )
-      ## Make a list of columns for the primers, this is a list of lists!   ##
+      ## Make a list of columns, this is a list of lists!                   ##
     for column in primer_columns:
         for well in column:
             primers.append(well)
-      ## Separate the columns into wells and append them to the empty primer## 
-      ## wells list                                                         ##
+      ## Separate the columns into wells and append them to list            ##
     primer_wells = (
         [primer_strips_2.wells_by_name()[well_name] for well_name in
          ['A11', 'B11']]
         ) 
-      ## Make a list of the remaining primer wells.                         ## 
+      ## Make a list of separate wells                                      ## 
     for well in primer_wells:
         primers.append(well)
-      ## Append the wells to the list of primer wells.                      ##
-# ==========================creating mix well list==============================
-    mastermix = []
-      ## Create an empty list to append wells to for the mastermix wells.   ##
-    mm_columns = (
-        [mm_strips_1.columns_by_name()[column_name] for column_name in
-         ['2', '7', '11']] + 
-        [mm_strips_2.columns_by_name()[column_name] for column_name in
-         ['2', '7']] 
-        )
-      ## Make a list of columns for the mastermix, this is a list of lists! ##
-    for column in mm_columns:
-        for well in column:
-            mastermix.append(well)
-      ## Separate the columns into wells and append them to the empty       ##
-      ## mastermix wells list                                               ##
-    mm_wells = (
-        [mm_strips_2.wells_by_name()[well_name] for well_name in
-         ['A11', 'B11']]
-        )
-      ## Make a list of the remaining mastermix wells.                      ## 
-    for well in mm_wells:
-        mastermix.append(well)
-      ## Append the wells to the list of mastermix wells.                   ##
+      ## Append the wells to the list                                       ##
 # =============================================================================
+# =============================================================================
+
+
+# ==========================PREDIFINED VARIABLES===============================
+# =============================================================================
+    aspiration_vol = dispension_vol + (dispension_vol/100*2)
+      ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
+      ## container.                                                         ##
     ##### Variables for volume tracking
     start_height = vt.cal_start_height(container, start_vol)
       ## Call start height calculation function from volume tracking module.##
@@ -210,44 +207,44 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Repeat untill all columns in the list are done.                      ##      
     for i, well in enumerate(mastermix):
     ## Name all the wells in the plate 'well', for all these do:            ## 
-        ## If we are at the first well, start by picking up a tip.          ##
         if i == 0:
             p300.pick_up_tip()
-        ## Then, after every 8th well, drop tip and pick up a new one.      ##
+          ## If we are at the first well, start by picking up a tip.        ##
         elif i % 8 == 0:
             p300.drop_tip()
             p300.pick_up_tip() 
+          ## Then, after every 8th well, drop tip and pick up a new one.    ##
         current_height, pip_height, bottom_reached = vt.volume_tracking(
             container, dispension_vol, current_height)  
-          ## The volume_tracking function needs the arguments container ##
-          ## dispension_vol and the current_height which we have set in ##
-          ## this protocol. With those variables, the function updates  ##
-          ## the current_height and calculates the delta_height of the  ## 
-          ## liquid after the next aspiration step.                     ##
+          ## The volume_tracking function needs the arguments container,    ##
+          ## dispension_vol, and the current_height which we have set in    ##
+          ## this protocol. With those variables, the function updates      ##
+          ## the current_height, the pip_height and calculates the          ##
+          ## delta_height of the liquid after the next aspiration step.     ##
         if bottom_reached: 
-            aspiration_location = mastermix_tube.bottom(z=1) #!!!
+            aspiration_location = mastermix_source.bottom(z=1) #!!!
             protocol.comment("You've reached the bottom!")
         else:
-            aspiration_location = mastermix_tube.bottom(pip_height) #!!!
-          ## If the level of the liquid in the next run of the loop will## 
-          ## be smaller than 1 we have reached the bottom of the tube.  ##
-          ## To prevent the pipette from crashing into the bottom, we   ##
-          ## tell it to go home and pause the protocol so that this can ##
-          ## never happen. Set the location of where to aspirate from.  ##
-          ## Because we put this in the loop, the location will change  ##
-          ## to the newly calculated height after each pipetting step.  ##
+            aspiration_location = mastermix_source.bottom(pip_height) #!!!
+          ## If the level of the liquid in the next run of the loop will    ## 
+          ## be smaller than 1 we have reached the bottom of the tube.      ##
+          ## To prevent the pipette from crashing into the bottom, we       ##
+          ## tell it to go home and pause the protocol so that this can     ##
+          ## never happen. Set the location of where to aspirate from.      ##
+          ## Because we put this in the loop, the location will change      ##
+          ## to the newly calculated height after each pipetting step.      ##
         p300.aspirate(aspiration_vol, aspiration_location)
-          ## Aspirate the amount specified in aspiration_vol from the   ##
-          ## location specified in aspiration_location.                 ##
+          ## Aspirate the amount specified in aspiration_vol from the       ##
+          ## location specified in aspiration_location.                     ##
         p300.dispense(dispension_vol, well)
-          ## Dispense the amount specified in dispension_vol to the     ##
-          ## location specified in well (so a new well every time the   ##
-          ## loop restarts)                                             ##
+          ## Dispense the amount specified in dispension_vol to the         ##
+          ## location specified in well (so a new well every time the       ##
+          ## loop restarts)                                                 ##
         p300.dispense(10, aspiration_location)
-          ## Alternative for blow-out, make sure the tip doesn't fill   ##
-          ## completely when using a disposal volume by dispensing some ##
-          ## of the volume after each pipetting step. (blow-out to many ##
-          ## bubbles)                                                   ##
+          ## Alternative for blow-out, make sure the tip doesn't fill       ##
+          ## completely when using a disposal volume by dispensing some     ##
+          ## of the volume after each pipetting step. (blow-out to many     ##
+          ## bubbles)                                                       ##
     p300.drop_tip()      
 # =============================================================================
 
@@ -259,11 +256,10 @@ def run(protocol: protocol_api.ProtocolContext):
     for primer_tube, mix_tube in zip(primers, mastermix):
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_tube)
+        p20.dispense(primer_vol, mix_tube)
         primer_mix_vol = primer_vol + 3
         ## primer_mix_vol = volume for pipetting up and down                ##
         p20.mix(3, primer_mix_vol, mix_tube)
-        primer_dispense_vol = primer_mix_vol + 3
-        ## primer_dispense_vol = volume to dispense that was mixed      ##
-        p20.dispense(primer_dispense_vol, mix_tube)
+        p20.dispense(10, mix_tube)
         p20.drop_tip()
 # =============================================================================

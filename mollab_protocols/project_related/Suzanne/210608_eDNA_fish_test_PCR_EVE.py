@@ -33,10 +33,14 @@ def run(protocol: protocol_api.ProtocolContext):
 # ======================LOADING LABWARE AND PIPETTES===========================
 # =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
-    tips_20 = protocol.load_labware(
+    tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
-        'tips_20')                          #custom name   
+        'tips_20')                          #custom name
+    tips_20_2 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul',  #labware definition
+        5,                                 #deck position
+        'tips_20')                          #custom name
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',
         4,
@@ -53,7 +57,7 @@ def run(protocol: protocol_api.ProtocolContext):
     p20 = protocol.load_instrument(
         'p20_single_gen2',                  #instrument definition
         'left',                             #mount position
-        tip_racks=[tips_20])                #assigned tiprack
+        tip_racks=[tips_20_1, tips_20_2])                #assigned tiprack
 # =============================================================================
 
 
@@ -62,7 +66,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol = 5
       ## The primer_vol is the volume (ul) of NON barcoded F or R primer    ##
       ## that needs to be added to the reactions that do NOT get a barcode. ##
-    p20.starting_tip = tips_20.well('F6')
+    p20.starting_tip = tips_20_1.well('F6')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

@@ -111,10 +111,10 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    start_vol_mix = 1012 
+    start_vol_mix = 1144 
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
-    start_vol_water = 5000 
+    start_vol_water = 1000 
       ## The start_vol_w is the volume (ul) of water that is in the source  ##
       ## labware at the start of the protocol.                              ##
       ##!!! Fill up to above 5mL line                                       ##
@@ -136,8 +136,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol_pcr = 3 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A1')
-    p20.starting_tip = tips_20_1.well('A1')
+    p300.starting_tip = tips_200.well('D6')
+    p20.starting_tip = tips_20_1.well('G5')
       ## The starting_tip is the location of first pipette tip in the box   ##
 
     #### Which wells/tubes are used 
@@ -281,6 +281,7 @@ def run(protocol: protocol_api.ProtocolContext):
             sample_vol_dil = sample_vol_dil1
             mix_rate = 5
             mix_location = dilution
+            mix_volume = 20
             blow_air = False
         elif mix_method == 1:
             ## 2: 100x dultion, mixing 20µL 3x, bottom(z=5)
@@ -289,6 +290,7 @@ def run(protocol: protocol_api.ProtocolContext):
             sample_vol_dil = sample_vol_dil1
             mix_rate = 1
             mix_location = dilution.bottom(z=5)
+            mix_volume = 20
             blow_air = False            
         elif mix_method == 2:
             ## 3: 100x dultion, mixing 20µL 3x, blow air            
@@ -297,14 +299,16 @@ def run(protocol: protocol_api.ProtocolContext):
             sample_vol_dil = sample_vol_dil1
             mix_rate = 1
             mix_location = dilution
+            mix_volume = 20
             blow_air = True
         elif mix_method == 3:
             ## 4: 100x dultion, mixing 20µL 3x, rate=5 AND bottom(z=5)
-            dilution = dilution_strips.wells_by_name()['C1']
+            dilution = dilution_strips.wells_by_name()['D1']
             destination = plate_96_qPCR.columns_by_name()['7']
             sample_vol_dil = sample_vol_dil1
             mix_rate = 5
             mix_location = dilution.bottom(z=5)
+            mix_volume = 20
             blow_air = False
         elif mix_method == 4:
             ## 5: 2x (10x dilution, mixing 20µL 3x) rate=5 AND bottom(z=5)
@@ -314,7 +318,8 @@ def run(protocol: protocol_api.ProtocolContext):
                             ['A9','B9','C9','D9','E9']])
             sample_vol_dil = sample_vol_dil2
             mix_rate = 5
-            mix_location = dilution.bottom(z=5)
+            mix_location = dilution.bottom(z=2)
+            mix_volume = 10
             blow_air = False
 
 
@@ -326,7 +331,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## aspirate sample_volume_dil = volume for dil. from sample_mix   ##
         p20.dispense(sample_vol_dil, dilution)
           ## dispense in dilution tube
-        p20.mix(3, 20, mix_location, rate=mix_rate)
+        p20.mix(3, mix_volume, mix_location, rate=mix_rate)
           ## mix according to mix_method
         if blow_air is True:
             p20.dispense(20, dilution)
@@ -344,7 +349,7 @@ def run(protocol: protocol_api.ProtocolContext):
             mix_location = dilution.bottom(z=5)
             p20.dispense(sample_vol_dil, dilution)
               ## dispense in dilution tube
-            p20.mix(3, 20, mix_location, rate=mix_rate)
+            p20.mix(3, mix_volume, mix_location, rate=mix_rate)
               ## mix according to mix_method
             p20.dispense(10, dilution)
               ## instead of blow-out                                        ##

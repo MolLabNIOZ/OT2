@@ -18,9 +18,9 @@ import json
   ## so that we can use the simulate_protocol with custom labware.          ##
 
 #### !!! OPTION 1: ROBOT
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 ##### !!! OPTION 2: SIMULATOR
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 # =============================================================================
 
 
@@ -67,37 +67,37 @@ def run(protocol: protocol_api.ProtocolContext):
         6,                                  #deck position
         'plate_96')                         #custom name     
    ##### !!! OPTION 1: ROBOT      
-    # mastermix_tube = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul',  #labware def
-    #       3,                                     #deck position
-    #       'mastermix_tube')                      #custom name          
-    # primer_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     4,                                 #deck position
-    #     'primer_strips_1')                 #custom name
-    # primer_strips_2 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     1,                                 #deck position
-    #     'primer_strips_2')                 #custom name                  
+    mastermix_tube = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul',  #labware def
+          3,                                     #deck position
+          'mastermix_tube')                      #custom name          
+    primer_strips_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',    #labware definition
+        4,                                 #deck position
+        'primer_strips_1')                 #custom name
+    primer_strips_2 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',    #labware definition
+        1,                                 #deck position
+        'primer_strips_2')                 #custom name                  
    ##### !!! OPTION 2: SIMULATOR      
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-              labware_def_5mL = json.load(labware_file)
-    mastermix_tube = protocol.load_labware_from_definition( 
-        labware_def_5mL,   #variable derived from opening json
-        3,                 #deck position
-        'mastermix_tube')  #custom name 
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    primer_strips_1 = protocol.load_labware_from_definition( 
-        labware_def_pcrstrips, #variable derived from opening json
-        4,                     #deck position
-        'primer_strips_1')     #custom name  
-    primer_strips_2 = protocol.load_labware_from_definition( 
-        labware_def_pcrstrips, #variable derived from opening json
-        1,                     #deck position
-        'primer_strips_2')     #custom name                            
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #             "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #           labware_def_5mL = json.load(labware_file)
+    # mastermix_tube = protocol.load_labware_from_definition( 
+    #     labware_def_5mL,   #variable derived from opening json
+    #     3,                 #deck position
+    #     'mastermix_tube')  #custom name 
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    # primer_strips_1 = protocol.load_labware_from_definition( 
+    #     labware_def_pcrstrips, #variable derived from opening json
+    #     4,                     #deck position
+    #     'primer_strips_1')     #custom name  
+    # primer_strips_2 = protocol.load_labware_from_definition( 
+    #     labware_def_pcrstrips, #variable derived from opening json
+    #     1,                     #deck position
+    #     'primer_strips_2')     #custom name                            
     
     # Pipettes
     p300 = protocol.load_instrument(
@@ -122,8 +122,8 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_vol = 3 
       ## The primer_vol is the volume (ul) of primer added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('A1')
-    p20.starting_tip = tips_20_1.well('A1')
+    p300.starting_tip = tips_200.well('E6')
+    p20.starting_tip = tips_20_1.well('B7')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##

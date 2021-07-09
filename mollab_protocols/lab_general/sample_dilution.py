@@ -33,6 +33,9 @@ def run(protocol: protocol_api.ProtocolContext):
     samples you want to dilute, the type of tubes the samples are in and the 
     type of tubes you want the dilutions in. Then the robot will prepare these
     dilutions for you.
+    First aliquot water for diluting samples into a 96_wells plate.
+    The source = 5mL tubes. Use volume tracking, which resets after every
+    tube. 
     Provide samples in tube_strips
     Dilutions will be made in 96wells_plates
     """

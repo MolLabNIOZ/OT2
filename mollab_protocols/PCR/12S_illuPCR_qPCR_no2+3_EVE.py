@@ -90,11 +90,12 @@ def run(protocol: protocol_api.ProtocolContext):
     for column in sample_source_columns_b:
         for well in column:
             sample_sources_b.append(well)
-      ## Separate columns into wells and append them to the list.           ##  
-    sample_well_b = sample_tubes_2['A5']
-      ## Create separate well.                                              ##
-    sample_sources_b.append(sample_well_b)
-      ## Add separate well to list.                                         ##  
+      ## Separate columns into wells and append them to the list.           ##
+    ## pipetting MOCK by hand in postPCR  
+    # sample_well_b = sample_tubes_2['A5']
+    #   ## Create separate well.                                              ##
+    # sample_sources_b.append(sample_well_b)
+    #   ## Add separate well to list.                                         ##  
 # Sample source wells c========================================================    
     sample_sources_c = []
       ## Create an empty list to append wells to.                           ##
@@ -109,10 +110,11 @@ def run(protocol: protocol_api.ProtocolContext):
         for well in column:
             sample_sources_c.append(well)
       ## Separate columns into wells and append them to the list.           ##  
-    sample_well_c = sample_tubes_2['A5']
-      ## Create separate well.                                              ##
-    sample_sources_c.append(sample_well_c)
-      ## Add separate well to list.                                         ##      
+    ## pipetting MOCK by hand in postPCR  
+    # sample_well_c = sample_tubes_2['A5']
+    #   ## Create separate well.                                              ##
+    # sample_sources_c.append(sample_well_c)
+    #   ## Add separate well to list.                                         ##      
 # Odd sample destination wells=================================================
     odd_sample_destinations = []
       ## Create an empty sample list.                                       ##
@@ -125,10 +127,11 @@ def run(protocol: protocol_api.ProtocolContext):
         for well in column:
             odd_sample_destinations.append(well)
       ## Separate columns into wells and append them to the list.           ##   
-    sample_well = plate_96['G11']
-      ## Create separate well.                                              ##
-    odd_sample_destinations.append(sample_well)
-      ## Add separate well to list.                                         ##
+    ## pipetting MOCK by hand in postPCR  
+    # sample_well = plate_96['G11']
+    #   ## Create separate well.                                              ##
+    # odd_sample_destinations.append(sample_well)
+    #   ## Add separate well to list.                                         ##
 # Even sample destination wells================================================
     even_sample_destinations = []
       ## Create an empty sample list.                                       ##
@@ -141,10 +144,11 @@ def run(protocol: protocol_api.ProtocolContext):
         for well in column:
             even_sample_destinations.append(well)
       ## Separate columns into wells and append them to the list.           ##   
-    sample_well = plate_96['G12']
-      ## Create separate well.                                              ##
-    even_sample_destinations.append(sample_well)
-      ## Add separate well to list.                                         ##
+    ## pipetting MOCK by hand in postPCR  
+    # sample_well = plate_96['G12']
+    #   ## Create separate well.                                              ##
+    # even_sample_destinations.append(sample_well)
+    #   ## Add separate well to list.                                         ##
 # =============================================================================
 
 

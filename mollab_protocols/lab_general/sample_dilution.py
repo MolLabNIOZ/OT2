@@ -44,11 +44,11 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_samples = 195  # Maximum 192 samples
+    number_of_samples = 142  # Maximum 192 samples
       ## How many samples do you want to dilute? 
-    sample_volume = 2
+    sample_volume = 1.5
       ## How much sample (µL) to use for the dilution?
-    dilution_ratio = 10
+    dilution_ratio = 100
       ## How many times to dilute?
     starting_tip_p200 = 'A1'
     starting_tip_p20 = 'A1'

@@ -62,7 +62,7 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol_mix = 22 
       ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
       ## be aliquoted into the destination wells/tubes.                     ##
-    first_sample = 'A1'
+    first_sample = 'A9'
       ## In which well is the first sample of this PCR located
     starting_tip_p200 = 'A1'
     starting_tip_p20 = 'A1'
@@ -171,7 +171,7 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in plate_96_dil_2.wells():
         samples.append(well)
       ## Makes a list of all wells in 2 full plates                         ##
-    index_first_sample = samples_string.index('A9 of plate_96_dil on 4')
+    index_first_sample = samples_string.index(first_sample + ' of plate_96_dil on 4')
     samples = samples[index_first_sample:]
       ## starts sample location at firts sample                             ##
     samples = samples[:number_of_samples]

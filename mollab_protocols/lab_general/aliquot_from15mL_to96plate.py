@@ -8,10 +8,10 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-#   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                          ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+# from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
 # =============================================================================
@@ -36,7 +36,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## How many plates you want filled? 
     volume = 50
       ## How much volume (µL) to aliquot?
-    starting_tip_p200 = 'A1'
+    starting_tip_p200 = 'C8'
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================

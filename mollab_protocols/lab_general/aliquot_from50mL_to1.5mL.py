@@ -8,9 +8,6 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
 # from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 #   # Import volume_tracking module that is on the OT2                        ##
 from mollab_modules import volume_tracking_v1 as vt
@@ -39,7 +36,7 @@ def run(protocol: protocol_api.ProtocolContext):
     number_of_tubes = 4  
       ## How many tubes you want to aliquot from? 
     volume = 1250      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'A1'
+    starting_tip_p200 = 'D7'
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -207,7 +204,7 @@ def run(protocol: protocol_api.ProtocolContext):
             p300.aspirate(200, aspiration_location)
               ## Aspirate the amount specified in aspiration_vol from the   ##
               ## location specified in aspiration_location.                 ##
-            p300.dispense(200, well)
+            p300.dispense(200, well.top(z = - 10))
               ## Dispense the amount specified in dispension_vol to the     ##
               ## location specified in well (looping through plate)         ##
             p300.dispense(10, aspiration_location)
@@ -243,7 +240,7 @@ def run(protocol: protocol_api.ProtocolContext):
             p300.aspirate(rest_volume, aspiration_location)
               ## Aspirate the amount specified in aspiration_vol from the   ##
               ## location specified in aspiration_location.                 ##
-            p300.dispense(rest_volume, well)
+            p300.dispense(rest_volume, well.top(z = - 10))
               ## Dispense the amount specified in dispension_vol to the     ##
               ## location specified in well (looping through plate)         ##
             p300.dispense(10, aspiration_location)

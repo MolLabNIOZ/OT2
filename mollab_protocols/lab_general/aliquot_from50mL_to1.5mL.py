@@ -8,10 +8,10 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-#   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                          ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+# from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
 # =============================================================================
@@ -33,10 +33,10 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_tubes = 4  
+    number_of_tubes = 3  
       ## How many tubes you want to aliquot from? 
     volume = 1250      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'D7'
+    starting_tip_p200 = 'F7'
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -116,6 +116,7 @@ def run(protocol: protocol_api.ProtocolContext):
     reagent = []
     for well in tubes_50mL.wells():
         reagent.append(well)
+    reagent = reagent[:number_of_tubes]
     
     aliquots = []
     for well in tubes_1mL_1.wells():
@@ -194,7 +195,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 source = reagent[counter]
                 aspiration_location = source.bottom(current_height)
                 protocol.comment(
-                "Continue with tube " + str(counter) + " of water")
+                "Continue with tube " + str(counter + 1) + " of water")
        
             else:
                 aspiration_location = source.bottom(pip_height)

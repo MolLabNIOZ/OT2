@@ -48,11 +48,11 @@ def run(protocol: protocol_api.ProtocolContext):
         'plate_96')                         #custom name     
     sample_tubes_1 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        '4',                                                     #deck position
+        4,                                                       #deck position
         'sample_tubes_1')                                        #custom name
     sample_tubes_2 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        '1',                                                     #deck position
+        1,                                                       #deck position
         'sample_tubes_2')                                        #custom name
     
     # Pipettes
@@ -68,7 +68,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_vol = 5 
       ## The sample_vol is the volume (ul) of sample added to the PCR       ##
       ## reaction.                                                          ##
-    p20.starting_tip = tips_20_1.well('A1')
+    p20.starting_tip = tips_20_1.well('B7')
       ## The starting_tip is the location of first pipette tip in the box   ##
 # Sample source wells==========================================================
     sample_sources = []

@@ -8,10 +8,10 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-# from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+#   # Import volume_tracking module that is on the OT2                        ##
+from mollab_modules import volume_tracking_v1 as vt
+  ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
 # =============================================================================
@@ -32,8 +32,8 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_plates = 3  
-      ## How many plates you want filled? 
+    number_of_plates = 4  
+      ## How many plates you want filled? (max 6 for now)
     volume = 50
       ## How much volume (µL) to aliquot?
     starting_tip_p200 = 'C8'
@@ -43,8 +43,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     necessary_volume = volume * (number_of_plates * 96)
       ## How much water is needed for per sample
-    number_of_tubes = math.ceil(necessary_volume / 15000) + 1
-      ## How many tubes of 15mL are needed 
+    number_of_tubes = math.ceil((necessary_volume + 2000) / 15000) 
+      ## How many tubes of 15mL are needed (2mL extra)
 # =============================================================================
 
 
@@ -75,7 +75,22 @@ def run(protocol: protocol_api.ProtocolContext):
             'biorad_96_wellplate_200ul_pcr',        #labware definition
             3,                                      #deck position
             'plate_96_3')                           #custom name
-
+    if number_of_plates >= 4:
+        plate_96_3 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',        #labware definition
+            4,                                      #deck position
+            'plate_96_4')                           #custom name
+    if number_of_plates >= 5:
+        plate_96_3 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',        #labware definition
+            5,                                      #deck position
+            'plate_96_5')                           #custom name 
+    if number_of_plates >= 6:
+        plate_96_3 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',        #labware definition
+            6,                                      #deck position
+            'plate_96_6')                           #custom name
+        
     ##### Loading pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',                         #instrument definition

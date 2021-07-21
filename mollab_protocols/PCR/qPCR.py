@@ -45,15 +45,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_samples = 64   
+    number_of_samples = 78   
       ## How many samples do you want to include? 
-    number_std_series = 3
+    number_std_series = 0
       ## How many dilution series do you want to include in this PCR        ##
     number_of_samplemix = 8
       ## How many sample_mix to include (for normalization between qPCRs)   ##
-    number_of_NTCs = 0
+    number_of_NTCs = 2
       ## How many NTCs to include 
-    start_vol_mix = 2332
+    start_vol_mix = 2134
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
     sample_volume = 3
@@ -61,8 +61,9 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol_mix = 22 
       ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
       ## be aliquoted into the destination wells/tubes.                     ##
-    first_sample = 'A1'
+    first_sample = 'A9'
       ## In which well is the first sample of this PCR located
+    sample_mix_well = 'G6'
     starting_tip_p200 = 'E9'
     starting_tip_p20 = 'B4'
       ## The starting_tip is the location of first pipette tip in the box   ##
@@ -175,7 +176,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## cuts off the list after a certain number of samples                ##
     
       #### Where is the sample_mix located
-    sample_mix = plate_96_dil_2.well('G6')
+    sample_mix = plate_96_dil_2.well(sample_mix_well)
       #### Where the sample_mix will go in the PCR plate                    ##
     sample_mix_dest = []
     sample_mix_column = str(number_std_series+1)
@@ -268,4 +269,3 @@ def run(protocol: protocol_api.ProtocolContext):
           ## alternative to blow_out                                        ##
         p20.drop_tip()
           ## Drop tip in trashbin on 12.                                    ##        
-    

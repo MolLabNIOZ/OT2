@@ -12,10 +12,10 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-#   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                          ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+# from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
 # =============================================================================
 
 
@@ -61,10 +61,10 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol_mix = 22 
       ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
       ## be aliquoted into the destination wells/tubes.                     ##
-    first_sample = 'A9'
+    first_sample = 'A1'
       ## In which well is the first sample of this PCR located
-    starting_tip_p200 = 'A1'
-    starting_tip_p20 = 'A1'
+    starting_tip_p200 = 'E9'
+    starting_tip_p20 = 'B4'
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
@@ -96,31 +96,20 @@ def run(protocol: protocol_api.ProtocolContext):
         1,                                      #deck position
         'plate_96_dil_2')                       #custom name 
 
-    # ##### !!! FOR ROBOT      
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-    #     6,                                      #deck position
-    #     'tubes_5mL')                            #custom name
-    # sample_mix = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',         #labware definition
-    #     2,                                      #deck position
-    #     'sample_mix')                      #custom name    
+    ##### !!! FOR ROBOT      
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+        6,                                      #deck position
+        'tubes_5mL')                            #custom name 
     
-    ####    !!! FOR SIMULATOR
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-            tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, #variable derived from opening json
-            6, 
-            '5mL_tubes')
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-            sample_mix = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            2, 
-            'sample_mix')
+    # ####    !!! FOR SIMULATOR
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #         labware_def_5mL = json.load(labware_file)
+    #         tubes_5mL = protocol.load_labware_from_definition( 
+    #         labware_def_5mL, #variable derived from opening json
+    #         6, 
+    #         '5mL_tubes')
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -186,7 +175,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## cuts off the list after a certain number of samples                ##
     
       #### Where is the sample_mix located
-    sample_mix = sample_mix.well('A1')
+    sample_mix = plate_96_dil_2.well('G6')
       #### Where the sample_mix will go in the PCR plate                    ##
     sample_mix_dest = []
     sample_mix_column = str(number_std_series+1)

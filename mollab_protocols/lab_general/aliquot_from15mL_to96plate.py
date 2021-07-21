@@ -8,10 +8,10 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-#   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                          ##
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+# from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
 # =============================================================================
@@ -36,14 +36,16 @@ def run(protocol: protocol_api.ProtocolContext):
       ## How many plates you want filled? (max 6 for now)
     volume = 50
       ## How much volume (µL) to aliquot?
-    starting_tip_p200 = 'C8'
+    reagent_volume = 13000
+      ## How much volume (µL) in 15mL tubes (all the same volume)
+    starting_tip_p200 = 'F12'
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
     necessary_volume = volume * (number_of_plates * 96)
       ## How much water is needed for per sample
-    number_of_tubes = math.ceil((necessary_volume + 2000) / 15000) 
+    number_of_tubes = math.ceil((necessary_volume + 2000) / reagent_volume) 
       ## How many tubes of 15mL are needed (2mL extra)
 # =============================================================================
 
@@ -51,10 +53,14 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     ##### Loading labware
-    tips_200 = protocol.load_labware(
+    tips_200_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul',         #labware definition
         10,                                         #deck position
-        'tips_200')                                 #custom name
+        'tips_200_1')                                 #custom name
+    tips_200_2 = protocol.load_labware(
+        'opentrons_96_filtertiprack_200ul',         #labware definition
+        11,                                         #deck position
+        'tips_200_2')                                 #custom name
     
     tubes_15mL = protocol.load_labware(
         'opentrons_15_tuberack_falcon_15ml_conical',#labware definition
@@ -76,17 +82,17 @@ def run(protocol: protocol_api.ProtocolContext):
             3,                                      #deck position
             'plate_96_3')                           #custom name
     if number_of_plates >= 4:
-        plate_96_3 = protocol.load_labware(
+        plate_96_4 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',        #labware definition
             4,                                      #deck position
             'plate_96_4')                           #custom name
     if number_of_plates >= 5:
-        plate_96_3 = protocol.load_labware(
+        plate_96_5 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',        #labware definition
             5,                                      #deck position
             'plate_96_5')                           #custom name 
     if number_of_plates >= 6:
-        plate_96_3 = protocol.load_labware(
+        plate_96_6 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',        #labware definition
             6,                                      #deck position
             'plate_96_6')                           #custom name
@@ -95,13 +101,13 @@ def run(protocol: protocol_api.ProtocolContext):
     p300 = protocol.load_instrument(
         'p300_single_gen2',                         #instrument definition
         'right',                                    #mount position
-        tip_racks=[tips_200])                       #assigned tiprack
+        tip_racks=[tips_200_1,tips_200_2])          #assigned tiprack
 # =============================================================================
 
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================    
     ##### Setting starting tip
-    p300.starting_tip = tips_200.well(starting_tip_p200)
+    p300.starting_tip = tips_200_1.well(starting_tip_p200)
       ## The starting_tip is the location of first pipette tip in the box   ##
     
     ##### Setting tube locations
@@ -119,12 +125,22 @@ def run(protocol: protocol_api.ProtocolContext):
     if number_of_plates > 2:
         for well in plate_96_3.wells():
             aliquots.append(well)
+    if number_of_plates > 3:
+        for well in plate_96_4.wells():
+            aliquots.append(well)
+    if number_of_plates > 4:
+        for well in plate_96_5.wells():
+            aliquots.append(well)
+    if number_of_plates > 5:
+        for well in plate_96_6.wells():
+            aliquots.append(well)
       ## Add all wells of all plates to a list                              ##
 
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("I need "+ str(number_of_tubes) + " 15mL tubes.") 
+    protocol.pause("I need "+ str(number_of_tubes) + " 15mL tubes. Filled to "
+                   + reagent_volume + " µL with reagent.") 
 # =============================================================================      
 
 
@@ -140,7 +156,7 @@ def run(protocol: protocol_api.ProtocolContext):
     counter = 0 # to count how many tubes already emptied
     source = reagent[counter]
     destination = aliquots
-    start_height = vt.cal_start_height('tube_15mL', 15000)
+    start_height = vt.cal_start_height('tube_15mL', reagent_volume)
     current_height = start_height
     container = 'tube_15mL'
     

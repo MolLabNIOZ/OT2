@@ -24,8 +24,8 @@ from mollab_modules import volume_tracking_v1 as vt
 metadata = {
     'protocolName': '210622-515F_806RB_qPCR1_DINA_EVE',
     'author': 'MB <maartje.brouwer@nioz.nl>',
-    'description': ('qPCR - aliquoting water and mix,'
-                    'then diluting + adding samples. adding std sample.' 
+    'description': ('qPCR - aliquoting mix,'
+                    'then adding samples. adding std sample.' 
                     'Std dilution series should be added by hand.'),
     'apiLevel': '2.9'}
 
@@ -37,8 +37,7 @@ def run(protocol: protocol_api.ProtocolContext):
     Aliquoting Phusion PCRmix with EvaGreen added from a 5 mL tube to a 
     96-wells plate; use volume tracking.
     After that, add samples to PCR mix.
-    Also include a standard sample mix (dilute one time but distribute to an
-    entire column).
+    Also include a standard sample mix (distribute to an entire column).
     Dilution series should be added by hand in the first (how many you chose) 
     columns.
     """

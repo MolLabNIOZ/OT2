@@ -139,7 +139,8 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("I need "+ str(number_of_tubes) + " 15mL tubes.") 
+    protocol.pause("I need "+ str(number_of_tubes) + " 15mL tubes. Filled to "
+                   + reagent_volume + " µL with reagent.") 
 # =============================================================================      
 
 

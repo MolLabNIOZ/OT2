@@ -75,24 +75,20 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 # test PCR plate
 # =============================================================================
-    p300.aspirate(10, plate_96['A1'])
-    p300.dispense(10, plate_96['A1'])
-    p300.blow_out(plate_96['A1'])
-    p20.aspirate(10, plate_96['A1'])
-    p20.dispense(10, plate_96['A1'])
-    p20.blow_out(plate_96['A1'])
-    p300.aspirate(10, plate_96['A7'])
-    p300.dispense(10, plate_96['A7'])
-    p300.blow_out(plate_96['A7'])
-    p20.aspirate(10, plate_96['A7'])
-    p20.dispense(10, plate_96['A7'])
-    p20.blow_out(plate_96['A7'])
-    p300.aspirate(10, plate_96['A11'])
-    p300.dispense(10, plate_96['A11'])
-    p300.blow_out(plate_96['A11'])
-    p20.aspirate(10, plate_96['A11'])
-    p20.dispense(10, plate_96['A11'])
-    p20.blow_out(plate_96['A11']) 
+    aspiration_locations = []
+    aspiration_columns = (
+        [plate_96.columns_by_name()[column_name] for column_name in
+         ['1', '7', '11']]
+        )
+    for column in aspiration_columns:
+        for well in column:
+            aspiration_locations.append(well)
+            
+    for well in aspiration_locations:
+        p300.aspirate(10, well)
+        p300.dispense(10, well)
+        p300.blow_out(well)
+    
 
     protocol.pause('was this ok?')    
     

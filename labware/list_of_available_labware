@@ -27,6 +27,9 @@ Tube racks & well plates:
   BioRad 96-wells qPCR plate
     name: 'biorad_96_wellplate_200ul_pcr'
     custom reference: '96well_plate'
+  BioRad 96-wells qPCR plate in Eppendorf cool rack
+    name: 'biorad_qpcr_plate_eppendorf_cool_rack'
+    custom reference: '96well_plate_rack'
   
   1.5 mL tubes + tube 24 rack:
     name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'

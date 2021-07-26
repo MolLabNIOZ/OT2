@@ -37,26 +37,26 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_96_filtertiprack_20ul',  #labware definition
         11,                                 #deck position
         '20tips')                           #custom name
-    # plate_96 = protocol.load_labware(
-    #     'biorad_96_wellplate_200ul_pcr',
-    #     1,
-    #     '96well_plate')
+    plate_96 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',
+        1,
+        '96well_plate')
     high_plate_96 = protocol.load_labware(
         'biorad_qpcr_plate_eppendorf_cool_rack',
         2,
         '96well_plate_rack')
-    # sample_tubes = protocol.load_labware(
-    #     'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-    #     4,                                                       #deck position
-    #     'sample_tubes')                                          #custom name
+    sample_tubes = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
+        4,                                                       #deck position
+        'sample_tubes')                                          #custom name
     pcr_strips = protocol.load_labware(
         'pcrstrips_96_wellplate_200ul',     #labware definition
         3,                                  #deck position
         'pcr_strips')                       #custom name
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-    #     5,                                      #deck position 
-    #     'tubes_5mL')                            #custom name
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+        5,                                      #deck position 
+        'tubes_5mL')                            #custom name
     
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -81,20 +81,20 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     
     # wells
-    # aspiration_location_wells = []
-    # aspiration_wells = (
-    #     [plate_96.wells_by_name()[well_name] for well_name in 
-    #      ['A1', 'A7', 'A11']])
-    # for well in aspiration_wells:
-    #     aspiration_location_wells.append(well)
+    aspiration_location_wells = []
+    aspiration_wells = (
+        [plate_96.wells_by_name()[well_name] for well_name in 
+          ['A1', 'A7', 'A11']])
+    for well in aspiration_wells:
+        aspiration_location_wells.append(well)
             
-    # for well in aspiration_location_wells:
-    #     p300.aspirate(10, well)
-    #     p300.dispense(10, well)
-    #     p300.blow_out(well)
-    #     p20.aspirate(10, well)
-    #     p20.dispense(10, well)
-    #     p20.blow_out(well)
+    for well in aspiration_location_wells:
+        p300.aspirate(10, well)
+        p300.dispense(10, well)
+        p300.blow_out(well)
+        p20.aspirate(10, well)
+        p20.dispense(10, well)
+        p20.blow_out(well)
     
     # columns
     # aspiration_location_columns = []
@@ -121,20 +121,20 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     
     # wells
-    # aspiration_location_wells = []
-    # aspiration_wells = (
-    #     [high_plate_96.wells_by_name()[well_name] for well_name in 
-    #      ['A1', 'A7', 'A11']])
-    # for well in aspiration_wells:
-    #     aspiration_location_wells.append(well)
+    aspiration_location_wells = []
+    aspiration_wells = (
+        [high_plate_96.wells_by_name()[well_name] for well_name in 
+          ['A1', 'A7', 'A11']])
+    for well in aspiration_wells:
+        aspiration_location_wells.append(well)
             
-    # for well in aspiration_location_wells:
-    #     p300.aspirate(10, well)
-    #     p300.dispense(10, well)
-    #     p300.blow_out(well)
-    #     p20.aspirate(10, well)
-    #     p20.dispense(10, well)
-    #     p20.blow_out(well)
+    for well in aspiration_location_wells:
+        p300.aspirate(10, well)
+        p300.dispense(10, well)
+        p300.blow_out(well)
+        p20.aspirate(10, well)
+        p20.dispense(10, well)
+        p20.blow_out(well)
     
     # columns
     aspiration_location_columns = []
@@ -157,15 +157,15 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 # test 1.5mL tubes
 # =============================================================================
-    # p300.aspirate(10, sample_tubes['A1'])
-    # p300.dispense(10, sample_tubes['A1'])
-    # p300.blow_out(sample_tubes['A1'])
-    # p20.aspirate(10, sample_tubes['A1'])
-    # p20.dispense(10, sample_tubes['A1'])
-    # p20.blow_out(sample_tubes['A1'])
+    p300.aspirate(10, sample_tubes['A1'])
+    p300.dispense(10, sample_tubes['A1'])
+    p300.blow_out(sample_tubes['A1'])
+    p20.aspirate(10, sample_tubes['A1'])
+    p20.dispense(10, sample_tubes['A1'])
+    p20.blow_out(sample_tubes['A1'])
     
 
-    # protocol.pause('was this ok?')    
+    protocol.pause('was this ok?')    
     
 # =============================================================================
 # test PCR tube strips
@@ -195,15 +195,15 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 # test 5mL (screw cap) tube
 # =============================================================================
-    # p300.aspirate(10, tubes_5mL['A1'])
-    # p300.dispense(10, tubes_5mL['A1'])
-    # p300.blow_out(tubes_5mL['A1'])
-    # p20.aspirate(10, tubes_5mL['A1'])
-    # p20.dispense(10, tubes_5mL['A1'])
-    # p20.blow_out(tubes_5mL['A1'])
+    p300.aspirate(10, tubes_5mL['A1'])
+    p300.dispense(10, tubes_5mL['A1'])
+    p300.blow_out(tubes_5mL['A1'])
+    p20.aspirate(10, tubes_5mL['A1'])
+    p20.dispense(10, tubes_5mL['A1'])
+    p20.blow_out(tubes_5mL['A1'])
     
 
-    # protocol.pause('was this ok?')    
+    protocol.pause('was this ok?')    
  
     
 # =============================================================================

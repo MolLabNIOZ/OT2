@@ -69,8 +69,8 @@ def run(protocol: protocol_api.ProtocolContext):
    ##### !!! OPTION 1: ROBOT      
     mastermix_tube = protocol.load_labware(
         'eppendorfscrewcap_15_tuberack_5000ul',  #labware def
-          3,                                     #deck position
-          'mastermix_tube')                      #custom name          
+        3,                                     #deck position
+        'mastermix_tube')                      #custom name          
     primer_strips_1 = protocol.load_labware(
         'pcrstrips_96_wellplate_200ul',    #labware definition
         4,                                 #deck position
@@ -122,8 +122,8 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_vol = 3 
       ## The primer_vol is the volume (ul) of primer added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('E6')
-    p20.starting_tip = tips_20_1.well('B7')
+    p300.starting_tip = tips_200.well('F2')
+    p20.starting_tip = tips_20_1.well('H8')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##

@@ -71,9 +71,9 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     
     protocol.set_rail_lights(True)
-    p300.starting_tip = tips_200.well('A1')
+    # p300.starting_tip = tips_200.well('A1')
     p20.starting_tip = tips_20.well('A1')
-    p300.pick_up_tip()
+    # p300.pick_up_tip()
     p20.pick_up_tip()
     
 # =============================================================================
@@ -81,20 +81,22 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     
     # wells
-    aspiration_location_wells = []
-    aspiration_wells = (
-        [plate_96.wells_by_name()[well_name] for well_name in 
-          ['A1', 'A7', 'A11']])
-    for well in aspiration_wells:
-        aspiration_location_wells.append(well)
+    # aspiration_location_wells = []
+    # aspiration_wells = (
+    #     [plate_96.wells_by_name()[well_name] for well_name in 
+    #       ['A1', 'A7', 'A11']])
+    # for well in aspiration_wells:
+    #     aspiration_location_wells.append(well)
             
-    for well in aspiration_location_wells:
-        p300.aspirate(10, well)
-        p300.dispense(10, well)
-        p300.blow_out(well)
-        p20.aspirate(10, well)
-        p20.dispense(10, well)
-        p20.blow_out(well)
+    # for well in aspiration_location_wells:
+        # p300.aspirate(10, well)
+        # p300.dispense(10, well)
+        # p300.blow_out(well)
+        # p20.aspirate(10, well)
+        # p20.dispense(10, well)
+        # p20.blow_out(well)
+
+    # protocol.pause('was this ok?')  
     
     # columns
     # aspiration_location_columns = []
@@ -106,13 +108,13 @@ def run(protocol: protocol_api.ProtocolContext):
     #     for well in column:
     #         aspiration_location_columns.append(well)
     
-    # for well in aspiration_location_wells:
-    #     p300.aspirate(10, well)
-    #     p300.dispense(10, well)
-    #     p300.blow_out(well)
-    #     p20.aspirate(10, well)
-    #     p20.dispense(10, well)
-    #     p20.blow_out(well)
+    # for well in aspiration_location_columns:
+        # p300.aspirate(10, well)
+        # p300.dispense(10, well)
+        # p300.blow_out(well)
+        # p20.aspirate(10, well)
+        # p20.dispense(10, well)
+        # p20.blow_out(well)
 
     # protocol.pause('was this ok?')    
 
@@ -121,93 +123,132 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     
     # wells
-    aspiration_location_wells = []
-    aspiration_wells = (
-        [high_plate_96.wells_by_name()[well_name] for well_name in 
-          ['A1', 'A7', 'A11']])
-    for well in aspiration_wells:
-        aspiration_location_wells.append(well)
+    # aspiration_location_wells = []
+    # aspiration_wells = (
+    #     [high_plate_96.wells_by_name()[well_name] for well_name in 
+    #       ['A1', 'A7', 'A11']])
+    # for well in aspiration_wells:
+    #     aspiration_location_wells.append(well)
             
-    for well in aspiration_location_wells:
-        p300.aspirate(10, well)
-        p300.dispense(10, well)
-        p300.blow_out(well)
-        p20.aspirate(10, well)
-        p20.dispense(10, well)
-        p20.blow_out(well)
+    # for well in aspiration_location_wells:
+        # p300.aspirate(10, well)
+        # p300.dispense(10, well)
+        # p300.blow_out(well)
+        # p20.aspirate(10, well)
+        # p20.dispense(10, well)
+        # p20.blow_out(well)
+    
+    # protocol.pause('was this ok?')    
     
     # columns
-    aspiration_location_columns = []
-    aspiration_columns = (
-        [high_plate_96.columns_by_name()[column_name] for column_name in
-          ['2', '6', '12']]
-        )
-    for column in aspiration_columns:
-        for well in column:
-            aspiration_location_columns.append(well)
+    # aspiration_location_columns = []
+    # aspiration_columns = (
+    #     [high_plate_96.columns_by_name()[column_name] for column_name in
+    #       ['2', '6', '12']]
+    #     )
+    # for column in aspiration_columns:
+    #     for well in column:
+    #         aspiration_location_columns.append(well)
     
-    for well in aspiration_location_columns:
-        p300.aspirate(10, well)
-        p300.dispense(10, well)
-        p300.blow_out(well)
+    # for well in aspiration_location_columns:
+    #     p300.aspirate(10, well)
+    #     p300.dispense(10, well)
+    #     p300.blow_out(well)
+    # for well in aspiration_location_columns:
+    #     p20.aspirate(10, well)
+    #     p20.dispense(10, well)
+    #     p20.blow_out(well)
 
-    protocol.pause('was this ok?')    
+    # protocol.pause('was this ok?')    
 
 
 # =============================================================================
 # test 1.5mL tubes
 # =============================================================================
-    p300.aspirate(10, sample_tubes['A1'])
-    p300.dispense(10, sample_tubes['A1'])
-    p300.blow_out(sample_tubes['A1'])
-    p20.aspirate(10, sample_tubes['A1'])
-    p20.dispense(10, sample_tubes['A1'])
-    p20.blow_out(sample_tubes['A1'])
+    aspiration_location = []
+    aspiration_columns = (
+        [sample_tubes.columns_by_name()[column_name] for column_name in 
+          ['1', '4', '6']]
+        )
+    for column in aspiration_columns:
+        for well in column:
+            aspiration_location.append(well)
     
+    for well in aspiration_location:
+        # p300.aspirate(10, well)
+        # p300.dispense(10, well)
+        # p300.blow_out(well)
+        p20.aspirate(10, well)
+        p20.dispense(10, well)
+        p20.blow_out(well)
 
     protocol.pause('was this ok?')    
     
 # =============================================================================
 # test PCR tube strips
 # =============================================================================
-    p300.aspirate(10, pcr_strips['A1'])
-    p300.dispense(10, pcr_strips['A1'])
-    p300.blow_out(pcr_strips['A1'])
-    p20.aspirate(10, pcr_strips['A1'])
-    p20.dispense(10, pcr_strips['A1'])
-    p20.blow_out(pcr_strips['A1'])
-    p300.aspirate(10, pcr_strips['A7'])
-    p300.dispense(10, pcr_strips['A7'])
-    p300.blow_out(pcr_strips['A7'])
-    p20.aspirate(10, pcr_strips['A7'])
-    p20.dispense(10, pcr_strips['A7'])
-    p20.blow_out(pcr_strips['A7'])
-    p300.aspirate(10, pcr_strips['A11'])
-    p300.dispense(10, pcr_strips['A11'])
-    p300.blow_out(pcr_strips['A11'])
-    p20.aspirate(10, pcr_strips['A11'])
-    p20.dispense(10, pcr_strips['A11'])
-    p20.blow_out(pcr_strips['A11']) 
+    
+    # wells
+    # aspiration_location_wells = []
+    # aspiration_wells = (
+    #     [pcr_strips.wells_by_name()[well_name] for well_name in 
+    #       ['A1', 'A7', 'A11']])
+    # for well in aspiration_wells:
+    #     aspiration_location_wells.append(well)
+            
+    # for well in aspiration_location_wells:
+    #     p300.aspirate(10, well)
+    #     p300.dispense(10, well)
+    #     p300.blow_out(well)
+    #     p20.aspirate(10, well)
+    #     p20.dispense(10, well)
+    #     p20.blow_out(well)
 
-    protocol.pause('was this ok?') 
+    # protocol.pause('was this ok?')  
+    
+    # columns
+    # aspiration_location_columns = []
+    # aspiration_columns = (
+    #     [pcr_strips.columns_by_name()[column_name] for column_name in
+    #       ['1', '7', '11']]
+    #     )
+    # for column in aspiration_columns:
+    #     for well in column:
+    #         aspiration_location_columns.append(well)
+    
+    # for well in aspiration_location_columns:
+        # p300.aspirate(10, well)
+        # p300.dispense(10, well)
+        # p300.blow_out(well)
+    #     p20.aspirate(10, well)
+    #     p20.dispense(10, well)
+    #     p20.blow_out(well)
 
+    # protocol.pause('was this ok?')       
     
 # =============================================================================
 # test 5mL (screw cap) tube
 # =============================================================================
-    p300.aspirate(10, tubes_5mL['A1'])
-    p300.dispense(10, tubes_5mL['A1'])
-    p300.blow_out(tubes_5mL['A1'])
-    p20.aspirate(10, tubes_5mL['A1'])
-    p20.dispense(10, tubes_5mL['A1'])
-    p20.blow_out(tubes_5mL['A1'])
+    # p300.aspirate(10, tubes_5mL['A1'])
+    # p300.dispense(10, tubes_5mL['A1'])
+    # p300.blow_out(tubes_5mL['A1'])
+    # p20.aspirate(10, tubes_5mL['A1'])
+    # p20.dispense(10, tubes_5mL['A1'])
+    # p20.blow_out(tubes_5mL['A1'])
+    
+    # p300.aspirate(10, tubes_5mL['C5'])
+    # p300.dispense(10, tubes_5mL['C5'])
+    # p300.blow_out(tubes_5mL['C5'])
+    # p20.aspirate(10, tubes_5mL['C5'])
+    # p20.dispense(10, tubes_5mL['C5'])
+    # p20.blow_out(tubes_5mL['C5'])
     
 
-    protocol.pause('was this ok?')    
+    # protocol.pause('was this ok?')    
  
     
 # =============================================================================
 # =============================================================================
-    p300.return_tip()
+    # p300.return_tip()
     p20.return_tip()
     protocol.set_rail_lights(False)

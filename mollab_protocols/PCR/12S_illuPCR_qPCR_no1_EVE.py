@@ -45,7 +45,7 @@ def run(protocol: protocol_api.ProtocolContext):
     plate_96 = protocol.load_labware(
         'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
         3,                                      #deck position
-        '96well_plate_rack')                         #custom name     
+        '96well_plate_rack')                    #custom name     
     sample_tubes_1 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         4,                                                       #deck position

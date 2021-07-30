@@ -55,11 +55,11 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         7,                                  #deck position
-        '20tips_1')                           #custom name       
+        '20tips_1')                         #custom name       
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
         10,                                 #deck position
-        '20tips_2')                           #custom name    
+        '20tips_2')                         #custom name    
        
     # Tube racks & plates
     plate_96 = protocol.load_labware(
@@ -122,8 +122,8 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_vol = 3 
       ## The primer_vol is the volume (ul) of primer added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('B11')
-    p20.starting_tip = tips_20_1.well('H8')
+    p300.starting_tip = tips_200.well('E3')
+    p20.starting_tip = tips_20_1.well('F3')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##

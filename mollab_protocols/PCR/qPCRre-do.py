@@ -64,8 +64,8 @@ def run(protocol: protocol_api.ProtocolContext):
       ## In which wells are the samples located
     sample_mix_well = 'G6'
       ## In which well is the sample_mix located
-    starting_tip_p200 = 'E9'
-    starting_tip_p20 = 'B4'
+    starting_tip_p200 = 'A3'
+    starting_tip_p20 = 'A4'
       ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

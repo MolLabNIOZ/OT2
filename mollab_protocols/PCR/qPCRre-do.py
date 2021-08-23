@@ -1,7 +1,7 @@
 # =============================================================================
 # Author(s): Maartje Brouwer
-# Creation date: 210708
-# Description: general qPCR protocol. 
+# Creation date: 210820
+# Description: qPCR protocolfor re-do 
 # =============================================================================
 
 
@@ -22,30 +22,27 @@ from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
-    'protocolName': '210622-515F_806RB_qPCR1_DINA_EVE',
+    'protocolName': 'qPCRre-do',
     'author': 'MB <maartje.brouwer@nioz.nl>',
     'description': ('qPCR - aliquoting mix,'
-                    'then adding samples. adding std sample.' 
-                    'Std dilution series should be added by hand.'),
+                    'then adding samples. adding std sample.'),
     'apiLevel': '2.9'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    General protocol for multiple qPCRs of a batch. 
-    Define if and how many dilution series you want to include. Usually only
-    in the first PCR of a batch, 3 dilution series are included.
+    protocol for re-do qPCRs with only specific samples. When after the first
+    series of qPCRs you find a too large stdev or a too low copy number, you
+    can use this protocol to do a qPCR with only a few samples.
     Aliquoting Phusion PCRmix with EvaGreen added from a 5 mL tube to a 
     96-wells plate; use volume tracking.
     After that, add samples to PCR mix.
     Also include a standard sample mix (distribute to an entire column).
-    Dilution series should be added by hand in the first (how many you chose) 
-    columns.
     """
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_samples = 78   
+    number_of_samples = 38   
       ## How many samples do you want to include? 
     number_std_series = 0
       ## How many dilution series do you want to include in this PCR        ##
@@ -53,7 +50,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## How many sample_mix to include (for normalization between qPCRs)   ##
     number_of_NTCs = 2
       ## How many NTCs to include 
-    start_vol_mix = 2134
+    start_vol_mix = 1166
       ## The start_vol_m is the volume (ul) of mix that is in the source    ##
       ## labware at the start of the protocol.                              ##
     sample_volume = 3
@@ -61,9 +58,12 @@ def run(protocol: protocol_api.ProtocolContext):
     dispension_vol_mix = 22 
       ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
       ## be aliquoted into the destination wells/tubes.                     ##
-    first_sample = 'A9'
-      ## In which well is the first sample of this PCR located
+    samples_plate_96_dil_1 = ['F2','G2','A4','D5','C7','G7','A8','G10']
+    samples_plate_96_dil_2 = ['A1','C1','F2','E4','G4']
+    samples_undil_sample_strips = ['F2','H2','B7','E7','F7','E11']
+      ## In which wells are the samples located
     sample_mix_well = 'G6'
+      ## In which well is the sample_mix located
     starting_tip_p200 = 'E9'
     starting_tip_p20 = 'B4'
       ## The starting_tip is the location of first pipette tip in the box   ##
@@ -95,13 +95,17 @@ def run(protocol: protocol_api.ProtocolContext):
     plate_96_dil_2 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        #labware definition
         1,                                      #deck position
-        'plate_96_dil_2')                       #custom name 
+        'plate_96_dil_2')                       #custom name
 
     ##### !!! FOR ROBOT      
     tubes_5mL = protocol.load_labware(
         'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
         6,                                      #deck position
-        'tubes_5mL')                            #custom name 
+        'tubes_5mL')                            #custom name
+    undil_sample_strips = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        2,                                      #deck position
+        'undil_sample_strips')                  #custom name
     
     # ####    !!! FOR SIMULATOR
     # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -109,8 +113,15 @@ def run(protocol: protocol_api.ProtocolContext):
     #         labware_def_5mL = json.load(labware_file)
     #         tubes_5mL = protocol.load_labware_from_definition( 
     #         labware_def_5mL, #variable derived from opening json
-    #         6, 
-    #         '5mL_tubes')
+    #         6,               #deck position
+    #         '5mL_tubes')     # custom name
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    #         undil_sample_strips = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         2,                     #deck position
+    #         'undil_sample_strips') #custom name  
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -151,21 +162,25 @@ def run(protocol: protocol_api.ProtocolContext):
     MasterMixAliquots = MasterMixAliquots[:number_of_wells]
       ## cuts off the list after a certain number of samples                ##
 
-     #### Where are the samples located                                     ##
+      #### Where are the samples located
     samples = []
-    samples_string = []
-    for well in plate_96_dil_1.wells():
+    wells_plate_96_dil = (
+        [plate_96_dil_1.wells_by_name()[well_name] for well_name in
+         samples_plate_96_dil_1])
+    wells_plate_96_dil_2 = (
+        [plate_96_dil_2.wells_by_name()[well_name] for well_name in
+         samples_plate_96_dil_2])
+    wells_undil_sample_strips = (
+        [undil_sample_strips.wells_by_name()[well_name] for well_name in
+         samples_undil_sample_strips])
+    for well in wells_plate_96_dil:
         samples.append(well)
-        samples_string.append(str(well))
-    for well in plate_96_dil_2.wells():
+    for well in wells_plate_96_dil_2:
         samples.append(well)
-      ## Makes a list of all wells in 2 full plates                         ##
-    index_first_sample = samples_string.index(first_sample + ' of plate_96_dil on 4')
-    samples = samples[index_first_sample:]
-      ## starts sample location at firts sample                             ##
-    samples = samples[:number_of_samples]
-      ## Cuts off the list after certain number of samples                  ##
-    
+    for well in wells_undil_sample_strips:
+        samples.append(well)
+    samples = samples + samples
+
       #### Where do the samples go in the PCR plate                         ##
     sample_dest = []
     for well in plate_96_qPCR.wells():

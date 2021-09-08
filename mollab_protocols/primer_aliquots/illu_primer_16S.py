@@ -11,9 +11,9 @@
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
   
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
+# import json 
+#   ## Import json to import custom labware with labware_from_definition,     ##
+#   ## so that we can use the simulate_protocol with custom labware.          ##
 # =============================================================================
 
 
@@ -73,7 +73,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # pcr_strips = protocol.load_labware_from_definition( 
     #         labware_def_pcrstrips, #variable derived from opening json
     #         6, 
-    #         'pcr_strips') 
+    #         'pcr_strips')
         #Load the labware using load_labware_from_definition() instead of  ##
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
@@ -87,7 +87,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ===========================VARIABLES TO SET#!!!==============================
 # =============================================================================      
-    p300.starting_tip = tips_200_1.well('A5')     
+    p300.starting_tip = tips_200_1.well('G9')     
     primer_volume = 30
 # =============================================================================
 
@@ -138,7 +138,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F49 to F95 on slot 3.')
+                    'the right and put F49 to F95 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F49 to F95 + corresponding R primers=========================================
     for primer_tube, pcr_strip_tube in zip(
@@ -172,7 +172,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F97 to F143 on slot 3.')
+                    'the right and put F97 to F143 on slot 3. Empty waste bin!!')
 # =============================================================================    
 # F97 to F143 + corresponding R primers========================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -206,7 +206,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F145 to F191 on slot 3.')
+                    'the right and put F145 to F191 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F145 to F191 + corresponding R primers=======================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -240,7 +240,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F193 to F239 on slot 3.')
+                    'the right and put F193 to F239 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F193 to F239 + corresponding R primers========================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -275,7 +275,7 @@ def run(protocol: protocol_api.ProtocolContext):
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in column 7 with caps to '
                     'the right and put F241 to F255 in columns 1+2'
-                    ' + corresponding R primers in columns 5+6 on slot 3.')
+                    ' + corresponding R primers in columns 5+6 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F241 to F255 + corresponding R primers=============================================================================    
       #Forward:

@@ -4,11 +4,8 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-<<<<<<< Updated upstream
 protocol_file = open("OT2/mollab_protocols/PCR/qPCRre-do.py")
-=======
-protocol_file = open("C:/Users/svreugdenhil/Documents/GitHub/OT2/mollab_protocols/tests_and_tryouts/tip_one_300_test.py")
->>>>>>> Stashed changes
+
 
 # Simulate protocol
 runlog, _bundle = simulate(protocol_file)

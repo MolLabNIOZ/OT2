@@ -62,18 +62,18 @@ def run(protocol: protocol_api.ProtocolContext):
         3,                                                       #deck position
         'primer_tubes')                                        #custom name
     ##### !!! OPTION 1: ROBOT      
-    # pcr_strips = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',     #labware definition
-    #     6,                                  #deck position
-    #     'pcr_strips')                        #custom name
+    pcr_strips = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',     #labware definition
+        6,                                  #deck position
+        'pcr_strips')                        #custom name
     ##### !!! OPTION 2: SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    pcr_strips = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            6, 
-            'pcr_strips')
+    # with open("labware/pcrstrips_96_wellplate_200ul/"
+    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+    #         labware_def_pcrstrips = json.load(labware_file)
+    # pcr_strips = protocol.load_labware_from_definition( 
+    #         labware_def_pcrstrips, #variable derived from opening json
+    #         6, 
+    #         'pcr_strips')
         #Load the labware using load_labware_from_definition() instead of  ##
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
@@ -87,7 +87,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # ===========================VARIABLES TO SET#!!!==============================
 # =============================================================================      
-    p20.starting_tip = tips_20_1.well('G9')     
+    p20.starting_tip = tips_20_1.well('B2')     
     primer_volume = 15
 # =============================================================================
 

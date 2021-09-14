@@ -41,22 +41,22 @@ def run(protocol: protocol_api.ProtocolContext):
 # =====================LOADING LABWARE AND PIPETTES============================
 # =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
-    tips_200_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
+    tips_20_1 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul', #labware definition
         10,                                  #deck position
-        '200tips')                          #custom name
-    tips_200_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
+        '20tips')                          #custom name
+    tips_20_2 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul', #labware definition
         7,                                  #deck position
-        '200tips')                          #custom name
-    tips_200_3 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
+        '20tips')                          #custom name
+    tips_20_3 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul', #labware definition
         4,                                  #deck position
-        '200tips')                          #custom name
-    tips_200_4 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
+        '20tips')                          #custom name
+    tips_20_4 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul', #labware definition
         1,                                  #deck position
-        '200tips')                          #custom name
+        '20tips')                          #custom name
     primer_tubes = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         3,                                                       #deck position
@@ -73,22 +73,22 @@ def run(protocol: protocol_api.ProtocolContext):
     # pcr_strips = protocol.load_labware_from_definition( 
     #         labware_def_pcrstrips, #variable derived from opening json
     #         6, 
-    #         'pcr_strips') 
+    #         'pcr_strips')
         #Load the labware using load_labware_from_definition() instead of  ##
         #load_labware(). Then use the variable you just set with the opened##
         #json file to define which labware to use.                         ##
 
-    p300 = protocol.load_instrument(
-        'p300_single_gen2',                 #instrument definition
-        'right',                            #mount position
-        tip_racks=[tips_200_1, tips_200_2, tips_200_3, tips_200_4])#as tiprack   
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',                 #instrument definition
+        'left',                            #mount position
+        tip_racks=[tips_20_1, tips_20_2, tips_20_3, tips_20_4])#as tiprack   
 # =============================================================================
 
 
 # ===========================VARIABLES TO SET#!!!==============================
 # =============================================================================      
-    p300.starting_tip = tips_200_1.well('A5')     
-    primer_volume = 30
+    p20.starting_tip = tips_20_1.well('B2')     
+    primer_volume = 15
 # =============================================================================
 
 
@@ -111,13 +111,13 @@ def run(protocol: protocol_api.ProtocolContext):
          ## simultanious loop through primer_tubes and PCR_strips           ##
          ## From wells to columns doesn't work, therefore all PCRstrip      ##
          ## wells are given.                                                ##
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
          ## air_gap to suck up any liquid that remains in the tip           ##
-        p300.drop_tip()
+        p20.drop_tip()
      ## Used aspirate/dipense instead of transfer, to allow for more        ##
      ## customization.  ##
     protocol.pause('Remove F primers and put corresponding'
@@ -130,15 +130,15 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F49 to F95 on slot 3.')
+                    'the right and put F49 to F95 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F49 to F95 + corresponding R primers=========================================
     for primer_tube, pcr_strip_tube in zip(
@@ -148,12 +148,12 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
                     ' R primers on slot 3.')
     
@@ -164,15 +164,15 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F97 to F143 on slot 3.')
+                    'the right and put F97 to F143 on slot 3. Empty waste bin!!')
 # =============================================================================    
 # F97 to F143 + corresponding R primers========================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -182,12 +182,12 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
                     ' R primers on slot 3.')
     
@@ -198,15 +198,15 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F145 to F191 on slot 3.')
+                    'the right and put F145 to F191 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F145 to F191 + corresponding R primers=======================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -216,12 +216,12 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
                     ' R primers on slot 3.')
     
@@ -232,15 +232,15 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in columns 2, 7 and 11 with caps to '
-                    'the right and put F193 to F239 on slot 3.')
+                    'the right and put F193 to F239 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F193 to F239 + corresponding R primers========================================    
     for primer_tube, pcr_strip_tube in zip(
@@ -250,12 +250,12 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove F primers and put corresponding'
                     ' R primers on slot 3.')
     
@@ -266,16 +266,16 @@ def run(protocol: protocol_api.ProtocolContext):
               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
               ]]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
     protocol.pause('Remove R primers and PCR strips, '
                     'put new strips in column 7 with caps to '
                     'the right and put F241 to F255 in columns 1+2'
-                    ' + corresponding R primers in columns 5+6 on slot 3.')
+                    ' + corresponding R primers in columns 5+6 on slot 3. Empty waste bin!!')
 # =============================================================================
 # F241 to F255 + corresponding R primers=============================================================================    
       #Forward:
@@ -284,24 +284,24 @@ def run(protocol: protocol_api.ProtocolContext):
               ['A1', 'B1', 'C1', 'D1','A2', 'B2', 'C2', 'D2']], 
             [pcr_strips.wells_by_name()[well_name] for well_name in 
               ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
       #Reverse:
     for primer_tube, pcr_strip_tube in zip(
             [primer_tubes.wells_by_name()[well_name] for well_name in 
               ['A5', 'B5', 'C5', 'D5','A6', 'B6', 'C6', 'D6']], 
             [pcr_strips.wells_by_name()[well_name] for well_name in 
               ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']]):
-        p300.pick_up_tip()
-        p300.aspirate(primer_volume, primer_tube)
-        p300.air_gap(10)
-        p300.dispense(primer_volume + 50, pcr_strip_tube)
-        p300.air_gap()
-        p300.drop_tip()
+        p20.pick_up_tip()
+        p20.aspirate(primer_volume, primer_tube)
+        p20.air_gap(5)
+        p20.dispense(primer_volume + 50, pcr_strip_tube)
+        p20.air_gap()
+        p20.drop_tip()
 # =============================================================================
     protocol.set_rail_lights(False)
 # =============================================================================

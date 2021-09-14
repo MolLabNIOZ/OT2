@@ -122,8 +122,8 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_vol = 3 
       ## The primer_vol is the volume (ul) of primer added to the PCR       ##
       ## reaction.                                                          ##
-    p300.starting_tip = tips_200.well('E3')
-    p20.starting_tip = tips_20_1.well('F3')
+    p300.starting_tip = tips_200.well('D3')
+    p20.starting_tip = tips_20_1.well('A10')
       ## The starting_tip is the location of first pipette tip in the box   ##
     container = 'tube_5mL'
       ## The container variable is needed for the volume tracking module.   ##

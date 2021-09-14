@@ -33,17 +33,23 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_tubes = 3  
+    number_of_tubes = 2  
       ## How many tubes you want to aliquot from? 
-    volume = 1250      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'F7'
+    volume = 180      ## How much volume (µL) to aliquot
+    starting_tip_p200 = 'A1'
+    start_volume = 42500 # How much volume is in each source tube
+    # make sure all source tubes have the same volume
+    number_of_aliquots = 128 # How many destination tubes you want filled
+        # If you want to aliquot the entire source:
+        # number_of_aliquots = "EmptySourceTubes"
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-    total_volume = 50000 * number_of_tubes
+    total_volume = start_volume * number_of_tubes
       ## How many µL are available
-    number_of_aliquots = int(total_volume / volume)
+    if number_of_aliquots == "EmptySourceTubes":
+        number_of_aliquots = int(total_volume / volume)
       ## How many aliquots can be made
     number_of_racks = math.ceil(number_of_aliquots / 24)
       ## How many 1.5mL tube racks do you need
@@ -161,7 +167,7 @@ def run(protocol: protocol_api.ProtocolContext):
     counter = 0 # to count how many tubes already emptied
     source = reagent[counter]
     destination = aliquots
-    start_height = vt.cal_start_height('tube_50mL', 50000)
+    start_height = vt.cal_start_height('tube_50mL', start_volume)
     current_height = start_height
     container = 'tube_50mL'
 

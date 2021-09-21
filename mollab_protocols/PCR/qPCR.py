@@ -4,6 +4,31 @@
 # Description: general qPCR protocol. 
 # =============================================================================
 
+# VARIABLES TO SET#!!!=========================================================
+# =============================================================================
+number_of_samples = 78   
+  ## How many samples do you want to include? 
+number_std_series = 0
+  ## How many dilution series do you want to include in this PCR        ##
+number_of_samplemix = 8
+  ## How many sample_mix to include (for normalization between qPCRs)   ##
+number_of_NTCs = 2
+  ## How many NTCs to include 
+start_vol_mix = 2134
+  ## The start_vol_m is the volume (ul) of mix that is in the source    ##
+  ## labware at the start of the protocol.                              ##
+sample_volume = 3
+  ## How much sample (µL) to add to the PCR
+dispension_vol_mix = 22 
+  ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
+  ## be aliquoted into the destination wells/tubes.                     ##
+first_sample = 'A9'
+  ## In which well is the first sample of this PCR located
+sample_mix_well = 'G6'
+starting_tip_p200 = 'E9'
+starting_tip_p20 = 'B4'
+  ## The starting_tip is the location of first pipette tip in the box   ##
+# =============================================================================
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================
@@ -12,12 +37,11 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-# from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+#   # Import volume_tracking module that is on the OT2                        ##
+from mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module for simulator                          ##
 # =============================================================================
-
 
 # METADATA=====================================================================
 # =============================================================================
@@ -41,32 +65,6 @@ def run(protocol: protocol_api.ProtocolContext):
     Dilution series should be added by hand in the first (how many you chose) 
     columns.
     """
-# =============================================================================
-
-# VARIABLES TO SET#!!!=========================================================
-# =============================================================================
-    number_of_samples = 78   
-      ## How many samples do you want to include? 
-    number_std_series = 0
-      ## How many dilution series do you want to include in this PCR        ##
-    number_of_samplemix = 8
-      ## How many sample_mix to include (for normalization between qPCRs)   ##
-    number_of_NTCs = 2
-      ## How many NTCs to include 
-    start_vol_mix = 2134
-      ## The start_vol_m is the volume (ul) of mix that is in the source    ##
-      ## labware at the start of the protocol.                              ##
-    sample_volume = 3
-      ## How much sample (µL) to add to the PCR
-    dispension_vol_mix = 22 
-      ## The dispension_vol_m is the volume (ul) of mastermix that needs to ##
-      ## be aliquoted into the destination wells/tubes.                     ##
-    first_sample = 'A9'
-      ## In which well is the first sample of this PCR located
-    sample_mix_well = 'G6'
-    starting_tip_p200 = 'E9'
-    starting_tip_p20 = 'B4'
-      ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
 # LOADING LABWARE AND PIPETTES=================================================
@@ -98,19 +96,19 @@ def run(protocol: protocol_api.ProtocolContext):
         'plate_96_dil_2')                       #custom name 
 
     ##### !!! FOR ROBOT      
-    tubes_5mL = protocol.load_labware(
-        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-        6,                                      #deck position
-        'tubes_5mL')                            #custom name 
+    # tubes_5mL = protocol.load_labware(
+    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+    #     6,                                      #deck position
+    #     'tubes_5mL')                            #custom name 
     
     # ####    !!! FOR SIMULATOR
-    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-    #         labware_def_5mL = json.load(labware_file)
-    #         tubes_5mL = protocol.load_labware_from_definition( 
-    #         labware_def_5mL, #variable derived from opening json
-    #         6, 
-    #         '5mL_tubes')
+    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+            labware_def_5mL = json.load(labware_file)
+            tubes_5mL = protocol.load_labware_from_definition( 
+            labware_def_5mL, #variable derived from opening json
+            6, 
+            '5mL_tubes')
 
     ##### Loading pipettes
     p300 = protocol.load_instrument(
@@ -124,7 +122,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
 # =============================================================================
 
-# SETTING LOCATIONS#!!!========================================================
+# SETTING LOCATIONS============================================================
 # =============================================================================
     ##### Setting starting tip                                              ##
     p300.starting_tip = tips_200.well(starting_tip_p200)

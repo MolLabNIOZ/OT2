@@ -25,7 +25,7 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 56   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 57   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
 number_std_series = 2  # max 3
   ## How many dilution series do you want to include in this PCR        ##
@@ -35,7 +35,7 @@ number_of_NTCs = 1
   ## How many NTCs to include                                           ##
 mock = True
   ## Will a mock sample be included?
-start_vol = 3234
+start_vol = 3318
   ## The start_vol_m is the volume (ul) of mix that is in the source    ##
   ## labware at the start of the protocol.                              ##
 dispension_vol = 42 

@@ -8,9 +8,9 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   # Import volume_tracking module that is on the OT2                        ##
-# from mollab_modules import volume_tracking_v1 as vt
+from mollab_modules import volume_tracking_v1 as vt
 #   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
@@ -35,7 +35,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     number_of_tubes = 2  
       ## How many tubes you want to aliquot from? 
-    volume = 180      ## How much volume (µL) to aliquot
+    volume = 10      ## How much volume (µL) to aliquot
     starting_tip_p200 = 'A1'
     start_volume = 42500 # How much volume is in each source tube
     # make sure all source tubes have the same volume
@@ -207,7 +207,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 aspiration_location = source.bottom(pip_height)
                   ## Set the location of where to aspirate from.            ##
 
-            #### The actual aliquoting of mastermix
+            #### The actual aliquoting
             p300.aspirate(200, aspiration_location)
               ## Aspirate the amount specified in aspiration_vol from the   ##
               ## location specified in aspiration_location.                 ##

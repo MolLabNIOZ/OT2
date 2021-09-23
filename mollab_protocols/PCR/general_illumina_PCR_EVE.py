@@ -22,9 +22,9 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 56   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 57   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
-mock = False
+mock = False #also False if added by hand
   ## False if not added or added by hand, True if added by robot
 sample_vol = 5 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##

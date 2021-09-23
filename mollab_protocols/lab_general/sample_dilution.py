@@ -29,10 +29,7 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Sample dilution protocol. Choose how much you want to dilute, how many 
-    samples you want to dilute, the type of tubes the samples are in and the 
-    type of tubes you want the dilutions in. Then the robot will prepare these
-    dilutions for you.
+    Sample dilution protocol. 
     First aliquot water for diluting samples into a 96_wells plate.
     The source = 5mL tubes. Use volume tracking, which resets after every
     tube. 

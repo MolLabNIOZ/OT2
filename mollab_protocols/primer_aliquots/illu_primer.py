@@ -41,7 +41,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================      
     primer_volume = 15
       ## NOTE: The type of pipette is dependent on the primer volume.
-    primer_combinations = 47
+    primer_combinations = 24
     starting_tip = 'B6'
     starting_tip_box = 1
 # =============================================================================
@@ -100,8 +100,7 @@ def run(protocol: protocol_api.ProtocolContext):
             pipette.starting_tip = tips_3.well(starting_tip)
         if starting_tip_box == 4:
             pipette.starting_tip = tips_4.well(starting_tip)
-        airgap_vol = 5
-        
+        airgap_vol = 5   
         
     if primer_volume > 20:
         tips_1 = protocol.load_labware(
@@ -135,37 +134,60 @@ def run(protocol: protocol_api.ProtocolContext):
         airgap_vol = 10
 # =============================================================================
     primers = int(primer_combinations * 2)
-    while primers >= 24:
-        source = primer_tubes.wells()
-        destination = (
-            [pcr_strips.wells_by_name()[well_name] for well_name in 
-             ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
-              'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
-              'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
-              ]])
-        if primers / 2 <= 24:
-            protocol.pause('STOP')
+    source = primer_tubes.wells()
+    destination = (
+        [pcr_strips.wells_by_name()[well_name] for well_name in 
+         ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+          'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+          'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11'
+          ]])
+    destinations = []
+    for well in destination:
+        destinations.append(well)
+    destinations = destinations[:primers]
     
+    primer_tubes_1 = (
+        [primer_tubes.wells_by_name()[well_name] for well_name in
+         ['A1', 'B1', 'C1', 'D1', 'A2', 'B2', 'C2', 'D2']])
+    primer_tubes_2 = (
+        [primer_tubes.wells_by_name()[well_name] for well_name in
+         ['A3', 'B3', 'C3', 'D3', 'A4', 'B4', 'C4', 'D4']])
+    primer_tubes_3 = (
+        [primer_tubes.wells_by_name()[well_name] for well_name in
+         ['A5', 'B5', 'C5', 'D5', 'A6', 'B6', 'C6', 'D6']])
+    
+    primer_strips_1 = (
+        [pcr_strips.wells_by_name()[well_name] for well_name in 
+         ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2']])
+    primer_strips_2 = (
+        [pcr_strips.wells_by_name()[well_name] for well_name in 
+         ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']])
+    primer_strips_3 = (
+        [pcr_strips.wells_by_name()[well_name] for well_name in 
+         ['A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11']])
 # =============================================================================    
 
     protocol.set_rail_lights(True)
     protocol.pause('Are the right pipette tips in (20 for <= 20uL and 200' 
                    ' for >20 uL)?')
-    for primer_tube, pcr_strip_tube in zip(source, destination):
-         ## simultanious loop through primer_tubes and PCR_strips       ##
-         ## From wells to columns doesn't work, therefore all PCRstrip  ##
-         ## wells are given.                                            ##
-        pipette.pick_up_tip()
-        pipette.aspirate(primer_volume, primer_tube)
-        pipette.air_gap(airgap_vol)
-        pipette.dispense(primer_volume + 50, pcr_strip_tube)
-        pipette.air_gap(airgap_vol)
-         ## air_gap to suck up any liquid that remains in the tip       ##
-        pipette.drop_tip()
-     ## Used aspirate/dipense instead of transfer, to allow for more    ##
-     ## customization.                                                  ##
-    protocol.pause('Time for new primers!')
-    primers -= 24   
+    while primers >= 24: 
+        for primer_tube, pcr_strip_tube in zip(source, destination):
+             ## simultanious loop through primer_tubes and PCR_strips       ##
+             ## From wells to columns doesn't work, therefore all PCRstrip  ##
+             ## wells are given.                                            ##
+            pipette.pick_up_tip()
+            pipette.aspirate(primer_volume, primer_tube)
+            pipette.air_gap(airgap_vol)
+            pipette.dispense(primer_volume + 50, pcr_strip_tube)
+            pipette.air_gap(airgap_vol)
+             ## air_gap to suck up any liquid that remains in the tip       ##
+            pipette.drop_tip()
+         ## Used aspirate/dipense instead of transfer, to allow for more    ##
+         ## customization.                                                  ##
+        protocol.pause('Time for new primers!')
+        primers -= 24 
+        if primers / 2 <= 24:
+            protocol.pause('STOP')
    
     protocol.set_rail_lights(False)
 

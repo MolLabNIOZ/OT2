@@ -14,21 +14,21 @@ import math
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 #   ## Import volume_tracking module for simulator                          ##
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 57   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 58   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
 mock = False #also False if added by hand
   ## False if not added or added by hand, True if added by robot
 sample_vol = 5 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'C5'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
@@ -90,18 +90,18 @@ def run(protocol: protocol_api.ProtocolContext):
             'sample_tubes_4')                                        #cust name
     
     ##### !!! OPTION 1: ROBOT 
-    # plate_96 = protocol.load_labware(
-    #     'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
-    #     5,                                      #deck position
-    #     '96well_plate_rack')                    #custom name  
+    plate_96 = protocol.load_labware(
+        'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
+        5,                                      #deck position
+        '96well_plate_rack')                    #custom name  
    ##### !!! OPTION 2: SIMULATOR
-    with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
-                "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
-              labware_def_cool_rack = json.load(labware_file)
-    plate_96 = protocol.load_labware_from_definition( 
-        labware_def_cool_rack,   #variable derived from opening json
-        5,                       #deck position
-        '96well_plate_rack')     #custom name 
+    # with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+    #             "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+    #           labware_def_cool_rack = json.load(labware_file)
+    # plate_96 = protocol.load_labware_from_definition( 
+    #     labware_def_cool_rack,   #variable derived from opening json
+    #     5,                       #deck position
+    #     '96well_plate_rack')     #custom name 
     
     # Pipettes
     p20 = protocol.load_instrument(

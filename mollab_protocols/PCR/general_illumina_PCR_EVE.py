@@ -28,7 +28,7 @@ mock = False #also False if added by hand
   ## False if not added or added by hand, True if added by robot
 sample_vol = 5 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##
-starting_tip_p20 = 'C5'
+starting_tip_p20 = 'G7'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

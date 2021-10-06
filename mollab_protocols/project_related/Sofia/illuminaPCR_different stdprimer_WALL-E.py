@@ -46,8 +46,8 @@ primer_loc = ['2', '5', '8','11']
   ## In which columns are the primer strips located
 primer_vol = 3
   ## Volume of the primer (F+R mix) to be used
-starting_tip_p200 = 'B3'
-starting_tip_p20 = 'G4'
+starting_tip_p200 = 'C4'
+starting_tip_p20 = 'F1'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

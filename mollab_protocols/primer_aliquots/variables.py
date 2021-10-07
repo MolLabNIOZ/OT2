@@ -22,71 +22,47 @@ source = []
 destination = []
 primer_combinations = primer_combinations_start
 
-# if primer_combinations <= 8:
-#     for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-#         source.append(well_s)
-#         destination.append(well_d)
-#     source = source[:primer_combinations]
-#     destination = destination[:primer_combinations]
-# elif primer_combinations >= 9 and primer_combinations <= 16:
-#     for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-#         source.append(well_s)
-#         destination.append(well_d)
-#     for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-#         source.append(well_s)
-#         destination.append(well_d)
-#     source = source[:primer_combinations]
-#     destination = destination[:primer_combinations]
-# elif primer_combinations >= 24:
-#     for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-#         source.append(well_s)
-#         destination.append(well_d)
-#     for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-#         source.append(well_s)
-#         destination.append(well_d)
-#     for well_s, well_d in zip(primer_tubes_3, primer_strips_3):
-#         source.append(well_s)
-#         destination.append(well_d)    
-#     source = source[:primer_combinations]
-#     destination = destination[:primer_combinations]    
+if primer_combinations <= 8:
+    for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
+        source.append(well_s)
+        destination.append(well_d)
+    source = source[:primer_combinations]
+    destination = destination[:primer_combinations]
+elif primer_combinations >= 9 and primer_combinations <= 16:
+    for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
+        source.append(well_s)
+        destination.append(well_d)
+    for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
+        source.append(well_s)
+        destination.append(well_d)
+    source = source[:primer_combinations]
+    destination = destination[:primer_combinations]
+elif primer_combinations >= 24:
+    for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
+        source.append(well_s)
+        destination.append(well_d)
+    for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
+        source.append(well_s)
+        destination.append(well_d)
+    for well_s, well_d in zip(primer_tubes_3, primer_strips_3):
+        source.append(well_s)
+        destination.append(well_d)    
+    source = source[:primer_combinations]
+    destination = destination[:primer_combinations]    
 print(primer_combinations)
 print(source)
 print(destination)
 
-for primer in range(primer_combinations):
-    if primer_combinations <= 8:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]
-    elif primer_combinations >= 9 and primer_combinations <= 16:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-            source.append(well_s)
-            destination.append(well_d)
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]
-    elif primer_combinations >= 24:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_3, primer_strips_3):
-            source.append(well_s)
-            destination.append(well_d)    
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]    
+for primer in range(primer_combinations):  
     if primer % 2 == 0 and primer <= 2:
         for well_s, well_d in zip(source, destination):
             print('source: ' + well_s)
             print('destin: ' + well_d) 
         print('LOOP')
+    source = source[:primer_combinations]
+    destination = destination[:primer_combinations]
     primer_combinations -= 1
+    
     
         
 print(primer_combinations)

@@ -8,9 +8,9 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 #   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
@@ -33,13 +33,13 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_tubes = 2  
+    number_of_tubes = 3  
       ## How many tubes you want to aliquot from? 
-    volume = 10      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'A1'
-    start_volume = 42500 # How much volume is in each source tube
+    volume = 1000      ## How much volume (µL) to aliquot
+    starting_tip_p200 = 'E6'
+    start_volume = 50000 # How much volume is in each source tube
     # make sure all source tubes have the same volume
-    number_of_aliquots = 128 # How many destination tubes you want filled
+    number_of_aliquots = 144 # How many destination tubes you want filled
         # If you want to aliquot the entire source:
         # number_of_aliquots = "EmptySourceTubes"
 # =============================================================================
@@ -76,32 +76,32 @@ def run(protocol: protocol_api.ProtocolContext):
         'tubes_50mL')                               #custom name
     tubes_1mL_1 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',   #labwaredef
-        1,                                                          #deck pos
+        4,                                                          #deck pos
         'tubes_1.5mL1')                                             #cust name
     if number_of_racks > 1:
         tubes_1mL_2 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            2,                                                       #deck pos
+            5,                                                       #deck pos
             'tubes_1.5mL2')                                          #cust name
     if number_of_racks > 2:
         tubes_1mL_3 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            3,                                                       #deck pos
+            6,                                                       #deck pos
             'tubes_1.5mL3')                                          #cust name    
     if number_of_racks > 3:
         tubes_1mL_4 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            4,                                                       #deck pos
+            1,                                                       #deck pos
             'tubes_1.5mL4')                                          #cust name    
     if number_of_racks > 4:
         tubes_1mL_5 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            5,                                                       #deck pos
+            2,                                                       #deck pos
             'tubes_1.5mL5')                                          #cust name
     if number_of_racks > 5:
         tubes_1mL_6 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            6,                                                       #deck pos
+            3,                                                       #deck pos
             'tubes_1.5mL6')                                          #cust name
 
     ##### Loading pipettes

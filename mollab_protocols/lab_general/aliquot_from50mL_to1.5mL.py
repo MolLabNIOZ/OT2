@@ -33,13 +33,13 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_tubes = 2  
+    number_of_tubes = 3  
       ## How many tubes you want to aliquot from? 
-    volume = 10      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'A1'
-    start_volume = 42500 # How much volume is in each source tube
+    volume = 1000      ## How much volume (µL) to aliquot
+    starting_tip_p200 = 'E6'
+    start_volume = 55000 # How much volume is in each source tube
     # make sure all source tubes have the same volume
-    number_of_aliquots = 128 # How many destination tubes you want filled
+    number_of_aliquots = "EmptySourceTubes" # How many destination tubes you want filled
         # If you want to aliquot the entire source:
         # number_of_aliquots = "EmptySourceTubes"
 # =============================================================================

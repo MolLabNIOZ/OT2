@@ -31,9 +31,8 @@ def run(protocol: protocol_api.ProtocolContext):
     """
     Sample dilution protocol. 
     First aliquot water for diluting samples into a 96_wells plate.
-    The source = 5mL tubes. Use volume tracking, which resets after every
-    tube. 
-    Provide samples in tube_strips
+    The water source = 5mL tubes.
+    Provide the kind of tubes your samples are in.
     Dilutions will be made in 96wells_plates
     """
 # =============================================================================
@@ -47,6 +46,12 @@ def run(protocol: protocol_api.ProtocolContext):
       ## How much sample (µL) to use for the dilution?
     dilution_ratio = 100
       ## How many times to dilute?
+    sample_tubes = 'tubes_1.5mL'
+      ## In what kind of tubes are the samples provided?
+      ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
+    dilution_tubes = 'plate_96'
+      ## In what kind of tubes should the dilutions be made?
+      ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'    
     starting_tip_p200 = 'D8'
     starting_tip_p20 = 'C12'
 # =============================================================================
@@ -59,10 +64,20 @@ def run(protocol: protocol_api.ProtocolContext):
       ## How much water is needed for per sample
     water_tubes = math.ceil((water_volume * number_of_samples)/5000) + 1
       ## How many tubes of 5mL water are needed (+1 to be save)
-    sample_racks = math.ceil(number_of_samples / 48)
-      ## How many tube_strip_racks are needed (1,2,3 or 4)
-    dilution_plates = math.ceil(number_of_samples / 96)
-      ## How many dilution_plates are needed (1 or 2)
+    if sample_tubes == 'tubes_1.5mL':
+        sample_racks = math.ceil(number_of_samples / 24)
+    elif sample_tubes == 'PCR_strips':
+        sample_racks = math.ceil(number_of_samples / 32)
+    elif sample_tubes == 'plate_96':
+        sample_racks = math.ceil(number_of_samples / 96)
+      ## How many sample_racks are needed (1,2,3 or 4)
+    if dilution_tubes == 'tubes_1.5mL':
+        dilution_racks = math.ceil(number_of_samples / 24)
+    elif dilution_tubes == 'PCR_strips':
+        dilution_racks = math.ceil(number_of_samples / 32)
+    elif dilution_tubes == 'plate_96':
+        dilution_racks = math.ceil(number_of_samples / 96)
+      ## How many dilution_racks are needed (1 or 2)
 # =============================================================================
 
 
@@ -86,16 +101,18 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_96_filtertiprack_20ul',  #labware definition
             8,                                  #deck position
             'tips_20_3')                        #custom name    
-   
-    plate_96_dil = protocol.load_labware(
+    
+    if dilution_tubes == 'plate_96':
+        plate_96_dil = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        #labware definition
         4,                                      #deck position
         'plate_96_dil')                         #custom name
-    if dilution_plates == 2:
-        plate_96_dil_2 = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',        #labware definition
-        5,                                      #deck position
-        'plate_96_dil_2')                        #custom name
+        if dilution_racks == 2:
+            plate_96_dil_2 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',        #labware definition
+                5,                                      #deck position
+                'plate_96_dil_2')                        #custom name
+
 
     ##### !!! FOR ROBOT      
     # sample_strips_1 = protocol.load_labware(

@@ -47,7 +47,7 @@ starting_tip_p20 = 'B4'
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
 if PCR_tubes == 'PCR_strips':
-    PCR_racks = math.ceil(number_of_samples + number_of_NTCs) / 32
+    PCR_racks = math.ceil((number_of_samples + number_of_NTCs) / 32)
   ## How many PCR tube racks / plate are needed
 # =============================================================================
 
@@ -93,8 +93,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'pcrstrips_96_wellplate_200ul',    #labware definition
                 9,                                 #deck position
                 'PCR_tube_2')                       #custom name
-    
-
+        
 
     ##### !!! OPTION 2: SIMULATOR         
         # with open("labware/pcrstrips_96_wellplate_200ul/"

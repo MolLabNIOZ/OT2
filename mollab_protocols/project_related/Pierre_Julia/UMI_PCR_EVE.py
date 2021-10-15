@@ -17,40 +17,47 @@ import json
 from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   # Import volume_tracking module that is on the OT2                        ##
 # from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
+  ## Import volume_tracking module for simulator                          ##
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 58   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 48   # max 96 - NTC
   ## How many samples do you want to include?                           ##
-mock = False #also False if added by hand
-  ## False if not added or added by hand, True if added by robot
-sample_vol = 5 
-  ## The sample_vol is the volume (ul) of sample added to the PCR       ##
+number_of_NTCs = 1
+PCR_tubes = 'PCR_strips'
+  ## What kind of tubes will the PCR be in?
+  ## Options: 'PCR_strips' or 'plate_96'
+if PCR_tubes == 'PCR_strips':
+    strip_positions = ['2', '5', '8','11']
+    ## max 2 racks with strips!  
 starting_tip_p20 = 'A3'
   ## The starting_tip is the location of first pipette tip in the box   ##
+DNA_µL_list = ([5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.5, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 5.0, 3.0, 5.0, 4.0, 4.0, 3.5, 4.0, 3.5, 2.0, 3.5, 3.0, 5.0, 5.0, 3.5, 4.0, 5.0, 4.0, 4.0, 1.5, 1.0, 1.0, 4.0, 0.75, 2.0, 3.5, 4.0, 3.5, 3.5, 3.0, 3.5, 4.0, 2.5, 1.0, 1.0, 1.0, 3.5, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 3.5, 5.0, 3.5, 5.0, 5.0, 4.0, 4.0, 4.0, 2.5, 4.0, 2.5, 3.0, 3.5, 4.0, 4.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 3.5, 4.0, 1.5, 2.0, 4.0, 4.0, 5.0, 5.0, 4.0, 4.0, 4.0, 3.5, 4.0, 2.0, 0.75, 1.0, 2.5, 2.5, 3.5, 1.0, 4.0, 4.0, 3.0, 4.0, 2.5, 3.0, 0.75, 0.75, 0.75, 3.5, 3.0, 3.5, 2.5, 3.5, 3.5, 3.0, 3.0, 3.0, 1.0, 1.0, 2.0, 2.0, 4.0, 5.0, 3.5, 3.0, 2.0, 2.5, 3.5, 3.0, 3.0, 0.5, 0.75, 1.5, 1.0, 2.0, 2.5, 3.5, 1.5, 3.5, 3.5, 2.5, 2.5, 2.0, 2.5, 5.0, 2.5])
+  ##How much DNA should be added for each sample (µL)
 # =============================================================================
+
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-if mock:
-    number_of_samples = number_of_samples + 1
-sample_racks = math.ceil(number_of_samples / 24)
-  ## How many tube_racks are needed (1,2,3 or 4)
+if PCR_tubes == 'PCR_strips':
+    PCR_racks = math.ceil((number_of_samples + number_of_NTCs)/32)
+  ## How many PCR tube racks / plate are needed
+sample_racks = math.ceil((number_of_samples + 1) / 24)
+  ## How many tube_racks are needed (1,2,3 or 4) +1 for water_tube
 # =============================================================================
 
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
-    'protocolName': 'general_illuPCR_EVE',
+    'protocolName': 'PCR_different_sample_volumes_EVE',
     'author': 'MB <maartje.brouwer@nioz.nl>, SV <sanne.vreugdenhil@nioz.nl>',
-    'description': ('Illumina PCR - adding samples'),
+    'description': ('PCR - adding samples in different volumes'),
     'apiLevel': '2.9'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Adding samples from 1.5 mL tubes to a 96 wells plate.
+    Adding samples from 1.5 mL tubes to PCR_strips.
     """
 # =============================================================================
 
@@ -89,19 +96,49 @@ def run(protocol: protocol_api.ProtocolContext):
             11,                                                      #deck pos
             'sample_tubes_4')                                        #cust name
     
-    ##### !!! OPTION 1: ROBOT 
-    plate_96 = protocol.load_labware(
-        'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
-        5,                                      #deck position
-        '96well_plate_rack')                    #custom name  
-   ##### !!! OPTION 2: SIMULATOR
-    # with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
-    #             "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
-    #           labware_def_cool_rack = json.load(labware_file)
-    # plate_96 = protocol.load_labware_from_definition( 
-    #     labware_def_cool_rack,   #variable derived from opening json
-    #     5,                       #deck position
-    #     '96well_plate_rack')     #custom name 
+    if PCR_tubes == 'PCR_strips':
+   ### !!! OPTION 1: ROBOT         
+        PCR_1 = protocol.load_labware(
+         'pcrstrips_96_wellplate_200ul',    #labware definition
+         8,                                 #deck position
+         'PCR_tube_1')                       #custom name
+        if PCR_racks >= 2:
+           PCR_2 = protocol.load_labware(
+                 'pcrstrips_96_wellplate_200ul',    #labware definition
+                 9,                                 #deck position
+                 'PCR_tube_2')                       #custom name
+    
+    ##### !!! OPTION 2: SIMULATOR         
+        # with open("labware/pcrstrips_96_wellplate_200ul/"
+        #            "pcrstrips_96_wellplate_200ul.json") as labware_file:
+        #          labware_def_pcrstrips = json.load(labware_file)
+        # PCR_1 = protocol.load_labware_from_definition( 
+        #      labware_def_pcrstrips, #variable derived from opening json
+        #      8,                     #deck position
+        #      'PCR_tube_1')          #custom name
+        # if PCR_racks >= 2:
+        #     with open("labware/pcrstrips_96_wellplate_200ul/"
+        #                "pcrstrips_96_wellplate_200ul.json") as labware_file:
+        #              labware_def_pcrstrips = json.load(labware_file)
+        #     PCR_2 = protocol.load_labware_from_definition( 
+        #          labware_def_pcrstrips, #variable derived from opening json
+        #          9,                     #deck position
+        #          'PCR_tube_2')          #custom name
+    
+    if PCR_tubes == 'plate_96':
+        #### !!! OPTION 1: ROBOT 
+        PCR_1 = protocol.load_labware(
+            'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
+            8,                                      #deck position
+            '96well_plate_rack')                    #custom name  
+       ##### !!! OPTION 2: SIMULATOR
+        # with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+        #             "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+        #           labware_def_cool_rack = json.load(labware_file)
+        # PCR_1 = protocol.load_labware_from_definition( 
+        #     labware_def_cool_rack,   #variable derived from opening json
+        #     8,                       #deck position
+        #     '96well_plate_rack')     #custom name 
     
     # Pipettes
     p20 = protocol.load_instrument(
@@ -126,12 +163,36 @@ def run(protocol: protocol_api.ProtocolContext):
         sample_sources = sample_sources + sample_tubes_3.wells()    
     if sample_racks >= 4:
         sample_sources = sample_sources + sample_tubes_4.wells()
+    water_tube = sample_sources[-1]
     sample_sources = sample_sources[:number_of_samples]
     
-# ADDING SAMPLES===============================================================
+    # Destination wells
+    sample_destinations = []
+      ## Create an empty list to append wells to.                           ##
+    if PCR_tubes == 'plate_96':
+        sample_destinations = PCR_1.wells()
+    elif PCR_tubes == 'PCR_strips':
+        PCR_columns = (
+            ([PCR_1.columns_by_name()[column_name]
+            for column_name in strip_positions]))        
+        if PCR_racks >= 2:
+            PCR_columns_2 = (
+            ([PCR_2.columns_by_name()[column_name]
+              for column_name in strip_positions]))
+            PCR_columns = PCR_columns + PCR_columns_2
+        for column in PCR_columns:
+            for well in column:
+                sample_destinations.append(well)       
+    
+    sample_destinations = sample_destinations[:number_of_samples + 1]
+        
+    
+# ADDING SAMPLES AND WATER=====================================================
 # =============================================================================
     ## Loop through source and destination wells
-    for sample_tube, well in zip(sample_sources, plate_96.wells()):
+    for sample_tube, well, sample_vol in zip(
+            sample_sources, sample_destinations, DNA_µL_list
+            ):
         p20.pick_up_tip()
         p20.aspirate(sample_vol, sample_tube)
         p20.dispense(sample_vol, well)
@@ -140,5 +201,31 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.mix(3, sample_mix_vol, well)
         p20.dispense(10, well)
         p20.drop_tip()
+        
+        water_vol = 5 - sample_vol
+          ## volume of water needed to add a total of 5µL
+        if water_vol > 0:
+            p20.pick_up_tip()
+            p20.aspirate(water_vol, water_tube)
+            p20.dispense(water_vol, well)
+            sample_mix_vol = sample_vol + 3
+              ## primer_mix_vol = volume for pipetting up and down              ##
+            p20.mix(3, sample_mix_vol, well)
+            p20.dispense(10, well)
+            p20.drop_tip()
+        
+    ## Add water to NTC
+    water_vol = 5
+    well = sample_destinations[-1]
+    p20.pick_up_tip()
+    p20.aspirate(water_vol, water_tube)
+    p20.dispense(water_vol, well)
+    sample_mix_vol = sample_vol + 3
+      ## primer_mix_vol = volume for pipetting up and down              ##
+    p20.mix(3, sample_mix_vol, well)
+    p20.dispense(10, well)
+    p20.drop_tip()
+
+            
 # =============================================================================
     

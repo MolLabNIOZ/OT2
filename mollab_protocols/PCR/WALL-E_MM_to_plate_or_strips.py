@@ -56,7 +56,7 @@ elif PCR_tubes == 'plate_96':
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
-    'protocolName': 'general_illuPCR_WALL-E',
+    'protocolName': 'alliquoting_PCRmix_WALL-E',
     'author': 'MB <maartje.brouwer@nioz.nl>, SV <sanne.vreugdenhil@nioz.nl>',
     'description': ('PCR - aliquoting mix'),
     'apiLevel': '2.9'}

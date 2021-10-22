@@ -12,6 +12,7 @@ from opentrons import protocol_api
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
+import math
 # =============================================================================
 
 
@@ -37,7 +38,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================      
     primer_volume = 22
       ## NOTE: The type of pipette is dependent on the primer volume.
-    primer_combinations = 25
+    primer_combinations = 48
     starting_tip = 'B6'
     starting_tip_box = 1
 # =============================================================================
@@ -136,33 +137,43 @@ def run(protocol: protocol_api.ProtocolContext):
          ['A1', 'B1', 'C1', 'D1', 'A2', 'B2', 'C2', 'D2',
           'A3', 'B3', 'C3', 'D3', 'A4', 'B4', 'C4', 'D4',
           'A5', 'B5', 'C5', 'D5', 'A6', 'B6', 'C6', 'D6']])
-    primer_plate = plate.wells()
+    destination = []
     
-    source = primer_tubes[:primer_combinations]
-    destination = primer_plate[:primer_combinations]
-        
+    if primer_combinations <= 24:
+        number_of_loops = 1
+        source = primer_tubes[:primer_combinations]
+        for column in [plate.columns_by_name()[column_name] for column_name in
+                     ['1', '2', '3']]:
+            for well in column:
+                destination.append(well)
+        destination = destination[:primer_combinations] 
+    elif primer_combinations >=25 and primer_combinations <=48:
+        number_of_loops = 2
+        source = primer_tubes[:primer_combinations]
+        for column in [plate.columns_by_name()[column_name] for column_name in
+                     ['1', '2', '3', '4', '5', '6']]:
+            for well in column:
+                destination.append(well)
+        destination = destination[:primer_combinations] 
 # =============================================================================        
     protocol.set_rail_lights(True)
     protocol.pause('Are the right pipette tips in (20 for <= 20uL and 200' 
                    ' for >20 uL)?')
     
-    if primer_combinations >= 24:
-        source = primer_tubes[:primer_combinations]
-        
-        
-    for primer in range(primer_combinations):
-        if primer % 2 == 0 and primer <= 2:
-            for primer_tube, pcr_strip_tube in zip(source, destination):
-                ## simultanious loop through primer_tubes and PCR_strips       ##
-                ## From wells to columns doesn't work, therefore all PCRstrip  ##
-                ## wells are given.                                            ##
-               pipette.pick_up_tip()
-               pipette.aspirate(primer_volume, primer_tube)
-               # pipette.air_gap(airgap_vol)
-               pipette.dispense(primer_volume + 50, pcr_strip_tube)
-               # pipette.air_gap(airgap_vol)
-                ## air_gap to suck up any liquid that remains in the tip       ##
-               pipette.drop_tip()
-            ## Used aspirate/dipense instead of transfer, to allow for more    ##
-            ## customization.                                                  ##
-            protocol.pause('Time for new primers!')
+    for loop in range(number_of_loops):
+        for primer in range(primer_combinations):
+            if primer % 2 == 0 and primer <= 2:
+                for primer_tube, pcr_strip_tube in zip(source, destination):
+                    ## simultanious loop through primer_tubes and PCR_strips       ##
+                    ## From wells to columns doesn't work, therefore all PCRstrip  ##
+                    ## wells are given.                                            ##
+                   pipette.pick_up_tip()
+                   pipette.aspirate(primer_volume, primer_tube)
+                   # pipette.air_gap(airgap_vol)
+                   pipette.dispense(primer_volume + 50, pcr_strip_tube)
+                   # pipette.air_gap(airgap_vol)
+                    ## air_gap to suck up any liquid that remains in the tip       ##
+                   pipette.drop_tip()
+                ## Used aspirate/dipense instead of transfer, to allow for more    ##
+                ## customization.                                                  ##
+                protocol.pause('Time for new primers!')

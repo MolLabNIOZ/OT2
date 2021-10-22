@@ -37,7 +37,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================      
     primer_volume = 22
       ## NOTE: The type of pipette is dependent on the primer volume.
-    primer_combinations = 25
+    primer_combinations = 8
     starting_tip = 'B6'
     starting_tip_box = 1
 # =============================================================================
@@ -146,28 +146,29 @@ def run(protocol: protocol_api.ProtocolContext):
     source = []
     destination = []
     
-    # if primer_combinations =< 24:
-    for well in primer_tubes_1:
-        source.append(well)
-    for well in primer_tubes_2:
-        source.append(well)
-    for well in primer_tubes_3:
-        source.append(well)
-    for column in (
-            [plate.columns_by_name()[column_name] for column_name in 
-             ['1', '2', '3']]):
-        for well in column:
-            destination.append(well)
-        
+    if primer_combinations <= 24:
+        for well in primer_tubes_1:
+            source.append(well)
+        for well in primer_tubes_2:
+            source.append(well)
+        for well in primer_tubes_3:
+            source.append(well)
+        for column in (
+                [plate.columns_by_name()[column_name] for column_name in 
+                 ['1', '2', '3']]):
+            for well in column:
+                destination.append(well)
+        source = source[:primer_combinations]
+        destination = destination[:primer_combinations] 
 # =============================================================================        
-    for primer_tube, pcr_strip_tube in zip(source, destination):
+    for primer_tube, primer_well in zip(source, destination):
         ## simultanious loop through primer_tubes and PCR_strips       ##
         ## From wells to columns doesn't work, therefore all PCRstrip  ##
         ## wells are given.                                            ##
        pipette.pick_up_tip()
        pipette.aspirate(primer_volume, primer_tube)
        # pipette.air_gap(airgap_vol)
-       pipette.dispense(primer_volume + 50, pcr_strip_tube)
+       pipette.dispense(primer_volume + 50, primer_well)
        # pipette.air_gap(airgap_vol)
         ## air_gap to suck up any liquid that remains in the tip       ##
        pipette.drop_tip()

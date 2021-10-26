@@ -8,9 +8,9 @@
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 #   ## Import volume_tracking module for simulator                          ##
 import math
   ## To do some calculations (rounding up)
@@ -33,13 +33,13 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-    number_of_tubes = 3  
+    number_of_tubes = 1 
       ## How many tubes you want to aliquot from? 
-    volume = 1000      ## How much volume (µL) to aliquot
-    starting_tip_p200 = 'E6'
-    start_volume = 50000 # How much volume is in each source tube
+    volume = 180      ## How much volume (µL) to aliquot
+    starting_tip_p200 = 'C7'
+    start_volume = 45000 # How much volume is in each source tube
     # make sure all source tubes have the same volume
-    number_of_aliquots = 144 # How many destination tubes you want filled
+    number_of_aliquots = 132 # How many destination tubes you want filled
         # If you want to aliquot the entire source:
         # number_of_aliquots = "EmptySourceTubes"
 # =============================================================================

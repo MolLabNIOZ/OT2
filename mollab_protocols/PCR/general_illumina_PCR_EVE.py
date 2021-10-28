@@ -3,7 +3,9 @@
 # Creation date: 210916
 # Description: 
 #   - add samples from 1.5 mL tubes to 96 wells plate
+# Update (SV) 211028: Added option for standard sample
 # =============================================================================
+
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================
@@ -14,31 +16,39 @@ import math
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-# from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
 # =============================================================================
+
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 58   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 48   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
 mock = False #also False if added by hand
   ## False if not added or added by hand, True if added by robot
-sample_vol = 5 
+std_sample = True
+  ## True if you are doing a qPCR and add a std_sample for Svec method  ##
+if std_sample:
+    no_of_std_samples = 6
+else:
+    no_of_std_samples = 0
+ ## Number of replicates of the std sample, usually 6                   ##
+sample_vol = 2 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##
 starting_tip_p20 = 'A3'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
+
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
 if mock:
     number_of_samples = number_of_samples + 1
+if std_sample:
+    number_of_samples = number_of_samples + 1 
 sample_racks = math.ceil(number_of_samples / 24)
   ## How many tube_racks are needed (1,2,3 or 4)
 # =============================================================================
+
 
 # METADATA=====================================================================
 # =============================================================================
@@ -90,18 +100,18 @@ def run(protocol: protocol_api.ProtocolContext):
             'sample_tubes_4')                                        #cust name
     
     ##### !!! OPTION 1: ROBOT 
-    plate_96 = protocol.load_labware(
-        'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
-        5,                                      #deck position
-        '96well_plate_rack')                    #custom name  
+    # plate_96 = protocol.load_labware(
+    #     'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
+    #     5,                                      #deck position
+    #     '96well_plate_rack')                    #custom name  
    ##### !!! OPTION 2: SIMULATOR
-    # with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
-    #             "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
-    #           labware_def_cool_rack = json.load(labware_file)
-    # plate_96 = protocol.load_labware_from_definition( 
-    #     labware_def_cool_rack,   #variable derived from opening json
-    #     5,                       #deck position
-    #     '96well_plate_rack')     #custom name 
+    with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+                "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+              labware_def_cool_rack = json.load(labware_file)
+    plate_96 = protocol.load_labware_from_definition( 
+        labware_def_cool_rack,   #variable derived from opening json
+        5,                       #deck position
+        '96well_plate_rack')     #custom name 
     
     # Pipettes
     p20 = protocol.load_instrument(
@@ -127,6 +137,12 @@ def run(protocol: protocol_api.ProtocolContext):
     if sample_racks >= 4:
         sample_sources = sample_sources + sample_tubes_4.wells()
     sample_sources = sample_sources[:number_of_samples]
+    if std_sample:
+        std_source = [sample_sources[-1]] * (no_of_std_samples - 1)
+        for well in std_source:
+            sample_sources.append(well)
+
+        
     
 # ADDING SAMPLES===============================================================
 # =============================================================================

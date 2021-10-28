@@ -34,7 +34,7 @@ else:
  ## Number of replicates of the std sample, usually 6                   ##
 sample_vol = 2 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##
-starting_tip_p20 = 'A3'
+starting_tip_p20 = 'C10'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
@@ -100,18 +100,18 @@ def run(protocol: protocol_api.ProtocolContext):
             'sample_tubes_4')                                        #cust name
     
     ##### !!! OPTION 1: ROBOT 
-    # plate_96 = protocol.load_labware(
-    #     'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
-    #     5,                                      #deck position
-    #     '96well_plate_rack')                    #custom name  
+    plate_96 = protocol.load_labware(
+        'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
+        5,                                      #deck position
+        '96well_plate_rack')                    #custom name  
    ##### !!! OPTION 2: SIMULATOR
-    with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
-                "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
-              labware_def_cool_rack = json.load(labware_file)
-    plate_96 = protocol.load_labware_from_definition( 
-        labware_def_cool_rack,   #variable derived from opening json
-        5,                       #deck position
-        '96well_plate_rack')     #custom name 
+    # with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+    #             "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+    #           labware_def_cool_rack = json.load(labware_file)
+    # plate_96 = protocol.load_labware_from_definition( 
+    #     labware_def_cool_rack,   #variable derived from opening json
+    #     5,                       #deck position
+    #     '96well_plate_rack')     #custom name 
     
     # Pipettes
     p20 = protocol.load_instrument(

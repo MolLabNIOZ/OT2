@@ -23,17 +23,15 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 80   # max 96 - number_of_NTCs
-  ## How many samples do you want to include?                           ##
-number_of_NTCs = 1
-  ## How many NTCs to include                                           ##
-start_vol = 5000
-  ## The start_vol_m is the volume (ul) of mix that is in the source    ##
-  ## labware at the start of the protocol.                              ##
-dispension_vol = 42 
-  ## Volume of MasterMix to be aliquoted                                ##
+number_of_samples = 43  # max 96
+  ## How many samples do you want to include? Including NTC                  ##
+start_vol = 2250
+  ## The start_vol_m is the volume (ul) of mix that is in the source         ##
+  ## labware at the start of the protocol.                                   ##
+dispension_vol = 45 
+  ## Volume of MasterMix to be aliquoted                                     ##
 mastermix_source = 'C1'
-  ## Where is the mastermix tube located in the rack                    ##
+  ## Where is the mastermix tube located in the rack                         ##
   ## Mastermix should be provided in a 5mL tube
 PCR_tubes = 'PCR_strips'
   ## What kind of tubes will the PCR be in?
@@ -43,7 +41,7 @@ if PCR_tubes == 'PCR_strips':
      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']
      ## max 4 racks with strips!
 starting_tip_p200 = 'A2'
-  ## The starting_tip is the location of first pipette tip in the box   ##
+  ## The starting_tip is the location of first pipette tip in the box        ##
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -53,7 +51,7 @@ if PCR_tubes == 'PCR_strips':
         PCR_tubes_per_rack = 32
     elif strip_positions == ['2', '7','11']:
         PCR_tubes_per_rack = 24
-    PCR_racks = math.ceil((number_of_samples + number_of_NTCs) / PCR_tubes_per_rack)
+    PCR_racks = math.ceil(number_of_samples / PCR_tubes_per_rack)
   ## How many PCR tube racks are needed
 # =============================================================================
 
@@ -79,7 +77,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # pipette tips
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul', #labware definition
-        7,                                  #deck position
+        10,                                  #deck position
         '200tips')                          #custom name
    
     # Tube_racks & plates
@@ -107,7 +105,7 @@ def run(protocol: protocol_api.ProtocolContext):
         # if PCR_racks == 4:
         #     PCR_tube_4 = protocol.load_labware(
         #         'pcrstrips_96_wellplate_200ul',    #labware definition
-        #         1,                                 #deck position
+        #         4,                                 #deck position
         #         'PCR_tube_4')                      #custom name
 
     ##### !!! OPTION 2: SIMULATOR         
@@ -131,14 +129,14 @@ def run(protocol: protocol_api.ProtocolContext):
         if PCR_racks >= 4:
             PCR_tube_4 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, #variable derived from opening json
-                1,                     #deck position
+                4,                     #deck position
                 'PCR_tube_4')          #custom name      
     
     
     ##### !!! OPTION 1: ROBOT
     # mastermix_tube = protocol.load_labware(
     #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
-    #     4,                                      #deck position
+    #     7,                                      #deck position
     #     'mastermix_tube')                       #custom name 
    ##### !!! OPTION 2: SIMULATOR      
     with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -146,7 +144,7 @@ def run(protocol: protocol_api.ProtocolContext):
               labware_def_5mL = json.load(labware_file)
     mastermix_tube = protocol.load_labware_from_definition( 
         labware_def_5mL,   #variable derived from opening json
-        4,                 #deck position
+        7,                 #deck position
         'mastermix_tube')  #custom name 
 
 
@@ -181,8 +179,6 @@ def run(protocol: protocol_api.ProtocolContext):
       ## Location of the 5mL tube with mastermix                            ##
     
     #### Where should mastermix go                                          ##
-    number_of_wells = number_of_samples + number_of_NTCs
-      ##How many wells do need to be filled with mastermix                  ##
     MasterMixAliquots = []
     if PCR_tubes == 'plate_96':
         MasterMixAliquots = PCR_tube.wells()
@@ -210,8 +206,8 @@ def run(protocol: protocol_api.ProtocolContext):
             for well in column:
                 MasterMixAliquots.append(well)
             
-      ## Make a list with all wells for PCR                         ##
-    MasterMixAliquots = MasterMixAliquots[:number_of_wells]
+      ## Make a list with all wells for PCR                                 ##
+    MasterMixAliquots = MasterMixAliquots[:number_of_samples]
       ## cuts off the list after a certain number of wells                  ##
 # =============================================================================
 

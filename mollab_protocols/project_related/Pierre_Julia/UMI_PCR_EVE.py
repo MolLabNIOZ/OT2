@@ -15,17 +15,12 @@ import math
 import json 
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-  ## Import volume_tracking module for simulator                          ##
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 80   # max 96 - NTC
-  ## How many samples do you want to include?                           ##
-number_of_NTCs = 1
+number_of_samples = 44   # max 96 
+  ## How many samples do you want to include? Including PC and NTC          ##
 PCR_tubes = 'PCR_strips'
   ## What kind of tubes will the PCR be in?
   ## Options: 'PCR_strips' or 'plate_96'
@@ -34,23 +29,27 @@ if PCR_tubes == 'PCR_strips':
     ## optional: ['2', '7', '11'] or ['2', '5', '8','11']
     ## max 2 racks with strips!
 starting_tip_p20 = 'A3'
-  ## The starting_tip is the location of first pipette tip in the box   ##
+  ## The starting_tip is the location of first pipette tip in the box       ##
 max_DNA_volume = 5
   ## highest DNA volume, to add up to with water if needed
-DNA_µL_list = ([5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.5, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 5.0, 3.0, 5.0, 4.0, 4.0, 3.5, 4.0, 3.5, 2.0, 3.5, 3.0, 5.0, 5.0, 3.5, 4.0, 5.0, 4.0, 4.0, 1.5, 1.0, 1.0, 4.0, 0.75, 2.0, 3.5, 4.0, 3.5, 3.5, 3.0, 3.5, 4.0, 2.5, 1.0, 1.0, 1.0, 3.5, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 3.5, 5.0, 3.5, 5.0, 5.0, 4.0, 4.0, 4.0, 2.5, 4.0, 2.5, 3.0, 3.5, 4.0, 4.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 3.5, 4.0, 1.5, 2.0, 4.0, 4.0, 5.0, 5.0, 4.0, 4.0, 4.0, 3.5, 4.0, 2.0, 0.75, 1.0, 2.5, 2.5, 3.5, 1.0, 4.0, 4.0, 3.0, 4.0, 2.5, 3.0, 0.75, 0.75, 0.75, 3.5, 3.0, 3.5, 2.5, 3.5, 3.5, 3.0, 3.0, 3.0, 1.0, 1.0, 2.0, 2.0, 4.0, 5.0, 3.5, 3.0, 2.0, 2.5, 3.5, 3.0, 3.0, 0.5, 0.75, 1.5, 1.0, 2.0, 2.5, 3.5, 1.5, 3.5, 3.5, 2.5, 2.5, 2.0, 2.5, 5.0, 2.5])
+DNA_µL_list = ([4.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 5.0,
+                3.0, 5.0, 4.0, 4.0, 3.5, 4.0, 3.5, 2.0, 
+                3.5, 3.0, 5.0, 5.0, 3.5, 4.0, 5.0, 4.0, 
+                4.0, 1.5, 1.0, 1.0, 4.0, 0.75, 2.0, 3.5, 
+                4.0, 3.5, 3.5, 3.0, 3.5, 4.0, 2.5, 1.0, 
+                1.0, 1.0, 5.0, 0])
   ##How much DNA should be added for each sample (µL)
 # =============================================================================
 
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-reactions = number_of_samples + number_of_NTCs
 if PCR_tubes == 'PCR_strips':
     if strip_positions == ['2', '5', '8','11']:
         PCR_tubes_per_rack = 32
     elif strip_positions == ['2', '7','11']:
         PCR_tubes_per_rack = 24
-    PCR_racks = math.ceil(reactions/PCR_tubes_per_rack)
+    PCR_racks = math.ceil(number_of_samples/PCR_tubes_per_rack)
   ## How many PCR tube racks
 sample_racks = math.ceil((number_of_samples + 1) / 24)
   ## How many tube_racks are needed (1,2,3 or 4) +1 for water_tube
@@ -230,39 +229,28 @@ def run(protocol: protocol_api.ProtocolContext):
     for sample_tube, well, sample_vol in zip(
             sample_sources, sample_destinations, DNA_µL_list
             ):
-        p20.pick_up_tip()
-        p20.aspirate(sample_vol, sample_tube)
-        p20.dispense(sample_vol, well)
-        sample_mix_vol = sample_vol + 3
-          ## primer_mix_vol = volume for pipetting up and down              ##
-        p20.mix(3, sample_mix_vol, well)
-        p20.dispense(10, well)
-        p20.drop_tip()
-        
-        water_vol = max_DNA_volume - sample_vol
-          ## volume of water needed to add a total of 5µL
-        if water_vol > 0:
+        if sample_vol > 0:
             p20.pick_up_tip()
-            p20.aspirate(water_vol, water_tube)
-            p20.dispense(water_vol, well)
-            sample_mix_vol = water_vol + 3
-              ## primer_mix_vol = volume for pipetting up and down              ##
+            p20.aspirate(sample_vol, sample_tube)
+            p20.dispense(sample_vol, well)
+            sample_mix_vol = sample_vol + 3
+              ## mix_vol = volume for pipetting up and down              ##
             p20.mix(3, sample_mix_vol, well)
             p20.dispense(10, well)
             p20.drop_tip()
         
-    ## Add water to NTC
-    water_vol = 5
-    well = sample_destinations[-1]
-    p20.pick_up_tip()
-    p20.aspirate(water_vol, water_tube)
-    p20.dispense(water_vol, well)
-    sample_mix_vol = sample_vol + 3
-      ## primer_mix_vol = volume for pipetting up and down              ##
-    p20.mix(3, sample_mix_vol, well)
-    p20.dispense(10, well)
-    p20.drop_tip()
-
-            
+        water_vol = max_DNA_volume - sample_vol
+          ## volume of water needed to add a total of max_DNA_volume
+        if water_vol > 0:
+            p20.pick_up_tip()
+            p20.aspirate(water_vol, water_tube)
+            p20.dispense(water_vol, well)
+            mix_vol = water_vol + 3
+              ## mix_vol = volume for pipetting up and down              ##
+            p20.mix(3, mix_vol, well)
+            p20.dispense(10, well)
+            p20.drop_tip()
+        
+        
 # =============================================================================
     

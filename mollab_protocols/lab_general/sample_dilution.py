@@ -19,6 +19,26 @@ import math
   ## To do some calculations (rounding up)
 # =============================================================================
 
+
+# VARIABLES TO SET#!!!=========================================================
+# =============================================================================
+number_of_samples = 143  # Maximum 192 samples
+  ## How many samples do you want to dilute? 
+sample_volume = 1.5
+  ## How much sample (µL) to use for the dilution?
+dilution_ratio = 10
+  ## How many times to dilute?
+sample_tubes = 'tubes_1.5mL'
+  ## In what kind of tubes are the samples provided?
+  ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
+dilution_tubes = 'plate_96'
+  ## In what kind of tubes should the dilutions be made?
+  ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'    
+starting_tip_p200 = 'D8'
+starting_tip_p20 = 'C12'
+# =============================================================================
+
+
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
@@ -37,24 +57,6 @@ def run(protocol: protocol_api.ProtocolContext):
     """
 # =============================================================================
 
-
-# VARIABLES TO SET#!!!=========================================================
-# =============================================================================
-    number_of_samples = 143  # Maximum 192 samples
-      ## How many samples do you want to dilute? 
-    sample_volume = 1.5
-      ## How much sample (µL) to use for the dilution?
-    dilution_ratio = 100
-      ## How many times to dilute?
-    sample_tubes = 'tubes_1.5mL'
-      ## In what kind of tubes are the samples provided?
-      ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
-    dilution_tubes = 'plate_96'
-      ## In what kind of tubes should the dilutions be made?
-      ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'    
-    starting_tip_p200 = 'D8'
-    starting_tip_p20 = 'C12'
-# =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================

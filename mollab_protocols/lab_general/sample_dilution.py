@@ -159,10 +159,22 @@ def run(protocol: protocol_api.ProtocolContext):
         elif number_of_samples >= 193:
             sample_source_3 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',        #labware definition
-                3,                                      #deck position
+                4,                                      #deck position
                 'sample_source_3')                      #custom name
     if sample_tubes == 'PCR_strips':
-        if number_of_samples <= 24: 
+        if number_of_samples <= 48: 
+            sample_source = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',         #labware definition
+                1,                                      #deck position
+                'sample_source')                      #custom name
+        elif number_of_samples >= 49:
+            sample_source = protocol.load_labwware(
+                'pcrstrips_96_wellplate_200ul',         #labware definition
+                1,                                      #deck position
+                'sample_source_2')                      #custom name
+        
+            
+            
             
             
     
@@ -180,30 +192,30 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     ##### !!! FOR ROBOT      
-    # sample_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',         #labware definition
-    #     1,                                      #deck position
-    #     'sample_strips_1')                      #custom name
-    # if sample_racks >= 2: 
-    #     sample_strips_2 = protocol.load_labware(
-    #         'pcrstrips_96_wellplate_200ul',     #labware definition
-    #         2,                                  #deck position
-    #         'sample_strips_2')                  #custom name
-    # if sample_racks >= 3: 
-    #     sample_strips_3 = protocol.load_labware(
-    #         'pcrstrips_96_wellplate_200ul',     #labware definition
-    #         3,                                  #deck position
-    #         'sample_strips_3')                  #custom name
-    # if sample_racks >= 4: 
-    #     sample_strips_4 = protocol.load_labware(
-    #         'pcrstrips_96_wellplate_200ul',     #labware definition
-    #         6,                                  #deck position
-    #         'sample_strips_4')                  #custom name    
+    sample_strips_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',         #labware definition
+        1,                                      #deck position
+        'sample_strips_1')                      #custom name
+    if sample_racks >= 2: 
+        sample_strips_2 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',     #labware definition
+            2,                                  #deck position
+            'sample_strips_2')                  #custom name
+    if sample_racks >= 3: 
+        sample_strips_3 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',     #labware definition
+            3,                                  #deck position
+            'sample_strips_3')                  #custom name
+    if sample_racks >= 4: 
+        sample_strips_4 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',     #labware definition
+            6,                                  #deck position
+            'sample_strips_4')                  #custom name    
     
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
-    #     9,                                      #deck position
-    #     'tubes_5mL')                            #custom name    
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware definition
+        9,                                      #deck position
+        'tubes_5mL')                            #custom name    
     
    #####    !!! FOR SIMULATOR
    

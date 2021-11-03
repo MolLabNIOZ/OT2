@@ -68,3 +68,14 @@ for primer in range(primer_combinations):
 print(primer_combinations)
 print(source)
 print(destination)
+
+#%%
+
+no = 100
+
+if no <= 96:
+    print("no <= 96")
+if no >= 97 and no >= 192:
+    print("no between 24 and 25")
+elif no >= 193:
+    print("no = high")

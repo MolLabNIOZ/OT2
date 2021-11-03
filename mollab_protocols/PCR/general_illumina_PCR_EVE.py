@@ -34,7 +34,7 @@ else:
  ## Number of replicates of the std sample, usually 6                   ##
 sample_vol = 2 
   ## The sample_vol is the volume (ul) of sample added to the PCR       ##
-starting_tip_p20 = 'C10'
+starting_tip_p20 = 'H2'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

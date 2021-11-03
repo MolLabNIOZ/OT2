@@ -2,6 +2,7 @@
 # Author(s): Maartje Brouwer
 # Creation date: 210707
 # Description: sample dilution protocol
+# Updated 211103 SV: 
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -22,16 +23,25 @@ import math
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 143  # Maximum 192 samples
+number_of_samples = 48 
   ## How many samples do you want to dilute? 
-sample_volume = 1.5
+  ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
+  ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
+  ## sample_tubes == 'plate_96', dilution_tubes == '1.5mL_tubes'     MAX = 96
+  ## sample_tubes == 'PCR_strips', diltution_tubes == 'plate_96'     MAX = 192
+  ## sample_tubes == 'PCR_strips', dilution_tubes == 'PCR_strips'    MAX = 144
+  ## sample_tubes == 'PCR_strips', diltution_tubes == '1.5mL_tubes'  MAX = 192
+  ## sample_tubes == '1.5mL tubes', dilution_tubes == 'plate_96'     MAX = 96
+  ## sample_tubes == '1.5mL tubes', dilution_tubes == 'PCR_strips'   MAX = 96
+  ## sample_tubes == '1.5mL tubes', dilution_tubes == '1.5mL_tubes'  MAX = 72
+sample_volume = 1
   ## How much sample (µL) to use for the dilution?
-dilution_ratio = 10
+dilution_ratio = 50
   ## How many times to dilute?
 sample_tubes = 'tubes_1.5mL'
   ## In what kind of tubes are the samples provided?
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
-dilution_tubes = 'plate_96'
+dilution_tubes = 'PCR_strips'
   ## In what kind of tubes should the dilutions be made?
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'    
 starting_tip_p200 = 'D8'
@@ -69,14 +79,14 @@ def run(protocol: protocol_api.ProtocolContext):
     if sample_tubes == 'tubes_1.5mL':
         sample_racks = math.ceil(number_of_samples / 24)
     elif sample_tubes == 'PCR_strips':
-        sample_racks = math.ceil(number_of_samples / 32)
+        sample_racks = math.ceil(number_of_samples / 48)
     elif sample_tubes == 'plate_96':
         sample_racks = math.ceil(number_of_samples / 96)
       ## How many sample_racks are needed (1,2,3 or 4)
     if dilution_tubes == 'tubes_1.5mL':
         dilution_racks = math.ceil(number_of_samples / 24)
     elif dilution_tubes == 'PCR_strips':
-        dilution_racks = math.ceil(number_of_samples / 32)
+        dilution_racks = math.ceil(number_of_samples / 48)
     elif dilution_tubes == 'plate_96':
         dilution_racks = math.ceil(number_of_samples / 96)
       ## How many dilution_racks are needed (1 or 2)
@@ -85,24 +95,77 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    ##### Loading labware
-    tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul',     #labware definition
-        11,                                     #deck position
-        'tips_200')                             #custom name
-    tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',      #labware definition
-        10,                                     #deck position
-        'tips_20_1')                            #custom name
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',      #labware definition
-        7,                                      #deck position
-        'tips_20_2')                            #custom name    
-    if number_of_samples > 96:
+    ##### Loading pipettes and tips    
+    if water_volume <= 20:
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            11,                                 #deck position
+            'tips_20_1')                        #custom name
+        tips_20_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            10,                                 #deck position
+            'tips_20_2')                        #custom name    
         tips_20_3 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  #labware definition
-            8,                                  #deck position
+            7,                                  #deck position
             'tips_20_3')                        #custom name    
+        tips_20_4 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            8,                                  #deck position
+            'tips_20_3')                        #custom name  
+        p20 = protocol.load_instrument(
+            'p20_single_gen2',                          #instrument definition
+            'left',                                     #mount position
+            tip_racks=[                                 #assigned tiprack
+                tips_20_1, tips_20_2, tips_20_3, tips_20_4])
+        
+    else:
+        tips_200 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',     #labware definition
+            11,                                     #deck position
+            'tips_200')                             #custom name
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',      #labware definition
+            10,                                     #deck position
+            'tips_20_1')                            #custom name
+        tips_20_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',      #labware definition
+            7,                                      #deck position
+            'tips_20_2')                            #custom name    
+        tips_20_3 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',      #labware definition
+            8,                                      #deck position
+            'tips_20_3')                            #custom name    
+        p300 = protocol.load_instrument(
+            'p300_single_gen2',                     #instrument definition
+            'right',                                #mount position
+            tip_racks=[tips_200])                   #assigned tiprack
+        p20 = protocol.load_instrument(
+            'p20_single_gen2',                          #instrument definition
+            'left',                                     #mount position
+            tip_racks=[tips_20_1, tips_20_2, tips_20_3])#assigned tiprack
+    
+    if sample_tubes == 'plate_96':
+        if number_of_samples <= 96: 
+            sample_source =  protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',        #labware definition
+                1,                                      #deck position
+                'sample_source_')                       #custom name
+        elif number_of_samples >= 97:
+            sample_source_2 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',        #labware definition
+                2,                                      #deck position
+                'sample_source_2')                      #custom name
+        elif number_of_samples >= 193:
+            sample_source_3 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',        #labware definition
+                3,                                      #deck position
+                'sample_source_3')                      #custom name
+    if sample_tubes == 'PCR_strips':
+        if number_of_samples <= 24: 
+            
+            
+    
     
     if dilution_tubes == 'plate_96':
         plate_96_dil = protocol.load_labware(
@@ -113,7 +176,7 @@ def run(protocol: protocol_api.ProtocolContext):
             plate_96_dil_2 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',        #labware definition
                 5,                                      #deck position
-                'plate_96_dil_2')                        #custom name
+                'plate_96_dil_2')                       #custom name
 
 
     ##### !!! FOR ROBOT      
@@ -142,7 +205,8 @@ def run(protocol: protocol_api.ProtocolContext):
     #     9,                                      #deck position
     #     'tubes_5mL')                            #custom name    
     
-    # ####    !!! FOR SIMULATOR
+   #####    !!! FOR SIMULATOR
+   
     with open("labware/pcrstrips_96_wellplate_200ul/"
               "pcrstrips_96_wellplate_200ul.json") as labware_file:
             labware_def_pcrstrips = json.load(labware_file)
@@ -174,15 +238,7 @@ def run(protocol: protocol_api.ProtocolContext):
             9, 
             '5mL_tubes')      
 
-    ##### Loading pipettes
-    p300 = protocol.load_instrument(
-        'p300_single_gen2',                             #instrument definition
-        'right',                                        #mount position
-        tip_racks=[tips_200])                           #assigned tiprack
-    p20 = protocol.load_instrument(
-        'p20_single_gen2',                              #instrument definition
-        'left',                                         #mount position
-        tip_racks=[tips_20_1, tips_20_2, tips_20_3])    #assigned tiprack
+
 # =============================================================================
 
 

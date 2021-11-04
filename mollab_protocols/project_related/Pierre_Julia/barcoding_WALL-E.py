@@ -13,8 +13,8 @@ from opentrons import protocol_api
 import math
   ## To do some calculations (rounding up) 
 import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
+  ## Import json to import custom labware with labware_from_definition,      ##
+  ## so that we can use the simulate_protocol with custom labware.           ##
 
 #### !!! OPTION 1: ROBOT
 # from data.user_storage.mollab_modules import volume_tracking_v1 as vt
@@ -24,29 +24,80 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 50 # max 96 - NTC 
-  ## How many samples do you want to include?                           ##
-number_of_NTCs = 1
-  ## How many NTCs to include                                           ##
-mastermix_tube = '1.5mL tube'
-start_vol = 462.5
-  ## The start_vol_m is the volume (ul) of mix that is in the source    ##
-  ## labware at the start of the protocol.                              ##
-dispension_vol = 9.25 
-  ## Volume of MasterMix to be aliquoted                                ##
+#### Samples
+number_of_samples = 50 # max 96  
+  ## How many samples do you want to include? Including PC and NTC           ##
+
+#### MasterMix
+mastermix_tube = 'tube_1.5mL'
+  ## What kind of tube will the mastermix be in?                             ##
+  ## Options: 'tube_1.5mL' or 'tube_5mL'
 mastermix_source = 'D1'
-  ## Where is the mastermix tube located in the rack                    ##
-barcode_loc = ['2', '5', '8','11']
+  ## Where is the mastermix tube located in the rack                         ##
+MM_start_vol = 1040
+  ## The start_vol is the volume (µl) of mastermix that is in the tube       ##
+MM_dispension_vol = 20 
+  ## Volume of MasterMix to be aliquoted                                     ##
+
+#### Water
+water_tube = mastermix_tube
+water_source = 'D2'
+w_start_vol = 1200
+  ## The start_vol is the volume (µl) of water that is in the tube           ##
+
+#### Barcodes
+barcode_tube = 'PCR_strips'
+  ## What kind of tubes will the barcodes be in?                             ##
+  ## Options: 'PCR_strips', 'plate_96' or 'tube_1.5mL'                       ##
+if barcode_tube == 'PCR_strips':
+    barcode_loc = ['2', '5', '8','11']
+     ## optional: ['2', '7', '11'], ['2','5','8','11'] 
+     ## or ['2','3','5','7','9','11']
+     ## max 3 racks with strips!    
 barcode_vol = 5
   ## Volume of the barcode to be used
-starting_tip_p20 = 'B4'
-  ## The starting_tip is the location of first pipette tip in the box   ##
+
+PCR_tube = 'PCR_strips'
+  ## What kind of tubes will the PCR be in?
+  ## Options: 'PCR_strips' or 'plate_96'
+if PCR_tube == 'PCR_strips':
+    strip_positions = ['2', '5', '8','11']     
+     ## optional: ['2', '7', '11'], ['2','5','8','11'] 
+     ## or ['2','3','5','7','9','11']
+     ## max 3 racks with strips!
+
+#### pipette tips
+starting_tip_p20 = 'A1'
+starting_tip_p200 = 'A1'
+  ## The starting_tip is the location of first pipette tip in the box        ##
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-number_of_barcodes = (number_of_samples + number_of_NTCs)
-barcode_racks = math.ceil(number_of_barcodes / 32)
+if barcode_tube == 'PCR_strips':
+    if barcode_loc == ['2', '7', '11']:
+        tubes_per_rack = 24
+    elif barcode_loc == ['2','5','8','11']:
+        tubes_per_rack = 32
+    elif barcode_loc == ['2','3','5','7','9','11']:
+        tubes_per_rack = 48
+elif barcode_tube == 'plate_96':
+    tubes_per_rack = 96
+elif barcode_tube == 'tube_1.5mL':
+    tubes_per_rack = 24
+barcode_racks = math.ceil(number_of_samples / tubes_per_rack)
+  ## How many tube_strip_racks are needed (1,2 or 3)
+
+if PCR_tube == 'PCR_strips':
+    if strip_positions == ['2', '7', '11']:
+        tubes_per_rack = 24
+    elif strip_positions == ['2','5','8','11']:
+        tubes_per_rack = 32
+    elif strip_positions == ['2','3','5','7','9','11']:
+        tubes_per_rack = 48
+elif PCR_tube == 'plate_96':
+    tubes_per_rack = 96
+PCR_racks = math.ceil(number_of_samples / tubes_per_rack)
   ## How many tube_strip_racks are needed (1,2 or 3)
 # =============================================================================
 

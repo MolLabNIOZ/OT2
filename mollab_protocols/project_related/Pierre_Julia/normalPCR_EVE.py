@@ -18,9 +18,9 @@ import json
   ## so that we can use the simulate_protocol with custom labware.          ##
 
 #### !!! OPTION 1: ROBOT
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 ##### !!! OPTION 2: SIMULATOR
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
@@ -31,7 +31,7 @@ number_of_samples = 44   # max 96 - number_of_NTCs
 number_of_NTCs = 0
   ## How many NTCs to include                                               ##
   ## If you want to add water, include it as a sample                       ##
-start_vol = 4000
+start_vol = 3680
   ## The start_vol_m is the volume (ul) of mix that is in the source        ##
   ## labware at the start of the protocol.                                  ##
 dispension_vol = 80 
@@ -55,7 +55,7 @@ if sample_tubes == 'PCR_strips':
     sample_strip_positions = ['2', '5', '8','11'] 
      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']
      ## max 3 racks with strips!
-starting_tip_p200 = 'A12'
+starting_tip_p200 = 'G3'
 starting_tip_p20 = 'B4'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
@@ -129,38 +129,38 @@ def run(protocol: protocol_api.ProtocolContext):
         'plate_96')                         #custom name
     if PCR_tubes == 'PCR_strips':
    ##### !!! OPTION 1: ROBOT         
-        # PCR_tube_1 = protocol.load_labware(
-        # 'pcrstrips_96_wellplate_200ul',    #labware definition
-        # 4,                                 #deck position
-        # 'PCR_tube_1')                      #custom name
-        # if PCR_racks >= 2:
-        #     PCR_tube_2 = protocol.load_labware(
-        #         'pcrstrips_96_wellplate_200ul',    #labware definition
-        #         5,                                 #deck position
-        #         'PCR_tube_2')                      #custom name
-        # if PCR_racks >= 3:
-        #     PCR_tube_3 = protocol.load_labware(
-        #         'pcrstrips_96_wellplate_200ul',    #labware definition
-        #         6,                                 #deck position
-        #         'PCR_tube_3')                      #custom name
-    ##### !!! OPTION 2: SIMULATOR         
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                labware_def_pcrstrips = json.load(labware_file)
-        PCR_tube_1 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            4,                     #deck position
-            'PCR_tube_1')          #custom name
+        PCR_tube_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',    #labware definition
+        4,                                 #deck position
+        'PCR_tube_1')                      #custom name
         if PCR_racks >= 2:
-            PCR_tube_2 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                5,                     #deck position
-                'PCR_tube_2')          #custom name           
+            PCR_tube_2 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',    #labware definition
+                5,                                 #deck position
+                'PCR_tube_2')                      #custom name
         if PCR_racks >= 3:
-            PCR_tube_3 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                6,                     #deck position
-                'PCR_tube_3')          #custom name      
+            PCR_tube_3 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',    #labware definition
+                6,                                 #deck position
+                'PCR_tube_3')                      #custom name
+    ##### !!! OPTION 2: SIMULATOR         
+        # with open("labware/pcrstrips_96_wellplate_200ul/"
+        #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+        #         labware_def_pcrstrips = json.load(labware_file)
+        # PCR_tube_1 = protocol.load_labware_from_definition( 
+        #     labware_def_pcrstrips, #variable derived from opening json
+        #     4,                     #deck position
+        #     'PCR_tube_1')          #custom name
+        # if PCR_racks >= 2:
+        #     PCR_tube_2 = protocol.load_labware_from_definition( 
+        #         labware_def_pcrstrips, #variable derived from opening json
+        #         5,                     #deck position
+        #         'PCR_tube_2')          #custom name           
+        # if PCR_racks >= 3:
+        #     PCR_tube_3 = protocol.load_labware_from_definition( 
+        #         labware_def_pcrstrips, #variable derived from opening json
+        #         6,                     #deck position
+        #         'PCR_tube_3')          #custom name      
 
     if sample_tubes == 'plate_96': 
         sample_tube_1 = protocol.load_labware(
@@ -170,38 +170,38 @@ def run(protocol: protocol_api.ProtocolContext):
 
     if sample_tubes == 'PCR_strips':
    ##### !!! OPTION 1: ROBOT         
-        # sample_tube_1 = protocol.load_labware(
-        # 'pcrstrips_96_wellplate_200ul',    #labware definition
-        # 1,                                 #deck position
-        # 'sample_tube_1')                      #custom name
-        # if sample_racks >= 2:
-        #     sample_tube_2 = protocol.load_labware(
-        #         'pcrstrips_96_wellplate_200ul',    #labware definition
-        #         2,                                 #deck position
-        #         'sample_tube_2')                      #custom name
-        # if sample_racks >= 3:
-        #     sample_tube_3 = protocol.load_labware(
-        #         'pcrstrips_96_wellplate_200ul',    #labware definition
-        #         3,                                 #deck position
-        #         'sample_tube_3')                      #custom name
-    ##### !!! OPTION 2: SIMULATOR         
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                labware_def_pcrstrips = json.load(labware_file)
-        sample_tube_1 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            1,                     #deck position
-            'sample_tube_1')       #custom name
+        sample_tube_1 = protocol.load_labware(
+        'pcrstrips_96_wellplate_200ul',    #labware definition
+        1,                                 #deck position
+        'sample_tube_1')                      #custom name
         if sample_racks >= 2:
-            sample_tube_2 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                2,                     #deck position
-                'sample_tube_2')       #custom name           
+            sample_tube_2 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',    #labware definition
+                2,                                 #deck position
+                'sample_tube_2')                      #custom name
         if sample_racks >= 3:
-            sample_tube_3 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                3,                     #deck position
-                'sample_tube_3')       #custom name
+            sample_tube_3 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',    #labware definition
+                3,                                 #deck position
+                'sample_tube_3')                      #custom name
+    ##### !!! OPTION 2: SIMULATOR         
+        # with open("labware/pcrstrips_96_wellplate_200ul/"
+        #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
+        #         labware_def_pcrstrips = json.load(labware_file)
+        # sample_tube_1 = protocol.load_labware_from_definition( 
+        #     labware_def_pcrstrips, #variable derived from opening json
+        #     1,                     #deck position
+        #     'sample_tube_1')       #custom name
+        # if sample_racks >= 2:
+        #     sample_tube_2 = protocol.load_labware_from_definition( 
+        #         labware_def_pcrstrips, #variable derived from opening json
+        #         2,                     #deck position
+        #         'sample_tube_2')       #custom name           
+        # if sample_racks >= 3:
+        #     sample_tube_3 = protocol.load_labware_from_definition( 
+        #         labware_def_pcrstrips, #variable derived from opening json
+        #         3,                     #deck position
+        #         'sample_tube_3')       #custom name
 
     if sample_tubes == 'tubes_1.5mL':
         sample_tube_1 = protocol.load_labware(
@@ -220,18 +220,18 @@ def run(protocol: protocol_api.ProtocolContext):
                 'sample_tube_3')               
 
     ##### !!! OPTION 1: ROBOT
-    # mastermix_tube = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
-    #     7,                                      #deck position
-    #     'mastermix_tube')                       #custom name 
+    mastermix_tube = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware def
+        7,                                      #deck position
+        'mastermix_tube')                       #custom name 
    ##### !!! OPTION 2: SIMULATOR      
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-              labware_def_5mL = json.load(labware_file)
-    mastermix_tube = protocol.load_labware_from_definition( 
-        labware_def_5mL,   #variable derived from opening json
-        7,                 #deck position
-        'mastermix_tube')  #custom name 
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #             "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #           labware_def_5mL = json.load(labware_file)
+    # mastermix_tube = protocol.load_labware_from_definition( 
+    #     labware_def_5mL,   #variable derived from opening json
+    #     7,                 #deck position
+    #     'mastermix_tube')  #custom name 
 
 
     # Pipettes

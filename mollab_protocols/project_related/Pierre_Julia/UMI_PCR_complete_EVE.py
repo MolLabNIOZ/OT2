@@ -18,29 +18,30 @@ import json
   ## so that we can use the simulate_protocol with custom labware.           ##
 
 #### !!! OPTION 1: ROBOT
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 ##### !!! OPTION 2: SIMULATOR
-from mollab_modules import volume_tracking_v1 as vt
+# from mollab_modules import volume_tracking_v1 as vt
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 #### SAMPLES
-number_of_samples = 44   # max 96 
+number_of_samples = 50   # max 96 
   ## How many samples do you want to include? Including PC and NTC           ##
 max_DNA_volume = 5
   ## highest DNA volume, to add up to with water if needed
-DNA_µL_list = ([3.0, 3.0, 5.0, 5.0, 5.0, 5.0, 2.5, 3.25,
-                2.0, 5.0, 3.25, 3.25, 2.5, 3.0, 2.5, 1.5,
-                2.5, 2.0, 3.5, 3.25, 2.25, 3.0, 4.0, 2.75,
-                3.0, 1.5, 1.25, 1.25, 2.75, 1.0, 1.5, 2.0,
-                2.75, 2.25, 2.25, 1.75, 2.25, 3.0, 1.5, 1.25,
-                1.0, 1.25, 5.0, 0.0])
+DNA_µL_list = ([2.5, 3.75, 3.25, 3.25, 5.0, 4.0, 3.75, 2.25,
+                2.25, 4.0, 2.25, 5.0, 4.0, 2.5, 3.25, 3.0,
+                1.75, 3.25, 1.75, 2.0, 2.25, 3.0, 3.0, 5.0,
+                2.5, 2.75, 4.0, 3.75, 5.0, 2.25, 3.0, 1.5,
+                1.5, 2.5, 2.5, 3.25, 3.5, 2.75, 2.5, 2.5,
+                2.0, 3.0, 1.5, 1.0, 1.25, 1.75, 1.75, 2.5, 
+                5.0, 0.0])
   ##How much DNA should be added for each sample (µL)
 water_tube = 'C2'
   ## Where is the water tube located in the rack                             ##
   ## Water should be provided in a 5mL tube
-start_vol_w = 500
+start_vol_w = 2850
   ## The start_vol_w is the volume (ul) of water that is in the source       ##
   ## labware at the start of the protocol.                                   ##
   
@@ -48,7 +49,7 @@ start_vol_w = 500
 mastermix_source = 'C1'
   ## Where is the mastermix tube located in the rack                         ##
   ## Mastermix should be provided in a 5mL tube
-start_vol_MM = 2092
+start_vol_MM = 2295
   ## The start_vol_MM is the volume (ul) of mastermix that is in the source  ##
   ## labware at the start of the protocol.                                   ##
 dispension_vol = 45 
@@ -65,8 +66,8 @@ if PCR_tubes == 'PCR_strips':
     ## max 3 racks with strips!
 
 #### GENRAL
-starting_tip_p20 = 'A1'
-starting_tip_p200 = 'A1'
+starting_tip_p20 = 'B3'
+starting_tip_p200 = 'F9'
   ## The starting_tip is the location of first pipette tip in the box        ##
 # =============================================================================
 
@@ -151,54 +152,54 @@ def run(protocol: protocol_api.ProtocolContext):
     
     if PCR_tubes == 'PCR_strips':
    ### !!! OPTION 1: ROBOT         
-        # PCR_1 = protocol.load_labware(
-        #   'pcrstrips_96_wellplate_200ul',    #labware definition
-        #   2,                                 #deck position
-        #   'PCR_tube_1')                      #custom name
-        # if PCR_racks >= 2:
-        #     PCR_2 = protocol.load_labware(
-        #           'pcrstrips_96_wellplate_200ul',    #labware definition
-        #           5,                                 #deck position
-        #           'PCR_tube_2')                      #custom name
-        # if PCR_racks >= 3:
-        #     PCR_3 = protocol.load_labware(
-        #           'pcrstrips_96_wellplate_200ul',    #labware definition
-        #           8,                                 #deck position
-        #           'PCR_tube_3')                      #custom name
+        PCR_1 = protocol.load_labware(
+          'pcrstrips_96_wellplate_200ul',    #labware definition
+          2,                                 #deck position
+          'PCR_tube_1')                      #custom name
+        if PCR_racks >= 2:
+            PCR_2 = protocol.load_labware(
+                  'pcrstrips_96_wellplate_200ul',    #labware definition
+                  5,                                 #deck position
+                  'PCR_tube_2')                      #custom name
+        if PCR_racks >= 3:
+            PCR_3 = protocol.load_labware(
+                  'pcrstrips_96_wellplate_200ul',    #labware definition
+                  8,                                 #deck position
+                  'PCR_tube_3')                      #custom name
  
     ##### !!! OPTION 2: SIMULATOR         
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-                    "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                  labware_def_pcrstrips = json.load(labware_file)
-        PCR_1 = protocol.load_labware_from_definition( 
-              labware_def_pcrstrips, #variable derived from opening json
-              2,                     #deck position
-              'PCR_tube_1')          #custom name
-        if PCR_racks >= 2:
-            PCR_2 = protocol.load_labware_from_definition( 
-                  labware_def_pcrstrips, #variable derived from opening json
-                  5,                     #deck position
-                  'PCR_tube_2')          #custom name
-        if PCR_racks >= 3:
-            PCR_3 = protocol.load_labware_from_definition( 
-                  labware_def_pcrstrips, #variable derived from opening json
-                  8,                     #deck position
-                  'PCR_tube_2')          #custom name
+        # with open("labware/pcrstrips_96_wellplate_200ul/"
+        #             "pcrstrips_96_wellplate_200ul.json") as labware_file:
+        #           labware_def_pcrstrips = json.load(labware_file)
+        # PCR_1 = protocol.load_labware_from_definition( 
+        #       labware_def_pcrstrips, #variable derived from opening json
+        #       2,                     #deck position
+        #       'PCR_tube_1')          #custom name
+        # if PCR_racks >= 2:
+        #     PCR_2 = protocol.load_labware_from_definition( 
+        #           labware_def_pcrstrips, #variable derived from opening json
+        #           5,                     #deck position
+        #           'PCR_tube_2')          #custom name
+        # if PCR_racks >= 3:
+        #     PCR_3 = protocol.load_labware_from_definition( 
+        #           labware_def_pcrstrips, #variable derived from opening json
+        #           8,                     #deck position
+        #           'PCR_tube_2')          #custom name
 
 
     ##### !!! OPTION 1: ROBOT
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul', #labware def
-    #     11,                                     #deck position
-    #     'tubes_5mL')                            #custom name 
+    tubes_5mL = protocol.load_labware(
+        'eppendorfscrewcap_15_tuberack_5000ul', #labware def
+        11,                                     #deck position
+        'tubes_5mL')                            #custom name 
    ##### !!! OPTION 2: SIMULATOR      
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-              labware_def_5mL = json.load(labware_file)
-    tubes_5mL = protocol.load_labware_from_definition( 
-        labware_def_5mL,   #variable derived from opening json
-        11,                 #deck position
-        'tubes_5mL')  #custom name 
+    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+    #             "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+    #           labware_def_5mL = json.load(labware_file)
+    # tubes_5mL = protocol.load_labware_from_definition( 
+    #     labware_def_5mL,   #variable derived from opening json
+    #     11,                 #deck position
+    #     'tubes_5mL')  #custom name 
     
     # Pipettes
     p20 = protocol.load_instrument(

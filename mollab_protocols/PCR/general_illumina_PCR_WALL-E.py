@@ -55,8 +55,8 @@ if mastermix_tube_type == '5mL_tube':
 primer_loc = ['2', '5', '8','11']
 primer_vol = 3
   ## Volume of the primer (F+R mix) to be used
-starting_tip_p200 = 'G1'
-starting_tip_p20 = 'D7'
+starting_tip_p200 = 'A1'
+starting_tip_p20 = 'C2'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 

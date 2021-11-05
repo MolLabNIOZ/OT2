@@ -25,13 +25,13 @@ from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 44   # max 96 - number_of_NTCs
+number_of_samples = 50   # max 96 - number_of_NTCs
   ## How many samples do you want to include?                               ##
   ## With samples in 1.5mL tubes, 72 is max
 number_of_NTCs = 0
   ## How many NTCs to include                                               ##
   ## If you want to add water, include it as a sample                       ##
-start_vol = 3680
+start_vol = 4080
   ## The start_vol_m is the volume (ul) of mix that is in the source        ##
   ## labware at the start of the protocol.                                  ##
 dispension_vol = 80 
@@ -55,7 +55,7 @@ if sample_tubes == 'PCR_strips':
     sample_strip_positions = ['2', '5', '8','11'] 
      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']
      ## max 3 racks with strips!
-starting_tip_p200 = 'G3'
+starting_tip_p200 = 'B10'
 starting_tip_p20 = 'B4'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================

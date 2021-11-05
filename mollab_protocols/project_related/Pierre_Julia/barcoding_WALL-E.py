@@ -25,16 +25,15 @@ from mollab_modules import volume_tracking_v1 as vt
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 #### Samples
-number_of_samples = 50 # max 96  
+number_of_samples = 96 # max 96  
   ## How many samples do you want to include? Including PC and NTC           ##
-
 #### MasterMix
 mastermix_tube = 'tube_1.5mL'
   ## What kind of tube will the mastermix be in?                             ##
   ## Options: 'tube_1.5mL' or 'tube_5mL'
 mastermix_source = 'D1'
   ## Where is the mastermix tube located in the rack                         ##
-MM_start_vol = 1040
+MM_start_vol = 2080
   ## The start_vol is the volume (µl) of mastermix that is in the tube       ##
 MM_dispension_vol = 20 
   ## Volume of MasterMix to be aliquoted                                     ##
@@ -127,7 +126,7 @@ def run(protocol: protocol_api.ProtocolContext):
         '200tips')                          #custom name  
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
-        18,                                  #deck position
+        8,                                  #deck position
         '20tips_1')                         #custom name       
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
@@ -255,6 +254,10 @@ def run(protocol: protocol_api.ProtocolContext):
         'p20_single_gen2',                  #instrument definition
         'left',                             #mount position
         tip_racks=[tips_20_1, tips_20_2])   #assigned tiprack
+    p300 = protocol.load_instrument(
+        'p300_single_gen2',                  #instrument definition
+        'right',                             #mount position
+        tip_racks=[tips_200])   #assigned tiprack
 # =============================================================================
 
 # PREDIFINED VARIABLES=========================================================
@@ -267,6 +270,7 @@ def run(protocol: protocol_api.ProtocolContext):
     MM_start_height = vt.cal_start_height(mastermix_tube, MM_start_vol)
       ## Call start height calculation function from volume tracking module. ##
     MM_current_height = MM_start_height
+      ## Set the current height to start height at the beginning of the      ##
       ## protocol.                                                           ##
     barcode_mix_vol = barcode_vol + 3
       ## barcode_mix_vol = volume for pipetting up and down                  ##
@@ -282,81 +286,85 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # SETTING LOCATIONS============================================================
 # =============================================================================
-    ##### Setting starting tip                                              ##
+    ##### Setting starting tip                                               ##
     p300.starting_tip = tips_200.well(starting_tip_p200)
     p20.starting_tip = tips_20_1.well(starting_tip_p20)
-      ## The starting_tip is the location of first pipette tip in the box   ##
+      ## The starting_tip is the location of first pipette tip in the box    ##
     
-    ##### Tube locations                                                    ##
-    MasterMix = mastermix_tube[mastermix_source]
-      ## Location of the 5mL tube with mastermix                            ##
-    
-    #### Where should mastermix go                                          ##
-    number_of_wells = number_of_barcodes
-      ##How many wells do need to be filled with mastermix                  ##
-    sample_wells = []
-    for well in plate_96.wells():
-        sample_wells.append(well)
-      ## Make a list with all 96 wells of the plate                         ##
-    sample_wells = sample_wells[:number_of_wells]
-      ## cuts off the list after a certain number of wells                  ##
-    standard_wells = [] 
-    if number_std_series > 0:
-        std_series_columns = (
-        [plate_96.columns_by_name()[column_name] for column_name in
-         ['12', '11', '10']])
-        std_series_columns = std_series_columns[:number_std_series]
-        ## reserve a column at the end of the plate for every std_series
-        for column in std_series_columns:
-            column = column[:length_std_series]
+    ##### Tube locations                                                     ##
+    MasterMix = mastermix[mastermix_source]
+      ## Location of the tube with mastermix                                 ##
+    water = mastermix[water_source]
+      ## Location of the tube with water                                     ##
+      
+    #### Where should mastermix go                                           ##
+    destination_wells = []
+    if PCR_tube == 'plate_96':
+        destination_wells = PCR_1.wells()
+    elif PCR_tube == 'PCR_strips':
+        PCR_columns = (
+            ([PCR_1.columns_by_name()[column_name]
+            for column_name in strip_positions]))        
+        if PCR_racks >= 2:
+            PCR_columns_2 = (
+            ([PCR_2.columns_by_name()[column_name]
+              for column_name in strip_positions]))
+            PCR_columns = PCR_columns + PCR_columns_2
+        if PCR_racks >= 3:
+            PCR_columns_3 = (
+            ([PCR_3.columns_by_name()[column_name]
+              for column_name in strip_positions]))
+            PCR_columns = PCR_columns + PCR_columns_3
+        for column in PCR_columns:
             for well in column:
-                standard_wells.append(well)
-          ## cut off the columns after a certain std_series length
-    MasterMixAliquots = sample_wells + standard_wells
-    
+                destination_wells.append(well)
+      ## Make a list with all 96 wells of the plate                          ##
+    destination_wells =  destination_wells[:number_of_samples]
+      ## cuts off the list after a certain number of wells                   ##
+      
     #### Where are the barcodes located
     barcode_wells = []
-      ## Create an empty list to append wells to                            ##
+      ## Create an empty list to append wells to                             ##
     barcode_columns = (
-        ([barcode_strips_1.columns_by_name()[column_name] 
+        ([barcode_1.columns_by_name()[column_name] 
           for column_name in barcode_loc])) 
     if barcode_racks >= 2:
         barcode_columns2 = (
-            ([barcode_strips_2.columns_by_name()[column_name] 
+            ([barcode_2.columns_by_name()[column_name] 
               for column_name in barcode_loc]))
         for column in barcode_columns2:
             barcode_columns.append(column)
     if barcode_racks >= 3:
         barcode_columns3 = (
-            ([barcode_strips_3.columns_by_name()[column_name] 
+            ([barcode_3.columns_by_name()[column_name] 
               for column_name in barcode_loc]))
         for column in barcode_columns3:
             barcode_columns.append(column)
-        ## Make a list of columns, this is a list of lists!                 ##
-    
+        ## Make a list of columns, this is a list of lists!                  ##
     for column in barcode_columns:
         for well in column:
             barcode_wells.append(well)
-    barcode_wells = barcode_wells[:number_of_barcodes]
-      ## Separate the columns into wells and append them to list            ##
+      ## Separate the columns into wells and append them to list             ##
+    barcode_wells = barcode_wells[:number_of_samples]
+      ## cuts off the list after a certain number of wells                   ##    
 # =============================================================================
 
 ## ALIQUOTING MASTERMIX========================================================
 ## ============================================================================
-    for i, well in enumerate(MasterMixAliquots):
-      ## aliquot mix, for each well do the following:                       ##
+    for i, well in enumerate(destination_wells):
+      ## aliquot mix, for each well do the following:                        ##
         if i == 0: 
             p300.pick_up_tip()
-              ## If we are at the first well, start by picking up a tip.    ##
+              ## If we are at the first well, start by picking up a tip.     ##
         elif i % 8 == 0:
             p300.drop_tip()
             p300.pick_up_tip()
-              ## Then, after every 8th well, drop tip and pick up new       ##
+              ## Then, after every 8th well, drop tip and pick up new        ##
     
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-                'tube_5mL', dispension_vol, current_height)
-                  ## call volume_tracking function, obtain current_height,  ##
-                  ## pip_height and whether bottom_reached.                 ##
+                mastermix_tube, MM_dispension_vol, MM_current_height)
+                  ## call volume_tracking function, obtain current_height,   ##
+                  ## pip_height and whether bottom_reached.                  ##
         
         if bottom_reached:
             aspiration_location = MasterMix.bottom(z=1)
@@ -367,10 +375,10 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Set the location of where to aspirate from.                ##
 
         #### The actual aliquoting of mastermix                             ##
-        p300.aspirate(aspiration_vol, aspiration_location)
+        p300.aspirate(MM_aspiration_vol, aspiration_location)
           ## Aspirate the amount specified in aspiration_vol from the       ##
           ## location specified in aspiration_location.                     ##
-        p300.dispense(dispension_vol, well)
+        p300.dispense(MM_dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the         ##
           ## location specified in well (so a new well every time the       ##
           ## loop restarts)                                                 ##
@@ -382,26 +390,21 @@ def run(protocol: protocol_api.ProtocolContext):
     p300.drop_tip()      
 # =============================================================================        
 
-## ADDING barcodeS FOR SAMPLES TO THE MIX=======================================
+## ADDING BARCODES FOR SAMPLES TO THE MIX=======================================
 ## ============================================================================
-    for barcode_well, sample_well in zip(barcode_wells, sample_wells):
+    for barcode_well, destination_well in zip(barcode_wells, destination_wells):
       ## Loop trough barcode_wells and sample_wells                          ##
         p20.pick_up_tip()
         p20.aspirate(barcode_vol, barcode_well)
-        p20.dispense(barcode_vol, sample_well)
-        p20.mix(3, barcode_mix_vol, sample_well)
-        p20.dispense(10, sample_well)
+        p20.dispense(barcode_vol, destination_well)
+        p20.mix(3, barcode_mix_vol, destination_well)
+        p20.dispense(10, destination_well)
         p20.drop_tip()
 # =============================================================================    
     
-## ADDING barcodeS FOR STD SERIES TO THE MIX====================================
+## ADDING VARIABLE VOLUME OF WATER=============================================
 ## ============================================================================   
-    for well in standard_wells:
-        p20.pick_up_tip()
-        p20.aspirate(barcode_vol, barcode_wells[-1])
-          ## use last barcode pair for NTC and std series
-        p20.dispense(barcode_vol, well)
-        p20.mix(3, barcode_mix_vol, well)
-        p20.dispense(10, well)
-        p20.drop_tip()
+
+
+
 # =============================================================================        

@@ -133,8 +133,8 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # pipette tips
     tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul',  #labware definition
-        10,                                  #deck position
+        'opentrons_96_filtertiprack_200ul', #labware definition
+        10,                                 #deck position
         '200tips')                          #custom name  
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  #labware definition
@@ -156,7 +156,7 @@ def run(protocol: protocol_api.ProtocolContext):
         # PCR_1 = protocol.load_labware(
         #   'pcrstrips_96_wellplate_200ul',    #labware definition
         #   4,                                 #deck position
-        #   'PCR_strips_1')                      #custom name
+        #   'PCR_strips_1')                    #custom name
         # if PCR_racks >= 2:
         #     PCR_2 = protocol.load_labware(
         #           'pcrstrips_96_wellplate_200ul',    #labware definition

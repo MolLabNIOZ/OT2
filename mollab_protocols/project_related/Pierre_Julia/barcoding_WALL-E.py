@@ -28,7 +28,7 @@ from mollab_modules import volume_tracking_v1 as vt
 number_of_samples = 96 # max 96  
   ## How many samples do you want to include? Including PC and NTC           ##
 #### MasterMix
-mastermix_tube = 'tube_1.5mL'
+MastermixWater_tube = 'tube_1.5mL'
   ## What kind of tube will the mastermix be in?                             ##
   ## Options: 'tube_1.5mL' or 'tube_5mL'
 mastermix_source = 'D1'
@@ -39,10 +39,22 @@ MM_dispension_vol = 20
   ## Volume of MasterMix to be aliquoted                                     ##
 
 #### Water
-water_tube = mastermix_tube
 water_source = 'D2'
 w_start_vol = 1200
   ## The start_vol is the volume (µl) of water that is in the tube           ##
+water_µL_list = ([2.5, 3.75, 3.25, 3.25, 5.0, 4.0, 3.75, 2.25,
+                2.25, 4.0, 2.25, 5.0, 4.0, 2.5, 3.25, 3.0,
+                1.75, 3.25, 1.75, 2.0, 2.25, 3.0, 3.0, 5.0,
+                2.5, 2.75, 4.0, 3.75, 5.0, 2.25, 3.0, 1.5,
+                1.5, 2.5, 2.5, 3.25, 3.5, 2.75, 2.5, 2.5,
+                2.0, 3.0, 1.5, 1.0, 1.25, 1.75, 1.75, 2.5, 
+                2.0, 3.0, 1.5, 1.0, 1.25, 1.75, 1.75, 2.5,
+                1.75, 3.25, 1.75, 2.0, 2.25, 3.0, 3.0, 5.0,
+                1.5, 2.5, 2.5, 3.25, 3.5, 2.75, 2.5, 2.5,
+                2.5, 3.75, 3.25, 3.25, 5.0, 4.0, 3.75, 2.25,
+                2.0, 3.0, 1.5, 1.0, 1.25, 1.75, 1.75, 2.5,
+                1.75, 3.25, 1.75, 2.0, 2.25, 3.0, 3.0, 5.0,
+                ])
 
 #### Barcodes
 barcode_tube = 'PCR_strips'
@@ -172,26 +184,26 @@ def run(protocol: protocol_api.ProtocolContext):
             PCR_3 = protocol.load_labware_from_definition( 
                   labware_def_pcrstrips, #variable derived from opening json
                   6,                     #deck position
-                  'PCR_strips_2')        #custom name
+                  'PCR_strips_3')        #custom name
         
-    if mastermix_tube == 'tube_1.5mL':
-        mastermix = protocol.load_labware(
+    if MastermixWater_tube == 'tube_1.5mL':
+        MastermixWater = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
             7,                                                       #deck pos
-            'MasterMix')                                             #cust name 
-    elif mastermix_tube == 'tube_5mL':
-        mastermix = protocol.load_labware(
+            'MastermixWater')                                        #cust name 
+    elif MastermixWater_tube == 'tube_5mL':
+       MastermixWater = protocol.load_labware(
             'eppendorfscrewcap_15_tuberack_5000ul', #labware def
             7,                                     #deck position
-            'tubes_5mL')                            #custom name 
+            'MastermixWater')                            #custom name 
        ##### !!! OPTION 2: SIMULATOR      
         # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
         #             "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
         #           labware_def_5mL = json.load(labware_file)
-        # mastermix = protocol.load_labware_from_definition( 
+        # MastermixWater = protocol.load_labware_from_definition( 
         #     labware_def_5mL,   #variable derived from opening json
         #     7,                 #deck position
-        #     'tubes_5mL')  #custom name
+        #     'MastermixWater')  #custom name
     
     if barcode_tube == 'plate_96':
         barcode_1 = protocol.load_labware(
@@ -267,7 +279,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The aspiration_vol is the volume (ul) that is aspirated from the    ##
       ## container.                                                          ##
     ##### Variables for volume tracking
-    MM_start_height = vt.cal_start_height(mastermix_tube, MM_start_vol)
+    MM_start_height = vt.cal_start_height(MastermixWater_tube, MM_start_vol)
       ## Call start height calculation function from volume tracking module. ##
     MM_current_height = MM_start_height
       ## Set the current height to start height at the beginning of the      ##
@@ -277,11 +289,12 @@ def run(protocol: protocol_api.ProtocolContext):
 
     #### Water
     ##### Variables for volume tracking
-    w_start_height = vt.cal_start_height(water_tube, w_start_vol)
+    w_start_height = vt.cal_start_height(MastermixWater_tube, w_start_vol)
       ## Call start height calculation function from volume tracking module. ##
     w_current_height = w_start_height
       ## Set the current height to start height at the beginning of the      ##
-      ## protocol.                                                           ##    
+      ## protocol.                                                           ##
+    
 # =============================================================================
 
 # SETTING LOCATIONS============================================================
@@ -292,9 +305,9 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The starting_tip is the location of first pipette tip in the box    ##
     
     ##### Tube locations                                                     ##
-    MasterMix = mastermix[mastermix_source]
+    MasterMix = MastermixWater[mastermix_source]
       ## Location of the tube with mastermix                                 ##
-    water = mastermix[water_source]
+    water = MastermixWater[water_source]
       ## Location of the tube with water                                     ##
       
     #### Where should mastermix go                                           ##
@@ -356,13 +369,13 @@ def run(protocol: protocol_api.ProtocolContext):
         if i == 0: 
             p300.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.     ##
-        elif i % 8 == 0:
+        elif i % 16 == 0:
             p300.drop_tip()
             p300.pick_up_tip()
               ## Then, after every 8th well, drop tip and pick up new        ##
     
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-                mastermix_tube, MM_dispension_vol, MM_current_height)
+                MastermixWater_tube, MM_dispension_vol, MM_current_height)
                   ## call volume_tracking function, obtain current_height,   ##
                   ## pip_height and whether bottom_reached.                  ##
         
@@ -392,8 +405,8 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## ADDING BARCODES FOR SAMPLES TO THE MIX=======================================
 ## ============================================================================
-    for barcode_well, destination_well in zip(barcode_wells, destination_wells):
-      ## Loop trough barcode_wells and sample_wells                          ##
+    for barcode_well, destination_well in zip(barcode_wells,destination_wells):
+      ## Loop trough barcode_wells and destination_wells                          ##
         p20.pick_up_tip()
         p20.aspirate(barcode_vol, barcode_well)
         p20.dispense(barcode_vol, destination_well)
@@ -404,7 +417,33 @@ def run(protocol: protocol_api.ProtocolContext):
     
 ## ADDING VARIABLE VOLUME OF WATER=============================================
 ## ============================================================================   
+    for water_volume, destination_well in zip(water_µL_list,destination_wells):
+      ## Loop through water_volumes and destination_well
 
-
-
+        current_height, pip_height, bottom_reached = vt.volume_tracking(
+                MastermixWater_tube, water_volume, w_current_height)
+                  ## call volume_tracking function, obtain current_height,   ##
+                  ## pip_height and whether bottom_reached.                  ##
+        if bottom_reached:
+            aspiration_location = water.bottom(z=1)
+            protocol.comment("You've reached the bottom of the tube!")
+              ## If bottom is reached keep pipetting from bottom + 1         ##
+        else:
+            aspiration_location = water.bottom(pip_height)
+              ## Set the location of where to aspirate from.                 ##
+    
+        p20.pick_up_tip()
+        p20.aspirate(water_volume, aspiration_location)
+          ## Aspirate the amount specified in water_volume from the location ##
+          ## specified in aspiration_location. (so a new volume every time   ##
+          ## the loop restarts)                                              ##
+        p20.dispense(water_volume, destination_well)
+          ## Dispense the amount specified in water_volume to the            ##
+          ## location specified in well (so a new well and volume every time ##
+          ## the loop restarts)                                              ##
+        water_mix_volume = water_volume + 3
+        p20.mix(3, water_mix_volume, destination_well)
+          ## After dispension, mix 3 times with water_volume +3              ##
+        p20.dispense(10, destination_well)
+        p20.drop_tip()
 # =============================================================================        

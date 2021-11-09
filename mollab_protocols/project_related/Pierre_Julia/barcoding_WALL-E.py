@@ -2,8 +2,9 @@
 # Author(s): Maartje Brouwer
 # Creation date: 211028
 # Description: Barcoding samples for ONT MININON sequencing
-#   - aliquot mastermix in a 96 wells plate 
+#   - aliquot mastermix in a 96 wells plate or strips
 #   - add barcodes from PCR strips to the 96 wells plate
+#   - add a varying volume of water
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -27,8 +28,8 @@ from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 number_of_samples = 96 # max 96  
   ## How many samples do you want to include? Including PC and NTC           ##
 #### MasterMix
-MastermixWater_tube = 'tube_1.5mL'
-  ## What kind of tube will the mastermix be in?                             ##
+MastermixWater_tube = 'tube_5mL'
+  ## What kind of tube will the mastermix and water be in?                   ##
   ## Options: 'tube_1.5mL' or 'tube_5mL'
 mastermix_source = 'D1'
   ## Where is the mastermix tube located in the rack                         ##
@@ -39,7 +40,7 @@ MM_dispension_vol = 20
 
 #### Water
 water_source = 'D2'
-w_start_vol = 1200
+w_start_vol = 3000
   ## The start_vol is the volume (µl) of water that is in the tube           ##
 water_µL_list = ([2.5, 3.75, 3.25, 3.25, 5.0, 4.0, 3.75, 2.25,
                 2.25, 4.0, 2.25, 5.0, 4.0, 2.5, 3.25, 3.0,

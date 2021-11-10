@@ -71,11 +71,33 @@ print(destination)
 
 #%%
 
-no = 100
+no = 300
+
+plate_1 = "plate_1"
+plate_2 = "plate_2"
+plate_3 = "plate_3"
 
 if no <= 96:
-    print("no <= 96")
-if no >= 97 and no >= 192:
-    print("no between 24 and 25")
-elif no >= 193:
-    print("no = high")
+    print(plate_1)
+if no >= 97:
+    print(plate_1 + " " + plate_2)
+if no >= 193:
+    print(plate_1 + " " + plate_2 + " " + plate_3)
+if no >=289:
+    print("TOO HIGH")
+    
+    
+#%%
+
+sample_plate_1 = [1,2,3,4,5,6,7,8]
+sample_plate_2 = [9,10,11,12,13,14,15,16]
+sample_plate_3 = [17,18,19,20,21,22,23,24]
+
+sample_wells = []
+
+for well in sample_plate_1:
+    sample_wells.append(well)
+for well in sample_plate_2:
+    sample_wells.append(well)
+    
+print(sample_wells)

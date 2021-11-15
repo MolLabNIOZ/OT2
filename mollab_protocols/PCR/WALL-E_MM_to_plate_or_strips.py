@@ -83,14 +83,6 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_96_filtertiprack_200ul', #labware definition
         10,                                 #deck position
         '200tips')                          #custom name
-    tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        11,                                 #deck position
-        '20tips_1')                         #custom name
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        8,                                 #deck position
-        '20tips_2')                         #custom name
     
     # Tube_racks & plates
     if PCR_tubes == 'plate_96': 

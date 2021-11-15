@@ -1,8 +1,7 @@
-# =============================================================================
-# Author: Sanne Vreugdenhil
-# Creation date: 210920
-# Description: protocol for aliquoting illumina primers
-# =============================================================================
+"""
+illu_primer.py is a protocol written for WALL-E to make aliquots of 
+(barcoded) primers -- from 1.5mL tubes into strips or plates.
+"""
 
 
 # IMPORT STATEMENTS============================================================
@@ -14,6 +13,21 @@ import json
   ## Import json to import custom labware with labware_from_definition,     ##
   ## so that we can use the simulate_protocol with custom labware.          ##
 # =============================================================================
+
+
+# VARIABLES TO SET#!!!=========================================================
+# =============================================================================      
+# How much primer volume (µL) do you want to aliquot?
+primer_volume = 22
+  ## NOTE: The type of pipette is dependent on the primer volume.
+  
+# How many primer combinations need to be aliquoted?
+primer_combinations = 25
+
+# What is the starting position fo the tips?
+starting_tip = 'B6'
+# =============================================================================
+
 
 
 # METADATA=====================================================================
@@ -36,20 +50,8 @@ def run(protocol: protocol_api.ProtocolContext):
     """   
 # =============================================================================
 
-
-# VARIABLES TO SET#!!!=========================================================
-# =============================================================================      
-    primer_volume = 22
-      ## NOTE: The type of pipette is dependent on the primer volume.
-    primer_combinations = 25
-    starting_tip = 'B6'
-    starting_tip_box = 1
-# =============================================================================
-
-
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    ## For available labware see "labware/list_of_available_labware".       ##
     primer_tubes = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
         3,                                                       #deck position
@@ -92,14 +94,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'p20_single_gen2',                 #instrument definition
             'left',                            #mount position
             tip_racks=[tips_1, tips_2, tips_3, tips_4])#as tiprack  
-        if starting_tip_box == 1:
-            pipette.starting_tip = tips_1.well(starting_tip)
-        if starting_tip_box == 2:
-            pipette.starting_tip = tips_2.well(starting_tip)
-        if starting_tip_box == 3:
-            pipette.starting_tip = tips_3.well(starting_tip)
-        if starting_tip_box == 4:
-            pipette.starting_tip = tips_4.well(starting_tip)
+        pipette.starting_tip = tips_1.well(starting_tip)
         airgap_vol = 5   
         
     if primer_volume >= 21:
@@ -123,14 +118,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'p300_single_gen2',                 #instrument definition
             'right',                            #mount position
             tip_racks=[tips_1, tips_2, tips_3, tips_4])#as tiprack
-        if starting_tip_box == 1:
-            pipette.starting_tip = tips_1.well(starting_tip)
-        if starting_tip_box == 2:
-            pipette.starting_tip = tips_2.well(starting_tip)
-        if starting_tip_box == 3:
-            pipette.starting_tip = tips_3.well(starting_tip)
-        if starting_tip_box == 4:
-            pipette.starting_tip = tips_4.well(starting_tip)
+        pipette.starting_tip = tips_1.well(starting_tip)
         airgap_vol = 10
 
 # =============================================================================  

@@ -75,18 +75,19 @@ def run(protocol: protocol_api.ProtocolContext):
             2,
             '96well_plate_on_rack')
         labwares.append(plate_coolrack)
-    if tubes:
-        sample_tubes = protocol.load_labware(
-            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-            4,                                                       
-            'sample_tubes')
-        labwares.append(sample_tubes)
     if strips:                                          
         pcr_strips = protocol.load_labware(
             'pcrstrips_96_wellplate_200ul',     
             3,                                 
             'pcr_strips')                       
         labwares.append(pcr_strips)
+    if tubes:
+        sample_tubes = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            4,                                                       
+            'sample_tubes')
+        labwares.append(sample_tubes)
+
     if tubes5mL:
         tubes_5mL = protocol.load_labware(
             'eppendorfscrewcap_15_tuberack_5000ul', 
@@ -153,11 +154,11 @@ def run(protocol: protocol_api.ProtocolContext):
             for well in wells:
                 if p300:
                     p300.move_to(well.bottom())
-                    protocol.delay(seconds=2)
+                    protocol.delay(seconds=1)
             for well in wells:
                 if p20:
                     p20.move_to(well.bottom()) 
-                    protocol.delay(seconds=2)
+                    protocol.delay(seconds=1)
 
     
 # =============================================================================

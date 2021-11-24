@@ -109,6 +109,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
 
 # START-UP=====================================================================    
+# =============================================================================
     protocol.set_rail_lights(True)
       ## turn on lights 
     
@@ -152,17 +153,20 @@ def run(protocol: protocol_api.ProtocolContext):
                     wells.append(well)
                     
             for well in wells:
-                if p300:
+                if pipette300:
                     p300.move_to(well.bottom())
                     protocol.delay(seconds=1)
             for well in wells:
-                if p20:
+                if pipette20:
                     p20.move_to(well.bottom()) 
                     protocol.delay(seconds=1)
-
+# =============================================================================
     
+# SHUT DOWN====================================================================
 # =============================================================================
-# =============================================================================
-    p300.return_tip()
-    p20.return_tip()
+    if pipette300:
+        p300.return_tip()
+    if pipette20:
+        p20.return_tip()
     protocol.set_rail_lights(False)
+# =============================================================================

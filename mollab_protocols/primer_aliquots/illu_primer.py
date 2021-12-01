@@ -1,6 +1,6 @@
 """
 illu_primer.py is a protocol written for WALL-E to make aliquots of 
-(barcoded) primers -- from 1.5mL tubes into strips or plates.
+(barcoded) primers -- from 1.5mL tubes into PCR strips.
 """
 
 
@@ -22,12 +22,11 @@ primer_volume = 22
   ## NOTE: The type of pipette is dependent on the primer volume.
   
 # How many primer combinations need to be aliquoted?
-primer_combinations = 25
+primer_combinations = 8
 
 # What is the starting position fo the tips?
 starting_tip = 'B6'
 # =============================================================================
-
 
 
 # METADATA=====================================================================
@@ -44,11 +43,11 @@ metadata = {
 # =============================================================================
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Aliquoting Illumina primers from 1 tube rack filled with 1.5 mL tubes,
-    to PCR strips in a BioRad 96-well plate, calibrated with Westburg
-    PCR strips.
+    Aliquoting Illumina primers from 1 tube rack filled with 1.5 mL tubes, to
+    PCR strips in a BioRad 96-well plate, calibrated with Westburg strips.
     """   
 # =============================================================================
+
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -122,62 +121,30 @@ def run(protocol: protocol_api.ProtocolContext):
         airgap_vol = 10
 
 # =============================================================================  
-    primer_tubes_1 = (
-        [primer_tubes.wells_by_name()[well_name] for well_name in
-         ['A1', 'B1', 'C1', 'D1', 'A2', 'B2', 'C2', 'D2']])
-    primer_tubes_2 = (
-        [primer_tubes.wells_by_name()[well_name] for well_name in
-         ['A3', 'B3', 'C3', 'D3', 'A4', 'B4', 'C4', 'D4']])
-    primer_tubes_3 = (
-        [primer_tubes.wells_by_name()[well_name] for well_name in
-         ['A5', 'B5', 'C5', 'D5', 'A6', 'B6', 'C6', 'D6']])
-    primer_strips_1 = (
-        [pcr_strips.wells_by_name()[well_name] for well_name in 
-         ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2']])
-    primer_strips_2 = (
-        [pcr_strips.wells_by_name()[well_name] for well_name in 
-         ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7']])
-    primer_strips_3 = (
-        [pcr_strips.wells_by_name()[well_name] for well_name in 
-         ['A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11']])
+    primer_tubes = primer_tubes.wells()
+    primer_strips = (
+        [pcr_strips.columns_by_name()[well_name] for well_name in 
+         ['2', '7', '11']]) 
     
     source = []
     destination = []
+
+    for well in primer_tubes:
+        source.append(well)
+    for column in primer_strips:
+        for well in column:
+            destination.append(well)
     
-    if primer_combinations <= 8:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]
-    if primer_combinations >= 9 and primer_combinations <= 16:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-            source.append(well_s)
-            destination.append(well_d)
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]
-    if primer_combinations >= 25:
-        for well_s, well_d in zip(primer_tubes_1, primer_strips_1):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_2, primer_strips_2):
-            source.append(well_s)
-            destination.append(well_d)
-        for well_s, well_d in zip(primer_tubes_3, primer_strips_3):
-            source.append(well_s)
-            destination.append(well_d)    
-        source = source[:primer_combinations]
-        destination = destination[:primer_combinations]        
+    # source = source[:primer_combinations]
+    # destination = destination[:primer_combinations]
+    
+   
 # =============================================================================    
 
     protocol.set_rail_lights(True)
     protocol.pause('Are the right pipette tips in (20 for <= 20uL and 200' 
                    ' for >20 uL)?')
     for primer in range(primer_combinations):
-        primer_combinations -= 1
         if primer % 2 == 0 and primer <= 2:
             for primer_tube, pcr_strip_tube in zip(source, destination):
                 ## simultanious loop through primer_tubes and PCR_strips       ##
@@ -193,42 +160,7 @@ def run(protocol: protocol_api.ProtocolContext):
             ## Used aspirate/dipense instead of transfer, to allow for more    ##
             ## customization.                                                  ##
             protocol.pause('Time for new primers!')
-            
 
-    # while primers >= 24: 
-    #     for primer_tube, pcr_strip_tube in zip(source, destination):
-    #          ## simultanious loop through primer_tubes and PCR_strips       ##
-    #          ## From wells to columns doesn't work, therefore all PCRstrip  ##
-    #          ## wells are given.                                            ##
-    #         pipette.pick_up_tip()
-    #         pipette.aspirate(primer_volume, primer_tube)
-    #         pipette.air_gap(airgap_vol)
-    #         pipette.dispense(primer_volume + 50, pcr_strip_tube)
-    #         pipette.air_gap(airgap_vol)
-    #          ## air_gap to suck up any liquid that remains in the tip       ##
-    #         pipette.drop_tip()
-    #      ## Used aspirate/dipense instead of transfer, to allow for more    ##
-    #      ## customization.                                                  ##
-    #     protocol.pause('Time for new primers!')
-    #     primers -= 24 
-    #     if primers / 2 <= 24:
-    #         protocol.pause('STOP')
    
     protocol.set_rail_lights(False)
 
-    # for primer in range(primers):
-    #     for primer_tube, pcr_strip_tube in zip(source, destination):
-    #          ## simultanious loop through primer_tubes and PCR_strips       ##
-    #          ## From wells to columns doesn't work, therefore all PCRstrip  ##
-    #          ## wells are given.                                            ##
-    #         pipette.pick_up_tip()
-    #         pipette.aspirate(primer_volume, primer_tube)
-    #         pipette.air_gap(airgap_vol)
-    #         pipette.dispense(primer_volume + 50, pcr_strip_tube)
-    #         pipette.air_gap(airgap_vol)
-    #          ## air_gap to suck up any liquid that remains in the tip       ##
-    #         pipette.drop_tip()
-    #      ## Used aspirate/dipense instead of transfer, to allow for more    ##
-    #      ## customization.                                                  ##
-    #     protocol.pause('Time for new primers!')
-    #     primer_combinations -= 24   

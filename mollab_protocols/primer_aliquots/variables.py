@@ -101,3 +101,56 @@ for well in sample_plate_2:
     sample_wells.append(well)
     
 print(sample_wells)
+
+
+#%%
+import math
+
+primer_tubes = ['A1', 'B1', 'C1', 'D1', 'A2', 'B2', 'C2', 'D2',
+          'A3', 'B3', 'C3', 'D3', 'A4', 'B4', 'C4', 'D4',
+          'A5', 'B5', 'C5', 'D5', 'A6', 'B6', 'C6', 'D6']
+primer_strips = ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+               'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+               'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11']
+
+total_primer_combinations = 6
+
+number_full_racks = math.floor(primer_combinations/24)
+
+source = []
+destination = []
+
+if total_primer_combinations <= 24:
+    source = primer_tubes[:total_primer_combinations]
+    destination = primer_strips[:total_primer_combinations]
+if total_primer_combinations >= 25:
+    repeats = math.floor(total_primer_combinations/24)
+
+for primer in range(24):
+    if primer % 2 == 0 and primer <= 2:
+        for primer_tube, PCR_strip_tube in zip(source, destination):
+            print(primer_tube + '    ' + PCR_strip_tube)
+        
+
+# for primer in range(total_primer_combinations):
+#     if primer % 2 == 0 and primer <= 2:
+#         for primer_tube, PCR_strip_tube in zip(source, destination):
+#             print(primer_tube + '    ' + PCR_strip_tube)
+                
+
+#%%
+import math
+
+a = 60
+b = a/24
+c = math.floor(b)
+d = b - math.floor(b)
+e = round(d*24)
+
+
+
+print(a)
+print(b)
+print(c)
+print(d)
+print(e)

@@ -37,15 +37,15 @@ if sample_tubes == 'PCR_strips':
      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                  ##
      ## max 3 racks with strips!                                            ##
      
-MM_start_vol = 148.32
+MM_start_vol = 2016
   ## The MM_start_vol is the volume (ul) of mastermix that is in the source ##
   ## labware at the start of the protocol.                                  ##
-MM_dispension_vol = 1.475
+MM_dispension_vol = 20
   ## The volume (ul) of mastermix that is aliquoted                         ##
-MM_tube = 'tube_1.5mL'
+MM_tube = 'tube_5mL'
   ## In what kind of tube is your mastermix?                                ##
   ## Options: 'tube_1.5mL' or 'tube_5mL'                                    ##
-MM_well = 'D1'  
+MM_well = 'C1'  
   ## Where is the mastermix tube located in the rack                        ##
 
 starting_tip = 'B10'
@@ -265,5 +265,4 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Alternative for blow_out                                       ##
         pipette.drop_tip()
           ## Drop tip in trash                                              ##
-          
 # =============================================================================

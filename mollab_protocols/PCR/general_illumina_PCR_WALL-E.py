@@ -1,11 +1,11 @@
 # =============================================================================
-# Author(s): Sanne Vreugdenhil & Maartje Brouwer
-# Creation date: 210916
+# general protocol for illumina PCRs in WALL-E
 # Description: 
 #   - aliquot mastermix in a 96 wells plate 
 #   - add barcoded primers from PCR strips to the 96 wells plate
 #   - if also qPCR, add 1 specific primer to the std dil series
 # Update (SV) 211027: added choice between 5mL or 1.5mL mm tube
+# Update (MB) 211203: use p20 instead of p300 for MM volumes <19µL
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -19,14 +19,14 @@ import json
   ## so that we can use the simulate_protocol with custom labware.          ##
 
 #### !!! OPTION 1: ROBOT
-from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
 ##### !!! OPTION 2: SIMULATOR
-# from mollab_modules import volume_tracking_v1 as vt
+from mollab_modules import volume_tracking_v1 as vt
 # =============================================================================
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 48   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 96   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
 number_std_series = 0  # max 3
   ## How many dilution series do you want to include in this PCR        ##
@@ -38,14 +38,14 @@ number_of_NTCs = 1
   ## How many NTCs to include                                           ##
 mock = False
   ## Will a mock sample be included?
-start_vol = 1220
+start_vol = 1108.8
   ## The start_vol_m is the volume (ul) of mix that is in the source    ##
   ## labware at the start of the protocol.                              ##
 mastermix_tube_type = '1.5mL_tube'
   ## What tube are you using??                                          ##
   ## For volume < 1300: '1.5mL_tube'                                    ##
   ## For volume > 1300: '5mL_tube'                                      ##
-dispension_vol = 20
+dispension_vol = 11
   ## Volume of MasterMix to be aliquoted                                ##
 if mastermix_tube_type == '1.5mL_tube':
     mastermix_source = 'D1'
@@ -53,9 +53,10 @@ if mastermix_tube_type == '5mL_tube':
     mastermix_source = 'C1'
   ## Where is the mastermix tube located in the rack                    ##
 primer_loc = ['2', '5', '8','11']
-primer_vol = 3
+primer_vol = 1
   ## Volume of the primer (F+R mix) to be used
-starting_tip_p200 = 'A1'
+if dispension_vol > 19:
+    starting_tip_p200 = 'A1'
 starting_tip_p20 = 'C2'
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
@@ -92,85 +93,101 @@ def run(protocol: protocol_api.ProtocolContext):
     ## For available labware see "labware/list_of_available_labware".       ##
     
     # pipette tips
-    tips_200 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul', #labware definition
-        2,                                  #deck position
-        '200tips')                          #custom name
-    tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        7,                                  #deck position
-        '20tips_1')                         #custom name       
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        10,                                 #deck position
-        '20tips_2')                         #custom name           
-    
+    if dispension_vol > 19:
+        tips_200 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul', #labware definition
+            2,                                  #deck position
+            '200tips')                          #custom name
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            7,                                  #deck position
+            '20tips_1')                         #custom name       
+        tips_20_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            10,                                 #deck position
+            '20tips_2')                         #custom name
+        tips_20 = [tips_20_1, tips_20_2]
+    else:
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            2,                                  #deck position
+            '20tips_1')                         #custom name   
+        tips_20_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            7,                                  #deck position
+            '20tips_2')                         #custom name       
+        tips_20_3 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  #labware definition
+            10,                                 #deck position
+            '20tips_3')                         #custom name       
+        tips_20 = [tips_20_1, tips_20_2, tips_20_3]
     # Tube_racks & plates
     plate_96 = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',    #labware definition
-        6,                                  #deck position
-        'plate_96')                         #custom name     
+        'biorad_96_wellplate_200ul_pcr',        #labware definition
+        6,                                      #deck position
+        'plate_96')                             #custom name     
     if mastermix_tube_type == '1.5mL_tube':
         mastermix_tube = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'mastermix_tube')
    # ##### !!! OPTION 1: ROBOT      
-    if mastermix_tube_type == '5mL_tube': 
-        mastermix_tube = protocol.load_labware(
-            'eppendorfscrewcap_15_tuberack_5000ul',#labware def
-            3,                                     #deck position
-            'mastermix_tube')                      #custom name          
-    primer_strips_1 = protocol.load_labware(
-        'pcrstrips_96_wellplate_200ul',    #labware definition
-        4,                                 #deck position
-        'primer_strips_1')                 #custom name
-    if primer_racks >=2:
-        primer_strips_2 = protocol.load_labware(
-        'pcrstrips_96_wellplate_200ul',    #labware definition
-        1,                                 #deck position
-        'primer_strips_2')                 #custom name   
-    if primer_racks >=3:
-        primer_strips_3 = protocol.load_labware(
-        'pcrstrips_96_wellplate_200ul',    #labware definition
-        11,                                #deck position
-        'primer_strips_3')                 #custom name               
-   ##### !!! OPTION 2: SIMULATOR      
     # if mastermix_tube_type == '5mL_tube': 
-    #    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-    #                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-    #               labware_def_5mL = json.load(labware_file)
-    #    mastermix_tube = protocol.load_labware_from_definition( 
-    #         labware_def_5mL,   #variable derived from opening json
-    #         3,                 #deck position
-    #         'mastermix_tube')  #custom name 
-    # with open("labware/pcrstrips_96_wellplate_200ul/"
-    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
-    #         labware_def_pcrstrips = json.load(labware_file)
-    # primer_strips_1 = protocol.load_labware_from_definition( 
-    #     labware_def_pcrstrips, #variable derived from opening json
-    #     4,                     #deck position
-    #     'primer_strips_1')     #custom name  
+    #     mastermix_tube = protocol.load_labware(
+    #         'eppendorfscrewcap_15_tuberack_5000ul',#labware def
+    #         3,                                     #deck position
+    #         'mastermix_tube')                      #custom name          
+    # primer_strips_1 = protocol.load_labware(
+    #     'pcrstrips_96_wellplate_200ul',    #labware definition
+    #     4,                                 #deck position
+    #     'primer_strips_1')                 #custom name
     # if primer_racks >=2:
-    #     primer_strips_2 = protocol.load_labware_from_definition( 
-    #         labware_def_pcrstrips, #variable derived from opening json
-    #         1,                     #deck position
-    #         'primer_strips_2')     #custom name
+    #     primer_strips_2 = protocol.load_labware(
+    #     'pcrstrips_96_wellplate_200ul',    #labware definition
+    #     1,                                 #deck position
+    #     'primer_strips_2')                 #custom name   
     # if primer_racks >=3:
-    #     primer_strips_3 = protocol.load_labware_from_definition( 
-    #         labware_def_pcrstrips, #variable derived from opening json
-    #         11,                    #deck position
-    #         'primer_strips_3')     #custom name                            
+    #     primer_strips_3 = protocol.load_labware(
+    #     'pcrstrips_96_wellplate_200ul',    #labware definition
+    #     11,                                #deck position
+    #     'primer_strips_3')                 #custom name               
+   ##### !!! OPTION 2: SIMULATOR      
+    if mastermix_tube_type == '5mL_tube': 
+        with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+                    "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+                  labware_def_5mL = json.load(labware_file)
+        mastermix_tube = protocol.load_labware_from_definition( 
+            labware_def_5mL,   #variable derived from opening json
+            3,                 #deck position
+            'mastermix_tube')  #custom name 
+    with open("labware/pcrstrips_96_wellplate_200ul/"
+              "pcrstrips_96_wellplate_200ul.json") as labware_file:
+            labware_def_pcrstrips = json.load(labware_file)
+    primer_strips_1 = protocol.load_labware_from_definition( 
+        labware_def_pcrstrips, #variable derived from opening json
+        4,                     #deck position
+        'primer_strips_1')     #custom name  
+    if primer_racks >=2:
+        primer_strips_2 = protocol.load_labware_from_definition( 
+            labware_def_pcrstrips, #variable derived from opening json
+            1,                     #deck position
+            'primer_strips_2')     #custom name
+    if primer_racks >=3:
+        primer_strips_3 = protocol.load_labware_from_definition( 
+            labware_def_pcrstrips, #variable derived from opening json
+            11,                    #deck position
+            'primer_strips_3')     #custom name                            
     
     # Pipettes
-    p300 = protocol.load_instrument(
-        'p300_single_gen2',                 #instrument definition
-        'right',                            #mount position
-        tip_racks=[tips_200])               #assigned tiprack
+    if dispension_vol > 19:
+        p300 = protocol.load_instrument(
+            'p300_single_gen2',             #instrument definition
+            'right',                        #mount position
+            tip_racks=[tips_200])           #assigned tiprack
     p20 = protocol.load_instrument(
         'p20_single_gen2',                  #instrument definition
         'left',                             #mount position
-        tip_racks=[tips_20_1, tips_20_2])   #assigned tiprack
+        tip_racks=tips_20)                  #assigned tiprack
 # =============================================================================
 
 # PREDIFINED VARIABLES=========================================================
@@ -191,7 +208,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # SETTING LOCATIONS============================================================
 # =============================================================================
     ##### Setting starting tip                                              ##
-    p300.starting_tip = tips_200.well(starting_tip_p200)
+    if dispension_vol > 19:
+        p300.starting_tip = tips_200.well(starting_tip_p200)
     p20.starting_tip = tips_20_1.well(starting_tip_p20)
       ## The starting_tip is the location of first pipette tip in the box   ##
     
@@ -251,14 +269,18 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## ALIQUOTING MASTERMIX========================================================
 ## ============================================================================
+    if dispension_vol > 19:
+        pipette = p300
+    else:
+        pipette = p20
     for i, well in enumerate(MasterMixAliquots):
       ## aliquot mix, for each well do the following:                       ##
         if i == 0: 
-            p300.pick_up_tip()
+            pipette.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.    ##
         elif i % 8 == 0:
-            p300.drop_tip()
-            p300.pick_up_tip()
+            pipette.drop_tip()
+            pipette.pick_up_tip()
               ## Then, after every 8th well, drop tip and pick up new       ##
     
         current_height, pip_height, bottom_reached = vt.volume_tracking(
@@ -275,19 +297,19 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Set the location of where to aspirate from.                ##
 
         #### The actual aliquoting of mastermix                             ##
-        p300.aspirate(aspiration_vol, aspiration_location)
+        pipette.aspirate(aspiration_vol, aspiration_location)
           ## Aspirate the amount specified in aspiration_vol from the       ##
           ## location specified in aspiration_location.                     ##
-        p300.dispense(dispension_vol, well)
+        pipette.dispense(dispension_vol, well)
           ## Dispense the amount specified in dispension_vol to the         ##
           ## location specified in well (so a new well every time the       ##
           ## loop restarts)                                                 ##
-        p300.dispense(10, aspiration_location)
+        pipette.dispense(10, aspiration_location)
           ## Alternative for blow-out, make sure the tip doesn't fill       ##
           ## completely when using a disposal volume by dispensing some     ##
           ## of the volume after each pipetting step. (blow-out to many     ##
           ## bubbles)                                                       ##
-    p300.drop_tip()      
+    pipette.drop_tip()      
 # =============================================================================        
 
 ## ADDING PRIMERS FOR SAMPLES TO THE MIX=======================================

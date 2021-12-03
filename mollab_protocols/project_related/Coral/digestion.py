@@ -95,7 +95,7 @@ def run(protocol: protocol_api.ProtocolContext):
         '200tips_1')                            #custom name
         tips_2 = protocol.load_labware(
          'opentrons_96_filtertiprack_200ul',    #labware definition
-        11,                                     #deck position
+        10,                                     #deck position
         '200tips_2')                            #custom name
     
     else:
@@ -105,31 +105,31 @@ def run(protocol: protocol_api.ProtocolContext):
             '20tips_1')                         #custom name
         tips_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  #labware definition
-            11,                                 #deck position
+            10,                                 #deck position
             '20tips_2')                         #custom name
     
     # tube racks
     if sample_tubes == 'plate_96':
         samples_1 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        #labware definition
-        4,                                      #deck position
+        1,                                      #deck position
         'samples_plate')                        #custom name
     
     if sample_tubes == 'PCR_strips':
     ##### !!! OPTION 1: ROBOT         
         samples_1 = protocol.load_labware(
         'pcrstrips_96_wellplate_200ul',         #labware definition
-        4,                                      #deck position
+        1,                                      #deck position
         'sample_strips_1')                      #custom name
         if sample_racks >= 2:
             samples_2 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul', #labware definition
-                5,                              #deck position
+                2,                              #deck position
                 'sample_strips_2')              #custom name
         if sample_racks >= 3:
             samples_3 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul', #labware definition
-                6,                              #deck position
+                3,                              #deck position
                 'sample_strips_3')              #custom name
     ##### !!! OPTION 2: SIMULATOR         
         # with open("labware/pcrstrips_96_wellplate_200ul/"
@@ -137,29 +137,29 @@ def run(protocol: protocol_api.ProtocolContext):
         #         labware_def_pcrstrips = json.load(labware_file)
         # samples_1 = protocol.load_labware_from_definition( 
         #     labware_def_pcrstrips,              #variable derived from json
-        #     4,                                  #deck position
+        #     1,                                  #deck position
         #     'sample_strips_1')                  #custom name
         # if sample_racks >= 2:
         #     samples_2 = protocol.load_labware_from_definition( 
         #         labware_def_pcrstrips,          #variable derived from json
-        #         5,                              #deck position
+        #         2,                              #deck position
         #         'sample_strips_2')              #custom name           
         # if sample_racks >= 3:
         #     samples_3 = protocol.load_labware_from_definition( 
         #         labware_def_pcrstrips,          #variable derived from json
-        #         6,                              #deck position
+        #         3,                              #deck position
         #         'sample_strips_3')              #custom name
     
     if MM_tube == 'tube_1.5mL':
         MM = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap', #labw def
-            8,                                                        #deck pos
+            4,                                                        #deck pos
             'MM_1.5mL')                                               #custname
     if MM_tube == 'tube_5mL':
     ##### !!! OPTION 1: ROBOT
         MM = protocol.load_labware(
             'eppendorfscrewcap_15_tuberack_5000ul',     #labware def
-            8,                                          #deck position
+            4,                                          #deck position
             'mastermix_tube')                           #custom name 
    ##### !!! OPTION 2: SIMULATOR      
         # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -167,7 +167,7 @@ def run(protocol: protocol_api.ProtocolContext):
         #           labware_def_5mL = json.load(labware_file)
         # MM = protocol.load_labware_from_definition( 
         #     labware_def_5mL,                    #variable derived from json
-        #     8,                                  #deck position
+        #     4,                                  #deck position
         #     'mastermix_tube')                   #custom name
 
     # Pipettes
@@ -227,7 +227,7 @@ def run(protocol: protocol_api.ProtocolContext):
     start_height = vt.cal_start_height(MM_tube, MM_start_vol)
       ## Call start height calculation function from volume tracking module.##
     if MM_start_vol < 500:
-          start_height = start_height - 6
+          start_height = start_height - 8
       ## start_height is not so good for small amounts
     current_height = start_height
       ## Set the current height to start height at the beginning of the     ##

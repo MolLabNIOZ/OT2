@@ -31,7 +31,6 @@ if sample_tubes == 'PCR_strips':
      ## max 4 racks with strips!                                            ##
 sample_vol = 8 
   ## The sample_vol is the volume (ul) of sample added to the PCR  
-  
 mock = False #also False if added by hand
   ## False if not added or added by hand, True if added by robot
 std_sample = False
@@ -40,8 +39,9 @@ if std_sample:
     no_of_std_samples = 6
 else:
     no_of_std_samples = 0
- ## Number of replicates of the std sample, usually 6                       ##
-
+  ## Number of replicates of the std sample, usually 6                      ##
+qPCR = False
+  ## Are you doing a qPCR or a regular PCR (lights off if qPCR)             ##
 starting_tip_p20 = 'H2'
   ## The starting_tip is the location of first pipette tip in the box       ##
 # =============================================================================
@@ -237,6 +237,8 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources.append(well)
         sample_sources = sample_sources[:number_of_samples]
           ## Separate the columns into wells and append them to list        ##
+# =============================================================================
+
     
 # ADDING SAMPLES===============================================================
 # =============================================================================

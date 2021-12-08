@@ -26,7 +26,7 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 96   # max 96 - (8 * number_std_series) - NTC - mock
+number_of_samples = 16   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                           ##
 number_std_series = 0  # max 3
   ## How many dilution series do you want to include in this PCR        ##
@@ -38,6 +38,8 @@ number_of_NTCs = 1
   ## How many NTCs to include                                           ##
 mock = False
   ## Will a mock sample be included?
+qPCR = False
+  ## Are you doing a qPCR or a regular PCR (lights off if qPCR)         ##
 start_vol = 1108.8
   ## The start_vol_m is the volume (ul) of mix that is in the source    ##
   ## labware at the start of the protocol.                              ##
@@ -45,6 +47,10 @@ mastermix_tube_type = '1.5mL_tube'
   ## What tube are you using??                                          ##
   ## For volume < 1300: '1.5mL_tube'                                    ##
   ## For volume > 1300: '5mL_tube'                                      ##
+primer_tube_type = 'plate_96'
+  ## Where are your primers in?                                         ##
+  ## Primers in strips = 'PCR_strips'                                   ##
+  ## Primers in plate = 'plate_96'                                      ##
 dispension_vol = 11
   ## Volume of MasterMix to be aliquoted                                ##
 if mastermix_tube_type == '1.5mL_tube':
@@ -52,7 +58,6 @@ if mastermix_tube_type == '1.5mL_tube':
 if mastermix_tube_type == '5mL_tube':
     mastermix_source = 'C1'
   ## Where is the mastermix tube located in the rack                    ##
-primer_loc = ['2', '5', '8','11']
 primer_vol = 1
   ## Volume of the primer (F+R mix) to be used
 if dispension_vol > 19:
@@ -67,7 +72,10 @@ number_of_primers = (number_of_samples + number_of_NTCs +
                      number_of_std_samples)
 if mock:
     number_of_primers = number_of_primers + 1    
-primer_racks = math.ceil(number_of_primers / 32)
+if primer_tube_type == 'PCR_strips':
+    primer_racks = math.ceil(number_of_primers / 32)    
+if primer_tube_type == 'plate_96':
+    primer_racks = math.ceil(number_of_primers / 96)
   ## How many tube_strip_racks are needed (1,2 or 3)
 # =============================================================================
 
@@ -87,12 +95,11 @@ def run(protocol: protocol_api.ProtocolContext):
     """
 # =============================================================================
 
-
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     ## For available labware see "labware/list_of_available_labware".       ##
-    
-    # pipette tips
+   
+    # Pipette tips
     if dispension_vol > 19:
         tips_200 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul', #labware definition
@@ -121,6 +128,7 @@ def run(protocol: protocol_api.ProtocolContext):
             10,                                 #deck position
             '20tips_3')                         #custom name       
         tips_20 = [tips_20_1, tips_20_2, tips_20_3]
+   
     # Tube_racks & plates
     plate_96 = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        #labware definition
@@ -131,26 +139,34 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'mastermix_tube')
+    if primer_tube_type == 'plate_96':
+        primer_source_1 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',        #labware definition
+            1,                                      #deck position
+            'primer_source_1')                        #custom name      
+   
    # ##### !!! OPTION 1: ROBOT      
     # if mastermix_tube_type == '5mL_tube': 
     #     mastermix_tube = protocol.load_labware(
     #         'eppendorfscrewcap_15_tuberack_5000ul',#labware def
     #         3,                                     #deck position
     #         'mastermix_tube')                      #custom name          
-    # primer_strips_1 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     4,                                 #deck position
-    #     'primer_strips_1')                 #custom name
-    # if primer_racks >=2:
-    #     primer_strips_2 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     1,                                 #deck position
-    #     'primer_strips_2')                 #custom name   
-    # if primer_racks >=3:
-    #     primer_strips_3 = protocol.load_labware(
-    #     'pcrstrips_96_wellplate_200ul',    #labware definition
-    #     11,                                #deck position
-    #     'primer_strips_3')                 #custom name               
+    # if primer_tube_type == 'PCR_strips':
+        # primer_source_1 = protocol.load_labware( 
+        #     'pcrstrips_96_wellplate_200ul',     #labware def
+        #     4,                                  #deck position
+        #     'primer_source_1')                  #custom name  
+        # if primer_racks >=2:
+        #     primer_source_2 = protocol.load_labware_( 
+        #         'pcrstrips_96_wellplate_200ul', #labware def
+        #         1,                              #deck position
+        #         'primer_source_2')              #custom name
+        # if primer_racks >=3:
+        #     primer_source_3 = protocol.load_labware( 
+        #         'pcrstrips_96_wellplate_200ul', #labware def
+        #         11,                             #deck position
+        #         'primer_source_3')              #custom name     
+            
    ##### !!! OPTION 2: SIMULATOR      
     if mastermix_tube_type == '5mL_tube': 
         with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -160,23 +176,27 @@ def run(protocol: protocol_api.ProtocolContext):
             labware_def_5mL,   #variable derived from opening json
             3,                 #deck position
             'mastermix_tube')  #custom name 
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    primer_strips_1 = protocol.load_labware_from_definition( 
-        labware_def_pcrstrips, #variable derived from opening json
-        4,                     #deck position
-        'primer_strips_1')     #custom name  
-    if primer_racks >=2:
-        primer_strips_2 = protocol.load_labware_from_definition( 
+    
+   
+    if primer_tube_type == 'PCR_strips':
+        with open("labware/pcrstrips_96_wellplate_200ul/"
+                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                labware_def_pcrstrips = json.load(labware_file)
+        primer_source_1 = protocol.load_labware_from_definition( 
             labware_def_pcrstrips, #variable derived from opening json
-            1,                     #deck position
-            'primer_strips_2')     #custom name
-    if primer_racks >=3:
-        primer_strips_3 = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            11,                    #deck position
-            'primer_strips_3')     #custom name                            
+            4,                     #deck position
+            'primer_source_1')     #custom name  
+        if primer_racks >=2:
+            primer_source_2 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                1,                     #deck position
+                'primer_source_2')     #custom name
+        if primer_racks >=3:
+            primer_source_3 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                11,                    #deck position
+                'primer_source_3')     #custom name           
+           
     
     # Pipettes
     if dispension_vol > 19:
@@ -243,32 +263,51 @@ def run(protocol: protocol_api.ProtocolContext):
     #### Where are the primers located
     primer_wells = []
       ## Create an empty list to append wells to                            ##
-    primer_columns = (
-        ([primer_strips_1.columns_by_name()[column_name] 
-          for column_name in primer_loc])) 
-    if primer_racks >= 2:
-        primer_columns2 = (
-            ([primer_strips_2.columns_by_name()[column_name] 
-              for column_name in primer_loc]))
-        for column in primer_columns2:
-            primer_columns.append(column)
-    if primer_racks >= 3:
-        primer_columns3 = (
-            ([primer_strips_3.columns_by_name()[column_name] 
-              for column_name in primer_loc]))
-        for column in primer_columns3:
-            primer_columns.append(column)
-        ## Make a list of columns, this is a list of lists!                 ##
-    
-    for column in primer_columns:
-        for well in column:
-            primer_wells.append(well)
+    if primer_tube_type == 'PCR_strips':
+        columns = ['2', '7', '11' ]
+        primer_columns = []
+        if primer_racks >= 1:
+            primer_columns_1 = (
+                ([primer_source_1.columns_by_name()[column_name] 
+                  for column_name in columns]))
+            for column in primer_columns_1:
+                primer_columns.append(column)
+        if primer_racks >= 2:
+            primer_columns_2 = (
+                ([primer_source_2.columns_by_name()[column_name] 
+                  for column_name in columns]))
+            for column in primer_columns_2:
+                primer_columns.append(column)
+        if primer_racks >= 3:
+            primer_columns_3 = (
+                ([primer_source_3.columns_by_name()[column_name] 
+                  for column_name in columns]))
+            for column in primer_columns_3:
+                primer_columns.append(column)
+            ## Make a list of columns, this is a list of lists!                 ##
+        for column in primer_columns:
+            for well in column:
+                primer_wells.append(well)
+    if primer_tube_type == 'plate_96':
+        if primer_racks == 1:
+            for well in primer_source_1.wells():
+                primer_wells.append(well)
+        if primer_racks == 2: 
+            for well in primer_source_2.wells():
+                primer_wells.append(well)
+        if primer_racks == 3:
+            for well in primer_source_3.wells():
+                primer_wells.append(well)
     primer_wells = primer_wells[:number_of_primers]
       ## Separate the columns into wells and append them to list            ##
 # =============================================================================
 
-## ALIQUOTING MASTERMIX========================================================
+## PIPETTING===================================================================
 ## ============================================================================
+## LIGHTS----------------------------------------------------------------------
+    protocol.set_rail_lights(True)
+## ----------------------------------------------------------------------------
+## ALIQUOTING MASTERMIX--------------------------------------------------------
     if dispension_vol > 19:
         pipette = p300
     else:
@@ -309,11 +348,9 @@ def run(protocol: protocol_api.ProtocolContext):
           ## completely when using a disposal volume by dispensing some     ##
           ## of the volume after each pipetting step. (blow-out to many     ##
           ## bubbles)                                                       ##
-    pipette.drop_tip()      
-# =============================================================================        
-
-## ADDING PRIMERS FOR SAMPLES TO THE MIX=======================================
-## ============================================================================
+    pipette.drop_tip()   
+## ----------------------------------------------------------------------------
+## ADDING PRIMERS FOR SAMPLES TO THE MIX---------------------------------------
     for primer_well, sample_well in zip(primer_wells, sample_wells):
       ## Loop trough primer_wells and sample_wells                          ##
         p20.pick_up_tip()
@@ -321,11 +358,9 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.dispense(primer_vol, sample_well)
         p20.mix(3, primer_mix_vol, sample_well)
         p20.dispense(10, sample_well)
-        p20.drop_tip()
-# =============================================================================    
-    
-## ADDING PRIMERS FOR STD SERIES TO THE MIX====================================
-## ============================================================================   
+        p20.drop_tip()       
+## ----------------------------------------------------------------------------
+## ADDING PRIMERS FOR STD SERIES TO THE MIX------------------------------------
     for well in standard_wells:
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_wells[-1])
@@ -333,5 +368,8 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.dispense(primer_vol, well)
         p20.mix(3, primer_mix_vol, well)
         p20.dispense(10, well)
-        p20.drop_tip()
-# =============================================================================        
+        p20.drop_tip()   
+## ----------------------------------------------------------------------------
+## LIGHTS----------------------------------------------------------------------
+    protocol.set_rail_lights(False)
+## ============================================================================

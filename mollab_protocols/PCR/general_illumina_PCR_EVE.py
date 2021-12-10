@@ -22,26 +22,33 @@ import json
 # =============================================================================
 number_of_samples = 96   # max 96 - (8 * number_std_series) - NTC - mock
   ## How many samples do you want to include?                               ##
+sample_vol = 8 
+  ## The sample_vol is the volume (ul) of sample added to the PCR           ##
+mock = False
+   ## False if not added or added by hand, True if added by robot           ##
+qPCR = False
+  ## Are you doing a qPCR or a regular PCR (lights off if qPCR)             ##
+if qPCR:
+    number_of_std_samples = 6
+      ## How many standard samples are taken for the qPCR                   ##
+else:
+    number_of_std_samples = 0
+
 sample_tubes = 'PCR_strips'
   ## What kind of tubes are the samples in?                                 ##
   ## Options: 'PCR_strips' or 'tubes_1.5mL'                                 ##
 if sample_tubes == 'PCR_strips':
     strip_positions = ['2', '5', '8','11']     
-     ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                  ##
-     ## max 4 racks with strips!                                            ##
-sample_vol = 8 
-  ## The sample_vol is the volume (ul) of sample added to the PCR  
-mock = False #also False if added by hand
-  ## False if not added or added by hand, True if added by robot
-std_sample = False
-  ## True if you are doing a qPCR and add a std_sample for Svec method      ##
-if std_sample:
-    no_of_std_samples = 6
+      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                 ##
+      ## max 4 racks with strips!                                           ##
+if qPCR:
+    number_of_std_samples = 6
+      ## Number of replicates of the std sample, usually 6                  ##
+      ## True if you are doing a qPCR and add a std_sample for Svec method  ##
 else:
-    no_of_std_samples = 0
-  ## Number of replicates of the std sample, usually 6                      ##
-qPCR = False
-  ## Are you doing a qPCR or a regular PCR (lights off if qPCR)             ##
+    number_of_std_samples = 0
+  
+
 starting_tip_p20 = 'H2'
   ## The starting_tip is the location of first pipette tip in the box       ##
 # =============================================================================
@@ -51,7 +58,7 @@ starting_tip_p20 = 'H2'
 # =============================================================================
 if mock:
     number_of_samples = number_of_samples + 1
-if std_sample:
+if number_of_std_samples >= 1:
     number_of_samples = number_of_samples + 1
 if sample_tubes == 'PCR_strips':
     if strip_positions == ['2', '7', '11']:
@@ -201,12 +208,12 @@ def run(protocol: protocol_api.ProtocolContext):
             sample_sources = sample_sources + sample_tubes_4.wells()
         sample_sources = sample_sources[:number_of_samples]
         
-        if std_sample:
-            std_source = [sample_sources[-1]] * (no_of_std_samples - 1)
+        if number_of_std_samples >= 1:
+            std_source = [sample_sources[-1]] * (number_of_std_samples - 1)
             for well in std_source:
                 sample_sources.append(well)
             ## adds the same well (where the std_sample is) to the sample   ##
-            ## sources list, so will pipete no_of_std_samples times from    ##
+            ## sources list, so will pipete number_of_std_samples times from    ##
             ## the same well                                                ##
     if sample_tubes == 'PCR_strips':
         sample_columns = (

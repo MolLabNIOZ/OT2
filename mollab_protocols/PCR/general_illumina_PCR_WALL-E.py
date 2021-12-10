@@ -42,7 +42,7 @@ if qPCR:
     number_of_std_samples = 6
       ## How many standard samples are taken for the qPCR                   ##
     std_primer_loc = 'D1'
-      ## Location of the primer for the standards (sample and series)       ##              ##
+      ## Location of the primer for the standards (sample and series)       ##              
 else:
     number_of_std_series = 0  
     length_std_series = 0
@@ -55,7 +55,7 @@ mastermix_tube_type = '1.5mL_tube'
   ## What tube are you using??                                              ##
   ## For volume < 1300: '1.5mL_tube'                                        ##
   ## For volume > 1300: '5mL_tube'                                          ##
-dispension_vol = 11   
+dispension_vol = 25   
   ## Volume of MasterMix to be aliquoted                                    ##
 if mastermix_tube_type == '1.5mL_tube':
     mastermix_source = 'D1'
@@ -73,7 +73,7 @@ primer_loc = ['2', '5', '8','11']
   ## Location of the primer strips in the plate                             ##
 
 
-if dispension_vol > 19:
+if dispension_vol >= 21:
     starting_tip_p200 = 'A1'
 starting_tip_p20 = 'C2'
   ## The starting_tip is the location of first pipette tip in the box       ##
@@ -81,7 +81,7 @@ starting_tip_p20 = 'C2'
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-number_of_primers = (number_of_samples + number_of_NTCs)
+number_of_primers = number_of_samples + number_of_NTCs
 if mock:
     number_of_primers = number_of_primers + 1    
 if primer_tube_type == 'PCR_strips':
@@ -89,11 +89,7 @@ if primer_tube_type == 'PCR_strips':
 if primer_tube_type == 'plate_96':
     primer_racks = math.ceil(number_of_primers / 96)
   ## How many tube_strip_racks are needed (1,2 or 3)
-number_of_sample_wells = number_of_samples + number_of_NTCs
-    number_of_std_samples +
-    (length_std_series*number_of_std_series)
-    )
-    
+
 # =============================================================================
 
 # METADATA=====================================================================
@@ -265,10 +261,16 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in plate_96.wells():
         sample_wells.append(well)
       ## Make a list with all 96 wells of the plate                         ##
-    sample_wells = sample_wells[:number_of_sample_wells]
+    sample_wells = sample_wells[:number_of_primers]
       ## cuts off the list after a certain number of wells                  ##
+    
+    std_sample_wells = []
+    if number_of_std_samples >= 1:
+        std_wells = (sample_wells[-1] + number_of_std_samples)    
+        for well in std_wells:
+            std_sample_wells.append(well)
     std_series_wells = [] 
-    if number_of_std_series > 0:
+    if number_of_std_series > 1:
         std_series_columns = (
         [plate_96.columns_by_name()[column_name] for column_name in
          ['12', '11', '10']])
@@ -279,10 +281,7 @@ def run(protocol: protocol_api.ProtocolContext):
             for well in column:
                 std_series_wells.append(well)
           ## cut off the columns after a certain std_series length
-    std_sample_wells = []
-    if number_of_std_samples >= 1:
-        for well in range(number_of_std_samples):
-            std_sample_wells.append(well)
+
     
     std_wells = std_sample_wells + std_series_wells 
     MasterMixAliquots = sample_wells + std_wells
@@ -338,7 +337,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol.set_rail_lights(True)
 ## ----------------------------------------------------------------------------
 ## ALIQUOTING MASTERMIX--------------------------------------------------------
-    if dispension_vol > 19:
+    if dispension_vol >= 21:
         pipette = p300
     else:
         pipette = p20

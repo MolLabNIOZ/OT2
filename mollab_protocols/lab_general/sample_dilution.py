@@ -1,5 +1,6 @@
 """
 sample_dilution.py is a protocol written for EVE for the dilution of samples.
+Also works for transferring samples, if you set dilution ratio to 0 or 1
 First water is aliquoted:
     From a 5 mL tube in a 5mL tube rack.
     To dilution destination labware (96 wells plate, PCR strips or 1.5mL tubes)
@@ -27,7 +28,7 @@ import math
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # How many samples do you want to dilute? 
-number_of_samples = 72
+number_of_samples = 96
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -48,17 +49,17 @@ number_of_samples = 72
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 1
+sample_volume = 50
 
 # How many times do you want to dilute?
-dilution_ratio = 10
+dilution_ratio = 0
 
 # In what kind of tubes are the samples provided?
-sample_tubes = 'tubes_1.5mL'
+sample_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
   
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'tubes_1.5mL'
+dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 
 # What is the starting position of the 20µL tips?
@@ -73,7 +74,7 @@ starting_tip_p200 = 'A1'
 # =============================================================================
 metadata = {
     'protocolName': 'sample_dilution.py',
-    'author': 'MB <maartje.brouwer@nioz.nl>', 'SV <sanne.vreugdenhil@nioz.nl>',
+    'author': 'MB <maartje.brouwer@nioz.nl>, SV <sanne.vreugdenhil@nioz.nl>',
     'description': ('Sample dilution protocol.'),
     'apiLevel': '2.9'}
 
@@ -121,7 +122,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     ##### Loading pipettes and tips    
-    if water_volume <= 20:
+    
+    if sample_volume <= 17 and water_volume <= 20 :
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  #labware definition
             11,                                 #deck position
@@ -137,16 +139,17 @@ def run(protocol: protocol_api.ProtocolContext):
         tips_20_4 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  #labware definition
             8,                                  #deck position
-            'tips_20_3')                        #custom name  
+            'tips_20_4')                        #custom name  
         p20 = protocol.load_instrument(
             'p20_single_gen2',                  #instrument definition
             'left',                             #mount position
             tip_racks=[                         #assigned tiprack
                 tips_20_1, tips_20_2, tips_20_3, tips_20_4])
+        sample_pipette = p20
         water_pipette = p20
         
-    else:
-        tips_200 = protocol.load_labware(
+    elif sample_volume <= 17 and water_volume > 20 :
+        tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',     #labware definition
             11,                                     #deck position
             'tips_200')                             #custom name
@@ -165,12 +168,94 @@ def run(protocol: protocol_api.ProtocolContext):
         p300 = protocol.load_instrument(
             'p300_single_gen2',                     #instrument definition
             'right',                                #mount position
-            tip_racks=[tips_200])                   #assigned tiprack
+            tip_racks=[tips_200_1])                   #assigned tiprack
         p20 = protocol.load_instrument(
             'p20_single_gen2',                          #instrument definition
             'left',                                     #mount position
             tip_racks=[tips_20_1, tips_20_2, tips_20_3])#assigned tiprack
+        sample_pipette = p20
         water_pipette = p300
+        
+    elif sample_volume > 17 and water_volume > 20 :
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  #labware definition
+            11,                                  #deck position
+            'tips_200_1')                        #custom name
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  #labware definition
+            10,                                  #deck position
+            'tips_200_2')                        #custom name    
+        tips_200_3 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  #labware definition
+            7,                                   #deck position
+            'tips_200_3')                        #custom name    
+        tips_200_4 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  #labware definition
+            8,                                   #deck position
+            'tips_200_4')                        #custom name   
+        p300 = protocol.load_instrument(
+            'p300_single_gen2',                     #instrument definition
+            'right',                                #mount position
+            tip_racks=[tips_200_1, tips_200_2, tips_200_3, tips_200_4])                   #assigned tiprack
+        sample_pipette = p300
+        water_pipette = p300
+        
+    elif sample_volume > 17 and water_volume < 20 :
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',     #labware definition
+            11,                                     #deck position
+            'tips_20')                             #custom name
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            10,                                     #deck position
+            'tips_200_1')                            #custom name
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            7,                                      #deck position
+            'tips_200_2')                            #custom name    
+        tips_200_3 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            8,                                      #deck position
+            'tips_200_3')                            #custom name    
+        p300 = protocol.load_instrument(
+            'p300_single_gen2',                     #instrument definition
+            'right',                                #mount position
+            tip_racks=[tips_200_1, tips_200_2, tips_200_3])#assigned tiprack
+        p20 = protocol.load_instrument(
+            'p20_single_gen2',                          #instrument definition
+            'left',                                     #mount position
+            tip_racks=[tips_20_1])#assigned tiprack
+        sample_pipette = p300
+        water_pipette = p20
+    
+    elif sample_volume <= 17 and water_volume > 20 :
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',       #labware definition
+            11,                                      #deck position
+            'tips_20')                               #custom name
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            10,                                      #deck position
+            'tips_200_1')                            #custom name
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            7,                                       #deck position
+            'tips_200_2')                            #custom name    
+        tips_200_3 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      #labware definition
+            8,                                       #deck position
+            'tips_200_3')                            #custom name    
+        p300 = protocol.load_instrument(
+            'p300_single_gen2',                            #instrument deftion
+            'right',                                       #mount position
+            tip_racks=[tips_200_1, tips_200_2, tips_200_3])#assigned tiprack
+        p20 = protocol.load_instrument(
+            'p20_single_gen2',                          #instrument definition
+            'left',                                     #mount position
+            tip_racks=[tips_20_1])                        #assigned tiprack
+        sample_pipette = p300
+        water_pipette = p20
+    
     
     ##### Loading labware 
     if sample_tubes == 'plate_96':
@@ -250,149 +335,148 @@ def run(protocol: protocol_api.ProtocolContext):
                 'dilution_dest_4')                      #custom name
 
     ##### !!! FOR ROBOT
-    if sample_tubes == 'PCR_strips':
-        if sample_racks >= 1:
-            sample_source_1 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                1,                                      #deck position
-                'sample_source_1')                      #custom name
-        if sample_racks >= 2:
-            sample_source_2 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                4,                                      #deck position
-                'sample_source_2')                      #custom name
-        if sample_racks >= 3:   
-            sample_source_3 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                2,                                      #deck position
-                'sample_source_3')                      #custom name
-        if sample_racks >= 4: 
-            sample_source_4 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                5,                                      #deck position
-                'sample_source_4')                      #custom name
-    if dilution_tubes == 'PCR_strips':
-        if dilution_racks >= 1:
-            dilution_dest_1 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                3,                                      #deck position
-                'dilution_dest_1')                      #custom name
-        if dilution_racks >= 2:
-            dilution_dest_2 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                6,                                      #deck position
-                'dilution_dest_2')                      #custom name
-        if dilution_racks >= 3:    
-            dilution_dest_3 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                5,                                      #deck position
-                'dilution_dest_3')                      #custom name
-        if dilution_racks >= 4:        
-            dilution_dest_4 = protocol.load_labwware(
-                'pcrstrips_96_wellplate_200ul',         #labware definition
-                2,                                      #deck position
-                'dilution_dest_4')                      #custom name    
-    tubes_5mL = protocol.load_labware(
-        'eppendorfscrewcap_15_tuberack_5000ul',     #labware definition
-        9,                                          #deck position
-        'tubes_5mL')                                #custom name    
-    
-    ##### !!! FOR SIMULATOR
-    # with open("labware/pcrstrips_96_wellplate_200ul/"
-    #           "pcrstrips_96_wellplate_200ul.json") as labware_file:
-    #         labware_def_pcrstrips = json.load(labware_file)
     # if sample_tubes == 'PCR_strips':
     #     if sample_racks >= 1:
-    #         sample_source_1 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             1,                     #deck position
-    #             'sample_source_1')     #custom name
+    #         sample_source_1 = protocol.load_labware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             1,                                      #deck position
+    #             'sample_source_1')                      #custom name
     #     if sample_racks >= 2:
-    #         sample_source_2 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             4,                     #deck position
-    #             'sample_source_2')     #custom name
-    #     if sample_racks >= 3:
-    #         sample_source_3 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             2,                     #deck position
-    #             'sample_source_3')     #custom name
-    #     if sample_racks >= 4:
-    #         sample_source_4 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             5,                     #deck position
-    #             'sample_source_4')     #custom name
+    #         sample_source_2 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             4,                                      #deck position
+    #             'sample_source_2')                      #custom name
+    #     if sample_racks >= 3:   
+    #         sample_source_3 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             2,                                      #deck position
+    #             'sample_source_3')                      #custom name
+    #     if sample_racks >= 4: 
+    #         sample_source_4 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             5,                                      #deck position
+    #             'sample_source_4')                      #custom name
     # if dilution_tubes == 'PCR_strips':
     #     if dilution_racks >= 1:
-    #         dilution_dest_1 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             3,                     #deck position
-    #             'dilution_dest_1')     #custom name
+    #         dilution_dest_1 = protocol.load_labware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             3,                                      #deck position
+    #             'dilution_dest_1')                      #custom name
     #     if dilution_racks >= 2:
-    #         dilution_dest_2 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             6,                     #deck position
-    #             'dilution_dest_2')     #custom name
-    #     if dilution_racks >= 3:
-    #         dilution_dest_3 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             5,                     #deck position
-    #             'dilution_dest_3')     #custom name
-    #     if dilution_racks >= 4:
-    #         dilution_dest_4 = protocol.load_labware_from_definition( 
-    #             labware_def_pcrstrips, #variable derived from opening json
-    #             2,                     #deck position
-    #             'dilution_dest_4')     #custom name  
-    # with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-    #           "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-    #         labware_def_5mL = json.load(labware_file)
-    # tubes_5mL = protocol.load_labware_from_definition( 
-    #     labware_def_5mL, #variable derived from opening json
-    #     9, 
-    #     '5mL_tubes')              
+    #         dilution_dest_2 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             6,                                      #deck position
+    #             'dilution_dest_2')                      #custom name
+    #     if dilution_racks >= 3:    
+    #         dilution_dest_3 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             5,                                      #deck position
+    #             'dilution_dest_3')                      #custom name
+    #     if dilution_racks >= 4:        
+    #         dilution_dest_4 = protocol.load_labwware(
+    #             'pcrstrips_96_wellplate_200ul',         #labware definition
+    #             2,                                      #deck position
+    #             'dilution_dest_4')                      #custom name    
+    # tubes_5mL = protocol.load_labware(
+    #     'eppendorfscrewcap_15_tuberack_5000ul',     #labware definition
+    #     9,                                          #deck position
+    #     'tubes_5mL')                                #custom name    
+    
+    ##### !!! FOR SIMULATOR
+    with open("labware/pcrstrips_96_wellplate_200ul/"
+              "pcrstrips_96_wellplate_200ul.json") as labware_file:
+            labware_def_pcrstrips = json.load(labware_file)
+    if sample_tubes == 'PCR_strips':
+        if sample_racks >= 1:
+            sample_source_1 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                1,                     #deck position
+                'sample_source_1')     #custom name
+        if sample_racks >= 2:
+            sample_source_2 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                4,                     #deck position
+                'sample_source_2')     #custom name
+        if sample_racks >= 3:
+            sample_source_3 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                2,                     #deck position
+                'sample_source_3')     #custom name
+        if sample_racks >= 4:
+            sample_source_4 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                5,                     #deck position
+                'sample_source_4')     #custom name
+    if dilution_tubes == 'PCR_strips':
+        if dilution_racks >= 1:
+            dilution_dest_1 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                3,                     #deck position
+                'dilution_dest_1')     #custom name
+        if dilution_racks >= 2:
+            dilution_dest_2 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                6,                     #deck position
+                'dilution_dest_2')     #custom name
+        if dilution_racks >= 3:
+            dilution_dest_3 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                5,                     #deck position
+                'dilution_dest_3')     #custom name
+        if dilution_racks >= 4:
+            dilution_dest_4 = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                2,                     #deck position
+                'dilution_dest_4')     #custom name  
+    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+            labware_def_5mL = json.load(labware_file)
+    tubes_5mL = protocol.load_labware_from_definition( 
+        labware_def_5mL, #variable derived from opening json
+        9, 
+        '5mL_tubes')              
      
-    # Setting sample_source
-    if sample_racks == 1: 
-        sample_source_1 = sample_source_1 
-    elif sample_racks == 2:
-        sample_source_1 = sample_source_1
-        sample_source_2 = sample_source_2
-    elif sample_racks == 3:
-        sample_source_1 = sample_source_1
-        sample_source_2 = sample_source_2
-        sample_source_3 = sample_source_3
-    elif sample_racks == 4:
-        sample_source_1 = sample_source_1
-        sample_source_2 = sample_source_2
-        sample_source_3 = sample_source_3
-        sample_source_4 = sample_source_4
+    # # Setting sample_source
+    # if sample_racks == 1: 
+    #     sample_source_1 = sample_source_1 
+    # elif sample_racks == 2:
+    #     sample_source_1 = sample_source_1
+    #     sample_source_2 = sample_source_2
+    # elif sample_racks == 3:
+    #     sample_source_1 = sample_source_1
+    #     sample_source_2 = sample_source_2
+    #     sample_source_3 = sample_source_3
+    # elif sample_racks == 4:
+    #     sample_source_1 = sample_source_1
+    #     sample_source_2 = sample_source_2
+    #     sample_source_3 = sample_source_3
+    #     sample_source_4 = sample_source_4
 
-    # Setting dilution_dest
-    if dilution_racks == 1:
-        dilution_dest_1 = dilution_dest_1   
-    elif dilution_racks == 2:
-        dilution_dest_1 = dilution_dest_1
-        dilution_dest_2 = dilution_dest_2
-    elif dilution_racks == 3:
-        dilution_dest_1 = dilution_dest_1
-        dilution_dest_2 = dilution_dest_2
-        dilution_dest_3 = dilution_dest_3
-    elif dilution_racks == 4:
-        dilution_dest_1 = dilution_dest_1
-        dilution_dest_2 = dilution_dest_2
-        dilution_dest_3 = dilution_dest_3
-        dilution_dest_4 = dilution_dest_4
+    # # Setting dilution_dest
+    # if dilution_racks == 1:
+    #     dilution_dest_1 = dilution_dest_1   
+    # elif dilution_racks == 2:
+    #     dilution_dest_1 = dilution_dest_1
+    #     dilution_dest_2 = dilution_dest_2
+    # elif dilution_racks == 3:
+    #     dilution_dest_1 = dilution_dest_1
+    #     dilution_dest_2 = dilution_dest_2
+    #     dilution_dest_3 = dilution_dest_3
+    # elif dilution_racks == 4:
+    #     dilution_dest_1 = dilution_dest_1
+    #     dilution_dest_2 = dilution_dest_2
+    #     dilution_dest_3 = dilution_dest_3
+    #     dilution_dest_4 = dilution_dest_4
 # =============================================================================
 
 
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================
     ##### Setting starting tip
-    if water_volume <= 20:
+    if p20:
         p20.starting_tip = tips_20_1.well(starting_tip_p20)
-    else:
-        p300.starting_tip = tips_200.well(starting_tip_p200)
-        p20.starting_tip = tips_20_1.well(starting_tip_p20)
+    if p300:
+        p300.starting_tip = tips_200_1.well(starting_tip_p200)
       ## The starting_tip is the location of first pipette tip in the box   ##
       
     ##### Setting tube locations
@@ -526,85 +610,89 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("I need "+ str(water_tubes) + " tubes with 5mL of water."
-                   " Put them in rows B and C of the tube rack please.")
+    if dilution_ratio > 1:
+        protocol.pause("I need "+ str(water_tubes) + " tubes with 5mL of water."
+                       " Put them in rows B and C of the tube rack please.")
 # =============================================================================
 
 # ALIQUOTING WATER=============================================================    
 # =============================================================================
     ##### Variables for volume tracking and aliquoting
-    counter = 0 # to count how many tubes already emptied
-    source = H2O[counter]
-    destination = dilution_wells
-    start_height = vt.cal_start_height('tube_5mL', 5000)
-    current_height = start_height
-    container = 'tube_5mL'
-    dispension_vol = water_volume
-    aspiration_vol = dispension_vol + (dispension_vol/100*2)
+    if dilution_ratio > 1:
+        counter = 0 # to count how many tubes already emptied
+        source = H2O[counter]
+        destination = dilution_wells
+        start_height = vt.cal_start_height('tube_5mL', 5000)
+        current_height = start_height
+        container = 'tube_5mL'
+        dispension_vol = water_volume
+        aspiration_vol = dispension_vol + (dispension_vol/100*2)
+        
+        for i, well in enumerate(destination):
+          ## aliquot water in the correct wells, for each well do the following:  
+           
+            if i == 0: 
+                water_pipette.pick_up_tip()
+                  ## If we are at the first well, start by picking up a tip.    ##
+            elif i % 16 == 0:
+                water_pipette.drop_tip()
+                water_pipette.pick_up_tip()
+                  ## Then, after every 16th well, drop tip and pick up new      ##
+            
+            current_height, pip_height, bottom_reached = vt.volume_tracking(
+                container, dispension_vol, current_height)
+                  ## call volume_tracking function, obtain current_height,      ##
+                  ## pip_height and whether bottom_reached.                     ##
+            
+            if bottom_reached:
+              ## continue with next tube, reset vt                              ##
+                current_height = start_height
+                current_height, pip_height, bottom_reached = (
+                    vt.volume_tracking(
+                        container, dispension_vol, current_height))
+                counter = counter + 1
+                source = H2O[counter]
+                aspiration_location = source.bottom(current_height)
+                protocol.comment(
+                    "Continue with tube " + str(counter) + " of water")
+           
+            else:
+                aspiration_location = source.bottom(pip_height)
+                  ## Set the location of where to aspirate from.                ##
     
-    for i, well in enumerate(destination):
-      ## aliquot water in the correct wells, for each well do the following:  
-       
-        if i == 0: 
-            water_pipette.pick_up_tip()
-              ## If we are at the first well, start by picking up a tip.    ##
-        elif i % 16 == 0:
-            water_pipette.drop_tip()
-            water_pipette.pick_up_tip()
-              ## Then, after every 16th well, drop tip and pick up new      ##
-        
-        current_height, pip_height, bottom_reached = vt.volume_tracking(
-            container, dispension_vol, current_height)
-              ## call volume_tracking function, obtain current_height,      ##
-              ## pip_height and whether bottom_reached.                     ##
-        
-        if bottom_reached:
-          ## continue with next tube, reset vt                              ##
-            current_height = start_height
-            current_height, pip_height, bottom_reached = (
-                vt.volume_tracking(
-                    container, dispension_vol, current_height))
-            counter = counter + 1
-            source = H2O[counter]
-            aspiration_location = source.bottom(current_height)
-            protocol.comment(
-                "Continue with tube " + str(counter) + " of water")
-       
-        else:
-            aspiration_location = source.bottom(pip_height)
-              ## Set the location of where to aspirate from.                ##
-
-        #### The actual aliquoting of water
-        water_pipette.aspirate(aspiration_vol, aspiration_location)
-          ## Aspirate the amount specified in aspiration_vol from the       ##
-          ## location specified in aspiration_location.                     ##
-        water_pipette.dispense(dispension_vol, well)
-          ## Dispense the amount specified in dispension_vol to the         ##
-          ## location specified in well (looping through plate)             ##
-        water_pipette.dispense(10, aspiration_location)
-          ## Alternative for blow-out, make sure the tip doesn't fill       ##
-          ## completely when using a disposal volume by dispensing some     ##
-          ## of the volume after each pipetting step. (blow-out too many    ##
-          ## bubbles)                                                       ##
-      ## when entire plate is full, drop tip                                ##
+            #### The actual aliquoting of water
+            water_pipette.aspirate(aspiration_vol, aspiration_location)
+              ## Aspirate the amount specified in aspiration_vol from the       ##
+              ## location specified in aspiration_location.                     ##
+            water_pipette.dispense(dispension_vol, well)
+              ## Dispense the amount specified in dispension_vol to the         ##
+              ## location specified in well (looping through plate)             ##
+            water_pipette.dispense(10, aspiration_location)
+              ## Alternative for blow-out, make sure the tip doesn't fill       ##
+              ## completely when using a disposal volume by dispensing some     ##
+              ## of the volume after each pipetting step. (blow-out too many    ##
+              ## bubbles)                                                       ##
+        water_pipette.drop_tip()
+          ## when entire plate is full, drop tip                                ##
 # =============================================================================
 
 # DILUTING SAMPLES=============================================================
 # =============================================================================
     for sample_well, dilution_well in zip(sample_wells, dilution_wells):
         ## Combine each sample with a dilution_well and a destination well  ##
-        p20.pick_up_tip()
+        sample_pipette.pick_up_tip()
           ## p20 picks up tip from location of specified starting_tip       ##
           ## or following                                                   ##
-        p20.aspirate(sample_volume, sample_well)
+        sample_pipette.aspirate(sample_volume, sample_well)
           ## aspirate sample_volume_dil = volume for dilution from sample   ##
-        p20.dispense(sample_volume, dilution_well)
+        sample_pipette.dispense(sample_volume, dilution_well)
           ## dispense sample_volume_dil = volume for dilution into dil_well ##
-        p20.mix(3, sample_volume + 3, dilution_well)
+        if water_volume > 0:
+            sample_pipette.mix(3, sample_volume + 3, dilution_well)
           ## pipette up&down 3x to get everything from the tip              ##
-        p20.dispense(20, dilution_well)
+        sample_pipette.dispense(20, dilution_well)
           ## instead of blow-out
-        p20.drop_tip()
+        sample_pipette.drop_tip()
           ## Drop tip in trashbin on 12.                                    ##
          
 # =============================================================================

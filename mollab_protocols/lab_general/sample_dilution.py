@@ -8,23 +8,6 @@ The sample is taken:
     From the sample source labware (96 wells plate, PCR strips or 1.5mL tubes)
     To dilution destination labware (96 wells plate, PCR strips or 1.5mL tubes)
 """
-
-# IMPORT STATEMENTS============================================================
-# =============================================================================
-from opentrons import protocol_api
-  ## Import opentrons protocol API v2.                                      ##
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
-import math
-  ## To do some calculations (rounding up)
-# =============================================================================
-
-
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # How many samples do you want to dilute? 
@@ -69,6 +52,20 @@ starting_tip_p200 = 'A1'
   ## if not applicable, you do not have to change anything
 # =============================================================================
 
+# IMPORT STATEMENTS============================================================
+# =============================================================================
+from opentrons import protocol_api
+  ## Import opentrons protocol API v2.                                      ##
+import json 
+  ## Import json to import custom labware with labware_from_definition,     ##
+  ## so that we can use the simulate_protocol with custom labware.          ##
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
+import math
+  ## To do some calculations (rounding up)
+# =============================================================================
 
 # METADATA=====================================================================
 # =============================================================================
@@ -93,7 +90,6 @@ def run(protocol: protocol_api.ProtocolContext):
     """
 # =============================================================================
 
-
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
     dilution_volume = sample_volume * dilution_ratio
@@ -117,7 +113,6 @@ def run(protocol: protocol_api.ProtocolContext):
         dilution_racks = math.ceil(number_of_samples / 96)
       ## How many dilution_racks are needed (1 or 2)
 # =============================================================================
-
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -469,7 +464,6 @@ def run(protocol: protocol_api.ProtocolContext):
     #     dilution_dest_4 = dilution_dest_4
 # =============================================================================
 
-
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================
     ##### Setting starting tip
@@ -605,7 +599,6 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_wells = sample_wells[:number_of_samples]
     dilution_wells = dilution_wells[:number_of_samples]
     ## cuts off the list after certain number of samples                    ##
-
 # =============================================================================
 
 # MESSAGE AT THE START=========================================================
@@ -696,4 +689,3 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Drop tip in trashbin on 12.                                    ##
          
 # =============================================================================
-

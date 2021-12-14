@@ -415,7 +415,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol.set_rail_lights(True)
 ## ----------------------------------------------------------------------------
 ## ALIQUOTING MASTERMIX--------------------------------------------------------
-    if dispension_vol >= 21:
+    if dispension_vol >= 19:
         pipette = p300
     else:
         pipette = p20

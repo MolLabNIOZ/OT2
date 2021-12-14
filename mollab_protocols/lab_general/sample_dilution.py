@@ -1,10 +1,10 @@
 """
 sample_dilution.py is a protocol written for EVE for the dilution of samples.
 Also works for transferring samples, if you set dilution ratio to 0 or 1
-Also works if you want different dilutions for evry sample. Enter a list of
+Also works if you want different dilutions for every sample. Enter a list of
 sample_volumes and a total_volume to add up to with water.
-First water is aliquoted:
-    From a 5 mL tube in a 5mL tube rack.
+First water is aliquoted (if necesarry):
+    From 5 mL tube(s) in a 5mL tube rack.
     To dilution destination labware (96 wells plate, PCR strips or 1.5mL tubes)
 The sample is taken:
     From the sample source labware (96 wells plate, PCR strips or 1.5mL tubes)
@@ -12,8 +12,14 @@ The sample is taken:
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
+# What is the starting position of the 20µL tips?
+starting_tip_p20 = 'A1'
+# If applicable: What is the starting position of the 200µL tips?
+starting_tip_p200 = 'A1'
+  ## if not applicable, you do not have to change anything
+  
 # How many samples do you want to dilute? 
-number_of_samples = 10
+number_of_samples = 96
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -34,7 +40,7 @@ number_of_samples = 10
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = [11.5, 9.5, 16.0, 16.0, 19.0, 10.0, 9.5, 10.5, 11.0, 10.0, 11.5, 18.0, 10.0, 12.5, 15.5, 15.0, 8.0, 15.5, 8.0, 9.0, 11.0, 14.0, 15.0, 11.0, 12.5, 13.5, 10.0, 9.5, 11.5, 11.5, 14.0, 6.5, 7.5, 12.5, 12.5, 16.0, 16.5, 13.0, 12.0, 12.0, 10.0, 15.0, 7.0, 5.0, 6.0, 8.5, 8.5, 12.0]
+sample_volume = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
   ## can be one volume or a list of volumes
 total_volume = 25
   ## If you have a list of sample_volumes,what is the total volume you want
@@ -47,7 +53,6 @@ dilution_ratio = 50
   ## if you do not want to dilute but only transfer samples, enter 0 or 1
   ## if all samples have a different ratio enter a list of sample_volumes and 
   ## a total volume. 
-  
 
 # In what kind of tubes are the samples provided?
 sample_tubes = 'tubes_1.5mL'
@@ -57,41 +62,25 @@ sample_tubes = 'tubes_1.5mL'
 dilution_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 
-# What is the starting position of the 20µL tips?
-starting_tip_p20 = 'A1'
-# If applicable: What is the starting position of the 200µL tips?
-starting_tip_p200 = 'A1'
-  ## if not applicable, you do not have to change anything
+# Are you simulating the protocol, or running it on the OT2?
+simulate = True
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================
+#### Import opentrons protocol API v2
 from opentrons import protocol_api
-  ## Import opentrons protocol API v2.                                      ##
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
+                                      
+##### Import volume_tracking module 
+if simulate:
+    import json
+    from mollab_modules import volume_tracking_v1 as vt
+else: 
+    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+                                          
+# Import other modules
 import math
-  ## To do some calculations (rounding up)
-# =============================================================================
-
-# IMPORT STATEMENTS============================================================
-# =============================================================================
-from opentrons import protocol_api
-  ## Import opentrons protocol API v2.                                      ##
-import json 
-  ## Import json to import custom labware with labware_from_definition,     ##
-  ## so that we can use the simulate_protocol with custom labware.          ##
-# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-  # Import volume_tracking module that is on the OT2                        ##
-from mollab_modules import volume_tracking_v1 as vt
-#   ## Import volume_tracking module for simulator                          ##
-import math
-  ## To do some calculations (rounding up)
+  ## math to do some calculations (rounding up)  
 # =============================================================================
 
 
@@ -105,16 +94,18 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    sample_dilution.py is a protocol written for EVE for the dilution of samples.
-    First water is aliquoted:
-        From a 5 mL tube in a 5mL tube rack.
-        To dilution destination labware (96 wells plate, PCR strips 
-                                         or 1.5mL tubes)
+    sample_dilution.py is a protocol written for EVE for the dilution of 
+    samples.
+    Also works for transferring samples, if you set dilution ratio to 0 or 1
+    Also works if you want different dilutions for every sample. Enter a list 
+    of sample_volumes and a total_volume to add up to with water.
+    First water is aliquoted (if necesarry):
+        From 5 mL tube(s) in a 5mL tube rack.
+        To dilution destination labware 
+        (96 wells plate, PCR strips or 1.5mL tubes)
     The sample is taken:
-        From the sample source labware (96 wells plate, PCR strips 
-                                        or 1.5mL tubes)
-        To dilution destination labware (96 wells plate, PCR strips 
-                                         or 1.5mL tubes)
+        From the sample source labware 
+        (96 wells plate, PCR strips or 1.5mL tubes)
     """
 # =============================================================================
 
@@ -171,266 +162,270 @@ def run(protocol: protocol_api.ProtocolContext):
     
     if sample_tips_20 + water_tips_20 > 0:
         tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      #labware definition
-            11,                                     #deck position
-            'tips_20_1')                            #custom name
+            'opentrons_96_filtertiprack_20ul',      
+            11,                                     
+            'tips_20_1')                            
         tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      #labware definition
-            10,                                     #deck position
-            'tips_20_2')                            #custom name
+            'opentrons_96_filtertiprack_20ul',      
+            10,                                     
+            'tips_20_2')                            
         tips_20 = [tips_20_1,tips_20_2]
         if sample_tips_200 + water_tips_200 > 0:
             tips_200_1 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     #labware definition
-                7,                                      #deck position
-                'tips_200_1')                           #custom name
+                'opentrons_96_filtertiprack_200ul',     
+                7,                                      
+                'tips_200_1')                           
             tips_200_2 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     #labware definition
-                8,                                      #deck position
-                'tips_200_2')                           #custom name
+                'opentrons_96_filtertiprack_200ul',     
+                8,                                      
+                'tips_200_2')                           
         tips_200 = [tips_200_1,tips_200_2]
     
     elif sample_tips_200 + water_tips_200 > 0:
         tips_200_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     #labware definition
-            11,                                     #deck position
-            'tips_200_1')                           #custom name
+            'opentrons_96_filtertiprack_200ul',     
+            11,                                     
+            'tips_200_1')                           
         tips_200_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     #labware definition
-            10,                                     #deck position
-            'tips_200_2')                           #custom name
+            'opentrons_96_filtertiprack_200ul',     
+            10,                                     
+            'tips_200_2')                           
         tips_200 = [tips_200_1,tips_200_2]
         if sample_tips_200 + water_tips_200 > 96:
             tips_200_3 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     #labware definition
-                7,                                      #deck position
-                'tips_200_3')                           #custom name
+                'opentrons_96_filtertiprack_200ul',     
+                7,                                      
+                'tips_200_3')                           
     
     
     if sample_tips_20 + water_tips_20 > 96:
         tips_20_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      #labware definition
-            7,                                      #deck position
-            'tips_20_3')                            #custom name
+            'opentrons_96_filtertiprack_20ul',      
+            7,                                      
+            'tips_20_3')                            
         tips_20 = tips_20.append(tips_20_3)
         if sample_tips_200 + water_tips_200 > 0:
             tips_200_1 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul', #labware definition
-                8,                                  #deck position
-                'tips_200_1')                       #custom name
+                'opentrons_96_filtertiprack_200ul', 
+                8,                                  
+                'tips_200_1')                       
             tips_200 = tips_200.append(tips_200_1)
     elif sample_tips_200 + water_tips_200 > 96:
         tips_200_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     #labware definition
-            7,                                      #deck position
-            'tips_200_3')                           #custom name
+            'opentrons_96_filtertiprack_200ul',     
+            7,                                      
+            'tips_200_3')                           
         tips_200 = tips_200.append(tips_200_3)
         
     if sample_tips_20 + water_tips_20 > 192:
         tips_20_4 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      #labware definition
-            8,                                      #deck position
-            'tips_20_4')                            #custom name  
+            'opentrons_96_filtertiprack_20ul',      
+            8,                                      
+            'tips_20_4')                              
         tips_20 = tips_20.append(tips_20_4)
     elif sample_tips_200 + water_tips_200 > 192:
         tips_200_4 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     #labware definition
-            8,                                      #deck position
-            'tips_200_4')                           #custom name  
+            'opentrons_96_filtertiprack_200ul',     
+            8,                                      
+            'tips_200_4')                             
         tips_200 = tips_200.append(tips_200_4)
     
     ##### Loading pipettes
     if sample_tips_20 + water_tips_20 > 0:
         p20 = protocol.load_instrument(
-            'p20_single_gen2',                  #instrument definition
-            'left',                             #mount position
-            tip_racks = tips_20)                #assigned tiprack
+            'p20_single_gen2',
+            'left',
+            tip_racks = tips_20)
     if sample_tips_200 + water_tips_200 > 0:
         p300 = protocol.load_instrument(
-            'p300_single_gen2',                 #instrument deftion
-            'right',                            #mount position
-            tip_racks = tips_200)               #assigned tiprack
+            'p300_single_gen2',
+            'right',
+            tip_racks = tips_200)
 
     
     ##### Loading labware 
     if sample_tubes == 'plate_96':
         if sample_racks >= 1:            
             sample_source_1 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                1,                                      #deck position
-                'sample_source_1')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                1,
+                'sample_source_1')
         if sample_racks >= 2:          
             sample_source_2 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                4,                                      #deck position
-                'sample_source_2')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                4,
+                'sample_source_2')
         if sample_racks >= 3:
             sample_source_3 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                2,                                      #deck position
-                'sample_source_3')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                2,
+                'sample_source_3')
     if sample_tubes == 'tubes_1.5mL':
         if sample_racks >= 1:
             sample_source_1 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                1,                                      #deck position
-                'sample_source_1')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                1,
+                'sample_source_1')
         if sample_racks >= 2:    
             sample_source_2 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                2,                                      #deck position
-                'sample_source_2')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                2,
+                'sample_source_2')
         if sample_racks >= 3:    
             sample_source_3 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                4,                                      #deck position
-                'sample_source_3')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                4,
+                'sample_source_3')
         if sample_racks >= 4:
             sample_source_4 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                5,                                      #deck position
-                'sample_source_4')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                5,
+                'sample_source_4')
          
     if dilution_tubes == 'plate_96':
         if dilution_racks >= 1:        
             dilution_dest_1 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                6,                                      #deck position
-                'dilution_dest_1')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                6,
+                'dilution_dest_1')
         if dilution_racks >= 2:            
             dilution_dest_2 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                3,                                      #deck position
-                'dilution_dest_2')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                3,
+                'dilution_dest_2')
         if dilution_racks >= 3:             
             dilution_dest_3 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',        #labware definition
-                5,                                      #deck position
-                'dilution_dest_3')                      #custom name
+                'biorad_96_wellplate_200ul_pcr',
+                5,
+                'dilution_dest_3')
     if dilution_tubes == 'tubes_1.5mL':
         if dilution_racks >= 1:
             dilution_dest_1 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                6,                                      #deck position
-                'dilution_dest_1')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                6,                                      
+                'dilution_dest_1')                      
         if dilution_racks >= 2:    
             dilution_dest_2 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                3,                                      #deck position
-                'dilution_dest_2')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                3,                                      
+                'dilution_dest_2')                      
         if dilution_racks >= 3:    
             dilution_dest_3 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                5,                                      #deck position
-                'dilution_dest_3')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                5,                                      
+                'dilution_dest_3')                      
         if dilution_racks >= 4:
             dilution_dest_4 = protocol.load_labware(
-                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware definition
-                2,                                      #deck position
-                'dilution_dest_4')                      #custom name
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                2,                                      
+                'dilution_dest_4')                      
 
-    ##### !!! FOR ROBOT
-    # if sample_tubes == 'PCR_strips':
-    #     if sample_racks >= 1:
-    #         sample_source_1 = protocol.load_labware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             1,                                      #deck position
-    #             'sample_source_1')                      #custom name
-    #     if sample_racks >= 2:
-    #         sample_source_2 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             4,                                      #deck position
-    #             'sample_source_2')                      #custom name
-    #     if sample_racks >= 3:   
-    #         sample_source_3 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             2,                                      #deck position
-    #             'sample_source_3')                      #custom name
-    #     if sample_racks >= 4: 
-    #         sample_source_4 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             5,                                      #deck position
-    #             'sample_source_4')                      #custom name
-    # if dilution_tubes == 'PCR_strips':
-    #     if dilution_racks >= 1:
-    #         dilution_dest_1 = protocol.load_labware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             3,                                      #deck position
-    #             'dilution_dest_1')                      #custom name
-    #     if dilution_racks >= 2:
-    #         dilution_dest_2 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             6,                                      #deck position
-    #             'dilution_dest_2')                      #custom name
-    #     if dilution_racks >= 3:    
-    #         dilution_dest_3 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             5,                                      #deck position
-    #             'dilution_dest_3')                      #custom name
-    #     if dilution_racks >= 4:        
-    #         dilution_dest_4 = protocol.load_labwware(
-    #             'pcrstrips_96_wellplate_200ul',         #labware definition
-    #             2,                                      #deck position
-    #             'dilution_dest_4')                      #custom name    
-    # tubes_5mL = protocol.load_labware(
-    #     'eppendorfscrewcap_15_tuberack_5000ul',     #labware definition
-    #     9,                                          #deck position
-    #     'tubes_5mL')                                #custom name    
+    if simulate:
+        with open("labware/pcrstrips_96_wellplate_200ul/"
+                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                labware_def_pcrstrips = json.load(labware_file)
+        if sample_tubes == 'PCR_strips':
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    1,                     
+                    'sample_source_1')     
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    4,                     
+                    'sample_source_2')     
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    2,                     
+                    'sample_source_3')     
+            if sample_racks >= 4:
+                sample_source_4 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    5,                     
+                    'sample_source_4')     
+        if dilution_tubes == 'PCR_strips':
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    3,                     
+                    'dilution_dest_1')     
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    6,                     
+                    'dilution_dest_2')     
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    5,                     
+                    'dilution_dest_3')     
+            if dilution_racks >= 4:
+                dilution_dest_4 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    2,                     
+                    'dilution_dest_4')       
+        with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+                  "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+                labware_def_5mL = json.load(labware_file)
+        tubes_5mL = protocol.load_labware_from_definition( 
+            labware_def_5mL, 
+            9, 
+            '5mL_tubes')    
+    else:
+        if sample_tubes == 'PCR_strips':
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    1,                                      
+                    'sample_source_1')                      
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    4,                                      
+                    'sample_source_2')                      
+            if sample_racks >= 3:   
+                sample_source_3 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    2,                                      
+                    'sample_source_3')                      
+            if sample_racks >= 4: 
+                sample_source_4 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    5,                                      
+                    'sample_source_4')                      
+        if dilution_tubes == 'PCR_strips':
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    3,                                      
+                    'dilution_dest_1')                      
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    6,                                      
+                    'dilution_dest_2')                      
+            if dilution_racks >= 3:    
+                dilution_dest_3 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    5,                                      
+                    'dilution_dest_3')                      
+            if dilution_racks >= 4:        
+                dilution_dest_4 = protocol.load_labwware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    2,                                      
+                    'dilution_dest_4')                          
+        tubes_5mL = protocol.load_labware(
+            'eppendorfscrewcap_15_tuberack_5000ul',     
+            9,                                          
+            'tubes_5mL')                                    
     
-    ##### !!! FOR SIMULATOR
-    with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-    if sample_tubes == 'PCR_strips':
-        if sample_racks >= 1:
-            sample_source_1 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                1,                     #deck position
-                'sample_source_1')     #custom name
-        if sample_racks >= 2:
-            sample_source_2 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                4,                     #deck position
-                'sample_source_2')     #custom name
-        if sample_racks >= 3:
-            sample_source_3 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                2,                     #deck position
-                'sample_source_3')     #custom name
-        if sample_racks >= 4:
-            sample_source_4 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                5,                     #deck position
-                'sample_source_4')     #custom name
-    if dilution_tubes == 'PCR_strips':
-        if dilution_racks >= 1:
-            dilution_dest_1 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                3,                     #deck position
-                'dilution_dest_1')     #custom name
-        if dilution_racks >= 2:
-            dilution_dest_2 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                6,                     #deck position
-                'dilution_dest_2')     #custom name
-        if dilution_racks >= 3:
-            dilution_dest_3 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                5,                     #deck position
-                'dilution_dest_3')     #custom name
-        if dilution_racks >= 4:
-            dilution_dest_4 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips, #variable derived from opening json
-                2,                     #deck position
-                'dilution_dest_4')     #custom name  
-    with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-    tubes_5mL = protocol.load_labware_from_definition( 
-        labware_def_5mL, #variable derived from opening json
-        9, 
-        '5mL_tubes')              
-     
+          
+    
+
+    ##### MB: I think this can be removed... but not completely sure because I
+        #don't know why it was her ein the first place.
     # # Setting sample_source
     # if sample_racks == 1: 
     #     sample_source_1 = sample_source_1 
@@ -629,7 +624,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     if len([x for x in water_volume[i:i+15] if x >= 20]) > 0:
                         p300.pick_up_tip()
                     
-                      ## If we are at the first well, start by picking up a tip.##
+                      ## If we are at the first well, start by picking up a tip
                 elif i % 16 == 0:
                     try:
                         p20.drop_tip()
@@ -659,14 +654,14 @@ def run(protocol: protocol_api.ProtocolContext):
                         vt.volume_tracking(
                             container, dispension_vol, current_height))
                     counter = counter + 1
-                    source = H2O[counter]
+                    source = tubes_5mL.wells()[counter]
                     aspiration_location = source.bottom(current_height)
                     protocol.comment(
                         "Continue with tube " + str(counter + 1) + " of water")
                
                 else:
                     aspiration_location = source.bottom(pip_height)
-                      ## Set the location of where to aspirate from.                ##
+                      ## Set the location of where to aspirate from.
     
                 if aspiration_vol > 20:
                     water_pipette = p300

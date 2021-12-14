@@ -64,6 +64,20 @@ starting_tip_p200 = 'A1'
   ## if not applicable, you do not have to change anything
 # =============================================================================
 
+# IMPORT STATEMENTS============================================================
+# =============================================================================
+from opentrons import protocol_api
+  ## Import opentrons protocol API v2.                                      ##
+import json 
+  ## Import json to import custom labware with labware_from_definition,     ##
+  ## so that we can use the simulate_protocol with custom labware.          ##
+# from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+  # Import volume_tracking module that is on the OT2                        ##
+from mollab_modules import volume_tracking_v1 as vt
+#   ## Import volume_tracking module for simulator                          ##
+import math
+  ## To do some calculations (rounding up)
+# =============================================================================
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================
@@ -103,7 +117,6 @@ def run(protocol: protocol_api.ProtocolContext):
                                          or 1.5mL tubes)
     """
 # =============================================================================
-
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
@@ -149,7 +162,6 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_tips_200 = len([x for x in sample_volumes if x > 17])
     ## How many p20 / p200 tips do you need?
 # =============================================================================
-
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -452,7 +464,6 @@ def run(protocol: protocol_api.ProtocolContext):
     #     dilution_dest_4 = dilution_dest_4
 # =============================================================================
 
-
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================
     ##### Setting starting tip
@@ -583,7 +594,6 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_wells = sample_wells[:number_of_samples]
     dilution_wells = dilution_wells[:number_of_samples]
     ## cuts off the list after certain number of samples                    ##
-
 # =============================================================================
 
 # MESSAGE AT THE START=========================================================
@@ -712,4 +722,3 @@ def run(protocol: protocol_api.ProtocolContext):
           ## Drop tip in trashbin on 12.                                    ##
          
 # =============================================================================
-

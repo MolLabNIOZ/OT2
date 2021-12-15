@@ -60,7 +60,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 6   
+number_of_samples = 28   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -123,12 +123,12 @@ primer_tube_type = 'PCR_strips'
 # What is the volume (µL) of primer that needs to be added to the mix?
 primer_vol = 1
 # In which columns are the strips in the plate (ignore if not using strips)?
-primer_loc = ['2', '5', '8','11']
+primer_loc = ['2', '7', '11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!                                               
   
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol                 
 # =============================================================================
 
@@ -137,7 +137,7 @@ simulate = False
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      
 import math
-  ## To do some calculations (rounding up) 
+  ## To do some calculations  
   
 if simulate: #Simulator
     from mollab_modules import volume_tracking_v1 as vt
@@ -157,7 +157,10 @@ if mock:
       ## If a mock is used, there should be 1 more unique primer pair.     
       
 if primer_tube_type == 'PCR_strips':
-    primer_racks = math.ceil(number_of_primers / 32)  
+    if len(primer_loc) == 3:
+        primer_racks = math.ceil(number_of_primers / 24)  
+    if len(primer_loc) == 4: 
+        primer_racks = math.ceil(number_of_primers / 32)     
   ## How many tube_strip_racks are needed (1,2 or 3)
 
 if primer_tube_type == 'plate_96':
@@ -166,7 +169,6 @@ if primer_tube_type == 'plate_96':
   ##  so for now we cannot add >primer pairs, but if we add another 
   ##  destination plate it would be possible -- didn't do this because
   ##  we don't have plates with more than 96 primer combinatons
-
 # =============================================================================
 
 # METADATA=====================================================================
@@ -235,6 +237,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'mastermix_tube')
+    
     if primer_tube_type == 'plate_96':
         primer_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
@@ -244,7 +247,7 @@ def run(protocol: protocol_api.ProtocolContext):
     if simulate: #Simulator
         if mastermix_tube_type == '5mL_tube': 
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                        "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+                "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                       labware_def_5mL = json.load(labware_file)
             mastermix_tube = protocol.load_labware_from_definition( 
                 labware_def_5mL,           
@@ -280,7 +283,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 4,                                     
                 'primer_source_1')                      
             if primer_racks >=2:
-                primer_source_2 = protocol.load_labware_( 
+                primer_source_2 = protocol.load_labware( 
                     'pcrstrips_96_wellplate_200ul',    
                     1,                                 
                     'primer_source_2')                 
@@ -414,6 +417,8 @@ def run(protocol: protocol_api.ProtocolContext):
 ## PIPETTING===================================================================
 ## ============================================================================
 ## LIGHTS----------------------------------------------------------------------
+    if qPCR:
+        protocol.set_rail_lights(False)
     if not qPCR:
         protocol.set_rail_lights(True)
 ## ----------------------------------------------------------------------------

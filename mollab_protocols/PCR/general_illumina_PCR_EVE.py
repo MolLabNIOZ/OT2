@@ -288,8 +288,14 @@ def run(protocol: protocol_api.ProtocolContext):
             ## the same well             
 # =============================================================================
 
-# ADDING SAMPLES===============================================================
-# =============================================================================
+## PIPETTING===================================================================
+## ============================================================================
+## LIGHTS----------------------------------------------------------------------
+    if qPCR:
+        protocol.set_rail_lights(False)
+    if not qPCR:
+        protocol.set_rail_lights(True)
+## ADDING SAMPLES--------------------------------------------------------------
     ## Loop through source and destination wells
     for sample_tube, well in zip(sample_sources, plate_96.wells()):
         p20.pick_up_tip()
@@ -300,4 +306,8 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.mix(3, sample_mix_vol, well)
         p20.dispense(10, well)
         p20.drop_tip()
+## LIGHTS----------------------------------------------------------------------
+    if not qPCR:
+        protocol.set_rail_lights(False)
+## ----------------------------------------------------------------------------
 # =============================================================================

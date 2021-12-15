@@ -70,7 +70,7 @@ else:
     number_of_std_samples = 0
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol                 
 # =============================================================================
 

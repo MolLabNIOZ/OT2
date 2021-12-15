@@ -1,4 +1,5 @@
 """
+VERSION: V_Dec21
 general_illumina_PCR_EVE.py is a protocol written for EVE for adding the 
 samples to the mastermix with barcoded primers in a 96-well plate.
 
@@ -22,6 +23,10 @@ Updates:
     - added option for standard sample
 (MB) 211203:
     - added option for sample in strips
+(SV) 211215:
+    - rearranged variables to set
+    - clean up
+    - added standard sample option to strips
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -296,4 +301,3 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.dispense(10, well)
         p20.drop_tip()
 # =============================================================================
-    

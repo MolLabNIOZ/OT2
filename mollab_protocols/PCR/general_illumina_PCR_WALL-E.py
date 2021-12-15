@@ -1,4 +1,5 @@
 """
+VERSION: V_Dec21
 general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for the adding
 of mastermix and barcoded primers to a 96-wells plate
 
@@ -48,7 +49,7 @@ Updates:
     - rearranged variables to set
     - primer for standards is added from a separate tube to standard series
     and standard sample
-
+    - clean up
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================

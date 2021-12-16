@@ -34,22 +34,22 @@ length_std_series = 0  # max 8
   ## How many dilutions are in the standard dilution series             ##
 number_of_std_samples = 6
   ## How many standard samples or taken for the qPCR                    ##
-number_of_NTCs = 1
+number_of_NTCs = 0
   ## How many NTCs to include                                           ##
 mock = False
   ## Will a mock sample be included?
 start_vol = 1108.8
   ## The start_vol_m is the volume (ul) of mix that is in the source    ##
   ## labware at the start of the protocol.                              ##
-mastermix_tube_type = '1.5mL_tube'
+mastermix_tube_type = 'tube_1.5mL'
   ## What tube are you using??                                          ##
-  ## For volume < 1300: '1.5mL_tube'                                    ##
-  ## For volume > 1300: '5mL_tube'                                      ##
-dispension_vol = 19.5
+  ## For volume < 1300: 'tube_1.5mL'                                    ##
+  ## For volume > 1300: 'tube_5mL'                                      ##
+dispension_vol = 11
   ## Volume of MasterMix to be aliquoted                                ##
-if mastermix_tube_type == '1.5mL_tube':
+if mastermix_tube_type == 'tube_1.5mL':
     mastermix_source = 'D1'
-if mastermix_tube_type == '5mL_tube':
+if mastermix_tube_type == 'tube_5mL':
     mastermix_source = 'C1'
   ## Where is the mastermix tube located in the rack                    ##
 primer_loc = ['2', '5', '8','11']
@@ -57,7 +57,8 @@ primer_vol = 1
   ## Volume of the primer (F+R mix) to be used
 if dispension_vol > 19:
     starting_tip_p200 = 'A1'
-starting_tip_p20 = 'C2'
+starting_tip_p20 = 'A8' #Always change this one for the starting 
+  ## position of the tip that will dispense the mastermix 
   ## The starting_tip is the location of first pipette tip in the box   ##
 # =============================================================================
 
@@ -126,13 +127,13 @@ def run(protocol: protocol_api.ProtocolContext):
         'biorad_96_wellplate_200ul_pcr',        #labware definition
         6,                                      #deck position
         'plate_96')                             #custom name     
-    if mastermix_tube_type == '1.5mL_tube':
+    if mastermix_tube_type == 'tube_1.5mL':
         mastermix_tube = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'mastermix_tube')
    # ##### !!! OPTION 1: ROBOT      
-    # if mastermix_tube_type == '5mL_tube': 
+    # if mastermix_tube_type == 'tube_5mL': 
     #     mastermix_tube = protocol.load_labware(
     #         'eppendorfscrewcap_15_tuberack_5000ul',#labware def
     #         3,                                     #deck position
@@ -152,7 +153,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #     11,                                #deck position
     #     'primer_strips_3')                 #custom name               
    ##### !!! OPTION 2: SIMULATOR      
-    if mastermix_tube_type == '5mL_tube': 
+    if mastermix_tube_type == 'tube_5mL': 
         with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                     "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                   labware_def_5mL = json.load(labware_file)
@@ -196,7 +197,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The aspiration_vol is the volume (ul) that is aspirated from the   ##
       ## container.                                                         ##
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height('tube_5mL', start_vol)
+    start_height = vt.cal_start_height(mastermix_tube_type, start_vol)
       ## Call start height calculation function from volume tracking module.##
     current_height = start_height
       ## Set the current height to start height at the beginning of the     ##
@@ -284,7 +285,7 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Then, after every 8th well, drop tip and pick up new       ##
     
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-                'tube_5mL', dispension_vol, current_height)
+                mastermix_tube_type, dispension_vol, current_height)
                   ## call volume_tracking function, obtain current_height,  ##
                   ## pip_height and whether bottom_reached.                 ##
         

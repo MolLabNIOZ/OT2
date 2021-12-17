@@ -61,7 +61,7 @@ sample_columns = ['2', '5', '8','11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!  
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'B2'
   ## 'A1' is standard. But if you have more samples in the plate than
   ## fit in the qPCR, change the first well position.
 
@@ -105,7 +105,6 @@ if sample_tube_type == 'plate_96':
 if number_of_std_samples >= 1:
     number_of_samples = number_of_samples + 1
       ## If a standard sample is taken, add 1 to the total number of samples
-first_sample_string = (first_sample + ' of sample_source_1 on 2')
 # =============================================================================
 
 # METADATA=====================================================================
@@ -339,21 +338,30 @@ def run(protocol: protocol_api.ProtocolContext):
         sample_wells + std_sample_wells + NTC_wells + std_series_wells)
     
     sample_sources = []
+    sample_sources_string = []
+      ## The string list is needed to be able to start at another well
     if sample_tube_type == 'tube_1.5mL' or sample_tube_type == 'plate_96':
         if sample_racks >= 1:
             for well in sample_source_1.wells():
                 sample_sources.append(well)
+                sample_sources_string.append(str(well))
         if sample_racks >= 2:
             for well in sample_source_2.wells():
                 sample_sources.append(well)
+                sample_sources_string.append(str(well))
         if sample_racks >= 3:
             for well in sample_source_3.wells():
                 sample_sources.append(well)
+                sample_sources_string.append(str(well))
         if sample_racks >= 4:
             for well in sample_source_4.wells():
                 sample_sources.append(well)
-        first_sample_index = sample_sources.index(first_sample_string)
-          ## Determine the index of the first sample in the list     
+                sample_sources_string.append(str(well))
+        first_sample_index = sample_sources_string.index(
+            first_sample + ' of sample_source_1 on 2')
+          ## Determine the index of the first sample in the list made from 
+          ## strings -- we cannot find strings in the normal robot list
+          ## so we needed to convert the wells to strings.
         slice_sample_sources = slice(
             first_sample_index, 
             first_sample_index + number_of_samples)

@@ -4,14 +4,15 @@ general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for the adding
 of mastermix and barcoded primers to a 96-wells plate
 
 You have to provide:
+    Location of the starting tips in both the P20 and P200 
     Number of samples (excl. NTC and mock)
     Number of NTCs 
         NOTE: The NTC should ALWAYS be at the end of the plate, this is
         for the protocol for EVE (who skips the last well)
     Do you want the robot to add a mock sample?:
-        if True -- robot adds an extra well + primer combination
-    Whether you are doing a qPCR or not 
+        if True -- robot adds an extra well + primer combination 
     Volume of your mastermix
+    Whether you are doing a qPCR or not
     Tube your mastermix is in (1.5mL or 5mL tube)
         (Location of your mastermix tube in the rack)
     Volume of the mastermix that is to be dispensed
@@ -94,8 +95,7 @@ if qPCR:
     # How many replicates of the standard sample are you taking?
     number_of_std_samples = 6
     # In what well is the primer for the standards (sample and series) located?
-    std_primer_loc = 'D1'
-                   
+    std_primer_loc = 'D1'                   
 else:
     ## If we are not doing a qPCR - protocol uses these values.             
     number_of_std_series = 0  

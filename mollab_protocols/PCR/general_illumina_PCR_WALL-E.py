@@ -4,14 +4,15 @@ general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for the adding
 of mastermix and barcoded primers to a 96-wells plate
 
 You have to provide:
+    Location of the starting tips in both the P20 and P200 
     Number of samples (excl. NTC and mock)
     Number of NTCs 
         NOTE: The NTC should ALWAYS be at the end of the plate, this is
         for the protocol for EVE (who skips the last well)
     Do you want the robot to add a mock sample?:
-        if True -- robot adds an extra well + primer combination
-    Whether you are doing a qPCR or not 
+        if True -- robot adds an extra well + primer combination 
     Volume of your mastermix
+    Whether you are doing a qPCR or not
     Tube your mastermix is in (1.5mL or 5mL tube)
         (Location of your mastermix tube in the rack)
     Volume of the mastermix that is to be dispensed
@@ -94,8 +95,7 @@ if qPCR:
     # How many replicates of the standard sample are you taking?
     number_of_std_samples = 6
     # In what well is the primer for the standards (sample and series) located?
-    std_primer_loc = 'D1'
-                   
+    std_primer_loc = 'D1'                   
 else:
     ## If we are not doing a qPCR - protocol uses these values.             
     number_of_std_series = 0  
@@ -103,9 +103,9 @@ else:
     number_of_std_samples = 0
 
 # Which tube are you using for your mastermix? (options 1.5mL or 5mL)
-mastermix_tube_type = '1.5mL_tube'
-  ## For volume < 1300: '1.5mL_tube'                                        
-  ## For volume > 1300: '5mL_tube'                                          
+mastermix_tube_type = 'tube_1.5mL'
+  ## For volume < 1300: 'tube_1.5mL'                                        
+  ## For volume > 1300: 'tube_5mL'                                          
 
 # What is the volume (µL) of mastermix that needs to be dispensed?
 dispension_vol = 19   
@@ -113,8 +113,8 @@ dispension_vol = 19
 # Where is the mastermix tube located in the rack? 
 mastermix_source = 'C1'
   ## convenient places:
-  ## if mastermix_tube_type ==   '1.5mL_tube'  -->  D1 
-  ## if mastermix_tube_type ==   '5mL_tube'    -->  C1
+  ## if mastermix_tube_type ==   'tube_1.5mL'  -->  D1 
+  ## if mastermix_tube_type ==   'tube_5mL'    -->  C1
     
 # What labware are your primers in?
 primer_tube_type = 'PCR_strips'
@@ -232,7 +232,7 @@ def run(protocol: protocol_api.ProtocolContext):
             8,
             'big_primer_source')                          
     
-    if mastermix_tube_type == '1.5mL_tube':
+    if mastermix_tube_type == 'tube_1.5mL':
         mastermix_tube = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
@@ -245,7 +245,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'primer_source_1')                         
                         
     if simulate: #Simulator
-        if mastermix_tube_type == '5mL_tube': 
+        if mastermix_tube_type == 'tube_5mL': 
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                       labware_def_5mL = json.load(labware_file)
@@ -272,7 +272,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     11,                   
                     'primer_source_3')      
     else: #Robot
-        if mastermix_tube_type == '5mL_tube': 
+        if mastermix_tube_type == 'tube_5mL': 
             mastermix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
                 3,                                     
@@ -311,7 +311,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## The aspiration_vol is the volume (µL) that is aspirated from the   
       ## container.                                                         
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height('tube_5mL', start_vol)
+    start_height = vt.cal_start_height(mastermix_tube_type, start_vol)
       ## Call start height calculation function from volume tracking module.
     current_height = start_height
       ## Set the current height to start height at the beginning of the     
@@ -350,11 +350,11 @@ def run(protocol: protocol_api.ProtocolContext):
       ## so that we only take the wells in between.                         
     std_sample_wells = wells[slice_std_wells]
 
-    # Create the lsit of wells where standerd series should go
+    # Create the list of wells where standerd series should go
     std_series_wells = [] 
     std_series_columns = (
-    [plate_96.columns_by_name()[column_name] for column_name in
-     ['12', '11', '10']])
+        [plate_96.columns_by_name()[column_name] for column_name in
+         ['12', '11', '10']])
     std_series_columns = std_series_columns[:number_of_std_series]
     ## Reserve a column at the end of the plate for every std_series        
     ## Separate the columns into wells and append them to list              
@@ -438,7 +438,7 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Then, after every 8th well, drop tip and pick up new       
     
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-                'tube_5mL', dispension_vol, current_height)
+                mastermix_tube_type, dispension_vol, current_height)
                   ## call volume_tracking function, obtain current_height,  
                   ## pip_height and whether bottom_reached.                 
         
@@ -488,4 +488,5 @@ def run(protocol: protocol_api.ProtocolContext):
 ## LIGHTS----------------------------------------------------------------------
     if not qPCR:
         protocol.set_rail_lights(False)
+# ----------------------------------------------------------------------------
 ## ============================================================================

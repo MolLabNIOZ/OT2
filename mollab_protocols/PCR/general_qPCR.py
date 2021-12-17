@@ -1,6 +1,47 @@
 """
-qPCR.py is a protocol written for EVE for the adding of mastermix and samples 
-to a 96-wells plate.
+VERSION: V_Dec21
+general_(q)PCR.py is a protocol written for EVE for the adding of mastermix 
+and samples to a 96-wells plate.
+
+You have to provide:
+    Location of the starting tips in both the P20 and P200
+    Number of samples (excl. NTC, standard sample, standard dilutions)
+    Number of NTCs 
+        NOTE: The NTC should ALWAYS be at the end of the plate
+    Volume of your mastermix
+    Whether you are doing a qPCR or not
+    Tube your mastermix is in (1.5mL or 5mL tube)
+        (Location of your mastermix tube in the rack)
+    Volume of the mastermix that is to be dispensed
+    Tube your samples are in (PCR strips, 96-well plate, 1.5 mL tubes)
+        (If samples are in strips, you need to provide in which columns of
+         the rack you are putting the strips. Usually columns 2, 5, 8 and 11
+         are used)
+    Volume of the sample that is to be dispensed
+    Location of the first sample
+        This is the well where your first sample is located. Usually this is 
+        A1, but when you have your samples in a plate and they don't all
+        fit in one PCR you'll have to do another PCR with samples
+        starting from a different sample. 
+
+When not doing a qPCR:
+    Lights are turned on and off
+    Mastermix is aliquoted from the mastermix tube into the plate
+    Samples are added from the sample sources to the plate 
+
+In addition for the qPCR:
+    The lights are not turned on and off
+    If standard sample: the last sample well is added number of standard 
+    samples times.
+        NOTE: the standard series are pipetted into the last 3 columns of 
+        the plate. The standard sample is pipetted in the wells directly 
+        following the sample wells (incl. NTC and mock).
+
+It is also possible to do a so-called 'redo' PCR. If you set this variable
+to True the protocol doesn't take samples from the regular sample sources 
+(so starting in the top left corner, A1, B1, C1... etc. ), but from the wells
+specified by you! This is only neccessary when using a plate or strips, 
+for 1.5mL tubes you can change the location. 
 
 """
 # VARIABLES TO SET#!!!=========================================================
@@ -26,53 +67,63 @@ start_vol = 1108.8
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.  
   
-# How many dilution serie replicates do you want to include?
-number_of_std_series = 0  
-# How many dilutions are in the standard dilution series?
-length_std_series = 0  
-  ## length_of_std_series  MAX == 8                                     
-# How many replicates of the standard sample are you taking?
-number_of_std_samples = 6
+# Are you doing a qPCR or a regular PCR?
+qPCR = True
+  ## True or False                                                          
+  ## Lights off if qPCR, standard sample and/or standard dilution series 
+if qPCR:  
+    # How many dilution serie replicates do you want to include?
+    number_of_std_series = 1 
+      ## If none -- fill in 0
+    # How many dilutions are in the standard dilution series?
+    length_std_series = 8
+      ## length_of_std_series  MAX == 8                                     
+    # How many replicates of the standard sample are you taking?
+    number_of_std_samples = 6
+else:
+    ## If we are not doing a qPCR - protocol uses these values.             
+    number_of_std_series = 0  
+    length_std_series = 0
+    number_of_std_samples = 0
 
 # Which tube are you using for your mastermix? (options 1.5mL or 5mL)
 mastermix_tube_type = 'tube_1.5mL'
   ## For volume < 1300: 'tube_1.5mL'                                        
   ## For volume > 1300: 'tube_5mL'     
-
-# What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 19     
-
 # Where is the mastermix tube located in the rack? 
 mastermix_source = 'D1'
   ## convenient places:
   ## if mastermix_tube_type ==   'tube_1.5mL'  -->  D1 
   ## if mastermix_tube_type ==   'tube_5mL'    -->  C1 
 
+# What is the volume (µL) of mastermix that needs to be dispensed?
+dispension_vol = 19     
+
 # What labware are your samples in?
-sample_tube_type = 'tube_1.5mL'
+sample_tube_type = 'PCR_strip'
   ## Samples in strips = 'PCR_strip'                                       
   ## Primers in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'                                         
-# What is the volume (µL) of sample that needs to be added to the mix?
-sample_vol = 1
-  ## MAX = 17µL
 # In which columns are the strips in the plate (ignore if not using strips)?
 sample_columns = ['2', '5', '8','11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!  
+# What is the volume (µL) of sample that needs to be added to the mix?
+sample_vol = 1
+  ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
 first_sample = 'A1'
   ## 'A1' is standard. But if you have more samples in the plate than
   ## fit in the qPCR, change the first well position.
 
 # Are you doing a redo PCR?
-redo = False
+redo = True
   ## True or false
 if redo:
     samples_sample_source_1 = (
-        ['F2','A6', 'B7'])
+        ['F3','A5'])
     samples_sample_source_2 = (
-        ['A5', 'E7'])
+        [])
   ## Fill in the wells that your samples need to go in
 
 # Do you want to simulate the protocol?
@@ -437,6 +488,12 @@ def run(protocol: protocol_api.ProtocolContext):
               
 ## PIPETTING===================================================================
 ## ============================================================================
+## LIGHTS----------------------------------------------------------------------
+    if qPCR:
+        protocol.set_rail_lights(False)
+    if not qPCR:
+        protocol.set_rail_lights(True)
+## ----------------------------------------------------------------------------
 ## ALIQUOTING MASTERMIX--------------------------------------------------------
     if dispension_vol >= 19:
         pipette = p300
@@ -491,5 +548,9 @@ def run(protocol: protocol_api.ProtocolContext):
         p20.mix(3, sample_mix_vol, well)
         p20.dispense(10, well)
         p20.drop_tip()
+# ----------------------------------------------------------------------------
+## LIGHTS----------------------------------------------------------------------
+    if not qPCR:
+        protocol.set_rail_lights(False)
 # ----------------------------------------------------------------------------
 # =============================================================================

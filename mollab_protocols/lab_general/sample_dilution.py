@@ -1,25 +1,63 @@
 """
-sample_dilution.py is a protocol written for EVE for the dilution of samples.
-Also works for transferring samples, if you set dilution ratio to 0 or 1
-Also works if you want different dilutions for every sample. Enter a list of
-sample_volumes and a total_volume to add up to with water.
-First water is aliquoted (if necesarry):
-    From 5 mL tube(s) in a 5mL tube rack.
-    To dilution destination labware (96 wells plate, PCR strips or 1.5mL tubes)
-The sample is taken:
-    From the sample source labware (96 wells plate, PCR strips or 1.5mL tubes)
-    To dilution destination labware (96 wells plate, PCR strips or 1.5mL tubes)
+Version: Dec21
+
+sample_dilution.py is a protocol written for diluting/transferring samples.
+Dilutes a certain number of samples to a fixed dilution ratio, or varying 
+dilution rates for every sample.
+
+You have to provide:
+    number_of_samples you want to dilute/transfer.
+        max number of samples depends on type of tubes the samples are in
+        and/or type of tubes you want the dilutions in
+    
+    dilution_ratio. How many times do you want to dilute your samples?
+        Dilution_ratio 2 = 2x or 1:1 dilution
+        Dilution ratio 50 = 50x diluted or 1:49 dilution
+        For sample transfer without diluting, set dilution_ratio to 0 or 1
+        Dilution_ratio is not used when you provide a list of sample_volumes
+        
+    sample_volume
+        If you want every sample diluted in the same ratio or transfer a fixed 
+            amount of sample, without diluting, provide a single integer or 
+            float for how many µL you want the robot to use.
+            Together with the dilution_ratio the apropriate volume of water 
+            that should be added will be determined.
+        If you want to dilute every sample differently, provide a list of 
+            sample_volumes. Also provide a final_volume. The aropriate volume
+            of water that is needed to add up to the final_volume will be 
+            determined.
+    
+    final_volume
+        If you provide a list of sample_volumes, water will be added to reach 
+            the final_volume
+        final_volume is not used when you provide a single sample_volume
+    
+    sample_tubes and dilution_tubes
+        Samples are provied in: plate_96', 'PCR_strips' or 'tubes_1.5mL'
+        You want the dilutions/transfered samples in: plate_96', 'PCR_strips'
+        or 'tubes_1.5mL'
+    
+Robot does:
+    1. If necesarry, water will be aliquoted.
+        water_volume is based on dilution ratio or final_volume
+        Water is taken from 5mL tube(s).
+        Aliquoted in dilution labware of choice
+    2. Sample is added:
+        The chosen sample_volume is taken from the sample source labware of choice
+        Transferred to dilution labware of choice
+        If there was water already, sample will be mixed by pipetting up
 """
+
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-# What is the starting position of the 20µL tips?
+# If applicable: What is the starting position of the first 20µL tip?
 starting_tip_p20 = 'A1'
-# If applicable: What is the starting position of the 200µL tips?
+# If applicable: What is the starting position of the first 200µL tip?
 starting_tip_p200 = 'A1'
-  ## if not applicable, you do not have to change anything
-  
+  ## If volume-wise p20 or p200 is not applicable, this variable won't be used
+
 # How many samples do you want to dilute? 
-number_of_samples = 96
+number_of_samples = 192
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -39,27 +77,30 @@ number_of_samples = 96
   ## sample_tubes == '1.5mL tubes', dilution_tubes == 'tubes_1.5mL'  MAX = 72
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
-# How much sample volume (µL) do you want to use for the dilution?
-sample_volume = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
-  ## can be one volume or a list of volumes
-total_volume = 25
-  ## If you have a list of sample_volumes,what is the total volume you want
-  ## total_volume -  sample_volume = water_volume
-  ## If you do not have a list, but want a dilution ratio,
-  ## total_volume is not used
-
 # How many times do you want to dilute?
-dilution_ratio = 50
-  ## if you do not want to dilute but only transfer samples, enter 0 or 1
-  ## if all samples have a different ratio enter a list of sample_volumes and 
-  ## a total volume. 
+dilution_ratio = 0
+  ## i.e.: dilution_ratio 2 = 2x or 1:1 dilution
+  ## i.e.: dilution ratio 50 = 50x diluted or 1:49 dilution
+  ## If you do not want to dilute but only transfer samples, enter 0 or 1
+  ## If all samples have a different ratio, enter a list of sample_volumes and 
+  ## a total volume. In that case, the dilution_ratio will not be used. 
+
+# How much sample volume (µL) do you want to use for the dilution?
+sample_volume = []
+  ## Can be one volume or a list of volumes
+
+# If you enter a list of volumes, also set a final_volume
+final_volume = 25
+  ## Used to calculate how much water to add. 
+  ## final_volume - sample_volume = water_volume
+  ## If you do not have a list of sample_volumes, final_volume is not used
 
 # In what kind of tubes are the samples provided?
-sample_tubes = 'tubes_1.5mL'
+sample_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
   
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'PCR_strips'
+dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 
 # Are you simulating the protocol, or running it on the OT2?
@@ -83,6 +124,51 @@ import math
   ## math to do some calculations (rounding up)  
 # =============================================================================
 
+# CALCULATED VARIABLES=========================================================
+# =============================================================================
+if not isinstance(sample_volume, list):
+    sample_volumes = []
+    water_volumes = [] 
+    end_volume = sample_volume * dilution_ratio
+      ## How much volume you will end up with
+    for i in range(number_of_samples):
+        sample_volumes.append(sample_volume)
+        water_volumes.append(end_volume - sample_volume)
+          ## make lists with water_volume and sample_volume
+else:
+    water_volumes = []
+    for i, sample_vol in enumerate(sample_volume):
+        water = final_volume - sample_vol
+        water_volumes.append(water)
+        sample_volumes = sample_volume
+          ## Make list with water_volume
+
+total_water_volume = sum(water_volumes)
+water_tubes = math.ceil((total_water_volume)/4800)
+  ## How many tubes of 5mL water are needed 
+
+if sample_tubes == 'tubes_1.5mL':
+    sample_racks = math.ceil(number_of_samples / 24)
+elif sample_tubes == 'PCR_strips':
+    sample_racks = math.ceil(number_of_samples / 48)
+elif sample_tubes == 'plate_96':
+    sample_racks = math.ceil(number_of_samples / 96)
+  ## How many sample_racks are needed (1,2,3 or 4)
+if dilution_tubes == 'tubes_1.5mL':
+    dilution_racks = math.ceil(number_of_samples / 24)
+elif dilution_tubes == 'PCR_strips':
+    dilution_racks = math.ceil(number_of_samples / 48)
+elif dilution_tubes == 'plate_96':
+    dilution_racks = math.ceil(number_of_samples / 96)
+  ## How many dilution_racks are needed (1 or 2)
+
+tips_20_needed = (len([x for x in water_volumes if x < 20]) +
+                  len([x for x in sample_volumes if x <= 17]))
+tips_200_needed = (len([x for x in water_volumes if x >= 20]) +
+                   len([x for x in sample_volumes if x > 17]))
+## How many p20 / p200 tips do you need?
+# =============================================================================
+
 
 # METADATA=====================================================================
 # =============================================================================
@@ -94,65 +180,11 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    sample_dilution.py is a protocol written for EVE for the dilution of 
-    samples.
-    Also works for transferring samples, if you set dilution ratio to 0 or 1
-    Also works if you want different dilutions for every sample. Enter a list 
-    of sample_volumes and a total_volume to add up to with water.
-    First water is aliquoted (if necesarry):
-        From 5 mL tube(s) in a 5mL tube rack.
-        To dilution destination labware 
-        (96 wells plate, PCR strips or 1.5mL tubes)
-    The sample is taken:
-        From the sample source labware 
-        (96 wells plate, PCR strips or 1.5mL tubes)
+    Dilute samples in a fixed or varying rates 
+    or transfer samples to different tubes.
     """
 # =============================================================================
 
-# CALCULATED VARIABLES=========================================================
-# =============================================================================
-    if not isinstance(sample_volume, list):
-        sample_volumes = []
-        water_volume = [] 
-        end_volume = sample_volume * dilution_ratio
-          ## How much volume you will end up with
-        for i in range(number_of_samples):
-            sample_volumes.append(sample_volume)
-            water_volume.append(end_volume - sample_volume)
-              ## make lists with water_volume and sample_volume
-    else:
-        water_volume = []
-        for i, sample_vol in enumerate(sample_volume):
-            water = total_volume - sample_vol
-            water_volume.append(water)
-            sample_volumes = sample_volume
-              ## Make list with water_volume
-    
-    total_water_volume = sum(water_volume)
-    water_tubes = math.ceil((total_water_volume)/4900)
-      ## How many tubes of 5mL water are needed 
-    
-    if sample_tubes == 'tubes_1.5mL':
-        sample_racks = math.ceil(number_of_samples / 24)
-    elif sample_tubes == 'PCR_strips':
-        sample_racks = math.ceil(number_of_samples / 48)
-    elif sample_tubes == 'plate_96':
-        sample_racks = math.ceil(number_of_samples / 96)
-      ## How many sample_racks are needed (1,2,3 or 4)
-    if dilution_tubes == 'tubes_1.5mL':
-        dilution_racks = math.ceil(number_of_samples / 24)
-    elif dilution_tubes == 'PCR_strips':
-        dilution_racks = math.ceil(number_of_samples / 48)
-    elif dilution_tubes == 'plate_96':
-        dilution_racks = math.ceil(number_of_samples / 96)
-      ## How many dilution_racks are needed (1 or 2)
-
-    water_tips_20 = len([x for x in water_volume if x < 20])
-    water_tips_200 = len([x for x in water_volume if x >= 20])
-    sample_tips_20 = len([x for x in sample_volumes if x <= 17])
-    sample_tips_200 = len([x for x in sample_volumes if x > 17])
-    ## How many p20 / p200 tips do you need?
-# =============================================================================
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -160,83 +192,81 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20 = []
     tips_200 = []
     
-    if sample_tips_20 + water_tips_20 > 0:
+    if tips_20_needed > 0:
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',      
             11,                                     
-            'tips_20_1')                            
+            'tips_20_1')
+        tips_20.append(tips_20_1)
         tips_20_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',      
             10,                                     
-            'tips_20_2')                            
-        tips_20 = [tips_20_1,tips_20_2]
-        if sample_tips_200 + water_tips_200 > 0:
-            tips_200_1 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     
+            'tips_20_2')
+        tips_20.append(tips_20_2)
+        if tips_20_needed > 96:
+            tips_20_3 = protocol.load_labware(
+                'opentrons_96_filtertiprack_20ul',      
                 7,                                      
-                'tips_200_1')                           
-            tips_200_2 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     
+                'tips_20_3')
+            tips_20.append(tips_20_3)
+            if tips_20_needed > 192:
+                tips_20_4 = protocol.load_labware(
+                'opentrons_96_filtertiprack_20ul',      
                 8,                                      
-                'tips_200_2')                           
-        tips_200 = [tips_200_1,tips_200_2]
-    
-    elif sample_tips_200 + water_tips_200 > 0:
-        tips_200_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     
-            11,                                     
-            'tips_200_1')                           
-        tips_200_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     
-            10,                                     
-            'tips_200_2')                           
-        tips_200 = [tips_200_1,tips_200_2]
-        if sample_tips_200 + water_tips_200 > 96:
-            tips_200_3 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',     
-                7,                                      
-                'tips_200_3')                           
-    
-    
-    if sample_tips_20 + water_tips_20 > 96:
-        tips_20_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      
-            7,                                      
-            'tips_20_3')                            
-        tips_20 = tips_20.append(tips_20_3)
-        if sample_tips_200 + water_tips_200 > 0:
+                'tips_20_4')
+                tips_20.append(tips_20_4)
+            elif tips_200_needed > 0:
+                tips_200_1 = protocol.load_labware(
+                    'opentrons_96_filtertiprack_200ul',      
+                    8,                                     
+                    'tips_200_1')
+                tips_200.append(tips_200_1)
+        elif tips_200_needed > 0:
             tips_200_1 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul', 
-                8,                                  
-                'tips_200_1')                       
-            tips_200 = tips_200.append(tips_200_1)
-    elif sample_tips_200 + water_tips_200 > 96:
-        tips_200_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     
-            7,                                      
-            'tips_200_3')                           
-        tips_200 = tips_200.append(tips_200_3)
-        
-    if sample_tips_20 + water_tips_20 > 192:
-        tips_20_4 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      
-            8,                                      
-            'tips_20_4')                              
-        tips_20 = tips_20.append(tips_20_4)
-    elif sample_tips_200 + water_tips_200 > 192:
-        tips_200_4 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul',     
-            8,                                      
-            'tips_200_4')                             
-        tips_200 = tips_200.append(tips_200_4)
+                'opentrons_96_filtertiprack_200ul',      
+                7,                                     
+                'tips_200_1')
+            tips_200.append(tips_200_1)
+            tips_200_2 = protocol.load_labware(
+                'opentrons_96_filtertiprack_200ul',      
+                8,                                     
+                'tips_200_2')
+            tips_200.append(tips_200_2)
+            
+    
+    else:
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      
+            11,                                     
+            'tips_200_1')
+        tips_200.append(tips_200_1)
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      
+            10,                                     
+            'tips_200_2')
+        tips_200.append(tips_200_2)
+        if tips_200_needed > 96:
+            tips_200_3 = protocol.load_labware(
+                'opentrons_96_filtertiprack_200ul',      
+                7,                                      
+                'tips_200_3')
+            tips_200.append(tips_200_3)
+            if tips_200_needed > 192:
+                tips_200_4 = protocol.load_labware(
+                    'opentrons_96_filtertiprack_200ul',      
+                    8,                                      
+                    'tips_200_4')
+                tips_200.append(tips_200_4)
+    
+    
     
     ##### Loading pipettes
-    if sample_tips_20 + water_tips_20 > 0:
+    if tips_20_needed > 0:
         p20 = protocol.load_instrument(
             'p20_single_gen2',
             'left',
             tip_racks = tips_20)
-    if sample_tips_200 + water_tips_200 > 0:
+    if tips_200_needed > 0:
         p300 = protocol.load_instrument(
             'p300_single_gen2',
             'right',
@@ -462,9 +492,9 @@ def run(protocol: protocol_api.ProtocolContext):
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================
     ##### Setting starting tip
-    if p20:
+    if tips_20_needed > 0:
         p20.starting_tip = tips_20_1.well(starting_tip_p20)
-    if p300:
+    if tips_200_needed > 0:
         p300.starting_tip = tips_200_1.well(starting_tip_p200)
       ## The starting_tip is the location of first pipette tip in the box   ##
       
@@ -593,37 +623,33 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    if len([x for x in water_volume if x > 0]) > 0:
+    if len([x for x in water_volumes if x > 0]) > 0:
         protocol.pause("I need "+ str(water_tubes) + " tube(s) with 5mL of water.")
 # =============================================================================
 
 # ALIQUOTING WATER=============================================================    
 # =============================================================================
     ##### Variables for volume tracking and aliquoting
-    if len([x for x in water_volume if x > 0]) > 0:
+    if len([x for x in water_volumes if x > 0]) > 0:
         counter = 0 # to count how many tubes already emptied
         source = tubes_5mL.wells()[counter]
         destination = dilution_wells
-        start_height = vt.cal_start_height('tube_5mL', 5000)
-        current_height = start_height
         container = 'tube_5mL'
-
-        
-        for i, (well, water_vol) in enumerate(zip(destination, water_volume)):
+        start_height = vt.cal_start_height(container, 4800)
+        current_height = start_height
+              
+        for i, (well, water_vol) in enumerate(zip(destination, water_volumes)):
           ## aliquot water in the correct wells, for each well do the following:  
             
             if water_vol > 0:
-              
                 dispension_vol = water_vol
                 aspiration_vol = dispension_vol + (dispension_vol/100*2)
     
-    
                 if i == 0:
-                    if len([x for x in water_volume[i:i+15] if x < 20]) > 0:
+                    if len([x for x in water_volumes[i:i+15] if x < 20]) > 0:
                         p20.pick_up_tip()
-                    if len([x for x in water_volume[i:i+15] if x >= 20]) > 0:
+                    if len([x for x in water_volumes[i:i+15] if x >= 20]) > 0:
                         p300.pick_up_tip()
-                    
                       ## If we are at the first well, start by picking up a tip
                 elif i % 16 == 0:
                     try:
@@ -636,9 +662,9 @@ def run(protocol: protocol_api.ProtocolContext):
                         pass
                       ## Then, after every 16th well, try to drop tip
                     
-                    if len([x for x in water_volume[i:i+15] if x < 20]) > 0:
+                    if len([x for x in water_volumes[i:i+15] if x < 20]) > 0:
                         p20.pick_up_tip()
-                    if len([x for x in water_volume[i:i+15] if x >= 20]) > 0:
+                    if len([x for x in water_volumes[i:i+15] if x >= 20]) > 0:
                         p300.pick_up_tip()                    
                       ## Pick up new tip if needed in next 16                    
                         
@@ -658,7 +684,6 @@ def run(protocol: protocol_api.ProtocolContext):
                     aspiration_location = source.bottom(current_height)
                     protocol.comment(
                         "Continue with tube " + str(counter + 1) + " of water")
-               
                 else:
                     aspiration_location = source.bottom(pip_height)
                       ## Set the location of where to aspirate from.
@@ -695,7 +720,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # DILUTING SAMPLES=============================================================
 # =============================================================================
     for sample_well, dilution_well, sample_vol, water_vol in zip(
-            sample_wells, dilution_wells, sample_volumes, water_volume):
+            sample_wells, dilution_wells, sample_volumes, water_volumes):
         ## Combine each sample with a dilution_well and a destination well  ##
         if sample_vol > 17:
             sample_pipette = p300

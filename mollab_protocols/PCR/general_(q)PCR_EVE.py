@@ -1,5 +1,5 @@
 """
-VERSION: V_Dec21
+VERSION: V_Jan21
 general_(q)PCR.py is a protocol written for EVE for the adding of mastermix 
 and samples to a 96-wells plate.
 
@@ -49,7 +49,6 @@ to True the protocol doesn't take samples from the regular sample sources
 (so starting in the top left corner, A1, B1, C1... etc. ), but from the wells
 specified by you! This is only neccessary when using a plate or strips, 
 for 1.5mL tubes you can change the location. 
-
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -87,7 +86,7 @@ if qPCR:
     length_std_series = 0
       ## length_of_std_series  MAX == 8                                     
     # How many replicates of the standard sample are you taking?
-    number_of_std_samples = 16
+    number_of_std_samples = 0
 else:
     ## If we are not doing a qPCR - protocol uses these values.             
     number_of_std_series = 0  

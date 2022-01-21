@@ -37,6 +37,13 @@ In addition for the qPCR:
         the plate. The standard sample is pipetted in the wells directly 
         following the sample wells (incl. NTC and mock).
 
+In addition for replicates:
+    You can indicate if you want your samples replicated in the PCR.
+    This will only replicate the samples.
+    This will add all samples once first and after that add them all
+    again. 
+    NTCs, std_samples and std_dilution_series come after the replicates
+    
 It is also possible to do a so-called 'redo' PCR. If you set this variable
 to True the protocol doesn't take samples from the regular sample sources 
 (so starting in the top left corner, A1, B1, C1... etc. ), but from the wells
@@ -44,6 +51,7 @@ specified by you! This is only neccessary when using a plate or strips,
 for 1.5mL tubes you can change the location. 
 
 """
+
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
@@ -60,7 +68,7 @@ number_of_samples = 40
 
 # How many NTCs to include 
 number_of_NTCs = 0 
-  ## NOTE: The NTC should ALWAYS be at the end of your plate!!                     
+  ## NOTE: The NTC come after samples and std_samples                     
 
 # What is the total volume (µL) of your mix?
 start_vol = 1520
@@ -79,7 +87,7 @@ if qPCR:
     length_std_series = 0
       ## length_of_std_series  MAX == 8                                     
     # How many replicates of the standard sample are you taking?
-    number_of_std_samples = 0
+    number_of_std_samples = 16
 else:
     ## If we are not doing a qPCR - protocol uses these values.             
     number_of_std_series = 0  
@@ -105,15 +113,17 @@ sample_tube_type = 'PCR_strip'
   ## Primers in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'                                         
 # In which columns are the strips in the plate (ignore if not using strips)?
-sample_columns = ['2', '5', '8','11']
+sample_columns = ['2', '7','11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!  
 # What is the volume (µL) of sample that needs to be added to the mix?
 sample_vol = 1
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'B2'
-  ## 'A1' is standard. But if you have more samples in the plate than
+first_sample = 'A2'
+  ## 'A1' is standard for tubes and plates. 
+  ## 'A2' is standard for tube_strips
+  ## But if you have more samples in the plate than
   ## fit in the qPCR, change the first well position.
 
 # Are you doing a redo PCR?
@@ -130,6 +140,16 @@ if redo:
         [])
   ## Fill in the wells that your samples need to go in
 
+# Do yu want your samples in duplicate or triplicate?
+replicates = 2
+  ## If you want all samples to be included in duplicate or triplicate (or more)
+  ## indicate that here. replicates = 1, means every sample is added once.
+  ## Replicated = 2, means every sample is added in duplo
+  ## Replicates = 3, means every sample is added im trplo, etc...
+  ## Replicates come after the entire sample set, before NTCs, std_samples and
+  ## dilution series.
+  ## Only the samples will be replicated, not the NTC, std_samples, std_dilution_series
+  
 # Do you want to simulate the protocol?
 simulate = True
   ## True for simulating protocol, False for robot protocol                 
@@ -153,23 +173,22 @@ else: #Robot
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================                   
-if sample_tube_type == 'tube_1.5mL':
-    sample_racks = math.ceil(number_of_samples / 24)
-if sample_tube_type == 'PCR_strip':
-    if len(sample_columns) == 3:
-        sample_racks = math.ceil(number_of_samples / 24)  
-    if len(sample_columns) == 4: 
-        sample_racks = math.ceil(number_of_samples / 32)     
-  ## How many tube_strip_racks are needed (1,2 or 3)
-if sample_tube_type == 'plate_96':
-    sample_racks = math.ceil(number_of_samples / 96)
-    ## *this isn't really used yet as we also only add one sample plate
-    ##  so for now we cannot add >primer pairs, but if we add another 
-    ##  destination plate it would be possible -- didn't do this because
-    ##  we don't have plates with more than 96 primer combinatons
+
 if number_of_std_samples >= 1:
-    number_of_samples = number_of_samples + 1
+    total_number_of_samples = number_of_samples + 1
       ## If a standard sample is taken, add 1 to the total number of samples
+else:
+    total_number_of_samples = number_of_samples
+
+if sample_tube_type == 'tube_1.5mL':
+    samples_per_rack = 24
+if sample_tube_type == 'plate_96':
+    samples_per_rack = 96
+if sample_tube_type == 'PCR_strip':
+    samples_per_rack = 8 * len(sample_columns)
+sample_racks = math.ceil(total_number_of_samples / samples_per_rack)
+  ## How many tube_strip_racks are needed (1,2 or 3)
+
 # =============================================================================
 
 # METADATA=====================================================================
@@ -357,19 +376,19 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in destination_plate.wells():
         destination_wells.append(well)
     # Create a list of wells where samples should go
-    destination_wells = destination_wells[:number_of_samples]
+    sample_wells = destination_wells[:number_of_samples*replicates]
     
     #Create a list of wells where standard sample replicates should go
     slice_std_sample_wells = slice(
-        number_of_samples, number_of_samples + number_of_std_samples)
+        (number_of_samples * replicates), (number_of_samples * replicates)+ number_of_std_samples)
     std_sample_wells = destination_wells[slice_std_sample_wells]
       ## Slice the list after the number of samples, and after the number
       ## of standard sample replicates to retrieve the wells in between
     
     # Create the list of wells where NTCs should go
     slice_NTC_wells = slice(
-        number_of_samples + number_of_std_samples,
-        number_of_samples + number_of_std_samples + number_of_NTCs)
+        (number_of_samples * replicates)+ number_of_std_samples,
+        (number_of_samples * replicates)+ number_of_std_samples + number_of_NTCs)
     NTC_wells = destination_wells[slice_NTC_wells]
       ## Slice the list after the number of samples + the number of standard
       ## sample replicates, and after that + the number of NTCs to retrieve
@@ -391,7 +410,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # Create a list with wells where mastermix should go
     MasterMixAliquots = (
-        destination_wells + std_sample_wells + NTC_wells + std_series_wells)
+        sample_wells + std_sample_wells + NTC_wells + std_series_wells)
     
     if redo:
         ## This is the part of the protocol that accesses the specific
@@ -419,31 +438,30 @@ def run(protocol: protocol_api.ProtocolContext):
             samples_sample_source_4])
         for well in wells_sample_source_4:
             sample_sources.append(well)
-#!!! Add sample_source_3 and 4 #===============================================
-            
+        
     else: 
         ## This is the part of the protocol that access the sample wells in
         ## a normal PCR (where you don't need to access specific wells)
-        sample_sources = []
-        sample_sources_string = []
+        sample_source_wells = []
+        sample_source_wells_string = []
           ## The string list is needed to be able to start at another well
         if sample_tube_type == 'tube_1.5mL' or sample_tube_type == 'plate_96':
             if sample_racks >= 1:
                 for well in sample_source_1.wells():
-                    sample_sources.append(well)
-                    sample_sources_string.append(str(well))
+                    sample_source_wells.append(well)
+                    sample_source_wells_string.append(str(well))
             if sample_racks >= 2:
                 for well in sample_source_2.wells():
-                    sample_sources.append(well)
-                    sample_sources_string.append(str(well))
+                    sample_source_wells.append(well)
+                    sample_source_wells_string.append(str(well))
             if sample_racks >= 3:
                 for well in sample_source_3.wells():
-                    sample_sources.append(well)
-                    sample_sources_string.append(str(well))
+                    sample_source_wells.append(well)
+                    sample_source_wells_string.append(str(well))
             if sample_racks >= 4:
                 for well in sample_source_4.wells():
-                    sample_sources.append(well)
-                    sample_sources_string.append(str(well))
+                    sample_source_wells.append(well)
+                    sample_source_wells_string.append(str(well))
 
         if sample_tube_type == 'PCR_strip':
             sample_source_columns = (
@@ -470,41 +488,40 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Make a list of columns, this is a list of lists!   
             for column in sample_source_columns:
                 for well in column:
-                    sample_sources.append(well)
-                    sample_sources_string.append(str(well))
+                    sample_source_wells.append(well)
+                    sample_source_wells_string.append(str(well))
               ## Separate the columns into wells and append them to list 
+
+        ## Cut slice out off list of sample_sources, starting with the 
+        ## indicated first sample and ending after the number_of_samples                        
+        first_sample_index = sample_source_wells_string.index(
+            first_sample + ' of sample_source_1 on 2')
+          ## Determine the index of the first sample in the list made from 
+          ## strings -- we cannot find strings in the normal robot list
+          ## so we needed to convert the wells to strings.
+        slice_sample_sources = slice(
+            first_sample_index, 
+            first_sample_index + number_of_samples)
+          ## Determine the slice
+
+        ## Determine position of the std_sample
+        slice_std_sample = slice(
+            first_sample_index + number_of_samples,
+            first_sample_index + number_of_samples + 1)
+        ## If you have a std sample included, this will be added as the last sample  
+        std_source = sample_source_wells[slice_std_sample] * number_of_std_samples
+          ## Makes a list of len number_of_std_samples of the std_source well
         
-        sample_sources = sample_sources[:number_of_samples]      
-    #!!! I think the next part needs to be after the sample_strips part #======                    
-        # first_sample_index = sample_sources_string.index(
-        #     first_sample + ' of sample_source_1 on 2')
-        #   ## Determine the index of the first sample in the list made from 
-        #   ## strings -- we cannot find strings in the normal robot list
-        #   ## so we needed to convert the wells to strings.
-        # slice_sample_sources = slice(
-        #     first_sample_index, 
-        #     first_sample_index + number_of_samples)
-        #   ## Slice the list after the number of wells to skip.
-        # sample_sources = sample_sources[slice_sample_sources]
-        
-        if number_of_std_samples >= 1:
-            std_source = [sample_sources[-1]] * (number_of_std_samples - 1)
-            for well in std_source:
-                sample_sources.append(well)
-                  ## adds the same well (where the std_sample is) to the 
-                  ## sample sources list, so will pipete 
-                  ## number_of_std_samples times from the same well
-    # =========================================================================
-    #!!! It hink the next part can be deleted
-            # sample_sources = sample_sources[:number_of_samples]
-            # if number_of_std_samples >= 1:
-            #     std_source = [sample_sources[-1]] * (number_of_std_samples - 1)
-            #     for well in std_source:
-            #         sample_sources.append(well)
-            #           ## adds the same well (where the std_sample is) to the 
-            #           ## sample sources list, so will pipete 
-            #           ## number_of_std_samples times from the same well  
+        ## Cut sample slice out of sample_source_wells list
+        sample_sources = sample_source_wells[slice_sample_sources]
+        ## If replicates are desired, this copies the sample_sources list
+        sample_sources = sample_sources * replicates
+       
+        ## If you have a std sample included, this will add the std_samples 
+        ## to the end of the sample_sources list
+        sample_sources = sample_sources + std_source
 # =============================================================================              
+
               
 ## PIPETTING===================================================================
 ## ============================================================================

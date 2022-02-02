@@ -117,7 +117,7 @@ first_sample = 'A1'
   ## fit in the qPCR, change the first well position.
 
 # Are you doing a redo PCR?
-redo = True
+redo = False
   ## True or false
 if redo:
     samples_sample_source_1 = (

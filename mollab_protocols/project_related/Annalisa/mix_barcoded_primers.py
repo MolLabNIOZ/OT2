@@ -11,7 +11,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 23   
+number_of_samples = 25   
   ## Max = 24 INCLUDING NTC            
 
 # How many NTCs to include 
@@ -73,14 +73,14 @@ number_of_primers = number_of_samples + number_of_NTCs
 metadata = {
     'protocolName': 'mix_barcoded_primers_2Rprimers',
     'author': 'SV <sanne.vreugdenhil@nioz.nl>',
-    'description': ('Illumina PCR - aliquoting mix and primers, 2 different '
-                    'R primers'),
+    'description': ('Illumina PCR - aliquoting mix from 1.5mL or 5mL tube - '
+                    'add primers from 1.5mL tube, 2 different R primers'),
     'apiLevel': '2.9'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Aliquoting mastermix;
-    Adding barcoded primers.
+    Aliquoting mastermix from a 1.5mL or 5mL tube.
+    Adding barcoded primers - from 1.5mL tubes, 2 different R primers.
     """
 # =============================================================================
 
@@ -119,20 +119,34 @@ def run(protocol: protocol_api.ProtocolContext):
             '20tips_3')                             
         tips_20 = [tips_20_1, tips_20_2, tips_20_3]
    
-    # Tube_racks & plates                                                     
-                          
+    # Tube_racks & plates                                          
+    F_primer_source = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',    
+        11,                                  
+        'F_primer_source')  
+    Ra_primer_source = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+        8,
+        'Ra_primer_source')
+    Rb_primer_source = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+        5,
+        'Rb_primer_source')                         
+    
     if mastermix_tube_type == 'tube_1.5mL':
         mastermix_tube = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
-            'mastermix_tube')
-    
-    primer_source = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',    
-        1,                                  
-        'primer_source_1')                       
-                        
+            'mastermix_tube')   
+               
     if simulate: #Simulator
+        with open("labware/pcrstrips_96_wellplate_200ul/"
+                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                labware_def_pcrstrips = json.load(labware_file)
+        PCR_strips = protocol.load_labware_from_definition( 
+            labware_def_pcrstrips,     
+            6,                         
+            'PCR_strips')         
         if mastermix_tube_type == 'tube_5mL': 
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
@@ -141,8 +155,11 @@ def run(protocol: protocol_api.ProtocolContext):
                 labware_def_5mL,           
                 3,                         
                 'mastermix_tube')           
-
     else: #Robot
+        PCR_strips = protocol.load_labware( 
+            'pcrstrips_96_wellplate_200ul',        
+            6,                                     
+            'PCR_strips')            
         if mastermix_tube_type == 'tube_5mL': 
             mastermix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
@@ -186,87 +203,104 @@ def run(protocol: protocol_api.ProtocolContext):
     p20.starting_tip = tips_20_1.well(starting_tip_p20)
     
     # Mastermix tube location
-    MasterMix = mastermix_tube[mastermix_source]
-    
-    # Make a list with all 96 wells of the plate                         
-    wells = []
-    for well in plate_96.wells():
-        wells.append(well)
-    
-    # Create the list of wells where samples should go
-    sample_wells = wells[:number_of_primers]
-      ## cuts off the list after a the number_of_samples number of wells    
-    
-    # Create the list of wells where standard sample replicates should go
-    slice_std_wells = slice(
-        number_of_primers, number_of_primers + number_of_std_samples)
-      ## Slice the list - I need the number_of_std_samples of wells after   
-      ## the number_of_samples wells. So I need a certain amount of wells   
-      ## after the sample wells, but not all of the wells after that.       
-      ## This slices the list after the samples and after the std sample    
-      ## so that we only take the wells in between.                         
-    std_sample_wells = wells[slice_std_wells]
+    MasterMix = mastermix_tube[mastermix_source]                   
 
-    # Create the list of wells where standerd series should go
-    std_series_wells = [] 
-    std_series_columns = (
-        [plate_96.columns_by_name()[column_name] for column_name in
-         ['12', '11', '10']])
-    std_series_columns = std_series_columns[:number_of_std_series]
-    ## Reserve a column at the end of the plate for every std_series        
-    ## Separate the columns into wells and append them to list              
-    for column in std_series_columns:
-        column = column[:length_std_series]
-        ## cut off the columns after a certain std_series length            
-        for well in column:
-            std_series_wells.append(well)
-
-    # Add the wells of the standards into 1 list 
-      ## This needs to be a list separate from the rest of the wells because
-      ## they need the same primer from a separate tube.                    
-    std_wells = std_sample_wells + std_series_wells 
-    # Add all the wells that need mastermix into 1 list
-    MasterMixAliquots = sample_wells + std_wells
-    
-    # Primer locations
-    primer_wells = []
-    if primer_tube_type == 'PCR_strips':
-        primer_columns = []
-        if primer_racks >= 1:
-            primer_columns_1 = (
-                ([primer_source_1.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_1:
-                primer_columns.append(column)
-        if primer_racks >= 2:
-            primer_columns_2 = (
-                ([primer_source_2.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_2:
-                primer_columns.append(column)
-        if primer_racks >= 3:
-            primer_columns_3 = (
-                ([primer_source_3.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_3:
-                primer_columns.append(column)
-            ## Make a list of columns, this is a list of lists!             
-        for column in primer_columns:
-            for well in column:
-                primer_wells.append(well)
-    if primer_tube_type == 'plate_96':
-        if primer_racks == 1:
-            for well in primer_source_1.wells():
-                primer_wells.append(well)
-        if primer_racks == 2: 
-            for well in primer_source_2.wells():
-                primer_wells.append(well)
-        if primer_racks == 3:
-            for well in primer_source_3.wells():
-                primer_wells.append(well)
-    primer_wells = primer_wells[:number_of_primers]
-    
-    # Set location for primer for standards
-    if number_of_std_samples >= 1:
-        std_primer = big_primer_source.wells_by_name()[std_primer_loc]
+    # Create a list of wells where mix and primers should go
+    destination_wells = []
+    PCR_strips_columns = ([PCR_strips.columns_by_name()[column_name]]
+                          for column_name in ['2', '7', '11'])
+    for column in PCR_strips_columns:
+        for destination_well in column:
+            destination_wells.append(destination_well)
+    MasterMixAliquots = destination_wells[:number_of_primers]
+      ## cuts off the list after a the number_of_primers number of wells 
+    F_primer_source_wells = F_primer_source.wells()[:number_of_primers]
+    Ra_primer_source_wells = Ra_primer_source.wells()[:number_of_primers]
+    Rb_primer_source_wells = Rb_primer_source.wells()[:number_of_primers]
 # =============================================================================
+
+## PIPETTING===================================================================
+## ============================================================================
+## LIGHTS----------------------------------------------------------------------
+    protocol.set_rail_lights(True)
+## ----------------------------------------------------------------------------
+## ALIQUOTING MASTERMIX--------------------------------------------------------
+    if dispension_vol >= 19:
+        pipette = p300
+    else:
+        pipette = p20
+    for i, well in enumerate(MasterMixAliquots):
+      ## aliquot mix, for each well do the following:                       
+        if i == 0: 
+            pipette.pick_up_tip()
+              ## If we are at the first well, start by picking up a tip.    
+        elif i % 8 == 0:
+            pipette.drop_tip()
+            pipette.pick_up_tip()
+              ## Then, after every 8th well, drop tip and pick up new       
+    
+        current_height, pip_height, bottom_reached = vt.volume_tracking(
+                mastermix_tube_type, dispension_vol, current_height)
+                  ## call volume_tracking function, obtain current_height,  
+                  ## pip_height and whether bottom_reached.                 
+        
+        if bottom_reached:
+            aspiration_location = MasterMix.bottom(z=1)
+            protocol.comment("You've reached the bottom of the tube!")
+              ## If bottom is reached keep pipetting from bottom + 1        
+        else:
+            aspiration_location = MasterMix.bottom(pip_height)
+              ## Set the location of where to aspirate from.                
+
+        #### The actual aliquoting of mastermix                             
+        pipette.aspirate(aspiration_vol, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the       
+          ## location specified in aspiration_location.                     
+        pipette.dispense(dispension_vol, well)
+          ## Dispense the amount specified in dispension_vol to the         
+          ## location specified in well (so a new well every time the       
+          ## loop restarts)                                                 
+        pipette.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill      
+          ## completely when using a disposal volume by dispensing some     
+          ## of the volume after each pipetting step. (blow-out to many     
+          ## bubbles)                                                       
+    pipette.drop_tip()   
+## ----------------------------------------------------------------------------
+## ADDING F PRIMERS TO THE MIX-------------------------------------------------
+#     for F_primer_well, destination_well in zip(
+#             F_primer_source_wells, MasterMixAliquots):
+#       ## Loop trough primer_wells and sample_wells                          
+#         p20.pick_up_tip()
+#         p20.aspirate(F_primer_vol, F_primer_well)
+#         p20.dispense(F_primer_vol, destination_well)
+#         p20.mix(3, F_primer_mix_vol, destination_well)
+#         p20.dispense(10, destination_well)
+#         p20.drop_tip()       
+# ## ----------------------------------------------------------------------------
+# ## ADDING Ra PRIMERS TO THE MIX------------------------------------------------
+#     for Ra_primer_well, destination_well in zip(
+#             Ra_primer_source_wells, MasterMixAliquots):
+#       ## Loop trough primer_wells and sample_wells                          
+#         p20.pick_up_tip()
+#         p20.aspirate(R_primer_vol, Ra_primer_well)
+#         p20.dispense(R_primer_vol, destination_well)
+#         p20.mix(3, R_primer_mix_vol, destination_well)
+#         p20.dispense(10, destination_well)
+#         p20.drop_tip()       
+# ## ----------------------------------------------------------------------------
+# ## ADDING Rb PRIMERS TO THE MIX-------------------------------------------------
+#     for Rb_primer_well, destination_well in zip(
+#             Rb_primer_source_wells, MasterMixAliquots):
+#       ## Loop trough primer_wells and sample_wells                          
+#         p20.pick_up_tip()
+#         p20.aspirate(R_primer_vol, Rb_primer_well)
+#         p20.dispense(R_primer_vol, destination_well)
+#         p20.mix(3, R_primer_mix_vol, destination_well)
+#         p20.dispense(10, destination_well)
+#         p20.drop_tip()       
+## ----------------------------------------------------------------------------
+## LIGHTS----------------------------------------------------------------------
+    protocol.set_rail_lights(False)
+# ----------------------------------------------------------------------------
+## ============================================================================

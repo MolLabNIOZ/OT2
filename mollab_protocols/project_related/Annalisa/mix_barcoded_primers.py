@@ -1,5 +1,43 @@
 """
 VERSION: V_March22
+This is a protocol designed for Annalisa Delre, who is doing a PCR protocol
+for Illumina sequencing that was developed by Douwe Maat in 2019(?). 
+A PCR was already done, and now the samples need to be barcoded. The samples
+cannot be added to the mix by a robot because we don't have a robot in the 
+post-PCR lab. Therefor, we wrote a protocol specific for adding mix and
+barcoded primers to PCR strips. Special about this protocol is that we
+add 2 different reverse primers, causing the R primer to have a different 
+volume than the F primer.
+
+You need to provide:
+    starting tips P20/p200
+    number of samples (maximum = 23 excl 1 negative control)
+    number of NTCs
+    start volume of your mastermix
+    mastermix tube type (1.5mL or 5mL)
+    volume of mastermix to be dispensed
+    location of the mastermix tube in the rack
+    primer volume F 
+    primer volume R
+
+Deck locations:
+    200 tips (if dispension volume = >20µL)     2 
+    20 tips                                     7, 10
+    mastermix tube rack (1.5mL or 5mL)          3
+    tube strips - strips in rows 2, 7, 11       6
+    F primers                                   11
+    Ra primers                                  8
+    Rb primers                                  5
+    
+What the protocol does: 
+    Aspirating dispension volume from the mastermix tube 
+    Dispensing dispension volume in the PCR strip
+    Aspirating F primer volume from F primer rack
+    Dispensing F primer volume in PCR strip
+    Aspirating R primer volume from Ra primer rack
+    Dispensing R primer volume in PCR strip
+    Aspirating R primer volume from Rb primer rack
+    Dispensing R primer volume in PCR strip
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -11,7 +49,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 25   
+number_of_samples = 2   
   ## Max = 24 INCLUDING NTC            
 
 # How many NTCs to include 
@@ -21,29 +59,28 @@ number_of_NTCs = 1
 # What is the total volume (µL) of your mix?
 start_vol = 1116
   ## The start_vol is the volume (µL) of mix that is in the source        
-  ## labware at the start of the protocol.                                  
+  ## labware at the start of the protocol.     
+
+# What is the volume (µL) of mastermix that needs to be dispensed?
+dispension_vol = 43   
+                                         
+# What is the volume (µL) of primer that needs to be added to the mix?
+F_primer_vol = 3
+R_primer_vol = 1.5                                
 
 # Which tube are you using for your mastermix? (options 1.5mL or 5mL)
 mastermix_tube_type = 'tube_1.5mL'
   ## For volume < 1300: 'tube_1.5mL'                                        
   ## For volume > 1300: 'tube_5mL'                                          
 
-# What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 43   
-
 # Where is the mastermix tube located in the rack? 
 mastermix_source = 'D1'
   ## convenient places:
   ## if mastermix_tube_type ==   'tube_1.5mL'  -->  D1 
-  ## if mastermix_tube_type ==   'tube_5mL'    -->  C1
-    
-                                         
-# What is the volume (µL) of primer that needs to be added to the mix?
-F_primer_vol = 3
-R_primer_vol = 1.5                   
+  ## if mastermix_tube_type ==   'tube_5mL'    -->  C1 
   
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol                 
 # =============================================================================
 
@@ -51,8 +88,6 @@ simulate = True
 ## ============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      
-import math
-  ## To do some calculations  
   
 if simulate: #Simulator
     from mollab_modules import volume_tracking_v1 as vt
@@ -207,8 +242,8 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # Create a list of wells where mix and primers should go
     destination_wells = []
-    PCR_strips_columns = ([PCR_strips.columns_by_name()[column_name]]
-                          for column_name in ['2', '7', '11'])
+    PCR_strips_columns = ([PCR_strips.columns_by_name()[column_name] 
+                           for column_name in ['2', '7', '11']])
     for column in PCR_strips_columns:
         for destination_well in column:
             destination_wells.append(destination_well)
@@ -268,37 +303,37 @@ def run(protocol: protocol_api.ProtocolContext):
     pipette.drop_tip()   
 ## ----------------------------------------------------------------------------
 ## ADDING F PRIMERS TO THE MIX-------------------------------------------------
-#     for F_primer_well, destination_well in zip(
-#             F_primer_source_wells, MasterMixAliquots):
-#       ## Loop trough primer_wells and sample_wells                          
-#         p20.pick_up_tip()
-#         p20.aspirate(F_primer_vol, F_primer_well)
-#         p20.dispense(F_primer_vol, destination_well)
-#         p20.mix(3, F_primer_mix_vol, destination_well)
-#         p20.dispense(10, destination_well)
-#         p20.drop_tip()       
+    for F_primer_well, destination_well in zip(
+            F_primer_source_wells, MasterMixAliquots):
+      ## Loop trough primer_wells and sample_wells                          
+        p20.pick_up_tip()
+        p20.aspirate(F_primer_vol, F_primer_well)
+        p20.dispense(F_primer_vol, destination_well)
+        p20.mix(3, F_primer_mix_vol, destination_well)
+        p20.dispense(10, destination_well)
+        p20.drop_tip()       
 # ## ----------------------------------------------------------------------------
 # ## ADDING Ra PRIMERS TO THE MIX------------------------------------------------
-#     for Ra_primer_well, destination_well in zip(
-#             Ra_primer_source_wells, MasterMixAliquots):
-#       ## Loop trough primer_wells and sample_wells                          
-#         p20.pick_up_tip()
-#         p20.aspirate(R_primer_vol, Ra_primer_well)
-#         p20.dispense(R_primer_vol, destination_well)
-#         p20.mix(3, R_primer_mix_vol, destination_well)
-#         p20.dispense(10, destination_well)
-#         p20.drop_tip()       
+    for Ra_primer_well, destination_well in zip(
+            Ra_primer_source_wells, MasterMixAliquots):
+      ## Loop trough primer_wells and sample_wells                          
+        p20.pick_up_tip()
+        p20.aspirate(R_primer_vol, Ra_primer_well)
+        p20.dispense(R_primer_vol, destination_well)
+        p20.mix(3, R_primer_mix_vol, destination_well)
+        p20.dispense(10, destination_well)
+        p20.drop_tip()       
 # ## ----------------------------------------------------------------------------
 # ## ADDING Rb PRIMERS TO THE MIX-------------------------------------------------
-#     for Rb_primer_well, destination_well in zip(
-#             Rb_primer_source_wells, MasterMixAliquots):
-#       ## Loop trough primer_wells and sample_wells                          
-#         p20.pick_up_tip()
-#         p20.aspirate(R_primer_vol, Rb_primer_well)
-#         p20.dispense(R_primer_vol, destination_well)
-#         p20.mix(3, R_primer_mix_vol, destination_well)
-#         p20.dispense(10, destination_well)
-#         p20.drop_tip()       
+    for Rb_primer_well, destination_well in zip(
+            Rb_primer_source_wells, MasterMixAliquots):
+      ## Loop trough primer_wells and sample_wells                          
+        p20.pick_up_tip()
+        p20.aspirate(R_primer_vol, Rb_primer_well)
+        p20.dispense(R_primer_vol, destination_well)
+        p20.mix(3, R_primer_mix_vol, destination_well)
+        p20.dispense(10, destination_well)
+        p20.drop_tip()       
 ## ----------------------------------------------------------------------------
 ## LIGHTS----------------------------------------------------------------------
     protocol.set_rail_lights(False)

@@ -1,0 +1,8 @@
+labware;x_offset;y_offset;z_offset
+filtertips_20;0.3;1.6;-0.2
+filtertips_200;0.1;0.7;0.2
+plate_96;-0.2;0.4;0.4
+plate_plateholder;1;-0.8;0.8
+pcr_strips;0.8;-0.6;1.9
+tubes_1.5mL;0.3;1.2;0.4
+tubes_5mL;0;1;9.6

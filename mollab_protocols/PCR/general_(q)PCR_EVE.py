@@ -143,7 +143,7 @@ if redo:
 replicates = 2
   ## If you want all samples to be included in duplicate or triplicate (or more)
   ## indicate that here. replicates = 1, means every sample is added once.
-  ## Replicated = 2, means every sample is added in duplo
+  ## Replicates = 2, means every sample is added in duplo
   ## Replicates = 3, means every sample is added im trplo, etc...
   ## Replicates come after the entire sample set, before NTCs, std_samples and
   ## dilution series.

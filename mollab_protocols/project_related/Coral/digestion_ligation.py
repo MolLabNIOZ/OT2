@@ -27,7 +27,7 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 96   # max 96 including controls
+number_of_samples = 45   # max 96 including controls
   ## How many samples do you want to include?                               ##
 sample_tubes = 'PCR_strips'
   ## What kind of tubes are the samples in?                                 ##
@@ -37,7 +37,7 @@ if sample_tubes == 'PCR_strips':
      ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                  ##
      ## max 3 racks with strips!                                            ##
      
-MM_start_vol = 2016
+MM_start_vol = 1008
   ## The MM_start_vol is the volume (ul) of mastermix that is in the source ##
   ## labware at the start of the protocol.                                  ##
 MM_dispension_vol = 20

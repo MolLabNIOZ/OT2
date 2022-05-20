@@ -278,6 +278,23 @@ def run(protocol: protocol_api.ProtocolContext):
             'biorad_96_wellplate_200ul_pcr',    
             5,                                  
             'sample_source_2')
+    if sample_tube_type == 'PCR_strip':
+        sample_source_1 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',
+            2,
+            'sample_source_1')
+        sample_source_2 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',
+            5,
+            'sample_source_2')
+        sample_source_3 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',
+            8,
+            'sample_source_3')
+        sample_source_4 = protocol.load_labware(
+            'pcrstrips_96_wellplate_200ul',
+            11,
+            'sample_source_4')
     
     if simulate: #Simulator
         if mastermix_tube_type == 'tube_5mL': 

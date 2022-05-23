@@ -182,12 +182,63 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # SETTING LOCATIONS============================================================
 # =============================================================================
-    # # Setting starting tip
-    # pipette.starting_tip = tips.well(starting_tip)
+    # Setting starting tip
+    pipette.starting_tip = tips.well(starting_tip)
     
-    # # Make a list of all wells that should be skipped in the pooling
-    # PCR1_skipped_wells_string = []
+    # Make lists of all wells that should be skipped in the pooling
+    PCR1_skipped_wells = (
+        [PCR1.wells_by_name()[well_name] for well_name in
+        skipped_wells])
+    PCR2_skipped_wells = (
+        [PCR2.wells_by_name()[well_name] for well_name in
+        skipped_wells])
+    if PCR3:
+        PCR3_skipped_wells = (
+            [PCR3.wells_by_name()[well_name] for well_name in
+            skipped_wells])
+
+    # Make lists of wells that should be included in the pooling
+    PCR1_wells = PCR1.wells()
+      ## Make a list of all wells
+    for well in PCR1_skipped_wells:
+        PCR1_wells.remove(well)
+      ## remove wells to skip from the list
+    PCR2_wells = PCR1.wells()
+    for well in PCR2_skipped_wells:
+        PCR2_wells.remove(well)
+    if PCR3:
+        PCR3_wells = PCR3.wells()
+        for well in PCR3_skipped_wells:
+            PCR3_wells.remove(well)
+# =============================================================================
+
+
+## PIPETTING===================================================================
+## ============================================================================
+    # Turn on lights    
+    protocol.set_rail_lights(True)
     
+    if replicates == 2:
+        for well_PCR2, well_PCR1 in zip(PCR2_wells, PCR1_wells):
+            pipette.pick_up_tip()
+            pipette.aspirate(transfer_volume, well_PCR2)
+            pipette.dispense(transfer_volume, well_PCR1)
+            pipette.dispense(10, well_PCR1)
+            pipette.drop_tip()
+    
+    if replicates == 3:
+        for well_PCR3, well_PCR2, well_PCR1 in zip(
+                PCR3_wells, PCR2_wells, PCR1_wells):
+            pipette.pick_up_tip()
+            pipette.aspirate(reaction_volume + 1, well_PCR3)
+            pipette.aspirate(reaction_volume + 1, well_PCR2)
+            pipette.dispense(transfer_volume, well_PCR1)
+            pipette.dispense(10, well_PCR1)
+            pipette.drop_tip()        
+
+    # Turn off lights
+    protocol.set_rail_lights(False)
+
     
     
     

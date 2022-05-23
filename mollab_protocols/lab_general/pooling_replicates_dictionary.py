@@ -38,7 +38,8 @@ last_sample_well = 'H12'
 # Are there any wells between the first and last sample that need to be skipped
 skipp_samples = True
 if skipp_samples:
-    skipped_wells = ['D1', 'G5']
+    skipped_wells = (
+        ['D1', 'G5'])
     ## Fill in the wells that need to be skipped while pooling
     
 # What is the PCR reaction_volume (per reaction)?
@@ -167,13 +168,27 @@ def run(protocol: protocol_api.ProtocolContext):
             tip_racks=tips)    
 # =============================================================================
 
+# LABWARE OFFSET===============================================================    
+# =============================================================================
+    for labware in labwares:
+        offset_x = offsets.at[labwares[labware],'x_offset']
+        offset_y = offsets.at[labwares[labware],'y_offset']
+        offset_z = offsets.at[labwares[labware],'z_offset']
+        labware.set_offset(
+            x = offset_x, 
+            y = offset_y, 
+            z = offset_z)
+# =============================================================================
+
 # SETTING LOCATIONS============================================================
 # =============================================================================
-    # Setting starting tip
-    pipette.starting_tip = tips.well(starting_tip)
+    # # Setting starting tip
+    # pipette.starting_tip = tips.well(starting_tip)
     
-    # Make a list of all wells that should be included in the pooling
-
+    # # Make a list of all wells that should be skipped in the pooling
+    # PCR1_skipped_wells_string = []
+    
+    
     
     
     

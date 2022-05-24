@@ -39,7 +39,7 @@ last_sample_well = 'H12'
 skipp_samples = True
 if skipp_samples:
     skipped_wells = (
-        ['D1', 'G5'])
+        ['A1','D1', 'G5'])
     ## Fill in the wells that need to be skipped while pooling
     
 # What is the PCR reaction_volume (per reaction)?
@@ -51,7 +51,7 @@ replicates = 3
   ## For now 3 is max. If you want more, protocol needs to be adjusted
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol 
 
 # =============================================================================
@@ -109,13 +109,13 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_96_filtertiprack_200ul',  
             11,                                  
             '200tips')
-        labwares[tips] = 'tips_200'
+        labwares[tips] = 'filtertips_200'
     else:
         tips = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             11,                                 
             '20tips')
-        labwares[tips] = 'tips_20'
+        labwares[tips] = 'filtertips_20'
     
     ##### Loading labware
     if simulate: #Simulator
@@ -160,12 +160,12 @@ def run(protocol: protocol_api.ProtocolContext):
         pipette = protocol.load_instrument(
             'p300_single_gen2',             
             'right',                        
-            tip_racks=tips)
+            tip_racks=[tips])
     else:
         pipette = protocol.load_instrument(
             'p20_single_gen2',                  
             'left',                             
-            tip_racks=tips)    
+            tip_racks=[tips])    
 # =============================================================================
 
 # LABWARE OFFSET===============================================================    
@@ -185,31 +185,29 @@ def run(protocol: protocol_api.ProtocolContext):
     # Setting starting tip
     pipette.starting_tip = tips.well(starting_tip)
     
-    # Make lists of all wells that should be skipped in the pooling
-    PCR1_skipped_wells = (
-        [PCR1.wells_by_name()[well_name] for well_name in
-        skipped_wells])
-    PCR2_skipped_wells = (
-        [PCR2.wells_by_name()[well_name] for well_name in
-        skipped_wells])
-    if PCR3:
-        PCR3_skipped_wells = (
-            [PCR3.wells_by_name()[well_name] for well_name in
-            skipped_wells])
-
-    # Make lists of wells that should be included in the pooling
+    # Make lists with all wells of the PCR plates
     PCR1_wells = PCR1.wells()
-      ## Make a list of all wells
-    for well in PCR1_skipped_wells:
-        PCR1_wells.remove(well)
-      ## remove wells to skip from the list
-    PCR2_wells = PCR1.wells()
-    for well in PCR2_skipped_wells:
-        PCR2_wells.remove(well)
-    if PCR3:
+    PCR2_wells = PCR2.wells()
+    if replicates > 2:
         PCR3_wells = PCR3.wells()
-        for well in PCR3_skipped_wells:
-            PCR3_wells.remove(well)
+    
+    # Get indexes for wells to skip
+    PCR1_wells_string = []
+      ## Make an empty list to append well_names (string) to
+    for well in PCR1_wells:
+        PCR1_wells_string.append(str(well))
+        
+    skipped_wells_indexes = []
+      ## Make an empty list to append well indexes to
+    for well in skipped_wells:
+        skipped_well_index = PCR1_wells_string.index(well + ' of PCR1 on 9')
+        skipped_wells_indexes.append(skipped_well_index)
+    
+    for well in skipped_wells_indexes:
+        PCR1_wells.pop(well)
+        PCR2_wells.pop(well)
+        if replicates > 2:
+            PCR3_wells.pop(well)
 # =============================================================================
 
 
@@ -235,6 +233,7 @@ def run(protocol: protocol_api.ProtocolContext):
             pipette.dispense(transfer_volume, well_PCR1)
             pipette.dispense(10, well_PCR1)
             pipette.drop_tip()        
+# =============================================================================
 
     # Turn off lights
     protocol.set_rail_lights(False)

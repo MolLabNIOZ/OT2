@@ -183,19 +183,22 @@ def run(protocol: protocol_api.ProtocolContext):
     # Get indexes of first and last wells
     first_well_index = PCR1_wells_string.index(first_sample_well + ' of PCR1 on 9')
     last_well_index = PCR1_wells_string.index(last_sample_well + ' of PCR1 on 9')
-    # Slice list with wells at first and last well
-    PCR1_wells = PCR1_wells[slice(first_well_index, last_well_index)]
-    PCR2_wells = PCR2_wells[slice(first_well_index, last_well_index)]
+    # Slice list with wells at first and after last well (+1)
+    PCR1_wells = PCR1_wells[slice(first_well_index, last_well_index +1)]
+    PCR2_wells = PCR2_wells[slice(first_well_index, last_well_index +1)]
     if replicates > 2:
-        PCR3_wells = PCR3_wells[slice(first_well_index, last_well_index)]
+        PCR3_wells = PCR3_wells[slice(first_well_index, last_well_index +1)]
     
     # get indexes for wells to skip in the middle
-    for well in skipped_wells:
-        skipped_well_index = PCR1_wells_string.index(well + ' of PCR1 on 9')
-        PCR1_wells.pop(skipped_well_index)
-        PCR2_wells.pop(skipped_well_index)
-        if replicates > 2:
-            PCR3_wells.pop(skipped_well_index)
+    if skipp_samples:
+        counter = 0
+        for well in skipped_wells:
+            counter = counter + 1
+            skipped_well_index = PCR1_wells_string.index(well + ' of PCR1 on 9')
+            PCR1_wells.pop(skipped_well_index - counter)
+            PCR2_wells.pop(skipped_well_index - counter)
+            if replicates > 2:
+                PCR3_wells.pop(skipped_well_index - counter)
 # =============================================================================
 
 

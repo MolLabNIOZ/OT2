@@ -7,6 +7,10 @@ This protocol assumes the 3 PCRs are done in 3PCR plates, and the placement of
 samples is the exact same for all 3 plates.
 It is however possible to skip certain reactions.
 
+# !!! Plates should not be on a plate_holder, 
+but directly placed into the robot deck slot. Otherwise if you use piercable
+seals, plates move a bit and might be dragged up by the pipette tip
+
 You have to provide:
     Location of the starting tip in P20 or P200 (depending on the PCR
         reaction volume x 2)
@@ -27,10 +31,10 @@ starting_tip = 'A1'
   ## + 1µL extra per (number of replicate -1)
 
 # What is the location of the first and last sample you want to pool
-first_sample_well = 'A1'
+first_sample_well = 'B1'
   ## If you want to skip the first couple of samples, please indicate the 
   ## location in the plates of the first sample you want to pool.
-last_sample_well = 'H12'
+last_sample_well = 'B3'
   ## If you want to skip the last couple of samples, or your PCR plates are not 
   ## completely filled, please indicate the location in the plates of the last
   ## sample you want to pool.
@@ -39,7 +43,7 @@ last_sample_well = 'H12'
 skipp_samples = True
 if skipp_samples:
     skipped_wells = (
-        ['A1','D1', 'G5'])
+        ['G1','B2','F2'])
     ## Fill in the wells that need to be skipped while pooling
     
 # What is the PCR reaction_volume (per reaction)?
@@ -53,7 +57,6 @@ replicates = 3
 # Do you want to simulate the protocol?
 simulate = False
   ## True for simulating protocol, False for robot protocol 
-
 # =============================================================================
 
 # IMPORT STATEMENTS AND FILES==================================================
@@ -62,8 +65,7 @@ from opentrons import protocol_api
   ## Import opentrons protocol API v2.
 import pandas as pd
   ## For accessing offset .csv file
-if simulate: #Simulator
-    import json
+# =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
@@ -118,42 +120,23 @@ def run(protocol: protocol_api.ProtocolContext):
         labwares[tips] = 'filtertips_20'
     
     ##### Loading labware
-    if simulate: #Simulator
-        with open("labware/biorad_qpcr_plate_nioz_plateholder/"
-             "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
-                  labware_def_plate_nioz_plateholder = json.load(labware_file)
-        PCR1 = protocol.load_labware_from_definition( 
-            labware_def_plate_nioz_plateholder,           
-            9,                         
-            'PCR1')
-        PCR2 = protocol.load_labware_from_definition( 
-            labware_def_plate_nioz_plateholder,           
-            8,                         
-            'PCR2')
-        if replicates > 2:
-            PCR3 = protocol.load_labware_from_definition( 
-                labware_def_plate_nioz_plateholder,           
-                7,                         
-                'PCR3')
-            
-    else:
-        PCR1 = protocol.load_labware(
-            'biorad_qpcr_plate_nioz_plateholder',
-            9,
-            'PCR1')
-        labwares[PCR1] = 'plate_plateholder'
+    PCR1 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',
+        9,
+        'PCR1')
+    labwares[PCR1] = 'plate_96'
 
-        PCR2 = protocol.load_labware(
-            'biorad_qpcr_plate_nioz_plateholder',
-            8,
-            'PCR2')
-        labwares[PCR2] = 'plate_plateholder'
-        if replicates > 2:
-            PCR3 = protocol.load_labware(
-                'biorad_qpcr_plate_nioz_plateholder',
-                7,
-                'PCR3')
-            labwares[PCR3] = 'plate_plateholder'
+    PCR2 = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',
+        8,
+        'PCR2')
+    labwares[PCR2] = 'plate_96'
+    if replicates > 2:
+        PCR3 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',
+            7,
+            'PCR3')
+        labwares[PCR3] = 'plate_96'
 
     ##### Loading pipettes
     if transfer_volume >= 20:
@@ -196,18 +179,23 @@ def run(protocol: protocol_api.ProtocolContext):
       ## Make an empty list to append well_names (string) to
     for well in PCR1_wells:
         PCR1_wells_string.append(str(well))
-        
-    skipped_wells_indexes = []
-      ## Make an empty list to append well indexes to
+    
+    # Get indexes of first and last wells
+    first_well_index = PCR1_wells_string.index(first_sample_well + ' of PCR1 on 9')
+    last_well_index = PCR1_wells_string.index(last_sample_well + ' of PCR1 on 9')
+    # Slice list with wells at first and last well
+    PCR1_wells = PCR1_wells[slice(first_well_index, last_well_index)]
+    PCR2_wells = PCR2_wells[slice(first_well_index, last_well_index)]
+    if replicates > 2:
+        PCR3_wells = PCR3_wells[slice(first_well_index, last_well_index)]
+    
+    # get indexes for wells to skip in the middle
     for well in skipped_wells:
         skipped_well_index = PCR1_wells_string.index(well + ' of PCR1 on 9')
-        skipped_wells_indexes.append(skipped_well_index)
-    
-    for well in skipped_wells_indexes:
-        PCR1_wells.pop(well)
-        PCR2_wells.pop(well)
+        PCR1_wells.pop(skipped_well_index)
+        PCR2_wells.pop(skipped_well_index)
         if replicates > 2:
-            PCR3_wells.pop(well)
+            PCR3_wells.pop(skipped_well_index)
 # =============================================================================
 
 
@@ -215,6 +203,11 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     # Turn on lights    
     protocol.set_rail_lights(True)
+    protocol.pause(
+        'Make sure all plates are spun down! '
+        'Plates should not be on a plate_holder, ' 
+        'but directly placed into the robot deck slot'
+        'Plates can be covered with piercable seals.')
     
     if replicates == 2:
         for well_PCR2, well_PCR1 in zip(PCR2_wells, PCR1_wells):

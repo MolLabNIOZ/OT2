@@ -189,7 +189,7 @@ def run(protocol: protocol_api.ProtocolContext):
     if replicates > 2:
         PCR3_wells = PCR3_wells[slice(first_well_index, last_well_index +1)]
     
-    # get indexes for wells to skip in the middle
+    # Skip wells in the middle
     if skipp_samples:
         counter = 0
         for well in skipped_wells:

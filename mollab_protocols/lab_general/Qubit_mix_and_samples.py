@@ -14,12 +14,6 @@ starting_tip_p20 = 'A1'
 # What is the starting position of the 200µL tips?
 starting_tip_p300 = 'A1'
     ## If not applicable, you do not have to change anything
-    
-# Are you running 1 or 2 assays at the same time?
-    ## 1 = HS or BR ---- 2 = HS and BR
-    ## The first assay always starts from the left of the plate, the second 
-    ## assay always starts from the right of the plate!
-number_of_assays = 1
 
 # How many samples do you want to include?
 ## For now: max. = 88 samples

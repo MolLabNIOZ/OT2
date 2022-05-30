@@ -2,9 +2,9 @@
 VERSION: V_May22
 Qubit_mix_and_samples.py is a protocol written for adding the Qubit mix
 
-Het idee is veranderd
-Nu: willen we gewoon 1 plaat vol pipetteren  en eventueel dan nog 1 plaat + nog 
-een paar samples --> in eerste in stantie gewoon max 88 samples
+samples toevoegen moet nog & standaarden toevoegen
+waar moeten die standaarden komen? aparte rack? vaste wells in sample rack?
+ook is er iets met de vt, dieameter top is unbound?
 """
 
 #%% VARIABLES TO SET#!!!=========================================================
@@ -279,6 +279,176 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_wells = []
     for well in destination_plate.wells():
         destination_wells.append(well)
+        
     # Create a list of wells where the standards should go.
+    std_wells = destination_wells[0:8]
     
+    # Create a list of wells where the samples should go.
+    #first we need to slice the list after the standards and after the samples
+    slice_sample_wells = slice(8, 8 + number_of_samples)
+    #then we add the slice object to access the list
+    sample_wells = destination_wells[slice_sample_wells]
+    
+    # Determin sample
+    sample_source_wells = []
+    sample_source_wells_string = []
+      ## The string list is needed to be able to start at another well
+    if sample_tube_type == 'tube_1.5mL' or sample_tube_type == 'plate_96':
+        if sample_racks >= 1:
+            for well in sample_source_1.wells():
+                sample_source_wells.append(well)
+                sample_source_wells_string.append(str(well))
+        if sample_racks >= 2:
+            for well in sample_source_2.wells():
+                sample_source_wells.append(well)
+                sample_source_wells_string.append(str(well))
+        if sample_racks >= 3:
+            for well in sample_source_3.wells():
+                sample_source_wells.append(well)
+                sample_source_wells_string.append(str(well))
+        if sample_racks >= 4:
+            for well in sample_source_4.wells():
+                sample_source_wells.append(well)
+                sample_source_wells_string.append(str(well))
+
+    if sample_tube_type == 'PCR_strip':
+        sample_source_columns = (
+                ([sample_source_1.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+        if sample_racks >= 2:
+            sample_columns_2 = (
+                ([sample_source_2.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_2:
+                sample_source_columns.append(column)
+        if sample_racks >= 3:
+            sample_columns_3 = (
+                ([sample_source_3.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_3:
+                sample_source_columns.append(column)
+        if sample_racks >= 4:
+            sample_columns_4 = (
+                ([sample_source_4.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_4:
+                sample_source_columns.append(column)
+          ## Make a list of columns, this is a list of lists!   
+        for column in sample_source_columns:
+            for well in column:
+                sample_source_wells.append(well)
+                sample_source_wells_string.append(str(well))
+          ## Separate the columns into wells and append them to list 
+
+    ## Cut slice out off list of sample_sources, starting with the 
+    ## indicated first sample and ending after the number_of_samples                        
+    first_sample_index = sample_source_wells_string.index(
+        first_sample + ' of sample_source_1 on 2')
+      ## Determine the index of the first sample in the list made from 
+      ## strings -- we cannot find strings in the normal robot list
+      ## so we needed to convert the wells to strings.
+    slice_sample_sources = slice(
+        first_sample_index, 
+        first_sample_index + number_of_samples)
+      ## Determine the slice
+
+    ## Determine position of the std_sample
+    slice_std_sample = slice(
+        first_sample_index + number_of_samples,
+        first_sample_index + number_of_samples + 1)
+    
+    ## Cut sample slice out of sample_source_wells list
+    sample_sources = sample_source_wells[slice_sample_sources]
+
+# =============================================================================
+
+# PIPETTING====================================================================    
+# =============================================================================
+# LIGHTS-----------------------------------------------------------------------
+    # Always put the light of when starting the protocol.
+    protocol.set_rail_lights(False)
+# ALIQUOTING MIX STANDARDS-----------------------------------------------------
+    pipette = p300
+    for i, well in enumerate(std_wells):
+      ## aliquot mix, for each well do the following:                       
+        if i == 0: 
+            pipette.pick_up_tip()
+              ## If we are at the first well, start by picking up a tip.    
+        elif i % 8 == 0:
+            pipette.drop_tip()
+            pipette.pick_up_tip()
+              ## Then, after every 8th well, drop tip and pick up new       
+    
+        current_height, pip_height, bottom_reached = vt.volume_tracking(
+                Qmix_tube_type, dispension_vol_std, current_height)
+                  ## call volume_tracking function, obtain current_height,  
+                  ## pip_height and whether bottom_reached.                 
+        
+        if bottom_reached:
+            aspiration_location = QubitMix.bottom(z=1)
+            protocol.comment("You've reached the bottom of the tube!")
+              ## If bottom is reached keep pipetting from bottom + 1        
+        else:
+            aspiration_location = QubitMix.bottom(pip_height)
+              ## Set the location of where to aspirate from.                
+
+        #### The actual aliquoting of mastermix                             
+        pipette.aspirate(aspiration_vol_std, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the       
+          ## location specified in aspiration_location.                     
+        pipette.dispense(dispension_vol_std, well)
+          ## Dispense the amount specified in dispension_vol to the         
+          ## location specified in well (so a new well every time the       
+          ## loop restarts)                                                 
+        pipette.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill      
+          ## completely when using a disposal volume by dispensing some     
+          ## of the volume after each pipetting step. (blow-out to many     
+          ## bubbles)                                                       
+    pipette.drop_tip()   
+ # ALIQUOTING MIX SAMPLES-----------------------------------------------------
+    # use the current height  of the mix after pipetting the standards
+    # as a starting point
+    current_height = current_height
+    pipette = p300
+    for i, well in enumerate(sample_wells):
+      ## aliquot mix, for each well do the following:                       
+        if i == 0: 
+            pipette.pick_up_tip()
+              ## If we are at the first well, start by picking up a tip.    
+        elif i % 8 == 0:
+            pipette.drop_tip()
+            pipette.pick_up_tip()
+              ## Then, after every 8th well, drop tip and pick up new       
+    
+        current_height, pip_height, bottom_reached = vt.volume_tracking(
+                Qmix_tube_type, dispension_vol_sample, current_height)
+                  ## call volume_tracking function, obtain current_height,  
+                  ## pip_height and whether bottom_reached.                 
+        
+        if bottom_reached:
+            aspiration_location = QubitMix.bottom(z=1)
+            protocol.comment("You've reached the bottom of the tube!")
+              ## If bottom is reached keep pipetting from bottom + 1        
+        else:
+            aspiration_location = QubitMix.bottom(pip_height)
+              ## Set the location of where to aspirate from.                
+    
+        #### The actual aliquoting of mastermix                             
+        pipette.aspirate(aspiration_vol_sample, aspiration_location)
+          ## Aspirate the amount specified in aspiration_vol from the       
+          ## location specified in aspiration_location.                     
+        pipette.dispense(dispension_vol_sample, well)
+          ## Dispense the amount specified in dispension_vol to the         
+          ## location specified in well (so a new well every time the       
+          ## loop restarts)                                                 
+        pipette.dispense(10, aspiration_location)
+          ## Alternative for blow-out, make sure the tip doesn't fill      
+          ## completely when using a disposal volume by dispensing some     
+          ## of the volume after each pipetting step. (blow-out to many     
+          ## bubbles)                                                       
+    pipette.drop_tip()    
+# ADDING SAMPLES---------------------------------------------------------------
+
+# =============================================================================
     

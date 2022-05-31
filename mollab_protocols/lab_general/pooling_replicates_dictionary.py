@@ -55,7 +55,7 @@ replicates = 3
   ## For now 3 is max. If you want more, protocol needs to be adjusted
 
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol 
 # =============================================================================
 
@@ -153,14 +153,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LABWARE OFFSET===============================================================    
 # =============================================================================
-    for labware in labwares:
-        offset_x = offsets.at[labwares[labware],'x_offset']
-        offset_y = offsets.at[labwares[labware],'y_offset']
-        offset_z = offsets.at[labwares[labware],'z_offset']
-        labware.set_offset(
-            x = offset_x, 
-            y = offset_y, 
-            z = offset_z)
+    if not simulate:
+        for labware in labwares:
+            offset_x = offsets.at[labwares[labware],'x_offset']
+            offset_y = offsets.at[labwares[labware],'y_offset']
+            offset_z = offsets.at[labwares[labware],'z_offset']
+            labware.set_offset(
+                x = offset_x, 
+                y = offset_y, 
+                z = offset_z)
 # =============================================================================
 
 # SETTING LOCATIONS============================================================

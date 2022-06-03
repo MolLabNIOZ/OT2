@@ -210,7 +210,7 @@ def run(protocol: protocol_api.ProtocolContext):
     protocol.pause(
         'Make sure all plates are spun down! '
         'Plates should not be on a plate_holder, ' 
-        'but directly placed into the robot deck slot'
+        'but directly placed into the robot deck slot. '
         'Plates can be covered with piercable seals.')
     
     if replicates == 2:

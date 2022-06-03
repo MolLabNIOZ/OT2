@@ -54,7 +54,7 @@ for 1.5mL tubes you can change the location.
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'D9'
 # If mastermix dispense > 19: What is the starting position of the 200µL tips?
 starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
@@ -70,7 +70,7 @@ number_of_NTCs = 0
   ## NOTE: The NTC come after samples and std_samples                     
 
 # What is the total volume (µL) of your mix?
-start_vol = 1520
+start_vol = 2014
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.  
   
@@ -80,10 +80,10 @@ qPCR = True
   ## Lights off if qPCR, standard sample and/or standard dilution series 
 if qPCR:  
     # How many dilution serie replicates do you want to include?
-    number_of_std_series = 0 
+    number_of_std_series = 2 
       ## If none -- fill in 0
     # How many dilutions are in the standard dilution series?
-    length_std_series = 0
+    length_std_series = 8
       ## length_of_std_series  MAX == 8                                     
     # How many replicates of the standard sample are you taking?
     number_of_std_samples = 0
@@ -109,7 +109,7 @@ dispension_vol = 19
 # What labware are your samples in?
 sample_tube_type = 'PCR_strip'
   ## Samples in strips = 'PCR_strip'                                       
-  ## Samples in plate = 'plate_96'  
+  ## Primers in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'                                         
 # In which columns are the strips in the plate (ignore if not using strips)?
 sample_columns = ['2', '7','11']
@@ -119,7 +119,7 @@ sample_columns = ['2', '7','11']
 sample_vol = 1
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A2'
+first_sample = 'A1'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -143,7 +143,7 @@ if redo:
 replicates = 2
   ## If you want all samples to be included in duplicate or triplicate (or more)
   ## indicate that here. replicates = 1, means every sample is added once.
-  ## Replicates = 2, means every sample is added in duplo
+  ## Replicated = 2, means every sample is added in duplo
   ## Replicates = 3, means every sample is added im trplo, etc...
   ## Replicates come after the entire sample set, before NTCs, std_samples and
   ## dilution series.
@@ -295,7 +295,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'pcrstrips_96_wellplate_200ul',
             11,
             'sample_source_4')
-    
+        
     if simulate: #Simulator
         if mastermix_tube_type == 'tube_5mL': 
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"

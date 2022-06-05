@@ -94,8 +94,8 @@ metadata = {
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Aliquoting mastermix;
-    Adding samples from different labware.
+    pooling replicate PCR reactions into one of the reaction tubes
+    
     """
 # =============================================================================
 

@@ -7,7 +7,7 @@ waar moeten die standaarden komen? aparte rack? vaste wells in sample rack?
 ook is er iets met de vt, dieameter top is unbound?
 """
 
-#%% VARIABLES TO SET#!!!=========================================================
+# VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
 starting_tip_p20 = 'A1'
@@ -22,7 +22,7 @@ number_of_samples = 10
 # Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
   ## For volume < 1300: 'tube_1.5mL'                                        
   ## For volume > 1300: 'tube_5mL'  
-Qmix_tube_type = 'tube_5mL'
+Qmix_tube_type = 'tube_1.5mL'
 
 
 # What labware are your samples in?
@@ -48,7 +48,7 @@ simulate = True
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
-#%% IMPORT STATEMENTS============================================================
+# IMPORT STATEMENTS============================================================
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.
@@ -67,14 +67,11 @@ if simulate: #Simulator
 else: #Robot
     from data.user_storage.mollab_modules import volume_tracking_v1 as vt
   
-#%% CALCULATED AND SET VARIABLES=================================================
+# CALCULATED AND SET VARIABLES=================================================
 # =============================================================================
-# Setting callibration data per labware for both robot and simulator
-if simulate: #Simulator
-    offsets = pd.read_csv("mollab_protocols/labware_offsets_for_simulate.csv",
-                          sep=';')
-    offsets = offsets.set_index('labware')
-else: #Robot
+# If not simulated, import the .csv from the robot with robot_specific 
+# labware off_set values
+if not simulate:
     offsets = pd.read_csv(
         "data/user_storage/mollab_modules/labware_offset.csv", sep=';')
     offsets = offsets.set_index('labware')
@@ -94,6 +91,8 @@ std_vol = 2
 # Volume of the sample to add
 sample_vol = 1
 
+std_wells =  ['A1', 'B1']
+
 start_vol = (number_of_samples*dispension_vol_sample) + (8*dispension_vol_std)
 
 if sample_tube_type == 'tube_1.5mL':
@@ -107,7 +106,7 @@ sample_racks = math.ceil(number_of_samples / samples_per_rack)
 # =============================================================================
 
 
-#%% METADATA=====================================================================
+# METADATA=====================================================================
 # =============================================================================
 metadata = {
     'protocolName': 'Qubit - mix and samples',
@@ -124,20 +123,25 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES ================================================
 # =============================================================================
+    # Create empty dict to add labware and labware_names to     
+    labwares ={}    
 
     # Pipette tips
     tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul',
         10,
         '200tips')
+    labwares[tips_200] = 'filtertips_200'
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',
         8,
         '20tips_1')
+    labwares[tips_20_1] = 'filtertips_20'
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',
         11,
         '20tips_2')
+    labwares[tips_20_2] = 'filtertips_20'
     tips_20 = [tips_20_1, tips_20_2]
     
     # Tube racks & plates
@@ -146,30 +150,36 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
         1,
         'Qubit_mix_tube')
+        labwares[Qmix_tube] = '1.5mL_tubes'
 
     if sample_tube_type == 'tube_1.5mL':
         sample_source_1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             2,
             'sample_source_1')
+        labwares[sample_source_1] = '1.5mL_tubes'
         sample_source_2 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'sample_source_2')
+        labwares[sample_source_2] = '1.5mL_tubes'
         sample_source_3 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             5,
             'sample_source_3')
+        labwares[sample_source_3] = '1.5mL_tubes'
         sample_source_4 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             6,
             'sample_source_4')
+        labwares[sample_source_4] = '1.5mL_tubes'
     
     if sample_tube_type == 'plate_96':
         sample_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
             2,                                  
             'sample_source_1')
+        labwares[sample_source_1] = 'plate_96'
 
     if simulate: #Simulator
         with open("labware/biorad_qpcr_plate_nioz_plateholder/"
@@ -179,62 +189,80 @@ def run(protocol: protocol_api.ProtocolContext):
             labware_def_niozplate,
             7,
             '96well_plate')
+        labwares[destination_plate] = 'plate_96'
         if Qmix_tube_type == 'tube_5mL':
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-                      labware_def_5mL = json.load(labware_file)
+                 "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file: 
+                labware_def_5mL = json.load(labware_file)
             Qmix_tube = protocol.load_labware_from_definition( 
                 labware_def_5mL,           
                 1,                         
                 'Qubit_mix_tube')
+            labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strip':
             with open("labware/pcrstrips_96_wellplate_200ul/"
                       "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                    labware_def_pcrstrips = json.load(labware_file)
+                labware_def_pcrstrips = json.load(labware_file)
             sample_source_1 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips,     
                 2,                         
-                'sample_source_1')         
+                'sample_source_1')    
+            labwares[sample_source_1] = 'pcr_strips'
             sample_source_2 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 3,                     
                 'sample_source_2')    
+            labwares[sample_source_2] = 'pcr_strips'
             sample_source_3 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips,
                 5,                   
-                'sample_source_3')    
+                'sample_source_3')   
+            labwares[sample_source_3] = 'pcr_strips'
             sample_source_4 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips,
                 6,                   
-                'sample_source_4')     
+                'sample_source_4')    
+            labwares[sample_source_4] = 'pcr_strips'
     else: 
         destination_plate = protocol.load_labware(
             'biorad_qpcr_plate_nioz_plateholder',
             7,
             '96well_plate')
+        labwares[destination_plate] = 'plate_96'
         if Qmix_tube_type == 'tube_5mL':
             Qmix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
                 1,                                     
                 'Qubit_mix_tube') 
+            labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strips':
             sample_source_1 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',        
                 2,                                     
-                'sample_source_1')                      
+                'sample_source_1')
+            labwares[sample_source_1] = 'pcr_strips'                      
             sample_source_2 = protocol.load_labware_( 
                 'pcrstrips_96_wellplate_200ul',    
                 3,                                 
-                'sample_source_2')                 
+                'sample_source_2')         
+            labwares[sample_source_2] = 'pcr_strips'
             sample_source_3 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',    
                 5,                                
                 'sample_source_3') 
+            labwares[sample_source_3] = 'pcr_strips'
             sample_source_4 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',    
                 6,                                
                 'sample_source_4') 
+            labwares[sample_source_4] = 'pcr_strips'
    
+    std_tube = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+        4,
+        'std_source')
+    labwares[std_tube] = '1.5mL_tubes'
+
     # Pipettes
     p300 = protocol.load_instrument(
         'p300_single_gen2',             
@@ -246,16 +274,29 @@ def run(protocol: protocol_api.ProtocolContext):
         tip_racks=tips_20)
 # =============================================================================
 
+# LABWARE OFFSET===============================================================    
+# =============================================================================
+    if not simulate:
+        for labware in labwares:
+            offset_x = offsets.at[labwares[labware],'x_offset']
+            offset_y = offsets.at[labwares[labware],'y_offset']
+            offset_z = offsets.at[labwares[labware],'z_offset']
+            labware.set_offset(
+                x = offset_x, 
+                y = offset_y, 
+                z = offset_z)
+# =============================================================================    
+
 # PREDIFINED VARIABLES=========================================================
 # =============================================================================
     aspiration_vol_std = (dispension_vol_std + (dispension_vol_std/100*2))
-    aspiraton_vol_sample = (
+    aspiration_vol_sample = (
         dispension_vol_sample + (dispension_vol_sample/100*2))
       ## The aspiration_vol is the volume (µL) that is aspirated from the   
       ## container.                                                         
     
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height(Qmix_tube, start_vol)
+    start_height = vt.cal_start_height(Qmix_tube_type, start_vol)
       ## Call start height calculation function from volume tracking module.
     current_height = start_height
       ## Set the current height to start height at the beginning of the     
@@ -281,8 +322,9 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_wells.append(well)
         
     # Create a list of wells where the standards should go.
-    std_wells = destination_wells[0:8]
-    
+    std_wells_0 = destination_wells[0:4]
+    std_wells_1 = destination_wells[4:8]
+    std_wells = std_wells_0 + std_wells_1
     # Create a list of wells where the samples should go.
     #first we need to slice the list after the standards and after the samples
     slice_sample_wells = slice(8, 8 + number_of_samples)
@@ -359,7 +401,10 @@ def run(protocol: protocol_api.ProtocolContext):
     
     ## Cut sample slice out of sample_source_wells list
     sample_sources = sample_source_wells[slice_sample_sources]
-
+    
+    ## Determine standard source
+    std_source_0 = std_tube.wells_by_name()['A1']
+    std_source_1 = std_tube.wells_by_name()['B1']
 # =============================================================================
 
 # PIPETTING====================================================================    
@@ -448,7 +493,31 @@ def run(protocol: protocol_api.ProtocolContext):
           ## of the volume after each pipetting step. (blow-out to many     
           ## bubbles)                                                       
     pipette.drop_tip()    
+# ADDING STANDARDS-------------------------------------------------------------
+    for well in std_wells_0:
+        p20.pick_up_tip()
+        p20.aspirate(std_vol, std_source_0)
+        p20.dispense(std_vol, well)           
+        p20.mix(3, std_mix_vol, well)
+        p20.dispense(10, well)
+        p20.drop_tip()
+    for well in std_wells_1:
+        p20.pick_up_tip()
+        p20.aspirate(std_vol, std_source_1)
+        p20.dispense(std_vol, well)           
+        p20.mix(3, std_mix_vol, well)
+        p20.dispense(10, well)
+        p20.drop_tip()
 # ADDING SAMPLES---------------------------------------------------------------
-
+    ## Loop through source and destination wells
+    for sample_tube, well in zip(sample_sources, sample_wells):
+        p20.pick_up_tip()
+        p20.aspirate(sample_vol, sample_tube)
+        p20.dispense(sample_vol, well)
+        sample_mix_vol = sample_vol + 3
+          ## primer_mix_vol = volume for pipetting up and down              
+        p20.mix(3, sample_mix_vol, well)
+        p20.dispense(10, well)
+        p20.drop_tip()
 # =============================================================================
     

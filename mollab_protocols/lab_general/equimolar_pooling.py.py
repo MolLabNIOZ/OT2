@@ -22,9 +22,9 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 DNA_µL_list = ([4.0, 0.26666666666666666, 1.1111111111111112, 
-                0.42105263157894735, 8.0, 
-                30.769230769230766, 0.4444444444444444, 
-                1.0, 4.444444444444445, 13.333333333333334])
+                0.42105263157894735, 8.0, 0.4444444444444444, 
+                1.0, 4.444444444444445, 13.333333333333334,  
+                30.769230769230766])
 
 # What labware are your samples in?
 sample_tube_type = 'plate_96' 
@@ -53,11 +53,15 @@ import pandas as pd
 
 # CALCULATED VARIABLES=========================================================
 # ============================================================================= 
+# Calculate the total pool volume, to determine what kind of tube to use
 total_pool_volume = sum(DNA_µL_list)
 
-if above(total_pool_volume, 19):
+
+# Check what pipette(s) + tips are needed
+if any(i >= 19 for i in DNA_µL_list):
     p200 = True
-    
+if any(i < 19 for i in DNA_µL_list):
+    p20 = True
 
 # If not simulated, import the .csv from the robot with robot_specific 
 # labware off_set values
@@ -88,8 +92,32 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     labwares = {}
       ## empty dict to add labware and labware_names to, to loop through
-
-
+      
+    ##### Loading pipettetips
+    if p200:
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  
+            11,                                  
+            '200tips')
+        labwares[tips_200_1] = 'filtertips_200'
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',  
+            10,                                  
+            '200tips')
+        labwares[tips_200_2] = 'filtertips_200'
     
+    if p20:
+        tips_20_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  
+            8,                                  
+            '20tips')
+        labwares[tips_20_1] = 'filtertips_20'
+        tips_20_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_20ul',  
+            7,                                  
+            '20tips')
+        labwares[tips_20_2] = 'filtertips_20'
+        
     
-    
+    ##### Loading labware
+        

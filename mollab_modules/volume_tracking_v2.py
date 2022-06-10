@@ -1,10 +1,12 @@
 # =============================================================================
 # Author(s): Maartje Brouwer & Sanne Vreugdenhil
 # Creation date: 210312
-# Version: 1 (210615)
+# Version: 2 (220610)
 # Description: Module for volume tracking in different liquid containers
 #   Treats the entire tube as a cylindrical shape. Works good for
 #   volume tracking in 1.5mL, 5mL, 5mL screwcap, 15mL and 50mL tubes.
+# Update: Now also for filling up a tube
+#   Needs direction (filling or emptying) as input
 # =============================================================================
 
 ##### Import statements
@@ -68,7 +70,7 @@ def cal_start_height(container, start_vol):
     return start_height
 
 
-def volume_tracking(container, dispension_vol, current_height):
+def volume_tracking(container, dispension_vol, current_height, direction):
     """
     At this moment the OT-2 doesn't have a volume tracking function.
     By default, aspiration occurs from the bottom of a container. When a
@@ -95,6 +97,7 @@ def volume_tracking(container, dispension_vol, current_height):
         current_vol = current volume during the run. At the start of the
         protocol this should be set at the start_vol of the protocol.
         aspiration_vol = the volume that will be aspirated in the tracked steps
+        direction = 'emptying' or 'filling'
     
     Output of this function is:
         current_height = the height of the current liquid level in mm from the 
@@ -103,7 +106,7 @@ def volume_tracking(container, dispension_vol, current_height):
         container between before and after aspiration. Delta_height is returned 
         so that in the main protocol a safety-step can be implemented:
         (if current_height - delta_height <= 1: some kind of error handling)
-    """
+        """
 
     ##### Defining container dimensions
     ## Depending on the type of container, these are the dimensions         ##
@@ -133,10 +136,15 @@ def volume_tracking(container, dispension_vol, current_height):
     delta_height =  (dispension_vol/(math.pi*((radius)**2)))
 
     ##### Update current_height 
-    current_height = current_height - delta_height
+    if direction == 'emptying': 
+        current_height = current_height - delta_height
+    elif direction == 'filling': 
+        current_height = current_height + delta_height
     ## The current_height (after aspiration) must be updated before the     ##
     ## actual aspiration, because during aspiration the liquid will reach   ## 
-    ## that level.                                                          ##
+    ## that level.
+
+    ##### Tweaks                                                            ##
     if container == 'tube_15mL' and current_height < offset_height:
         current_height = current_height - 1
     ## Volume tracking when assuming the entire tube is cylindrical doesn't ##
@@ -156,3 +164,4 @@ def volume_tracking(container, dispension_vol, current_height):
     # not thoroughly tested for other tubes yet!!!
     
     return current_height, pip_height, bottom_reached
+

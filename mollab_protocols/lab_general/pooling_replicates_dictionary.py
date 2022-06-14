@@ -212,6 +212,8 @@ def run(protocol: protocol_api.ProtocolContext):
         'Plates should not be on a plate_holder, ' 
         'but directly placed into the robot deck slot. '
         'Plates can be covered with piercable seals.')
+    protocol.pause(
+        'Make sure all plates are in the same orientation!')
     
     if replicates == 2:
         for well_PCR2, well_PCR1 in zip(PCR2_wells, PCR1_wells):
@@ -232,8 +234,10 @@ def run(protocol: protocol_api.ProtocolContext):
             pipette.drop_tip()        
 # =============================================================================
 
-    # Turn off lights
-    protocol.set_rail_lights(False)
+# TURN RAIL LIGHT OFF==========================================================
+# =============================================================================
+    protocol.set_rail_lights(False)   
+# =============================================================================
 
     
     

@@ -24,10 +24,10 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([10.5, 5.8, 55.49, 46.32, 70.34, 109.14, 5.08, 123.07, 117.81, 53.28, 25.8, 46.16, 68.43, 113.02, 143.72, 99.26, 79.04, 93.55, 131.65, 119.33, 55.57, 70.09, 127.92, 22.58, 60.62, 42.38, 138.32, 133.49, 38.96, 141.98, 87.17, 117.32, 65.85, 55.38, 84.06, 91.08, 134.35, 147.97, 111.36, 108.35, 104.91, 68.61, 45.61, 124.27, 29.2, 110.92, 35.81, 75.96, 60.82, 82.27, 19.72, 81.91, 102.18, 139.34, 56.24, 44.56, 17.29, 36.73, 68.33, 127.58, 80.11, 90.52, 121.69, 84.16, 23.54, 146.34, 63.79, 37.46, 103.5, 31.31, 78.38, 65.99, 80.76, 98.05, 110.84, 55.52, 37.58, 142.58, 120.97, 88.87, 116.75, 70.94, 18.28, 102.05, 95.66, 86.03, 100.24, 77.25, 145.53, 103.63, 87.87, 128.52, 16.76, 31.99, 134.83, 30.58])
+DNA_µL_list = ([55.49, 46.32, 70.34, 109.14, 5.08, 123.07, 117.81, 53.28, 25.8, 46.16, 68.43, 113.02, 143.72, 99.26, 79.04, 93.55, 131.65, 119.33, 55.57, 70.09, 127.92, 22.58, 60.62, 42.38, 138.32, 133.49, 38.96, 141.98, 87.17, 117.32, 65.85, 55.38, 84.06, 91.08, 134.35, 147.97, 111.36, 108.35, 104.91, 68.61, 45.61, 124.27, 29.2, 110.92, 35.81, 75.96, 60.82, 82.27, 19.72, 81.91, 102.18, 139.34, 56.24, 44.56, 17.29, 36.73, 68.33, 127.58, 80.11, 90.52, 121.69, 84.16, 23.54, 146.34, 63.79, 37.46, 103.5, 31.31, 78.38, 65.99, 80.76, 98.05, 110.84, 55.52, 37.58, 142.58, 120.97, 88.87, 116.75, 70.94, 18.28, 102.05, 95.66, 86.03, 100.24, 77.25, 145.53, 103.63, 87.87, 128.52, 16.76, 31.99, 134.83, 30.58, 10.5, 5.8, 55.49, 46.32, 70.34, 109.14, 5.08, 123.07, 117.81, 53.28, 25.8, 46.16, 68.43, 113.02, 143.72, 99.26, 79.04, 93.55, 131.65, 119.33, 55.57, 70.09, 127.92, 22.58, 60.62, 42.38, 138.32, 133.49, 38.96, 141.98, 87.17, 117.32, 65.85, 55.38, 84.06, 91.08, 134.35, 147.97, 111.36, 108.35, 104.91, 68.61, 45.61, 124.27, 29.2, 110.92, 35.81, 75.96, 60.82, 82.27, 19.72, 81.91, 102.18, 139.34, 56.24, 44.56, 17.29, 36.73, 68.33, 127.58, 80.11, 90.52, 121.69, 84.16, 23.54, 146.34, 63.79, 37.46, 103.5, 31.31, 78.38, 65.99, 80.76, 98.05, 110.84, 55.52, 37.58, 142.58, 120.97, 88.87, 116.75, 70.94, 18.28, 102.05, 95.66, 86.03, 100.24, 77.25, 145.53, 103.63, 87.87, 128.52, 16.76, 31.99, 134.83, 30.58])
 
 # Specify the number of samples, to check if the number of volumes is correct    
-number_of_samples = 96
+number_of_samples = 190
 
 # What labware are your samples in?
 sample_tube_type = 'plate_96' 
@@ -84,17 +84,19 @@ if total_cleanup_volume <= 1500:
     pool_tube_type = 'tube_1.5mL'
 elif total_cleanup_volume <=5000:
     pool_tube_type = 'tube_5mL'
-
 ## NO OFFSETS YET!
 # else:
 #     raise Exception("There are no offsets available for 15mL/50mL tubes")
 elif total_cleanup_volume <=15000:
     pool_tube_type = 'tube_15mL'
-elif total_cleanup_volume <=50000:
-    pool_tube_type = 'tube_50mL'
 else:
-    raise Exception("This will not fit a 50mL tube, "
-    "please divide your samples in 2 and pool in 2 runs.")
+    pool_tube_type = 'tube_50mL'
+
+# Info for comment about how many tubes with how much PB to insert
+# And to keep track if more than 1 tube is needed
+amount_of_tubes = math.ceil(total_cleanup_volume/50000)
+PB_volume = PB_volume / amount_of_tubes
+pool_volume_per_tube = total_pool_volume / amount_of_tubes
 
         
 # Check what pipette(s) + tips are needed
@@ -329,6 +331,7 @@ def run(protocol: protocol_api.ProtocolContext):
                             'samples5')
                         labwares[samples5] = '1.5mL_tubes'
     
+    ## Pipettes
     if pipette_p300:
         p300 = protocol.load_instrument(
             'p300_single_gen2',             
@@ -420,7 +423,7 @@ def run(protocol: protocol_api.ProtocolContext):
 ## PIPETTING===================================================================
 ## ============================================================================
 ## COMMENTS--------------------------------------------------------------------    
-    protocol.pause("Insert a " + pool_tube_type + 
+    protocol.pause("Insert " + str(amount_of_tubes) + " " + pool_tube_type + 
                    " containing " + str(round(PB_volume/1000,3)) + 
                    "mL PB buffer into slot A1 of "
                    "the appropriate rack on slot 5")
@@ -429,6 +432,7 @@ def run(protocol: protocol_api.ProtocolContext):
     protocol.set_rail_lights(True)
 ## ----------------------------------------------------------------------------
 ## THE ACTUAL POOLING----------------------------------------------------------
+    pooled_volume = 1
     for volume, well in zip(DNA_µL_list, sample_wells):
         ## for each well do the following
         
@@ -452,8 +456,16 @@ def run(protocol: protocol_api.ProtocolContext):
         # Take an air gap, to prevent cross_contamination
         pipette.aspirate(1, well.top())
         
+        # Determine tube to pool in
+        pool_tube_number = math.ceil(pooled_volume / pool_volume_per_tube) - 1     
+        pool_tube_well = str(pool_tube.wells()[pool_tube_number])
+        pool_tube_well = pool_tube_well.split(" ", 1)[0]
+        
         # Dispense in the pool_tube, 
-        pipette.dispense(volume + 10, pool_tube['A1'].bottom(pip_height))
+        pipette.dispense(volume + 10, pool_tube[pool_tube_well].bottom(pip_height))
+        
+        # Keep track of already pooled volume, to go to next tube if necesarry 
+        pooled_volume = pooled_volume + volume
         
         # drop tip
         pipette.drop_tip()

@@ -12,9 +12,9 @@ You have to provide:
     Location of the starting tip in P20 or P200
     Type of tubes the samples are in
     
-    The protocol will tell you what tube the pool will be made in.
-    You need to add buffer PB before the start, so that there is already some 
-    liquid to pipet small volumes in. The protocol will tell you how much
+The protocol will tell you what tube the pool will be made in.
+You need to add buffer PB before the start, so that there is already some 
+liquid to pipet small volumes in. The protocol will tell you how much
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -24,10 +24,10 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([150.0, 20.95, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 147.99, 105.63, 150.0, 3.36, 6.27, 4.93, 150.0, 150.0, 150.0, 27.0, 13.51, 5.28, 20.74, 3.43, 35.95, 5.3, 45.61, 7.93, 5.34, 2.7, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 16.85, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 1.99, 9.58, 1.76, 150.0, 150.0, 8.26, 24.32, 3.49, 4.58, 5.08, 4.9, 3.05, 150.0, 3.4, 3.0, 3.29, 5.08, 3.48, 5.81, 5.11, 150.0, 4.28, 4.65, 4.23, 150.0, 2.75, 2.94, 3.0, 2.05, 2.49, 1.61, 1.32, 150.0, 1.6, 2.3, 150.0, 3.04, 8.31, 4.17, 150.0, 10.56, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 1.3, 1.5, 2.6, 1.44, 2.74, 2.31, 2.49, 2.72, 2.72, 3.6, 1.49, 2.21, 2.18, 2.18, 2.58, 4.64, 1.48, 150.0, 150.0, 2.55, 150.0, 150.0, 150.0, 150.0, 150.0, 2.06, 75.0, 75.0, 75.0])
+DNA_µL_list = ([10.5, 5.8, 55.49, 46.32, 70.34, 109.14, 5.08, 123.07, 117.81, 53.28, 25.8, 46.16, 68.43, 113.02, 143.72, 99.26, 79.04, 93.55, 131.65, 119.33, 55.57, 70.09, 127.92, 22.58, 60.62, 42.38, 138.32, 133.49, 38.96, 141.98, 87.17, 117.32, 65.85, 55.38, 84.06, 91.08, 134.35, 147.97, 111.36, 108.35, 104.91, 68.61, 45.61, 124.27, 29.2, 110.92, 35.81, 75.96, 60.82, 82.27, 19.72, 81.91, 102.18, 139.34, 56.24, 44.56, 17.29, 36.73, 68.33, 127.58, 80.11, 90.52, 121.69, 84.16, 23.54, 146.34, 63.79, 37.46, 103.5, 31.31, 78.38, 65.99, 80.76, 98.05, 110.84, 55.52, 37.58, 142.58, 120.97, 88.87, 116.75, 70.94, 18.28, 102.05, 95.66, 86.03, 100.24, 77.25, 145.53, 103.63, 87.87, 128.52, 16.76, 31.99, 134.83, 30.58])
 
 # Specify the number of samples, to check if the number of volumes is correct    
-number_of_samples = 122
+number_of_samples = 96
 
 # What labware are your samples in?
 sample_tube_type = 'plate_96' 
@@ -86,15 +86,15 @@ elif total_cleanup_volume <=5000:
     pool_tube_type = 'tube_5mL'
 
 ## NO OFFSETS YET!
-else:
-    raise Exception("There are no offsets available for 15mL/50mL tubes")
-# elif total_cleanup_volume <=15000:
-#     pool_tube_type = 'tube_15mL'
-# elif total_cleanup_volume <=50000:
-#     pool_tube_type = 'tube_50mL'
 # else:
-#     raise Exception("This will not fit a 50mL tube, "
-#     "please divide your samples in 2 and pool in 2 runs.")
+#     raise Exception("There are no offsets available for 15mL/50mL tubes")
+elif total_cleanup_volume <=15000:
+    pool_tube_type = 'tube_15mL'
+elif total_cleanup_volume <=50000:
+    pool_tube_type = 'tube_50mL'
+else:
+    raise Exception("This will not fit a 50mL tube, "
+    "please divide your samples in 2 and pool in 2 runs.")
 
         
 # Check what pipette(s) + tips are needed
@@ -452,7 +452,7 @@ def run(protocol: protocol_api.ProtocolContext):
         # Take an air gap, to prevent cross_contamination
         pipette.aspirate(1, well.top())
         
-        # Dispense in the pool_tube
+        # Dispense in the pool_tube, 
         pipette.dispense(volume + 10, pool_tube['A1'].bottom(pip_height))
         
         # drop tip

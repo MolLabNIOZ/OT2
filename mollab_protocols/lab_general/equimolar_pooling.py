@@ -54,6 +54,7 @@ import pandas as pd
   ## For accessing offset .csv file
 import math
   ## To do some calculations 
+
 if simulate: #Simulator
     from mollab_modules import volume_tracking_v2 as vt
     import json 
@@ -61,6 +62,14 @@ if simulate: #Simulator
       ## so that we can use the simulate_protocol with custom labware.     
 else: #Robot
     from data.user_storage.mollab_modules import volume_tracking_v2 as vt
+# If not simulated, import the .csv from the robot with robot_specific 
+# labware off_set values
+    offsets = pd.read_csv(
+        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+        )
+      ## import .csv
+    offsets = offsets.set_index('labware')
+      ## remove index column
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -116,16 +125,6 @@ sample_racks = math.ceil(number_of_samples / samples_per_rack)
   ## How many tube_racks are needed
 if sample_racks > 5:
     raise Exception("Sorry, this protocol can only handle 5 sample racks")
-
-# If not simulated, import the .csv from the robot with robot_specific 
-# labware off_set values
-if not simulate:
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-        )
-      ## import .csv
-    offsets = offsets.set_index('labware')
-      ## remove index column
 # =============================================================================
 #%%
 # METADATA=====================================================================
@@ -345,6 +344,19 @@ def run(protocol: protocol_api.ProtocolContext):
             tip_racks=[tips_20_1,tips_20_2])
 # =============================================================================
 
+# LABWARE OFFSET===============================================================    
+# =============================================================================
+    if not simulate:
+        for labware in labwares:
+            offset_x = offsets.at[labwares[labware],'x_offset']
+            offset_y = offsets.at[labwares[labware],'y_offset']
+            offset_z = offsets.at[labwares[labware],'z_offset']
+            labware.set_offset(
+                x = offset_x, 
+                y = offset_y, 
+                z = offset_z)
+# =============================================================================
+
 # PREDIFINED VARIABLES=========================================================
 # =============================================================================
     ##### Variables for volume tracking
@@ -425,7 +437,7 @@ def run(protocol: protocol_api.ProtocolContext):
 ## COMMENTS--------------------------------------------------------------------    
     protocol.pause("Insert " + str(amount_of_tubes) + " " + pool_tube_type + 
                    " containing " + str(round(PB_volume/1000,3)) + 
-                   "mL PB buffer into slot A1 of "
+                   "mL PB buffer into"
                    "the appropriate rack on slot 5")
 ## ----------------------------------------------------------------------------   
 ## LIGHTS----------------------------------------------------------------------    

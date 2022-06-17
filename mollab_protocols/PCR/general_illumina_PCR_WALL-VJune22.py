@@ -1,14 +1,18 @@
 """
-VERSION: V_Dec21
-general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for the adding
-of mastermix and barcoded primers to a 96-wells plate
+VERSION: V_June22
+general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for 
+the addition of mastermix and barcoded primers to a 96-wells plate
+For the previous version, F and R primers were combined in a PCR strip
+prior to running this protocol. For this version (June22) the protocol will 
+pipette 96 forward primers always from the same wells, and 96 reverse primers
+with a shift in barcodes specific for that protocol.
 
 You have to provide:
     Location of the starting tips in both the P20 and P200 
     Number of samples (excl. NTC and mock)
     Number of NTCs 
         NOTE: The NTC should ALWAYS be at the end of the plate, this is
-        for the protocol for EVE (who skips the last well)
+        for the protocol for EVE (that skips the last well)
     Do you want the robot to add a mock sample?:
         if True -- robot adds an extra well + primer combination 
     Volume of your mastermix
@@ -16,14 +20,10 @@ You have to provide:
     Tube your mastermix is in (1.5mL or 5mL tube)
         (Location of your mastermix tube in the rack)
     Volume of the mastermix that is to be dispensed
-    Tube your primers are in (PCR strips or 96-well plate)
-        (If primers are in strips, you need to provide in which columns of
-         the rack you are putting the strips. Usually columns 2, 5, 8 and 11
-         are used)
     Volume of the primer that is to be dispensed
     
 The number of unique primer combinations is based on the number of samples +
-the number of NTCs + the mock. 
+the number of NTCs + the mock. The maximum is 96!
 
 You can choose whether you want to do a qPCR or not.
 
@@ -39,6 +39,9 @@ In addition for the qPCR:
         NOTE: the standard series are pipetted into the last 3 columns of 
         the plate. The standard sample is pipetted in the wells directly 
         following the sample wells (incl. NTC and mock).
+    A big_primer_source is added on deck position 8, this is a 1.5mL tube
+    that contains 1 primerpair that is to be added to the standard series and
+    the standard sample.
 
 Updates:
 (SV) 211027: 
@@ -51,6 +54,11 @@ Updates:
     - primer for standards is added from a separate tube to standard series
     and standard sample
     - clean up
+(SV) 220616:
+    - major update of the protocol, remove option for strips, pipette a forward
+    and a reverse primer, starting well of reverse primer changable so that
+    the lab team can provide a protocol with unique barcode combinations for 
+    each user
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -61,7 +69,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 28   
+number_of_samples = 3   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -73,7 +81,7 @@ number_of_NTCs = 1
   ## NOTE: The NTC should ALWAYS be at the end of your plate!!              
 
 # Will a mock sample be included?
-mock = False
+mock = True
   ## True if mock has to be added by the robot.                             
   ## False if mock is not added by the robot.                               
 
@@ -83,7 +91,7 @@ start_vol = 1108.8
   ## labware at the start of the protocol.                                  
   
 # Are you doing a qPCR or a regular PCR?
-qPCR = False
+qPCR = True
   ## True or False                                                          
   ## Lights off if qPCR, standard sample and/or standard dilution series                                        ##
 if qPCR:
@@ -116,29 +124,28 @@ mastermix_source = 'C1'
   ## if mastermix_tube_type ==   'tube_1.5mL'  -->  D1 
   ## if mastermix_tube_type ==   'tube_5mL'    -->  C1
     
-# What labware are your primers in?
-primer_tube_type = 'PCR_strips'
-  ## Primers in strips = 'PCR_strips'                                       
-  ## Primers in plate = 'plate_96'                                          
+                                     
 # What is the volume (µL) of primer that needs to be added to the mix?
-primer_vol = 1
-# In which columns are the strips in the plate (ignore if not using strips)?
-primer_loc = ['2', '7', '11']
-  ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
-  ## max 4 racks with strips!                                               
-  
+primer_vol = 1.5                                       
+
+
+# =============================================================================
+# IMPORTANT: this is only to be changed by the lab team
+
 # Do you want to simulate the protocol?
 simulate = True
-  ## True for simulating protocol, False for robot protocol                 
+  ## True for simulating protocol, False for robot protocol      
+
+# In what well should WALL-E start pipetting?
+first_R_primer = 'F12'         
+# record this in the name of the protocol so that user knows which reverse 
+# primer is added to his PCR
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.                                      
-import math
-  ## To do some calculations  
-  
 if simulate: #Simulator
     from mollab_modules import volume_tracking_v1 as vt
     import json 
@@ -155,20 +162,6 @@ number_of_primers = number_of_samples + number_of_NTCs
 if mock:
     number_of_primers = number_of_primers + 1    
       ## If a mock is used, there should be 1 more unique primer pair.     
-      
-if primer_tube_type == 'PCR_strips':
-    if len(primer_loc) == 3:
-        primer_racks = math.ceil(number_of_primers / 24)  
-    if len(primer_loc) == 4: 
-        primer_racks = math.ceil(number_of_primers / 32)     
-  ## How many tube_strip_racks are needed (1,2 or 3)
-
-if primer_tube_type == 'plate_96':
-    primer_racks = math.ceil(number_of_primers / 96)
-  ## *this isn't really used yet as we also only add one sample plate
-  ##  so for now we cannot add >primer pairs, but if we add another 
-  ##  destination plate it would be possible -- didn't do this because
-  ##  we don't have plates with more than 96 primer combinatons
 # =============================================================================
 
 # METADATA=====================================================================
@@ -237,12 +230,15 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             3,
             'mastermix_tube')
-    
-    if primer_tube_type == 'plate_96':
-        primer_source_1 = protocol.load_labware(
-            'biorad_96_wellplate_200ul_pcr',    
-            1,                                  
-            'primer_source_1')                         
+
+    F_primer_source = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',    
+        4,                                  
+        'F_primer_source')     
+    R_primer_source = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',    
+        1,                                  
+        'R_primer_source')                    
                         
     if simulate: #Simulator
         if mastermix_tube_type == 'tube_5mL': 
@@ -253,45 +249,13 @@ def run(protocol: protocol_api.ProtocolContext):
                 labware_def_5mL,           
                 3,                         
                 'mastermix_tube')           
-        if primer_tube_type == 'PCR_strips':
-            with open("labware/pcrstrips_96_wellplate_200ul/"
-                      "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                    labware_def_pcrstrips = json.load(labware_file)
-            primer_source_1 = protocol.load_labware_from_definition( 
-                labware_def_pcrstrips,     
-                4,                         
-                'primer_source_1')         
-            if primer_racks >=2:
-                primer_source_2 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips, 
-                    1,                     
-                    'primer_source_2')    
-            if primer_racks >=3:
-                primer_source_3 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips,
-                    11,                   
-                    'primer_source_3')      
+        
     else: #Robot
         if mastermix_tube_type == 'tube_5mL': 
             mastermix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
                 3,                                     
                 'mastermix_tube')                               
-        if primer_tube_type == 'PCR_strips':
-            primer_source_1 = protocol.load_labware( 
-                'pcrstrips_96_wellplate_200ul',        
-                4,                                     
-                'primer_source_1')                      
-            if primer_racks >=2:
-                primer_source_2 = protocol.load_labware( 
-                    'pcrstrips_96_wellplate_200ul',    
-                    1,                                 
-                    'primer_source_2')                 
-            if primer_racks >=3:
-                primer_source_3 = protocol.load_labware( 
-                    'pcrstrips_96_wellplate_200ul',    
-                    11,                                
-                    'primer_source_3')  
            
     # Pipettes
     if dispension_vol >= 19:
@@ -372,42 +336,51 @@ def run(protocol: protocol_api.ProtocolContext):
     MasterMixAliquots = sample_wells + std_wells
     
     # Primer locations
-    primer_wells = []
-    if primer_tube_type == 'PCR_strips':
-        primer_columns = []
-        if primer_racks >= 1:
-            primer_columns_1 = (
-                ([primer_source_1.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_1:
-                primer_columns.append(column)
-        if primer_racks >= 2:
-            primer_columns_2 = (
-                ([primer_source_2.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_2:
-                primer_columns.append(column)
-        if primer_racks >= 3:
-            primer_columns_3 = (
-                ([primer_source_3.columns_by_name()[column_name] 
-                  for column_name in primer_loc]))
-            for column in primer_columns_3:
-                primer_columns.append(column)
-            ## Make a list of columns, this is a list of lists!             
-        for column in primer_columns:
-            for well in column:
-                primer_wells.append(well)
-    if primer_tube_type == 'plate_96':
-        if primer_racks == 1:
-            for well in primer_source_1.wells():
-                primer_wells.append(well)
-        if primer_racks == 2: 
-            for well in primer_source_2.wells():
-                primer_wells.append(well)
-        if primer_racks == 3:
-            for well in primer_source_3.wells():
-                primer_wells.append(well)
-    primer_wells = primer_wells[:number_of_primers]
+    F_primer_wells = []
+    for well in F_primer_source.wells():
+        F_primer_wells.append(well)  
+    F_primer_wells = F_primer_wells[:number_of_primers]
+    
+    R_primer_wells = []
+    R_primer_wells_string = [] 
+      # The string list is needed to be able to start at a different well.
+    for well in R_primer_source.wells():
+        R_primer_wells.append(well)
+        R_primer_wells_string.append(str(well))
+    
+    # Creating a list of R primers, starting anywhere in the plate, making it
+    # possible that after it reached the end of the plate, we start at the 
+    # beginning again.
+    # Indicate the index of the R primer that should be the first.
+    first_R_primer_index = R_primer_wells_string.index(
+        first_R_primer + ' of R_primer_source on 1')
+    # Indicate the index of the first well in the plate.
+    first_R_primer_on_plate_index = 0
+    # Indicate the index of the last primer in the plate.
+    last_R_primer_on_plate_index = 96
+    # Create a list with wells from the R primer that is indicated as the first
+    # R primer to the last well of the plate.
+    slice_from_starting_R_primer_to_end = slice(
+        first_R_primer_index, last_R_primer_on_plate_index)
+    from_starting_R_primer_to_end = R_primer_wells[
+        slice_from_starting_R_primer_to_end]
+    # Create a list with wells from the first well of the plate to the R
+    # primer that is indicated as the first.
+    slice_from_start_to_starting_R_primer = slice(
+        first_R_primer_on_plate_index, first_R_primer_index)
+    from_start_to_starting_R_primer = R_primer_wells[
+        slice_from_start_to_starting_R_primer]
+    # Adding both lists to each other, so that we have a list of wells that 
+    # starts at the well with indicated first R primer and ends at the last 
+    # well before that first R primer.
+    R_primers = from_starting_R_primer_to_end + from_start_to_starting_R_primer
+
+    # Creating the list with wells for the amount of primer combinations that
+    # are needed. WALL-E will start at the given first R primer, and end after
+    # the given number of primers were pipetted. WALL-E will start at the 
+    # beginning of the R primer plate if it needs to pipette more primers 
+    # than remain after the given well.
+    R_primer_wells = R_primers[:number_of_primers]
     
     # Set location for primer for standards
     if number_of_std_samples >= 1:
@@ -465,15 +438,25 @@ def run(protocol: protocol_api.ProtocolContext):
           ## bubbles)                                                       
     pipette.drop_tip()   
 ## ----------------------------------------------------------------------------
-## ADDING PRIMERS FOR SAMPLES TO THE MIX---------------------------------------
-    for primer_well, sample_well in zip(primer_wells, sample_wells):
+## ADDING F PRIMERS TO THE MIX-------------------------------------------------
+    for primer_well, sample_well in zip(F_primer_wells, sample_wells):
       ## Loop trough primer_wells and sample_wells                          
         p20.pick_up_tip()
         p20.aspirate(primer_vol, primer_well)
         p20.dispense(primer_vol, sample_well)
         p20.mix(3, primer_mix_vol, sample_well)
         p20.dispense(10, sample_well)
-        p20.drop_tip()       
+        p20.drop_tip()    
+## ----------------------------------------------------------------------------        
+## ADDING R PRIMERS TO THE MIX-------------------------------------------------
+    for primer_well, sample_well in zip(R_primer_wells, sample_wells):
+      ## Loop trough primer_wells and sample_wells                          
+        p20.pick_up_tip()
+        p20.aspirate(primer_vol, primer_well)
+        p20.dispense(primer_vol, sample_well)
+        p20.mix(3, primer_mix_vol, sample_well)
+        p20.dispense(10, sample_well)
+        p20.drop_tip()      
 ## ----------------------------------------------------------------------------
 ## ADDING PRIMERS FOR STANDARDS TO THE MIX-------------------------------------
     for well in std_wells:

@@ -1,7 +1,12 @@
+
+### change API version to 2.12!!
+
+
 import pandas as pd
   ## For accessing offset .csv file
 
-
+# OFFSETS======================================================================
+# =============================================================================
 # If not simulated, import the .csv from the robot with robot_specific 
 # labware off_set values
 if not simulate:
@@ -11,6 +16,8 @@ if not simulate:
       ## import .csv
     offsets = offsets.set_index('labware')
       ## remove index column
+# =============================================================================
+
 
 # in de def
 

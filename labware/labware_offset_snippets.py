@@ -42,6 +42,8 @@ if not simulate:
     # pcr_strips
     # 1.5mL_tubes
     # 5mL_screw_cap
+    # 15mL_tubes
+    # 50mL_tubes
     
     
 # LABWARE OFFSET===============================================================    

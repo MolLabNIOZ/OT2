@@ -18,11 +18,10 @@ volume = 100
 reagent_volume = 15000
 
 # What is the starting position of the tips?
-starting_tip_p20 = 'A1'
-starting_tip_p200 = 'A1'
+starting_tip_p200 = 'E1'
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol 
 # =============================================================================
 
@@ -44,11 +43,11 @@ if not simulate: #Robot
       ## import .csv
     offsets = offsets.set_index('labware')
       ## remove index column
-    from data.user_storage.mollab_modules import volume_tracking_v2 as vt
+    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
       ## Volume_tracking module for robot
 
 if simulate: #Simulator
-    from mollab_modules import volume_tracking_v2 as vt
+    from mollab_modules import volume_tracking_v1 as vt
       ## Volume_tracking module for simulator
     import json
       ## Import json to import custom labware with labware_from_definition,
@@ -83,16 +82,11 @@ def run(protocol: protocol_api.ProtocolContext):
       ## empty dict to add labware and labware_names to, to loop through
       
     ##### Loading labware
-    tips_200_1 = protocol.load_labware(
+    tips_200 = protocol.load_labware(
         'opentrons_96_filtertiprack_200ul',         
         10,                                         
-        'tips_200_1')                                 
-    labwares[tips_200_1] = 'filtertips_200'
-    tips_200_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_200ul',         
-        11,                                         
-        'tips_200_2')                               
-    labwares[tips_200_2] = 'filtertips_200'
+        'tips_200')                                 
+    labwares[tips_200] = 'filtertips_200'
     
     tubes_15mL = protocol.load_labware(
         'opentrons_15_tuberack_falcon_15ml_conical',
@@ -139,9 +133,9 @@ def run(protocol: protocol_api.ProtocolContext):
             
     ##### Loading pipettes
     p300 = protocol.load_instrument(
-        'p300_single_gen2',                         #instrument definition
-        'right',                                    #mount position
-        tip_racks=[tips_200_1,tips_200_2])          #assigned tiprack
+        'p300_single_gen2',                         
+        'right',                                    
+        tip_racks=[tips_200])          
 # =============================================================================
 
 # LABWARE OFFSET===============================================================    
@@ -160,7 +154,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # SETTING LOCATIONS#!!!========================================================
 # =============================================================================    
     ##### Setting starting tip
-    p300.starting_tip = tips_200_1.well(starting_tip_p200)
+    p300.starting_tip = tips_200.well(starting_tip_p200)
       ## The starting_tip is the location of first pipette tip in the box   
     
     ##### Setting tube locations
@@ -226,7 +220,7 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Then, after every 24th well, drop tip and pick up new      
         
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-            container, volume, current_height, 'emptying')
+            container, volume, current_height)
               ## call volume_tracking function, obtain current_height,      
               ## pip_height and whether bottom_reached.                     
         
@@ -235,7 +229,7 @@ def run(protocol: protocol_api.ProtocolContext):
             current_height = start_height
             current_height, pip_height, bottom_reached = (
                 vt.volume_tracking(
-                    container, volume, current_height, 'emptying'))
+                    container, volume, current_height))
             counter = counter + 1
             source = reagent[counter]
             aspiration_location = source.bottom(current_height)

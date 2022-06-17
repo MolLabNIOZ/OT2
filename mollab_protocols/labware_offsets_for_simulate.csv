@@ -6,3 +6,5 @@ plate_plateholder;1;-0.8;0.8
 pcr_strips;0.8;-0.6;1.9
 tubes_1.5mL;0.3;1.2;0.4
 tubes_5mL;0;1;9.6
+tubes_15mL;0;0;0
+tubes_50mL;0;0;0

@@ -39,6 +39,9 @@ In addition for the qPCR:
         NOTE: the standard series are pipetted into the last 3 columns of 
         the plate. The standard sample is pipetted in the wells directly 
         following the sample wells (incl. NTC and mock).
+        A big_primer_source is added on deck position 8, this is a 1.5mL tube
+        that contains 1 primerpair that is to be added to the standard series and
+        the standard sample.
 
 Updates:
 (SV) 211027: 

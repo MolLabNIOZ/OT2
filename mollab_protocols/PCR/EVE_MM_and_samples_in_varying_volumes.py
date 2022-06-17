@@ -1,11 +1,29 @@
-# =============================================================================
-# Author(s): Maartje Brouwer
-# Creation date: 210916
-# Description:
-#   - aliquot mastermix
-#   - add samples from 1.5 mL tubes to plate or strips
-#   - add different volumes of DNA + add up to a max volume with water
-# =============================================================================
+"""
+VERSION: V_Sep21
+    Author(s): Maartje Brouwer
+    Creation date: 210916
+EVE_MM_and_samples_in_varying_volumes.py is a protocol written for EVE for the
+aliquoting of mastermix, and the addition of samples with varying volumes
+EVE also adds up to the max volume with water.
+
+You have to provide:
+    Number of samples (max 96, Including PC and NTC)
+    Maximum DNA volume
+        This is the highest volume of DNA that you have, it is the volume
+        to which EVE adds water to the tubes if the DNA volume is less.
+    A list with the volumes of DNA that you want to add.
+    The location of the tube with water that needs to be used to fill up the
+    samples.
+    The starting volume of the water
+    The well location of the mastermix tube
+    The starting volume of the mastermix tube
+    The volume of mastermix that is to be dispensed 
+    The type of tube that you are doing the PCR in
+        Options are PCR strips or 96 wells plate
+        If you are using PCR strips you'll need to specify the columns in
+        which you are puting the strips
+    The starting tip of both the P300 and the P20
+"""
 
 # IMPORT STATEMENTS============================================================
 # =============================================================================

@@ -57,7 +57,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 192
+number_of_samples = 64
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -86,23 +86,27 @@ dilution_ratio = 0
   ## a total volume. In that case, the dilution_ratio will not be used. 
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = []
+sample_volume = 30
   ## Can be one volume or a list of volumes
 
 # If you enter a list of volumes, also set a final_volume
-final_volume = 25
+final_volume = 30
   ## Used to calculate how much water to add. 
   ## final_volume - sample_volume = water_volume
   ## If you do not have a list of sample_volumes, final_volume is not used
 
 # In what kind of tubes are the samples provided?
-sample_tubes = 'plate_96'
+sample_tubes = 'tubes_1.5mL'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
-  
+if sample_tubes == 'PCR_strips':
+    # In which columns are the strips in the plate (ignore if not using strips)?
+    sample_strip_columns = ['1', '4', '7', '10'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'plate_96'
+dilution_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
-
+if dilution_tubes == 'PCR_strips':
+    # In which columns are the strips in the plate (ignore if not using strips)?
+    dilution_strip_columns = ['1', '4', '7', '10'] 
 # Are you simulating the protocol, or running it on the OT2?
 simulate = True
 # =============================================================================
@@ -150,14 +154,16 @@ water_tubes = math.ceil((total_water_volume)/4800)
 if sample_tubes == 'tubes_1.5mL':
     sample_racks = math.ceil(number_of_samples / 24)
 elif sample_tubes == 'PCR_strips':
-    sample_racks = math.ceil(number_of_samples / 48)
+    samples_per_rack = len(sample_strip_columns * 8)
+    sample_racks = math.ceil(number_of_samples / samples_per_rack)
 elif sample_tubes == 'plate_96':
     sample_racks = math.ceil(number_of_samples / 96)
   ## How many sample_racks are needed (1,2,3 or 4)
 if dilution_tubes == 'tubes_1.5mL':
     dilution_racks = math.ceil(number_of_samples / 24)
 elif dilution_tubes == 'PCR_strips':
-    dilution_racks = math.ceil(number_of_samples / 48)
+    dilutions_per_rack = len(dilution_strip_columns * 8)
+    dilution_racks = math.ceil(number_of_samples / dilutions_per_rack)
 elif dilution_tubes == 'plate_96':
     dilution_racks = math.ceil(number_of_samples / 96)
   ## How many dilution_racks are needed (1 or 2)
@@ -502,30 +508,29 @@ def run(protocol: protocol_api.ProtocolContext):
    
     sample_wells = []
     if sample_tubes == 'PCR_strips':
-        columns_odd = ['1','3','5','7','9','11']
         sample_columns = []
         if sample_racks >= 1:
             sample_columns_1 = (                                                           
                 ([sample_source_1.columns_by_name()[column_name] 
-                  for column_name in columns_odd])) 
+                  for column_name in sample_strip_columns])) 
             for column in sample_columns_1:
                 sample_columns.append(column)
         if sample_racks >= 2:
             sample_columns_2 = ( 
                 ([sample_source_2.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in sample_strip_columns]))
             for column in sample_columns_2:
                 sample_columns.append(column)
         if sample_racks >= 3:
             sample_columns_3 = ( 
                 ([sample_source_3.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in sample_strip_columns]))
             for column in sample_columns_3:
                 sample_columns.append(column)
         if sample_racks >= 4:
             sample_columns_4 = ( 
                 ([sample_source_4.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in sample_strip_columns]))
             for column in sample_columns_4:
                 sample_columns.append(column)
         for column in sample_columns:
@@ -560,30 +565,29 @@ def run(protocol: protocol_api.ProtocolContext):
               
     dilution_wells = []
     if dilution_tubes == 'PCR_strips':
-        columns_odd = ['1','3','5','7','9','11']
         dilution_columns = []
         if dilution_racks >= 1:
             dilution_columns_1 = (                                                           
                 ([dilution_dest_1.columns_by_name()[column_name] 
-                  for column_name in columns_odd])) 
+                  for column_name in dilution_strip_columns])) 
             for column in dilution_columns_1:
                 dilution_columns.append(column)
         if dilution_racks >= 2:
             dilution_columns_2 = ( 
                 ([dilution_dest_2.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in dilution_strip_columns]))
             for column in dilution_columns_2:
                 dilution_columns.append(column)
         if dilution_racks >= 3:
             dilution_columns_3 = ( 
                 ([dilution_dest_3.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in dilution_strip_columns]))
             for column in dilution_columns_3:
                 dilution_columns.append(column)
         if dilution_racks >= 4:
             dilution_columns_4 = ( 
                 ([dilution_dest_4.columns_by_name()[column_name] 
-                  for column_name in columns_odd]))
+                  for column_name in dilution_strip_columns]))
             for column in dilution_columns_4:
                 dilution_columns.append(column)
         for column in dilution_columns:

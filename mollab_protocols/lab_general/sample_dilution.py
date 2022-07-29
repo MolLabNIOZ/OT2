@@ -57,7 +57,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 64
+number_of_samples = 72
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -78,10 +78,10 @@ number_of_samples = 64
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
 # How many times do you want to dilute?
-dilution_ratio = 0
+dilution_ratio = 1
   ## i.e.: dilution_ratio 2 = 2x or 1:1 dilution
   ## i.e.: dilution ratio 50 = 50x diluted or 1:49 dilution
-  ## If you do not want to dilute but only transfer samples, enter 0 or 1
+  ## If you do not want to dilute but only transfer samples, enter 1
   ## If all samples have a different ratio, enter a list of sample_volumes and 
   ## a total volume. In that case, the dilution_ratio will not be used. 
 
@@ -154,7 +154,7 @@ water_tubes = math.ceil((total_water_volume)/4800)
 if sample_tubes == 'tubes_1.5mL':
     sample_racks = math.ceil(number_of_samples / 24)
 elif sample_tubes == 'PCR_strips':
-    samples_per_rack = len(sample_strip_columns * 8)
+    samples_per_rack = len(sample_strip_columns) * 8
     sample_racks = math.ceil(number_of_samples / samples_per_rack)
 elif sample_tubes == 'plate_96':
     sample_racks = math.ceil(number_of_samples / 96)
@@ -162,14 +162,14 @@ elif sample_tubes == 'plate_96':
 if dilution_tubes == 'tubes_1.5mL':
     dilution_racks = math.ceil(number_of_samples / 24)
 elif dilution_tubes == 'PCR_strips':
-    dilutions_per_rack = len(dilution_strip_columns * 8)
+    dilutions_per_rack = len(dilution_strip_columns) * 8
     dilution_racks = math.ceil(number_of_samples / dilutions_per_rack)
 elif dilution_tubes == 'plate_96':
     dilution_racks = math.ceil(number_of_samples / 96)
   ## How many dilution_racks are needed (1 or 2)
 
-tips_20_needed = (len([x for x in water_volumes if x < 20]) +
-                  len([x for x in sample_volumes if x <= 17]))
+tips_20_needed = (len([x for x in water_volumes if 0 < x < 20]) +
+                  len([x for x in sample_volumes if 0 < x <= 17]))
 tips_200_needed = (len([x for x in water_volumes if x >= 20]) +
                    len([x for x in sample_volumes if x > 17]))
 ## How many p20 / p200 tips do you need?
@@ -402,13 +402,14 @@ def run(protocol: protocol_api.ProtocolContext):
                     labware_def_pcrstrips, 
                     2,                     
                     'dilution_dest_4')       
-        with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-                  "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-                labware_def_5mL = json.load(labware_file)
-        tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, 
-            9, 
-            '5mL_tubes')    
+        if water_tubes > 0: 
+            with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+                      "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+                    labware_def_5mL = json.load(labware_file)
+            tubes_5mL = protocol.load_labware_from_definition( 
+                labware_def_5mL, 
+                9, 
+                '5mL_tubes')    
     else:
         if sample_tubes == 'PCR_strips':
             if sample_racks >= 1:
@@ -452,11 +453,12 @@ def run(protocol: protocol_api.ProtocolContext):
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
                     'dilution_dest_4')                          
-        tubes_5mL = protocol.load_labware(
-            'eppendorfscrewcap_15_tuberack_5000ul',     
-            9,                                          
-            'tubes_5mL')                                    
-    
+        if water_tubes > 0:
+            tubes_5mL = protocol.load_labware(
+                'eppendorfscrewcap_15_tuberack_5000ul',     
+                9,                                          
+                'tubes_5mL')                                    
+        
           
     
 

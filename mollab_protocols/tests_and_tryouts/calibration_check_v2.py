@@ -15,13 +15,15 @@ from opentrons import protocol_api
 # =============================================================================
 pipette20 = True
 p20_start_tip = 'A1'
-pipette300 = True
+pipette300 = False
 p300_start_tip = 'A1'
 plate = True
 plate_on_rack = True #Plate on coolrack
 strips = True
 tubes = True #Tubes 1.5mL
 tubes5mL = True
+tubes15mL = True
+tubes50mL = True
 test_wells = True #Test 3 wells spread over the labware
 test_columns = True #Test 3 columns spread over the labware
 # =============================================================================
@@ -70,11 +72,11 @@ def run(protocol: protocol_api.ProtocolContext):
             '96well_plate')
         labwares.append(plate_96)
     if plate_on_rack:
-        plate_coolrack = protocol.load_labware(
-            'biorad_qpcr_plate_eppendorf_cool_rack',
+        plate_plateholder = protocol.load_labware(
+            'biorad_qpcr_plate_nioz_plateholder',
             2,
-            '96well_plate_on_rack')
-        labwares.append(plate_coolrack)
+            '96well_plate_on_plateholder')
+        labwares.append(plate_plateholder)
     if strips:                                          
         pcr_strips = protocol.load_labware(
             'pcrstrips_96_wellplate_200ul',     
@@ -94,6 +96,13 @@ def run(protocol: protocol_api.ProtocolContext):
             5,                                      
             'tubes_5mL')                            
         labwares.append(tubes_5mL)
+    
+    if tubes15mL or tubes50mL:
+        large_tubes = protocol.load_labware(
+            'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical', 
+            6,                                      
+            'large_tubes')
+        labwares.append(large_tubes)
     
     ##### Loading pipettes
     if pipette300:

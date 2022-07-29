@@ -24,6 +24,8 @@ plate_on_rack = True #Plate on NIOZ plateholder
 strips = True
 tubes = True #Tubes 1.5mL
 tubes5mL = True
+tubes15mL = True
+tubes50mL = True
 test_wells = True #Test 3 wells spread over the labware
 test_columns = False #Test 3 columns spread over the labware
 # =============================================================================
@@ -33,7 +35,7 @@ test_columns = False #Test 3 columns spread over the labware
 # =============================================================================
 ##### Metadata
 metadata = {
-    'protocolName': 'Calibration check v2',
+    'protocolName': 'calibration_check_v2_offset_dict',
     'author': 'SV <sanne.vreugdenhil@nioz.nl> & MB <maartje.brouwer@nioz.nl>',
     'description': ('Checks if the bottom of the tubes is not touched'),
     'apiLevel': '2.12'}
@@ -108,9 +110,16 @@ def run(protocol: protocol_api.ProtocolContext):
             'eppendorfscrewcap_15_tuberack_5000ul', 
             5,                                      
             'tubes_5mL')
-        labwares[tubes_5mL] = '5mL_screw_cap'               
+        labwares[tubes_5mL] = '5mL_screw_cap'
 
-    
+    if tubes15mL or tubes50mL:
+        large_tubes = protocol.load_labware(
+            'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical', 
+            6,                                      
+            'large_tubes')
+        labwares[large_tubes] = '15mL_50mLtubes'
+       
+        
     ##### Loading pipettes
     if pipette300:
         p300 = protocol.load_instrument(

@@ -108,7 +108,7 @@ if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     dilution_strip_columns = ['1', '4', '7', '10'] 
 # Are you simulating the protocol, or running it on the OT2?
-simulate = True
+simulate = False
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -417,17 +417,17 @@ def run(protocol: protocol_api.ProtocolContext):
                     1,                                      
                     'sample_source_1')                      
             if sample_racks >= 2:
-                sample_source_2 = protocol.load_labwware(
+                sample_source_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     4,                                      
                     'sample_source_2')                      
             if sample_racks >= 3:   
-                sample_source_3 = protocol.load_labwware(
+                sample_source_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
                     'sample_source_3')                      
             if sample_racks >= 4: 
-                sample_source_4 = protocol.load_labwware(
+                sample_source_4 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     5,                                      
                     'sample_source_4')                      
@@ -438,17 +438,17 @@ def run(protocol: protocol_api.ProtocolContext):
                     3,                                      
                     'dilution_dest_1')                      
             if dilution_racks >= 2:
-                dilution_dest_2 = protocol.load_labwware(
+                dilution_dest_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     6,                                      
                     'dilution_dest_2')                      
             if dilution_racks >= 3:    
-                dilution_dest_3 = protocol.load_labwware(
+                dilution_dest_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     5,                                      
                     'dilution_dest_3')                      
             if dilution_racks >= 4:        
-                dilution_dest_4 = protocol.load_labwware(
+                dilution_dest_4 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
                     'dilution_dest_4')                          

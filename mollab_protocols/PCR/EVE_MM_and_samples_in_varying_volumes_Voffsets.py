@@ -1,5 +1,5 @@
 """
-VERSION: V_June22
+VERSION: V_June22_Voffsets
     Author(s): Maartje Brouwer
     Creation date: 210916
 EVE_MM_and_samples_in_varying_volumes.py is a protocol written for EVE for the

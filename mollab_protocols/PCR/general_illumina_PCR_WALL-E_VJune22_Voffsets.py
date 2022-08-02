@@ -1,5 +1,5 @@
 """
-VERSION: V_June22
+VERSION: V_June22_offsets
 general_illumina_PCR_WALL-E.py is a protocol written for WALL-E for 
 the addition of mastermix and barcoded primers to a 96-wells plate
 For the previous version, F and R primers were combined in a PCR strip

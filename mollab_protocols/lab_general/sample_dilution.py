@@ -47,7 +47,8 @@ Robot does:
         Transferred to dilution labware of choice
         If there was water already, sample will be mixed by pipetting up
 Updates:
-MB 220803: Changed some deck positions. 
+MB 220803:  Changed some deck positions.
+
 
 
 """
@@ -705,7 +706,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## or following                                                   ##
         sample_pipette.aspirate(sample_vol, sample_well)
           ## aspirate sample_volume_dil = volume for dilution from sample   ##
-        sample_pipette.airgap(sample_vol)
+        sample_pipette.air_gap(sample_vol)
           ## airgap
         sample_pipette.dispense(sample_vol, dilution_well)
           ## dispense sample_volume_dil = volume for dilution into dil_well ##

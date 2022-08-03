@@ -189,13 +189,13 @@ if mock:
 # =============================================================================
 # If not simulated, import the .csv from the robot with robot_specific 
 # labware off_set values
-if not simulate:
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-        )
-      ## import .csv
-    offsets = offsets.set_index('labware')
-      ## remove index column
+# if not simulate:
+#     offsets = pd.read_csv(
+#         "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+#         )
+#       ## import .csv
+#     offsets = offsets.set_index('labware')
+#       ## remove index column
 # =============================================================================
 
 # METADATA=====================================================================
@@ -343,15 +343,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LABWARE OFFSET===============================================================    
 # =============================================================================
-    if not simulate:
-        for labware in labwares:
-            offset_x = offsets.at[labwares[labware],'x_offset']
-            offset_y = offsets.at[labwares[labware],'y_offset']
-            offset_z = offsets.at[labwares[labware],'z_offset']
-            labware.set_offset(
-                x = offset_x, 
-                y = offset_y, 
-                z = offset_z)
+    # if not simulate:
+    #     for labware in labwares:
+    #         offset_x = offsets.at[labwares[labware],'x_offset']
+    #         offset_y = offsets.at[labwares[labware],'y_offset']
+    #         offset_z = offsets.at[labwares[labware],'z_offset']
+    #         labware.set_offset(
+    #             x = offset_x, 
+    #             y = offset_y, 
+    #             z = offset_z)
 # =============================================================================  
 
 # PREDIFINED VARIABLES=========================================================

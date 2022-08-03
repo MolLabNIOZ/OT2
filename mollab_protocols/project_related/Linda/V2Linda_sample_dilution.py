@@ -1,5 +1,5 @@
 """
-Version: Dec21
+Version: July22
 
 sample_dilution.py is a protocol written for diluting/transferring samples.
 Dilutes a certain number of samples to a fixed dilution ratio, or varying 

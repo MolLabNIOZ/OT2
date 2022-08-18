@@ -136,6 +136,8 @@ import math
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
 if not isinstance(sample_volume, list):
+    # if sample_volume is only one volume and not a list of
+    # volumes we need to create a list of volumes
     sample_volumes = []
     water_volumes = [] 
     end_volume = sample_volume * dilution_ratio

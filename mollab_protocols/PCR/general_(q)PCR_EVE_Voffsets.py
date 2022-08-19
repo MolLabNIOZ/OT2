@@ -116,7 +116,7 @@ dispension_vol = 19
 # What labware are your samples in?
 sample_tube_type = 'PCR_strip'
   ## Samples in strips = 'PCR_strip'                                       
-  ## Primers in plate = 'plate_96'  
+  ## Samples in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'                                         
 # In which columns are the strips in the plate (ignore if not using strips)?
 sample_columns = ['2', '7','11']

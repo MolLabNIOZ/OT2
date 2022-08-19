@@ -1,11 +1,22 @@
-# -*- coding: utf-8 -*-
 """
-Version: V_July22_offsets
+Version: V_Aug22
 
 primer_dilution_plate.py is a protocol written to dilute (barcoded) primer
 stocks. Primer stocks should be in PCR strips, dilutions are being made
-in a PCR plate. Note that the plate needs to be sealed and than mixed
-properly before usage!
+in a PCR plate or PCR strips. 
+
+You have to provide:
+    Location of the starting tips in both the P20 and P200
+    Number of primers that you want to dilute 
+        Maximum number of primers for dilutions in 96-well plate = 192
+            (2 plates)
+        Maximum number of primers for dilutions in PCR strips    = 144
+            (3 PCR strip racks with 6 PCR strips each, columns 1,3,5,7,9,11)
+    The final volume you want the dilution to be
+        The protocol calculates how much primer stock and water it needs to 
+        reach a 10x dilution of the given total volume
+        A minimum of 20µL and a maximum of 60µL is advised
+    In which labware you want to dilute your primers (plate or strips)
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -37,11 +48,7 @@ primer_dilution_tubes = 'plate_96'
 from opentrons import protocol_api
                                       
 ##### Import volume_tracking module 
-# if not protocol.is_simulating(): 
-#     from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-# else:
-#     import json
-#     from mollab_modules import volume_tracking_v1 as vt
+# volume tracking module is imported inside the def
                                           
 # Import other modules
 import math
@@ -259,19 +266,7 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in water_tubes.wells():
         water_sources.append(well)
     water_sources = water_sources[:number_of_water_tubes]
-    # if water_tubes == 1:
-    #     water_wells = water_tubes.wells_by_name()['A1']
-    #     water_sources.append(water_wells)
-    # if water_tubes == 2:
-    #     water_wells = water_tubes.wells_by_name()['A1', 'B1']
-    #     water_sources.append(water_wells)
-    # if water_tubes == 3:
-    #     water_wells = water_tubes.wells_by_name()['A1', 'B1', 'C1']
-    #     water_sources.append(water_wells)
-    # if water_tubes == 4:
-    #     water_wells = water_tubes.wells_by_name()['A1', 'B1', 'C1', 'D1']
-    #     water_sources.append(water_wells)
-        
+
     # Create an empty list to append the wells for the primer stock source to
     primer_stock_sources = []
     # First make a list with columns of primer sources
@@ -289,7 +284,7 @@ def run(protocol: protocol_api.ProtocolContext):
             ([primer_source_3.columns_by_name()[column_name] 
               for column_name in ['1', '3', '5', '7', '9', '11']]))
         for column in primer_stock_columns_3:
-            primer_stock_columns.append*(column)
+            primer_stock_columns.append(column)
     if primer_stock_racks >= 4:
         primer_stock_columns_4 = (
             ([primer_source_4.columns_by_name()[column_name] 
@@ -339,45 +334,41 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_dilution_wells = primer_dilution_wells[:number_of_primers]
 # =============================================================================      
 
-
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("I need "+ str(number_of_water_tubes) + " 15mL tubes. Filled to "
-                   + str(water_volume/1000) + " mL with reagent.") 
+    protocol.pause("I need "+ str(number_of_water_tubes) + " 5mL tubes. " 
+                   "Filled to " + str(5000) + " mL with reagent.") 
 # ============================================================================= 
  
 ## LIGHTS======================================================================
 ## ============================================================================
-
     protocol.set_rail_lights(True)
 ## ============================================================================
 
-
 ## PIPETTING===================================================================
 ## ============================================================================
-# Variables for volume tracking and aliquoting---------------------------------
+## Variables for volume tracking and aliquoting--------------------------------
     counter = 0
     source = water_sources[counter]
     destination = primer_dilution_wells
-    start_height = vt.cal_start_height('tube_5mL', water_volume)
+    start_height = vt.cal_start_height('tube_5mL', 5000)
     current_height = start_height
     container = 'tube_5mL'
     if water_volume >= 19:
         pipette = p300
     else:
         pipette = p20 
-# ----------------------------------------------------------------------------- 
-       
-    ##### aliquoting
+## ---------------------------------------------------------------------------- 
+## Aliquoting water------------------------------------------------------------
     for i, well in enumerate(destination):
       ## aliquot in the correct wells, for each well do the following:  
         if i == 0: 
             pipette.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.    
-        elif i % 24 == 0:
+        elif i % 8 == 0:
             pipette.drop_tip()
             pipette.pick_up_tip()
-              ## Then, after every 24th well, drop tip and pick up new      
+              ## Then, after every 8th well, drop tip and pick up new      
         
         current_height, pip_height, bottom_reached = vt.volume_tracking(
             container, water_volume, current_height)
@@ -410,6 +401,20 @@ def run(protocol: protocol_api.ProtocolContext):
     pipette.drop_tip()
       ## when entire plate is full, drop tip                               
 ## ----------------------------------------------------------------------------        
-            
-                
-    
+## Adding primer stocks--------------------------------------------------------         
+    for primer_stock, primer_dilution in zip(
+            primer_stock_sources, primer_dilution_wells):
+        p20.pick_up_tip()
+        p20.aspirate(primer_stock_volume, primer_stock)
+        p20.dispense(primer_stock_volume, primer_dilution)
+        primer_mix_volume = primer_stock_volume + 3 
+        p20.mix(3, primer_mix_volume, primer_dilution)
+        p20.dispense(20, primer_dilution)
+        p20.drop_tip()
+## ----------------------------------------------------------------------------    
+## ============================================================================
+ 
+## LIGHTS======================================================================
+## ============================================================================
+    protocol.set_rail_lights(False)
+## ============================================================================

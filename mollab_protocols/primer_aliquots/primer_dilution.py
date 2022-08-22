@@ -170,53 +170,63 @@ def run(protocol: protocol_api.ProtocolContext):
                 'biorad_96_wellplate_200ul_pcr',
                 6,
                 'primer_dilution_dest_1')
+            labwares[primer_dilution_dest_1] = 'plate_96'
         if primer_dilution_racks >= 2:            
             primer_dilution_dest_2 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 3,
                 'primer_dilution_dest_2')
+            labwares[primer_dilution_dest_2] = 'plate_96'
     
     if not protocol.is_simulating():
         if primer_stock_racks >= 1:
             primer_source_1 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 8,                                      
-                'primer_source_1')                      
+                'primer_source_1')
+            labwares[primer_source_1] = 'pcr_strips'                      
         if primer_stock_racks >= 2:
             primer_source_2 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 5,                                      
-                'primer_source_2')                      
+                'primer_source_2')
+            labwares[primer_source_2] = 'pcr_strips'                      
         if primer_stock_racks >= 3:   
             primer_source_3 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 2,                                      
-                'primer_source_3')                      
+                'primer_source_3')   
+            labwares[primer_source_3] = 'pcr_strips'                   
         if primer_stock_racks >= 4: 
             primer_source_4 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 1,                                      
-                'primer_source_4')                      
+                'primer_source_4')   
+            labwares[primer_source_4] = 'pcr_strips'
         if primer_dilution_tubes == 'PCR_strips':
             if primer_dilution_racks >= 1:
                 primer_dilution_dest_1 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     9,                                      
-                    'primer_dilution_dest_1')                      
+                    'primer_dilution_dest_1')   
+                labwares[primer_dilution_dest_1] = 'pcr_strips'                   
             if primer_dilution_racks >= 2:
                 primer_dilution_dest_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     6,                                      
-                    'primer_dilution_dest_2')                      
+                    'primer_dilution_dest_2')  
+                labwares[primer_dilution_dest_2] = 'pcr_strips'                     
             if primer_dilution_racks >= 3:    
                 primer_dilution_dest_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     3,                                      
-                    'primer_dilution_dest_3')                                               
+                    'primer_dilution_dest_3') 
+                labwares[primer_dilution_dest_3] = 'pcr_strips'                                               
         water_tubes = protocol.load_labware(
             'eppendorfscrewcap_15_tuberack_5000ul',     
             11,                                          
             'water_tubes')  
+        labwares[water_tubes] = '5mL_screw_cap'
             
     else:
         with open("labware/pcrstrips_96_wellplate_200ul/"
@@ -226,45 +236,53 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_source_1 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 8,                     
-                'primer_source_1')     
+                'primer_source_1')  
+            labwares[primer_source_1] = 'pcr_strips'
         if primer_stock_racks >= 2:
             primer_source_2 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 5,                     
                 'primer_source_2')     
+            labwares[primer_source_2] = 'pcr_strips'
         if primer_stock_racks >= 3:
             primer_source_3 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 2,                     
-                'primer_source_3')     
+                'primer_source_3')   
+            labwares[primer_source_3] = 'pcr_strips'
         if primer_stock_racks >= 4:
             primer_source_4 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 1,                     
-                'primer_source_4')     
+                'primer_source_4')  
+            labwares[primer_source_4] = 'pcr_strips'
         if primer_dilution_tubes == 'PCR_strips':
             if primer_dilution_racks >= 1:
                 primer_dilution_dest_1 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     9,                     
-                    'primer_dilution_dest_1')     
+                    'primer_dilution_dest_1')  
+                labwares[primer_dilution_dest_1] = 'pcr_strips'
             if primer_dilution_racks >= 2:
                 primer_dilution_dest_2 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     6,                     
-                    'primer_dilution_dest_2')     
+                    'primer_dilution_dest_2') 
+                labwares[primer_dilution_dest_2] = 'pcr_strips'
             if primer_dilution_racks >= 3:
                 primer_dilution_dest_3 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     3,                     
-                    'primer_dilution_dest_3')        
+                    'primer_dilution_dest_3')   
+                labwares[primer_dilution_dest_3] = 'pcr_strips'
         with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                   "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                 labware_def_5mL = json.load(labware_file)
         water_tubes = protocol.load_labware_from_definition( 
             labware_def_5mL, 
             9, 
-            'water_tubes')    
+            'water_tubes')  
+        labwares[water_tubes] = '5mL_screw_cap'
 # =============================================================================
 
 # SETTING LOCATIONS============================================================

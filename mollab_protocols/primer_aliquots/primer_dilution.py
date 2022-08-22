@@ -53,6 +53,8 @@ from opentrons import protocol_api
 # Import other modules
 import math
   ## math to do some calculations (rounding up)  
+import pandas as pd
+  ## for opening offsets file
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -75,19 +77,6 @@ elif primer_dilution_tubes == 'plate_96':
   ## How many primer_dilution_racks are needed (1 or 2)
 # =============================================================================
 
-# OFFSETS======================================================================
-# =============================================================================
-# If not simulated, import the .csv from the robot with robot_specific 
-# labware off_set values
-if not simulate:
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-        )
-      ## import .csv
-    offsets = offsets.set_index('labware')
-      ## remove index column
-# =============================================================================
-
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
@@ -106,8 +95,21 @@ def run(protocol: protocol_api.ProtocolContext):
     else:
         import json
         from mollab_modules import volume_tracking_v1 as vt
+
 # =============================================================================
 
+# OFFSETS======================================================================
+# =============================================================================
+    # If not simulated, import the .csv from the robot with robot_specific 
+    # labware off_set values
+    if not protocol.is_simulating():
+        offsets = pd.read_csv(
+            "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+            )
+          ## import .csv
+        offsets = offsets.set_index('labware')
+          ## remove index column
+# =============================================================================
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     labwares = {}

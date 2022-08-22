@@ -1,5 +1,5 @@
 """
-Version: V_Aug22
+Version: V_Aug22_offsets
 
 primer_dilution_plate.py is a protocol written to dilute (barcoded) primer
 stocks. Primer stocks should be in PCR strips, dilutions are being made
@@ -73,6 +73,19 @@ if primer_dilution_tubes == 'PCR_strips':
 elif primer_dilution_tubes == 'plate_96':
     primer_dilution_racks = math.ceil(number_of_primers / 96)
   ## How many primer_dilution_racks are needed (1 or 2)
+# =============================================================================
+
+# OFFSETS======================================================================
+# =============================================================================
+# If not simulated, import the .csv from the robot with robot_specific 
+# labware off_set values
+if not simulate:
+    offsets = pd.read_csv(
+        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+        )
+      ## import .csv
+    offsets = offsets.set_index('labware')
+      ## remove index column
 # =============================================================================
 
 # METADATA=====================================================================
@@ -333,6 +346,19 @@ def run(protocol: protocol_api.ProtocolContext):
                 primer_dilution_wells.append()
     primer_dilution_wells = primer_dilution_wells[:number_of_primers]
 # =============================================================================      
+
+# LABWARE OFFSET===============================================================    
+# =============================================================================
+    if not simulate:
+        for labware in labwares:
+            offset_x = offsets.at[labwares[labware],'x_offset']
+            offset_y = offsets.at[labwares[labware],'y_offset']
+            offset_z = offsets.at[labwares[labware],'z_offset']
+            labware.set_offset(
+                x = offset_x, 
+                y = offset_y, 
+                z = offset_z)
+# =============================================================================   
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================

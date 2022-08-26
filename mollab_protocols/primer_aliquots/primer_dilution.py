@@ -17,6 +17,11 @@ You have to provide:
         reach a 10x dilution of the given total volume
         A minimum of 20µL and a maximum of 60µL is advised
     In which labware you want to dilute your primers (plate or strips)
+The protocol calculates how much water it needs based on the given 
+number_of_primers and the final_volume. It also calculates and tells you
+how many 5mL tubes with water you need to provide and how full they need to be.
+This message also reports that you need to put the water tubes in vertical 
+orientation, if you need more than 1.
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -110,6 +115,7 @@ def run(protocol: protocol_api.ProtocolContext):
         offsets = offsets.set_index('labware')
           ## remove index column
 # =============================================================================
+
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     labwares = {}
@@ -383,7 +389,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # MESSAGE AT THE START=========================================================
 # =============================================================================
     protocol.pause("I need "+ str(number_of_water_tubes) + " 5mL tubes. " 
-                   "Filled to " + str(5000) + " mL with reagent.") 
+                   "Filled to " + str(5000) + " mL with reagent. "
+                   "They need to be arranged vertically, in A1, B1 etc.") 
 # ============================================================================= 
  
 ## LIGHTS======================================================================

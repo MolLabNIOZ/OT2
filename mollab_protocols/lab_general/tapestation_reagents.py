@@ -5,6 +5,8 @@ tapestation_reagents.py is a protocol written to add the reagents of any
 TapeStation assay from a 1.5mL tube to a 96-wells plate and add the samples
 from 1.5mL tubes, PCR strips or a 96-wells plate to the reagents. It is also
 possible to do one of the 2.
+
+The reagent tube should always be put in A1
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -40,6 +42,8 @@ sample_columns = ['2', '7','11']
   ##    3 strips per rack: ['2', '7', '11'] 
   ##    4 strips per rack: ['2', '5', '8','11']
   ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
+
+first_sample = 'A1'
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -73,14 +77,23 @@ if tapestation_kit == 'RNA':
 if tapestation_kit == 'HS-RNA':
     buffer_vol = 1
     sample_vol = 2  
- 
+
+# What is the total volume of buffer that is needed for the amount of samples?
+# +10µL for minimum volume in tube
+volume_of_buffer = buffer_vol * number_of_samples + 10
+
 # How many sample racks are needed?   
 if sample_tube_type == 'PCR_strips':
-    sample_racks = math.ceil(number_of_samples / 48)
+    if sample_columns == ['2', '7','11']:
+        sample_racks = math.ceil(number_of_samples / 24)
+    elif sample_columns == ['2', '5', '8','11']:
+        sample_racks = math.ceil(number_of_samples / 32)
+    elif sample_columns == ['1', '3', '5', '7', '9', '11']:
+        sample_racks = math.ceil(number_of_samples / 48)
 elif sample_tube_type == 'tube_1.5mL':
-    sample_racks = math.ceil(number_of_primers / 24)
+    sample_racks = math.ceil(number_of_samples / 24)
 elif sample_tube_type == 'plate_96':
-    sample_racks = math.ceil(number_of_primers / 96)
+    sample_racks = math.ceil(number_of_samples / 96)
 # =============================================================================
 
 # METADATA=====================================================================
@@ -102,3 +115,322 @@ def run(protocol: protocol_api.ProtocolContext):
         import json
         from mollab_modules import volume_tracking_v1 as vt
 # =============================================================================
+
+# OFFSETS======================================================================
+# =============================================================================
+    # If not simulated, import the .csv from the robot with robot_specific  
+    # labware off_set values
+    if not protocol.is_simulating():
+        offsets = pd.read_csv(
+            "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+            )
+          ## import .csv
+        offsets = offsets.set_index('labware')
+          ## remove index column
+# =============================================================================
+
+
+# LOADING LABWARE AND PIPETTES=================================================
+# =============================================================================
+    labwares = {}
+ 
+    # Pipette tips   
+    tips_20_1 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul',  
+        10,                                  
+        '20tips_1')        
+    labwares[tips_20_1] = 'filtertips_20'                   
+    tips_20_2 = protocol.load_labware(
+        'opentrons_96_filtertiprack_20ul',  
+        7,                                  
+        '20tips_2')    
+    labwares[tips_20_2] = 'filtertips_20'                                         
+    tips_20 = [tips_20_1, tips_20_2]
+        
+    # Pipettes          
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',                  
+        'left',                             
+        tip_racks=tips_20)
+    
+    # Labware
+    reagent_tube = protocol.load_labware(
+        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+        1,
+        'reagent_tube')
+    labwares[reagent_tube] = '1.5mL_tubes'
+    
+    destination_plate = protocol.load_labware(
+        'biorad_96_wellplate_200ul_pcr',        
+        3,                                      
+        'destination_plate')  
+    labwares[destination_plate] = 'plate_96'
+    
+    if sample_tube_type == 'tube_1.5mL':
+        sample_source_1 = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            2,
+            'sample_source_1')
+        labwares[sample_source_1] = '1.5mL_tubes'
+        sample_source_2 = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            5,
+            'sample_source_2')
+        labwares[sample_source_2] = '1.5mL_tubes'
+        sample_source_3 = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            8,
+            'sample_source_3')
+        labwares[sample_source_3] = '1.5mL_tubes'
+        sample_source_4 = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            11,
+            'sample_source_4')
+        labwares[sample_source_4] = '1.5mL_tubes'
+    
+    if sample_tube_type == 'plate_96':
+        sample_source_1 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',    
+            2,                                  
+            'sample_source_1')
+        labwares[sample_source_1] = 'plate_96'
+        sample_source_2 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',    
+            5,                                  
+            'sample_source_2')
+        labwares[sample_source_2] = 'plate_96'
+    
+    if not protocol.is_simulating():
+        if sample_racks >= 1:
+            sample_source_1 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',         
+                11,                                      
+                'sample_source_1') 
+            labwares[sample_source_1] = 'pcr_strips'
+        if sample_racks >= 2:
+            sample_source_2 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',         
+                8,                                      
+                'sample_source_2') 
+            labwares[sample_source_2] = 'pcr_strips'
+        if sample_racks >= 3:
+            sample_source_3 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',         
+                5,                                      
+                'sample_source_3')
+            labwares[sample_source_3] = 'pcr_strips'
+        if sample_racks >= 4:
+            sample_source_4 = protocol.load_labware(
+                'pcrstrips_96_wellplate_200ul',         
+                2,                                      
+                'sample_source_4') 
+            labwares[sample_source_4] = 'pcr_strips'
+    else:
+        with open("labware/pcrstrips_96_wellplate_200ul/"
+                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                labware_def_pcrstrips = json.load(labware_file)
+        if sample_racks >= 1:
+            sample_source_1 = protocol.load_labware_from_definition(
+                labware_def_pcrstrips,
+                11,
+                'sample_source_1')
+            labwares[sample_source_1] = 'pcr_strips'
+        if sample_racks >= 2:
+            sample_source_2 = protocol.load_labware_from_definition(
+                labware_def_pcrstrips,
+                8,
+                'sample_source_2')
+            labwares[sample_source_2] = 'pcr_strips'
+        if sample_racks >= 3:
+            sample_source_3 = protocol.load_labware_from_definition(
+                labware_def_pcrstrips,
+                5,
+                'sample_source_3')
+            labwares[sample_source_3] = 'pcr_strips'
+        if sample_racks >= 4:
+            sample_source_4 = protocol.load_labware_from_definition(
+                labware_def_pcrstrips,
+                2,
+                'sample_source_4')
+            labwares[sample_source_4] = 'pcr_strips'
+# =============================================================================
+
+# SETTING LOCATIONS============================================================
+# =============================================================================
+    # Setting starting tip                                           
+    p20.starting_tip = tips_20_1.well(starting_tip_p20)     
+    
+    # Destination wells
+    destination_wells = []
+    for well in destination_plate.wells():
+        destination_wells.append(well)
+    sample_wells = destination_wells[:number_of_samples]
+    
+    # Name the well where the reagent tube is
+    reagent_source = reagent_tube.wells_by_name('A1')
+    
+    # Create an empty list to append the wells for the sample_sources to
+    sample_sources = []
+    sample_sources_string = []
+
+    # Add wells to the list of sample sources, if plate_96
+    if sample_sources == 'plate_96':
+        if sample_racks >= 1:
+            for well in sample_source_1.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 2:
+            for well in sample_source_2.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+    # Add wells to the list of sample sources, if 1.5mL_tubes
+    if sample_sources == '1.5mL_tubes':            
+        if sample_racks >= 1:
+            for well in sample_source_1.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 2:
+            for well in sample_source_2.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 3:
+            for well in sample_source_3.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 4:
+            for well in sample_source_4.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+    # Add columns to a list of columns
+    if sample_sources == 'pcr_strips':
+        sample_source_columns = (
+                ([sample_source_1.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+        if sample_racks >= 2:
+            sample_columns_2 = (
+                ([sample_source_2.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_2:
+                sample_source_columns.append(column)
+        if sample_racks >= 3:
+            sample_columns_3 = (
+                ([sample_source_3.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_3:
+                sample_source_columns.append(column)
+        if sample_racks >= 4:
+            sample_columns_4 = (
+                ([sample_source_4.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_4:
+                sample_source_columns.append(column)
+          ## Make a list of columns, this is a list of lists!   
+        for column in sample_source_columns:
+            for well in column:
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+              ## Separate the columns into wells and append them to list 
+              
+        ## Cut slice out off list of sample_sources, starting with the 
+        ## indicated first sample and ending after the number_of_samples                        
+        first_sample_index = sample_sources_string.index(
+            first_sample + ' of sample_source_1 on 2')
+          ## Determine the index of the first sample in the list made from 
+          ## strings -- we cannot find strings in the normal robot list
+          ## so we needed to convert the wells to strings.
+        slice_sample_sources = slice(
+            first_sample_index, 
+            first_sample_index + number_of_samples)
+          ## Determine the slice 
+        ## Cut sample slice out of sample_source_wells list
+        sample_sources = sample_sources[slice_sample_sources]
+# =============================================================================      
+
+# LABWARE OFFSET===============================================================    
+# =============================================================================
+    if not protocol.is_simulating():
+        for labware in labwares:
+            offset_x = offsets.at[labwares[labware],'x_offset']
+            offset_y = offsets.at[labwares[labware],'y_offset']
+            offset_z = offsets.at[labwares[labware],'z_offset']
+            labware.set_offset(
+                x = offset_x, 
+                y = offset_y, 
+                z = offset_z)
+# =============================================================================   
+
+# MESSAGE AT THE START=========================================================
+# =============================================================================
+    protocol.pause("You will need " + str(volume_of_buffer) + " of the " +
+                   tapestation_kit + " reagent buffer in"
+                   " a 1.5mL tube on A1 of the reagent tube rack.")              
+# =============================================================================
+ 
+## PIPETTING===================================================================
+## ============================================================================
+## Variables for volume tracking and aliquoting--------------------------------
+    source = reagent_source
+    destination = primer_dilution_wells
+    start_height = vt.cal_start_height('tube_5mL', 5000)
+    current_height = start_height
+    container = 'tube_5mL'
+    if water_volume >= 19:
+        pipette = p300
+    else:
+        pipette = p20 
+## ---------------------------------------------------------------------------- 
+## Aliquoting water------------------------------------------------------------
+    for i, well in enumerate(destination):
+      ## aliquot in the correct wells, for each well do the following:  
+        if i == 0: 
+            pipette.pick_up_tip()
+              ## If we are at the first well, start by picking up a tip.    
+        elif i % 8 == 0:
+            pipette.drop_tip()
+            pipette.pick_up_tip()
+              ## Then, after every 8th well, drop tip and pick up new      
+        
+        current_height, pip_height, bottom_reached = vt.volume_tracking(
+            container, water_volume, current_height)
+              ## call volume_tracking function, obtain current_height,      
+              ## pip_height and whether bottom_reached.                     
+        
+        if bottom_reached:
+            ## continue with next tube, reset vt                            
+            current_height = start_height
+            current_height, pip_height, bottom_reached = (
+                vt.volume_tracking(
+                    container, water_volume, current_height))
+            counter = counter + 1
+            source = water_sources[counter]
+            aspiration_location = source.bottom(current_height)
+            protocol.comment(
+            "Continue with tube " + str(counter + 1) + " of reagent")
+       
+        else:
+            aspiration_location = source.bottom(pip_height)
+              ## Set the location of where to aspirate from.                
+        
+        #### The actual aliquoting
+        pipette.aspirate(water_volume, aspiration_location)
+          ## Aspirate the set volume from the source                        
+        pipette.dispense(water_volume + 10, well)
+          ## dispense the set volume + extra to avoid drops in the well     
+        pipette.dispense(10, aspiration_location)
+          ## Alternative for blow-out                                        
+    pipette.drop_tip()
+      ## when entire plate is full, drop tip                               
+## ----------------------------------------------------------------------------        
+## Adding primer stocks--------------------------------------------------------         
+    for primer_stock, primer_dilution in zip(
+            primer_stock_sources, primer_dilution_wells):
+        p20.pick_up_tip()
+        p20.aspirate(primer_stock_volume, primer_stock)
+        p20.dispense(primer_stock_volume, primer_dilution)
+        primer_mix_volume = primer_stock_volume + 3 
+        p20.mix(3, primer_mix_volume, primer_dilution)
+        p20.dispense(20, primer_dilution)
+        p20.drop_tip()
+## ----------------------------------------------------------------------------    
+## ============================================================================
+ 

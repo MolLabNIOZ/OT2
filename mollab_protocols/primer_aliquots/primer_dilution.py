@@ -375,7 +375,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LABWARE OFFSET===============================================================    
 # =============================================================================
-    if not simulate:
+    if not protocol.is_simulating():
         for labware in labwares:
             offset_x = offsets.at[labwares[labware],'x_offset']
             offset_y = offsets.at[labwares[labware],'y_offset']

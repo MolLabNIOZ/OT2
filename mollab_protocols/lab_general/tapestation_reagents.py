@@ -33,8 +33,8 @@ tapestation_kit = 'D1000'
   ##    'HS-RNA'
 
 # What labware are your samples in?
-sample_tube_type = 'PCR_strip'
-  ## Samples in strips = 'PCR_strip'                                       
+sample_tube_type = 'plate_96'
+  ## Samples in strips = 'PCR_strips'                                       
   ## Samples in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'             
 sample_columns = ['2', '7','11']
@@ -57,6 +57,8 @@ from opentrons import protocol_api
 # Import other modules
 import math
   ## math to do some calculations (rounding up)  
+
+import pandas as pd
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -65,10 +67,16 @@ import math
 if tapestation_kit == 'D1000':
     buffer_vol = 3
     sample_vol = 1  
-if tapestation_kit == 'D5000' or 'gDNA':
+if tapestation_kit == 'D5000':
     buffer_vol = 10
     sample_vol = 1  
-if tapestation_kit == 'HS-D1000' or 'HS-D5000':
+if tapestation_kit == 'gDNA':
+    buffer_vol = 10
+    sample_vol = 1 
+if tapestation_kit == 'HS-D1000':
+    buffer_vol = 2
+    sample_vol = 2
+if tapestation_kit == 'HS-D5000':
     buffer_vol = 2
     sample_vol = 2
 if tapestation_kit == 'RNA':
@@ -128,7 +136,6 @@ def run(protocol: protocol_api.ProtocolContext):
         offsets = offsets.set_index('labware')
           ## remove index column
 # =============================================================================
-
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -267,7 +274,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_wells = destination_wells[:number_of_samples]
     
     # Name the well where the reagent tube is
-    reagent_source = reagent_tube.wells_by_name('A1')
+    reagent_source = reagent_tube.wells_by_name()['A1']
     
     # Create an empty list to append the wells for the sample_sources to
     sample_sources = []
@@ -361,23 +368,33 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("You will need " + str(volume_of_buffer) + " of the " +
+    protocol.pause("You will need " + str(volume_of_buffer) + "uL of the " +
                    tapestation_kit + " reagent buffer in"
                    " a 1.5mL tube on A1 of the reagent tube rack.")              
 # =============================================================================
- 
+
+
 ## PIPETTING===================================================================
 ## ============================================================================
 ## Variables for volume tracking and aliquoting--------------------------------
-    source = reagent_source
-    destination = primer_dilution_wells
-    start_height = vt.cal_start_height('tube_5mL', 5000)
+    aspiration_vol = buffer_vol + (buffer_vol/100*2)
+      ## The aspiration_vol is the volume (µL) that is aspirated from the   
+      ## container.         
+    dispension_vol = buffer_vol                                                
+    ##### Variables for volume tracking
+    start_height = vt.cal_start_height('tube_1.5mL', volume_of_buffer)
+      ## Call start height calculation function from volume tracking module.
     current_height = start_height
-    container = 'tube_5mL'
-    if water_volume >= 19:
-        pipette = p300
-    else:
-        pipette = p20 
+      ## Set the current height to start height at the beginning of the     
+      ## protocol.                                                          
+    sample_mix_vol = sample_vol + 3
+     ## setting the sample_mix_vol = volume for pipetting up and down    
+    source = reagent_source
+      ## setting the reagent source
+    destination = sample_wells
+    current_height = start_height
+    container = 'tube_1.5mL'
+    pipette = p20 
 ## ---------------------------------------------------------------------------- 
 ## Aliquoting water------------------------------------------------------------
     for i, well in enumerate(destination):
@@ -391,7 +408,7 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Then, after every 8th well, drop tip and pick up new      
         
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-            container, water_volume, current_height)
+            container, buffer_vol, current_height)
               ## call volume_tracking function, obtain current_height,      
               ## pip_height and whether bottom_reached.                     
         
@@ -400,36 +417,30 @@ def run(protocol: protocol_api.ProtocolContext):
             current_height = start_height
             current_height, pip_height, bottom_reached = (
                 vt.volume_tracking(
-                    container, water_volume, current_height))
-            counter = counter + 1
-            source = water_sources[counter]
+                    container, buffer_vol, current_height))
             aspiration_location = source.bottom(current_height)
-            protocol.comment(
-            "Continue with tube " + str(counter + 1) + " of reagent")
        
         else:
             aspiration_location = source.bottom(pip_height)
               ## Set the location of where to aspirate from.                
         
         #### The actual aliquoting
-        pipette.aspirate(water_volume, aspiration_location)
+        pipette.aspirate(aspiration_vol, aspiration_location)
           ## Aspirate the set volume from the source                        
-        pipette.dispense(water_volume + 10, well)
+        pipette.dispense(dispension_vol + 10, well)
           ## dispense the set volume + extra to avoid drops in the well     
         pipette.dispense(10, aspiration_location)
           ## Alternative for blow-out                                        
     pipette.drop_tip()
       ## when entire plate is full, drop tip                               
 ## ----------------------------------------------------------------------------        
-## Adding primer stocks--------------------------------------------------------         
-    for primer_stock, primer_dilution in zip(
-            primer_stock_sources, primer_dilution_wells):
+## Adding samples stocks--------------------------------------------------------         
+    for sample_source, sample_well in zip(sample_sources, sample_wells):
         p20.pick_up_tip()
-        p20.aspirate(primer_stock_volume, primer_stock)
-        p20.dispense(primer_stock_volume, primer_dilution)
-        primer_mix_volume = primer_stock_volume + 3 
-        p20.mix(3, primer_mix_volume, primer_dilution)
-        p20.dispense(20, primer_dilution)
+        p20.aspirate(sample_vol, sample_source)
+        p20.dispense(sample_vol, sample_well)
+        p20.mix(3, sample_mix_vol, sample_well)
+        p20.dispense(20, sample_well)
         p20.drop_tip()
 ## ----------------------------------------------------------------------------    
 ## ============================================================================

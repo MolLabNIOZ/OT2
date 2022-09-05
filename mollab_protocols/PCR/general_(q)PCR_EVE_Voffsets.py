@@ -67,7 +67,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 40     
+number_of_samples = 5     
   ## MAX ==  number of samples -                                 
   ##         (number of std series * length of std series) -     
   ##         number of standard sample replicates
@@ -87,7 +87,7 @@ qPCR = True
   ## Lights off if qPCR, standard sample and/or standard dilution series 
 if qPCR:  
     # How many dilution serie replicates do you want to include?
-    number_of_std_series = 2 
+    number_of_std_series = 0
       ## If none -- fill in 0
     # How many dilutions are in the standard dilution series?
     length_std_series = 8
@@ -126,7 +126,7 @@ sample_columns = ['2', '7','11']
 sample_vol = 1
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than

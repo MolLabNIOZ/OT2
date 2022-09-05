@@ -10,14 +10,11 @@ The reagent tube should always be put in A1
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-# If applicable: What is the starting position of the first 20µL tip?
+# What is the starting position of the first 20µL tip?
 starting_tip_p20 = 'A1'
-# If applicable: What is the starting position of the first 200µL tip?
-starting_tip_p200 = 'A1'
-  ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many primers do you want to dilute? 
-number_of_samples = 30
+number_of_samples = 5
   ## The maximum number of samples is 96, as the TapeStation can only measure
   ## one plate at the time anyway.
 
@@ -43,7 +40,7 @@ sample_columns = ['2', '7','11']
   ##    4 strips per rack: ['2', '5', '8','11']
   ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
 
-first_sample = 'A1'
+first_sample = 'B2'
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -281,7 +278,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_sources_string = []
 
     # Add wells to the list of sample sources, if plate_96
-    if sample_sources == 'plate_96':
+    if sample_tube_type == 'plate_96':
         if sample_racks >= 1:
             for well in sample_source_1.wells():
                 sample_sources.append(well)
@@ -291,7 +288,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources.append(well)
                 sample_sources_string.append(str(well))
     # Add wells to the list of sample sources, if 1.5mL_tubes
-    if sample_sources == '1.5mL_tubes':            
+    if sample_tube_type == '1.5mL_tubes':            
         if sample_racks >= 1:
             for well in sample_source_1.wells():
                 sample_sources.append(well)
@@ -309,7 +306,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources.append(well)
                 sample_sources_string.append(str(well))
     # Add columns to a list of columns
-    if sample_sources == 'pcr_strips':
+    if sample_tube_type == 'pcr_strips':
         sample_source_columns = (
                 ([sample_source_1.columns_by_name()[column_name] 
                   for column_name in sample_columns]))
@@ -338,19 +335,19 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources_string.append(str(well))
               ## Separate the columns into wells and append them to list 
               
-        ## Cut slice out off list of sample_sources, starting with the 
-        ## indicated first sample and ending after the number_of_samples                        
-        first_sample_index = sample_sources_string.index(
-            first_sample + ' of sample_source_1 on 2')
-          ## Determine the index of the first sample in the list made from 
-          ## strings -- we cannot find strings in the normal robot list
-          ## so we needed to convert the wells to strings.
-        slice_sample_sources = slice(
-            first_sample_index, 
-            first_sample_index + number_of_samples)
-          ## Determine the slice 
-        ## Cut sample slice out of sample_source_wells list
-        sample_sources = sample_sources[slice_sample_sources]
+    ## Cut slice out off list of sample_sources, starting with the 
+    ## indicated first sample and ending after the number_of_samples                        
+    first_sample_index = sample_sources_string.index(
+        first_sample + ' of sample_source_1 on 2')
+      ## Determine the index of the first sample in the list made from 
+      ## strings -- we cannot find strings in the normal robot list
+      ## so we needed to convert the wells to strings.
+    slice_sample_sources = slice(
+        first_sample_index, 
+        first_sample_index + number_of_samples)
+      ## Determine the slice 
+    ## Cut sample slice out of sample_source_wells list
+    sample_sources = sample_sources[slice_sample_sources]
 # =============================================================================      
 
 # LABWARE OFFSET===============================================================    

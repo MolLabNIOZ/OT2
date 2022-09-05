@@ -119,7 +119,7 @@ sample_columns = ['2', '7','11']
 sample_vol = 1
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than

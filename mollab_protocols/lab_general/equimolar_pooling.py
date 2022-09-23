@@ -24,7 +24,7 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([22.36, 40.85, 34.7, 23.53, 16.7, 2.35, 24.6, 5.28, 37.98, 15.76, 18.17, 6.08, 43.13, 13.64, 19.86, 40.96, 34.84, 10.05, 39.59, 1.84, 6.67, 18.42, 13.89, 11.19, 38.43, 36.54, 38.14, 28.26, 25.94, 33.33, 49.13, 18.42, 10.59, 30.77, 9.37, 40.48, 19.0, 16.75, 27.41, 48.61, 28.43, 41.62, 18.87, 18.89, 48.74, 40.56, 16.44, 2.64, 29.8, 3.05, 33.07, 1.19, 40.5, 46.17, 9.61, 20.16, 1.2, 43.32, 4.1, 47.51, 11.83, 1.47, 21.9, 44.46, 11.99, 22.3, 26.32, 25.23, 47.68, 20.4, 23.91, 11.31, 21.56, 49.12, 9.21, 27.9, 13.61, 9.91, 8.95, 11.16, 25.01, 44.93, 26.81, 45.93, 39.68, 34.78, 28.81, 22.64, 4.55, 30.17, 38.63, 3.74, 24.23, 45.56, 34.85, 17.81])
+DNA_µL_list = ([50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0])
 
 # Specify the number of samples, to check if the number of volumes is correct    
 number_of_samples = 96
@@ -42,7 +42,7 @@ if sample_tube_type == 'PCR_strips':
       ## max 4 racks with strips!  
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
@@ -107,13 +107,6 @@ amount_of_tubes = math.ceil(total_cleanup_volume/50000)
 PB_volume = PB_volume / amount_of_tubes
 pool_volume_per_tube = total_pool_volume / amount_of_tubes
 
-        
-# Check what pipette(s) + tips are needed
-if any(i >= 19 for i in DNA_µL_list):
-    pipette_p300 = True
-if any(i < 19 for i in DNA_µL_list):
-    pipette_p20 = True
-
 # How many sample_tube_racks are needed
 if sample_tube_type == 'tube_1.5mL':
     samples_per_rack = 24
@@ -147,7 +140,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## empty dict to add labware and labware_names to, to loop through
       
     ##### Loading pipettetips
-    if pipette_p300:
+    if any(i >= 19 for i in DNA_µL_list):
         tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             11,                                  
@@ -159,7 +152,7 @@ def run(protocol: protocol_api.ProtocolContext):
             '200tips')
         labwares[tips_200_2] = 'filtertips_200'
     
-    if pipette_p20:
+    if any(i < 19 for i in DNA_µL_list):
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             8,                                  
@@ -210,31 +203,31 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Tubes to get samples from
     if sample_tube_type == 'plate_96':
         samples1 = protocol.load_labware(
-            'biorad_96_wellplate_200ul_pcr',
+            'biorad_qpcr_plate_nioz_plateholder',
             6,
             'samples1')
         labwares[samples1] = 'plate_96'
         if sample_racks > 1:
             samples2 = protocol.load_labware(
-                'biorad_96_wellplate_200ul_pcr',
+                'biorad_qpcr_plate_nioz_plateholder',
                 3,
                 'samples2')
             labwares[samples2] = 'plate_96'
             if sample_racks > 2:
                 samples3 = protocol.load_labware(
-                    'biorad_96_wellplate_200ul_pcr',
+                    'biorad_qpcr_plate_nioz_plateholder',
                     2,
                     'samples3')
                 labwares[samples3] = 'plate_96'
                 if sample_racks > 3:
                     samples4 = protocol.load_labware(
-                        'biorad_96_wellplate_200ul_pcr',
+                        'biorad_qpcr_plate_nioz_plateholder',
                         1,
                         'samples4')
                     labwares[samples4] = 'plate_96'
                     if sample_racks > 4:
                         samples5 = protocol.load_labware(
-                            'biorad_96_wellplate_200ul_pcr',
+                            'biorad_qpcr_plate_nioz_plateholder',
                             4,
                             'samples5')
                         labwares[samples5] = 'plate_96'
@@ -331,13 +324,13 @@ def run(protocol: protocol_api.ProtocolContext):
                         labwares[samples5] = '1.5mL_tubes'
     
     ## Pipettes
-    if pipette_p300:
+    if any(i >= 19 for i in DNA_µL_list):
         p300 = protocol.load_instrument(
             'p300_single_gen2',             
             'right',                        
             tip_racks=[tips_200_1,tips_200_2]) 
     
-    if pipette_p20:
+    if any(i < 19 for i in DNA_µL_list):
         p20 = protocol.load_instrument(
             'p20_single_gen2',                  
             'left',                             
@@ -370,9 +363,9 @@ def run(protocol: protocol_api.ProtocolContext):
 # SETTING LOCATIONS============================================================
 # =============================================================================
     # Setting starting tip    
-    if pipette_p300:
+    if any(i >= 19 for i in DNA_µL_list):
         p300.starting_tip = tips_200_1.well(starting_tip_p200)
-    if pipette_p20:
+    if any(i < 19 for i in DNA_µL_list):
         p20.starting_tip = tips_20_1.well(starting_tip_p20)
         
     # Make a list of all possible sample wells in the sample racks

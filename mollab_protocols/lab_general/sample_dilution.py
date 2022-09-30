@@ -62,7 +62,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 72
+number_of_samples = 96
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -91,11 +91,11 @@ dilution_ratio = 1
   ## a total volume. In that case, the dilution_ratio will not be used. 
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 30
+sample_volume = 10
   ## Can be one volume or a list of volumes
 
 # If you enter a list of volumes, also set a final_volume
-final_volume = 30
+final_volume = 10
   ## Used to calculate how much water to add. 
   ## final_volume - sample_volume = water_volume
   ## If you do not have a list of sample_volumes, final_volume is not used
@@ -107,13 +107,13 @@ if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     sample_strip_columns = ['1', '4', '7', '10'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'PCR_strips'
+dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     dilution_strip_columns = ['1', '4', '7', '10'] 
 # Are you simulating the protocol, or running it on the OT2?
-simulate = True
+simulate =False
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================

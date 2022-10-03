@@ -1,12 +1,20 @@
 """
 VERSION: V_May22
-Qubit_mix_and_samples.py is a protocol written for adding the Qubit mix
+Qubit_mix_and_samples.py is a protocol written for alliquoting Qubit mix to a
+qPCR plate (48µL for standards and 49µL for samples). Then it adds 2µL of 
+Standard1 to wells 1 to 4 and 2µL of standard2 to wells 5 to 8. After that it
+will add 1µL of your samples to the rest of the wells.
+
+#!!!Make sure you do not put too much extra mix in the tube. If the pipette goes 
+in too deep into the mix, it will stick to the sides of the tip and drip.
 
 samples toevoegen moet nog & standaarden toevoegen
 waar moeten die standaarden komen? aparte rack? vaste wells in sample rack?
 ook is er iets met de vt, dieameter top is unbound?
 
-220930 MB: Volgens mij doet ie t
+220930 MB: Deleted some unnecesarry things. Outcommented the offset stuff
+Changed deck positions for Qmix and std_tubes to make it faster and mix does 
+not go over the standards.
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -148,7 +156,7 @@ def run(protocol: protocol_api.ProtocolContext):
     if Qmix_tube_type == 'tube_1.5mL':
         Qmix_tube = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-        1,
+        4,
         'Qubit_mix_tube')
         labwares[Qmix_tube] = '1.5mL_tubes'
 
@@ -196,7 +204,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 labware_def_5mL = json.load(labware_file)
             Qmix_tube = protocol.load_labware_from_definition( 
                 labware_def_5mL,           
-                1,                         
+                4,                         
                 'Qubit_mix_tube')
             labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strip':
@@ -232,7 +240,7 @@ def run(protocol: protocol_api.ProtocolContext):
         if Qmix_tube_type == 'tube_5mL':
             Qmix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
-                1,                                     
+                4,                                     
                 'Qubit_mix_tube') 
             labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strips':
@@ -259,7 +267,7 @@ def run(protocol: protocol_api.ProtocolContext):
    
     std_tube = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-        4,
+        1,
         'std_source')
     labwares[std_tube] = '1.5mL_tubes'
 

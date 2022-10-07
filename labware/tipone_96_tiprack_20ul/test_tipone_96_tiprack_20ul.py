@@ -1,0 +1,69 @@
+import json
+from opentrons import protocol_api, types
+
+
+TEST_TIPRACK_SLOT = '5'
+
+RATE = 0.25  # % of default speeds
+SLOWER_RATE = 0.1
+
+PIPETTE_MOUNT = 'right'
+PIPETTE_NAME = 'p20_single_gen2'
+
+
+TIPRACK_DEF_JSON = """{"ordering":[["A1","B1","C1","D1","E1","F1","G1","H1"],["A2","B2","C2","D2","E2","F2","G2","H2"],["A3","B3","C3","D3","E3","F3","G3","H3"],["A4","B4","C4","D4","E4","F4","G4","H4"],["A5","B5","C5","D5","E5","F5","G5","H5"],["A6","B6","C6","D6","E6","F6","G6","H6"],["A7","B7","C7","D7","E7","F7","G7","H7"],["A8","B8","C8","D8","E8","F8","G8","H8"],["A9","B9","C9","D9","E9","F9","G9","H9"],["A10","B10","C10","D10","E10","F10","G10","H10"],["A11","B11","C11","D11","E11","F11","G11","H11"],["A12","B12","C12","D12","E12","F12","G12","H12"]],"brand":{"brand":"TipOne","brandId":["StarLab"]},"metadata":{"displayName":"TipOne 96 Tip Rack 20 µL","displayCategory":"tipRack","displayVolumeUnits":"µL","tags":[]},"dimensions":{"xDimension":127.76,"yDimension":85.48,"zDimension":61},"wells":{"A1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":74.24,"z":18},"B1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":65.24,"z":18},"C1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":56.24,"z":18},"D1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":47.24,"z":18},"E1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":38.24,"z":18},"F1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":29.24,"z":18},"G1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":20.24,"z":18},"H1":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":14.38,"y":11.24,"z":18},"A2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":74.24,"z":18},"B2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":65.24,"z":18},"C2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":56.24,"z":18},"D2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":47.24,"z":18},"E2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":38.24,"z":18},"F2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":29.24,"z":18},"G2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":20.24,"z":18},"H2":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":23.38,"y":11.24,"z":18},"A3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":74.24,"z":18},"B3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":65.24,"z":18},"C3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":56.24,"z":18},"D3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":47.24,"z":18},"E3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":38.24,"z":18},"F3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":29.24,"z":18},"G3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":20.24,"z":18},"H3":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":32.38,"y":11.24,"z":18},"A4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":74.24,"z":18},"B4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":65.24,"z":18},"C4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":56.24,"z":18},"D4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":47.24,"z":18},"E4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":38.24,"z":18},"F4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":29.24,"z":18},"G4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":20.24,"z":18},"H4":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":41.38,"y":11.24,"z":18},"A5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":74.24,"z":18},"B5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":65.24,"z":18},"C5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":56.24,"z":18},"D5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":47.24,"z":18},"E5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":38.24,"z":18},"F5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":29.24,"z":18},"G5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":20.24,"z":18},"H5":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":50.38,"y":11.24,"z":18},"A6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":74.24,"z":18},"B6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":65.24,"z":18},"C6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":56.24,"z":18},"D6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":47.24,"z":18},"E6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":38.24,"z":18},"F6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":29.24,"z":18},"G6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":20.24,"z":18},"H6":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":59.38,"y":11.24,"z":18},"A7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":74.24,"z":18},"B7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":65.24,"z":18},"C7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":56.24,"z":18},"D7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":47.24,"z":18},"E7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":38.24,"z":18},"F7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":29.24,"z":18},"G7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":20.24,"z":18},"H7":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":68.38,"y":11.24,"z":18},"A8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":74.24,"z":18},"B8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":65.24,"z":18},"C8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":56.24,"z":18},"D8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":47.24,"z":18},"E8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":38.24,"z":18},"F8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":29.24,"z":18},"G8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":20.24,"z":18},"H8":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":77.38,"y":11.24,"z":18},"A9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":74.24,"z":18},"B9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":65.24,"z":18},"C9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":56.24,"z":18},"D9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":47.24,"z":18},"E9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":38.24,"z":18},"F9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":29.24,"z":18},"G9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":20.24,"z":18},"H9":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":86.38,"y":11.24,"z":18},"A10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":74.24,"z":18},"B10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":65.24,"z":18},"C10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":56.24,"z":18},"D10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":47.24,"z":18},"E10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":38.24,"z":18},"F10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":29.24,"z":18},"G10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":20.24,"z":18},"H10":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":95.38,"y":11.24,"z":18},"A11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":74.24,"z":18},"B11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":65.24,"z":18},"C11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":56.24,"z":18},"D11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":47.24,"z":18},"E11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":38.24,"z":18},"F11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":29.24,"z":18},"G11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":20.24,"z":18},"H11":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":104.38,"y":11.24,"z":18},"A12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":74.24,"z":18},"B12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":65.24,"z":18},"C12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":56.24,"z":18},"D12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":47.24,"z":18},"E12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":38.24,"z":18},"F12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":29.24,"z":18},"G12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":20.24,"z":18},"H12":{"depth":43,"totalLiquidVolume":20,"shape":"circular","diameter":4.5,"x":113.38,"y":11.24,"z":18}},"groups":[{"metadata":{},"wells":["A1","B1","C1","D1","E1","F1","G1","H1","A2","B2","C2","D2","E2","F2","G2","H2","A3","B3","C3","D3","E3","F3","G3","H3","A4","B4","C4","D4","E4","F4","G4","H4","A5","B5","C5","D5","E5","F5","G5","H5","A6","B6","C6","D6","E6","F6","G6","H6","A7","B7","C7","D7","E7","F7","G7","H7","A8","B8","C8","D8","E8","F8","G8","H8","A9","B9","C9","D9","E9","F9","G9","H9","A10","B10","C10","D10","E10","F10","G10","H10","A11","B11","C11","D11","E11","F11","G11","H11","A12","B12","C12","D12","E12","F12","G12","H12"]}],"parameters":{"format":"irregular","quirks":[],"isTiprack":true,"tipLength":43,"isMagneticModuleCompatible":false,"loadName":"tipone_96_tiprack_20ul"},"namespace":"custom_beta","version":1,"schemaVersion":2,"cornerOffsetFromSlot":{"x":0,"y":0,"z":0}}"""
+TIPRACK_DEF = json.loads(TIPRACK_DEF_JSON)
+TIPRACK_LABEL = TIPRACK_DEF.get('metadata', {}).get(
+    'displayName', 'test labware')
+
+metadata = {'apiLevel': '2.0'}
+
+
+def run(protocol: protocol_api.ProtocolContext):
+    tiprack = protocol.load_labware_from_definition(TIPRACK_DEF, TEST_TIPRACK_SLOT, TIPRACK_LABEL)
+    pipette = protocol.load_instrument(
+        PIPETTE_NAME, PIPETTE_MOUNT, tip_racks=[tiprack])
+
+    num_cols = len(TIPRACK_DEF.get('ordering', [[]]))
+    num_rows = len(TIPRACK_DEF.get('ordering', [[]])[0])
+
+
+    def set_speeds(rate):
+        protocol.max_speeds.update({
+            'X': (600 * rate),
+            'Y': (400 * rate),
+            'Z': (125 * rate),
+            'A': (125 * rate),
+        })
+
+        speed_max = max(protocol.max_speeds.values())
+
+        for instr in protocol.loaded_instruments.values():
+            instr.default_speed = speed_max
+
+    set_speeds(RATE)
+    firstwell = tiprack.well('A1')
+    pipette.move_to(firstwell.top())
+    protocol.pause("If the pipette is accurate click 'resume'")
+    pipette.pick_up_tip()
+    protocol.pause("If the pipette went into the center of the tip, click 'resume'")
+    pipette.return_tip()
+    protocol.pause("If the pipette successfully picked up the tip(s) but does not eject succesfully, pull the tip(s) off by hand and click 'resume'. Do not worry about tip ejection yet")
+
+    last_col = (num_cols * num_rows) - num_rows
+    if (PIPETTE_NAME == 'p20_multi_gen2' or PIPETTE_NAME == 'p300_multi_gen2'):
+        well = tiprack.well(last_col)
+        pipette.move_to(well.top())
+        protocol.pause("If the position is accurate click 'resume'")
+        pipette.pick_up_tip(well)
+    else:
+        last_well = (num_cols) * (num_rows)
+        well = tiprack.well(last_well-1)
+        pipette.move_to(well.top())
+        protocol.pause("If the position is accurate click 'resume'")
+        pipette.pick_up_tip(well)
+
+    protocol.pause("If the pipette went to the center of the tip, click 'resume'")
+    pipette.return_tip()
+    protocol.comment("If the pipette successfully picked up the tip(s) but does not eject succesfully, pull the tip(s) off by hand and click 'resume'. Do not worry about tip ejection yet")
+

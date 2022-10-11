@@ -321,7 +321,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'pcrstrips_96_wellplate_200ul',        
                 2,                                     
                 'sample_source_1')                      
-            sample_source_2 = protocol.load_labware_( 
+            sample_source_2 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',    
                 5,                                 
                 'sample_source_2')                 

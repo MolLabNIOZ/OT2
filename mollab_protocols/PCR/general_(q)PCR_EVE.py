@@ -316,7 +316,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'eppendorfscrewcap_15_tuberack_5000ul',
                 1,                                     
                 'mastermix_tube')  
-        if sample_tube_type == 'PCR_strips':
+        if sample_tube_type == 'PCR_strip':
             sample_source_1 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',        
                 2,                                     

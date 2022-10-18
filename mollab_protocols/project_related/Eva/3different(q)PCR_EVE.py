@@ -1,12 +1,10 @@
 """
 VERSION: V_Oct22
 3different(q)PCR.py is a protocol written for EVE for the adding of 3 different
-mastermixes and 3x the same samples to a 96-wells plate.
+mastermixes and 3x the same samples to a 96-wells plate(also works with 1 or 2)
 The plate will be devided in 3 equal parts 
 (colums 1 to 4 is PCR1, columns 5 to 8 is PCR2, columns 9 to 12 is PCR3)
 The first few spots per area are reserved for a std_dil_series 
-
-
 
 You have to provide:
     Location of the starting tips in both the P20 and P200

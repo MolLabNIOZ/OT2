@@ -55,7 +55,7 @@ mastermix_tube_type = 'tube_1.5mL'
 # Where is the mastermix tube located in the rack? 
 
 # How many samples do you want to include?
-number_of_samples = 25     
+number_of_samples = 23     
   ## MAX ==  32 - number_of_NTCs -                                 
   ##         (number of std series * length of std series) -     
   ##         number of standard sample replicates
@@ -82,11 +82,15 @@ first_sample = 'A1'
   ## fit in the qPCR, change the first well position.
 
 # How many dilution serie replicates do you want to include?
-number_of_std_series = 1 
+number_of_std_series = 0 
   ## If none -- fill in 0
 # How many dilutions are in the standard dilution series?
-length_std_series = 6
-  ## length_of_std_series  MAX == 8                                         
+length_std_series = 0
+  ## length_of_std_series  MAX == 8
+
+# How many different PCRs do you want in 1 plate?
+number_of_PCRs = 1
+  ## Max 3. Provide as many mastermixes.  
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -120,7 +124,6 @@ if sample_tube_type == 'PCR_strip':
     samples_per_rack = 8 * len(sample_columns)
 sample_racks = math.ceil(total_number_of_samples / samples_per_rack)
   ## How many tube_strip_racks are needed (1,2 or 3)
-
 # =============================================================================
 
 # METADATA=====================================================================
@@ -327,13 +330,17 @@ def run(protocol: protocol_api.ProtocolContext):
     for well in destination_plate.wells():
         MM_wells.append(well)
     # Create a list of wells where samples should go
-    MM1_wells = MM_wells[:total_number_of_samples -1]
-    MM2_wells = MM_wells[32:32 + total_number_of_samples-1]
-    MM3_wells = MM_wells[64:64 + total_number_of_samples-1]
-    
-    PCRs = {tuple(MM1_wells): MasterMix1, 
-            tuple(MM2_wells): MasterMix2, 
-            tuple(MM3_wells): MasterMix3}
+    MM1_wells = MM_wells[:total_number_of_samples]
+    PCRs = {tuple(MM1_wells): MasterMix1}
+    if number_of_PCRs > 1:
+        MM2_wells = MM_wells[32:32 + total_number_of_samples]
+        PCRs = {tuple(MM1_wells): MasterMix1, 
+                tuple(MM2_wells): MasterMix2}
+        if number_of_PCRs > 2:
+            MM3_wells = MM_wells[64:64 + total_number_of_samples]
+            PCRs = {tuple(MM1_wells): MasterMix1, 
+                    tuple(MM2_wells): MasterMix2, 
+                    tuple(MM3_wells): MasterMix3}
     
     # Where should sample go
     sample_slice = slice((number_of_std_series * length_std_series), 

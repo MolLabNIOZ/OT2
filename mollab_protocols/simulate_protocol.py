@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("C:/Users/svreugdenhil/Documents/GitHub/OT2/mollab_protocols/primer_aliquots/illu_primer.py")
+protocol_file = open("C:/Users/svreugdenhil/OneDrive - NIOZ/Documenten/GitHub/OT2/mollab_protocols/lab_general/Qubit_mix_and_samples.py")
 
 
 # Simulate protocol

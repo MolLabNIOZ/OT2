@@ -60,13 +60,13 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 80     
+number_of_samples = 40     
   ## MAX ==  number of samples -                                 
   ##         (number of std series * length of std series) -     
   ##         number of standard sample replicates
 
 # How many NTCs to include 
-number_of_NTCs = 1 
+number_of_NTCs = 0 
   ## NOTE: The NTC come after samples and std_samples                     
 
 # What is the total volume (µL) of your mix?
@@ -75,7 +75,7 @@ start_vol = 2014
   ## labware at the start of the protocol.  
   
 # Are you doing a qPCR or a regular PCR?
-qPCR = False
+qPCR = True
   ## True or False                                                          
   ## Lights off if qPCR, standard sample and/or standard dilution series 
 if qPCR:  
@@ -104,7 +104,7 @@ mastermix_source = 'C1'
   ## if mastermix_tube_type ==   'tube_5mL'    -->  C1 
 
 # What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 18.8
+dispension_vol = 19     
 
 # What labware are your samples in?
 sample_tube_type = 'PCR_strip'
@@ -116,10 +116,10 @@ sample_columns = ['2', '7','11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!  
 # What is the volume (µL) of sample that needs to be added to the mix?
-sample_vol = 1.2
+sample_vol = 1
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -139,8 +139,8 @@ if redo:
         [])
   ## Fill in the wells that your samples need to go in
 
-# Do you want your samples in duplicate or triplicate?
-replicates = 1
+# Do yu want your samples in duplicate or triplicate?
+replicates = 2
   ## If you want all samples to be included in duplicate or triplicate (or more)
   ## indicate that here. replicates = 1, means every sample is added once.
   ## Replicated = 2, means every sample is added in duplo

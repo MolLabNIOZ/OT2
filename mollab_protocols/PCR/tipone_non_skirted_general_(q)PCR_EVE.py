@@ -49,18 +49,23 @@ to True the protocol doesn't take samples from the regular sample sources
 (so starting in the top left corner, A1, B1, C1... etc. ), but from the wells
 specified by you! This is only neccessary when using a plate or strips, 
 for 1.5mL tubes you can change the location. 
+
+221011 (MB) - fixed samples in strips
+            - now works with tipone tips
+            - added option for non-skirted plate
+
 """
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
-starting_tip_p20 = 'D9'
+starting_tip_p20 = 'A1'
 # If mastermix dispense > 19: What is the starting position of the 200µL tips?
-starting_tip_p200 = 'A1'
+starting_tip_p300 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 80     
+number_of_samples = 78     
   ## MAX ==  number of samples -                                 
   ##         (number of std series * length of std series) -     
   ##         number of standard sample replicates
@@ -104,7 +109,7 @@ mastermix_source = 'C1'
   ## if mastermix_tube_type ==   'tube_5mL'    -->  C1 
 
 # What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 18.8
+dispension_vol = 18.8     
 
 # What labware are your samples in?
 sample_tube_type = 'PCR_strip'
@@ -119,11 +124,15 @@ sample_columns = ['2', '5', '8','11']
 sample_vol = 1.2
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
   ## fit in the qPCR, change the first well position.
+
+# What kind of plate will your PCR be in
+PCR_plate = 'non-skirted'
+  ## options: 'skirted' or 'non-skirted'
 
 # Are you doing a redo PCR?
 redo = False
@@ -139,7 +148,7 @@ if redo:
         [])
   ## Fill in the wells that your samples need to go in
 
-# Do you want your samples in duplicate or triplicate?
+# Do yu want your samples in duplicate or triplicate?
 replicates = 1
   ## If you want all samples to be included in duplicate or triplicate (or more)
   ## indicate that here. replicates = 1, means every sample is added once.
@@ -150,7 +159,7 @@ replicates = 1
   ## Only the samples will be replicated, not the NTC, std_samples, std_dilution_series
   
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol                 
 # =============================================================================
 
@@ -209,44 +218,97 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    # Pipette tips
-    if aspiration_vol > 20:
-      ## When the mm volume to be dispensed >= 19, 200µL tips are          
-      ## needed in addition to the 20µL tips.                              
-        tips_200 = protocol.load_labware(
-            'opentrons_96_filtertiprack_200ul', 
-            4,                                  
-            '200tips')                          
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            7,                                  
-            '20tips_1')                                
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            10,                                 
-            '20tips_2')                         
-        tips_20 = [tips_20_1, tips_20_2]
+    # Pipette tips    
+    if simulate:
+        with open("labware/tipone_96_tiprack_300ul/"
+             "tipone_96_tiprack_300ul.json") as labware_file:
+                  labware_def_tipone_300ul = json.load(labware_file)
+        with open("labware/tipone_96_tiprack_20ul/"
+             "tipone_96_tiprack_20ul.json") as labware_file:
+                  labware_def_tipone_20ul = json.load(labware_file)
+        if aspiration_vol > 20:
+          ## When the mm volume to be dispensed >= 19, 200µL tips are          
+          ## needed in addition to the 20µL tips.
+            tips_300 = protocol.load_labware_from_definition( 
+                labware_def_tipone_300ul,           
+                4,                         
+                '300tips')
+            tips_20_1 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                7,                         
+                '20tips_1')
+            tips_20_2 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                10,                         
+                '20tips_2')
+            tips_20 = [tips_20_1, tips_20_2]
+        else:
+            tips_20_1 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                4,                         
+                '20tips_1')
+            tips_20_2 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                7,                         
+                '20tips_2')
+            tips_20_3 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                10,                         
+                '20tips_3')
+            tips_20 = [tips_20_1, tips_20_2, tips_20_3]
     else:
-      ## When the mm volume to be dispensed <=19, only 20µL are needed      
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            4,                                  
-            '20tips_1')                           
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            7,                                  
-            '20tips_2')                           
-        tips_20_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            10,                                 
-            '20tips_3')                             
-        tips_20 = [tips_20_1, tips_20_2, tips_20_3]
+        if aspiration_vol > 20:
+          ## When the mm volume to be dispensed >= 19, 200µL tips are          
+          ## needed in addition to the 20µL tips.                              
+            tips_300 = protocol.load_labware(
+                'tipone_96_tiprack_300ul', 
+                4,                                  
+                '300tips')                          
+            tips_20_1 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                7,                                  
+                '20tips_1')                                
+            tips_20_2 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                10,                                 
+                '20tips_2')                         
+            tips_20 = [tips_20_1, tips_20_2]
+        else:
+          ## When the mm volume to be dispensed <=19, only 20µL are needed      
+            tips_20_1 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                4,                                  
+                '20tips_1')                           
+            tips_20_2 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                7,                                  
+                '20tips_2')                           
+            tips_20_3 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                10,                                 
+                '20tips_3')                             
+            tips_20 = [tips_20_1, tips_20_2, tips_20_3]
     
     # Tube_racks & plates
-    destination_plate = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',        
-        3,                                      
-        'plate_96')   
+    if PCR_plate == 'skirted':
+        destination_plate = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',        
+            3,                                      
+            'plate_96')
+    if PCR_plate == 'non-skirted':
+        if simulate:
+            with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
+                 "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
+                      labware_def_non_skirted_plate_96 = json.load(labware_file)
+            destination_plate = protocol.load_labware_from_definition( 
+                labware_def_non_skirted_plate_96,           
+                3,                         
+                'non_skirted_plate_96')
+        else:
+            destination_plate = protocol.load_labware(
+                'thermononskirtedinbioradskirted_96_wellplate_200ul',        
+                3,                                      
+                'non_skirted_plate_96')
     
     if mastermix_tube_type == 'tube_1.5mL':
         mastermix_tube = protocol.load_labware(
@@ -339,7 +401,7 @@ def run(protocol: protocol_api.ProtocolContext):
         p300 = protocol.load_instrument(
             'p300_single_gen2',             
             'right',                        
-            tip_racks=[tips_200])           
+            tip_racks=[tips_300])           
     p20 = protocol.load_instrument(
         'p20_single_gen2',                  
         'left',                             
@@ -363,7 +425,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # Setting starting tip                                           
     if aspiration_vol > 20:
         ## If the mm volume to be dispendsed >= 19, assign p300 starting tip
-        p300.starting_tip = tips_200.well(starting_tip_p200)
+        p300.starting_tip = tips_300.well(starting_tip_p300)
     p20.starting_tip = tips_20_1.well(starting_tip_p20)
     
     # Mastermix tube location

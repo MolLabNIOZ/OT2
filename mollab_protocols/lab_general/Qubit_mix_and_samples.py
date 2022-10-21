@@ -34,6 +34,11 @@ Updates:
 (SV) 221020: 
     - automated qubit mix tube selection 
     - added protocol description
+220930 MB: 
+    - Deleted some unnecesarry things. 
+    - Outcommented the offset stuff
+    - Changed deck positions for Qmix and std_tubes to make it faster and mix does 
+      not go over the standards.
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -49,7 +54,7 @@ starting_tip_p300 = 'A1'
 number_of_samples = 10
 
 # What labware are your samples in?
-sample_tube_type = 'PCR_strip'  
+sample_tube_type = 'tube_1.5mL'  
   ## If your samples are in strips copy/paste 'PCR_strip'                                       
   ## If your samples are in a plate copy/paste 'plate_96'  
   ## If your samples are in 1.5 ml eppendorfs copy/paste 'tube_1.5mL'  
@@ -60,7 +65,7 @@ sample_columns = ['2', '7', '11']
   ## max 4 racks with strips!  
 
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A2'
+first_sample = 'A1'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -76,8 +81,8 @@ simulate = False
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.
 
-import pandas as pd
-  ## Import pandas to open the dataframe with the labware offsets.
+# import pandas as pd
+#   ## Import pandas to open the dataframe with the labware offsets.
 
 import math
   ## Import math for some calculations.
@@ -92,13 +97,12 @@ else: #Robot
   
 # CALCULATED AND SET VARIABLES=================================================
 # =============================================================================
-# If not simulated, import the .csv from the robot with robot_specific 
-# labware off_set values
-if not simulate:
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';')
-    offsets = offsets.set_index('labware')
-
+# # If not simulated, import the .csv from the robot with robot_specific 
+# # labware off_set values
+# if not simulate:
+#     offsets = pd.read_csv(
+#         "data/user_storage/mollab_modules/labware_offset.csv", sep=';')
+#     offsets = offsets.set_index('labware')
 # Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
   ## For samples < 26: 'tube_1.5mL'                                        
   ## For samples > 26: 'tube_5mL'  
@@ -125,6 +129,13 @@ sample_vol = 1
 std_wells =  ['A1', 'B1']
 
 start_vol = (number_of_samples*dispension_vol_sample) + (8*dispension_vol_std)
+# Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
+  ## For volume < 1300: 'tube_1.5mL'                                        
+  ## For volume > 1300: 'tube_5mL'  
+if start_vol < 1300:
+    Qmix_tube_type = 'tube_1.5mL'
+else:
+    Qmix_tube_type = 'tube_5mL'
 
 if sample_tube_type == 'tube_1.5mL':
     samples_per_rack = 24
@@ -179,7 +190,7 @@ def run(protocol: protocol_api.ProtocolContext):
     if Qmix_tube_type == 'tube_1.5mL':
         Qmix_tube = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-        1,
+        4,
         'Qubit_mix_tube')
         labwares[Qmix_tube] = '1.5mL_tubes'
 
@@ -227,7 +238,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 labware_def_5mL = json.load(labware_file)
             Qmix_tube = protocol.load_labware_from_definition( 
                 labware_def_5mL,           
-                1,                         
+                4,                         
                 'Qubit_mix_tube')
             labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strip':
@@ -263,7 +274,7 @@ def run(protocol: protocol_api.ProtocolContext):
         if Qmix_tube_type == 'tube_5mL':
             Qmix_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
-                1,                                     
+                4,                                     
                 'Qubit_mix_tube') 
             labwares[Qmix_tube] = '5mL_screw_cap'
         if sample_tube_type == 'PCR_strips':
@@ -290,7 +301,7 @@ def run(protocol: protocol_api.ProtocolContext):
    
     std_tube = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-        4,
+        1,
         'std_source')
     labwares[std_tube] = '1.5mL_tubes'
 
@@ -307,15 +318,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LABWARE OFFSET===============================================================    
 # =============================================================================
-    if not simulate:
-        for labware in labwares:
-            offset_x = offsets.at[labwares[labware],'x_offset']
-            offset_y = offsets.at[labwares[labware],'y_offset']
-            offset_z = offsets.at[labwares[labware],'z_offset']
-            labware.set_offset(
-                x = offset_x, 
-                y = offset_y, 
-                z = offset_z)
+    # if not simulate:
+    #     for labware in labwares:
+    #         offset_x = offsets.at[labwares[labware],'x_offset']
+    #         offset_y = offsets.at[labwares[labware],'y_offset']
+    #         offset_z = offsets.at[labwares[labware],'z_offset']
+    #         labware.set_offset(
+    #             x = offset_x, 
+    #             y = offset_y, 
+    #             z = offset_z)
 # =============================================================================    
 
 # PREDIFINED VARIABLES=========================================================
@@ -345,12 +356,10 @@ def run(protocol: protocol_api.ProtocolContext):
     p20.starting_tip = tips_20_1.well(starting_tip_p20)
     
     # Qubit mix location
-    QubitMix = Qmix_tube[Qmix_source]
+    QubitMix = Qmix_tube['A1']
     
     # Make a list of all possible wells in the destination plate
-    destination_wells = []
-    for well in destination_plate.wells():
-        destination_wells.append(well)
+    destination_wells = destination_plate.wells()
         
     # Create a list of wells where the standards should go.
     std_wells_0 = destination_wells[0:4]
@@ -413,7 +422,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_source_wells_string.append(str(well))
           ## Separate the columns into wells and append them to list 
 
-    ## Cut slice out off list of sample_sources, starting with the 
+    ## Cut slice out of list of sample_sources, starting with the 
     ## indicated first sample and ending after the number_of_samples                        
     first_sample_index = sample_source_wells_string.index(
         first_sample + ' of sample_source_1 on 2')
@@ -424,7 +433,6 @@ def run(protocol: protocol_api.ProtocolContext):
         first_sample_index, 
         first_sample_index + number_of_samples)
       ## Determine the slice
-    
     ## Cut sample slice out of sample_source_wells list
     sample_sources = sample_source_wells[slice_sample_sources]
     
@@ -436,10 +444,11 @@ def run(protocol: protocol_api.ProtocolContext):
 # PIPETTING====================================================================    
 # =============================================================================
 # LIGHTS-----------------------------------------------------------------------
-    # Always put the light of when starting the protocol.
+    # Always put the light off when starting the protocol.
     protocol.set_rail_lights(False)
-    protocol.pause('You will need ' + str(start_vol) + 'uL of mix and a ' 
-                    + str(Qmix_tube_type) + '.')
+## COMMENTS--------------------------------------------------------------------    
+    protocol.pause("Please insert a " + Qmix_tube_type + " containing " + 
+                   str(start_vol) + "µL of QubitMix in a rack on slot 1")
 # ALIQUOTING MIX STANDARDS-----------------------------------------------------
     pipette = p300
     for i, well in enumerate(std_wells):
@@ -479,6 +488,7 @@ def run(protocol: protocol_api.ProtocolContext):
           ## of the volume after each pipetting step. (blow-out to many     
           ## bubbles)                                                       
     pipette.drop_tip()   
+ 
  # ALIQUOTING MIX SAMPLES-----------------------------------------------------
     # use the current height  of the mix after pipetting the standards
     # as a starting point

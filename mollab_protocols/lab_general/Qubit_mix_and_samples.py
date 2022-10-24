@@ -51,10 +51,10 @@ starting_tip_p300 = 'A1'
 
 # How many samples do you want to include?
 ## For now: max. = 88 samples
-number_of_samples = 10
+number_of_samples = 88
 
 # What labware are your samples in?
-sample_tube_type = 'tube_1.5mL'  
+sample_tube_type = 'PCR_strip'  
   ## If your samples are in strips copy/paste 'PCR_strip'                                       
   ## If your samples are in a plate copy/paste 'plate_96'  
   ## If your samples are in 1.5 ml eppendorfs copy/paste 'tube_1.5mL'  
@@ -65,14 +65,14 @@ sample_columns = ['2', '7', '11']
   ## max 4 racks with strips!  
 
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
   ## fit in a plate, change the first well position.
 
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 

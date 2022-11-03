@@ -83,12 +83,13 @@ mock = False
 # What is the total volume (µL) of your mix?
 start_vol = 1108.8
   ## The start_vol_m is the volume (µL) of mix that is in the source        
-  ## labware at the start of the protocol.                                  
+  ## labware at the start of the protocol.      
+                            
   
 # Are you doing a qPCR or a regular PCR?
 qPCR = False
   ## True or False                                                          
-  ## Lights off if qPCR, standard sample and/or standard dilution series                                        ##
+  ## Lights off if qPCR, standard sample and/or standard dilution series  ##
 if qPCR:
     # How many dilution serie replicates do you want to include?
     number_of_std_series = 1  

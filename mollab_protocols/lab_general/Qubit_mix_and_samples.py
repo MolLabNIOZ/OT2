@@ -1,20 +1,44 @@
 """
 VERSION: V_May22
-Qubit_mix_and_samples.py is a protocol written for alliquoting Qubit mix to a
-qPCR plate (48µL for standards and 49µL for samples). Then it adds 2µL of 
-Standard1 to wells 1 to 4 and 2µL of standard2 to wells 5 to 8. After that it
-will add 1µL of your samples to the rest of the wells.
+Qubit_mix_and_samples.py is a protocol written for the aliquoting of Qubit mix
+from a 1.5mL or 5mL tube to a PCR plate, standards are added from 1.5mL tubes
+to the first row of the plate, then samples are added from either strips, a 
+plate or 1.5mL tubes.
 
-#!!!Make sure you do not put too much extra mix in the tube. If the pipette goes 
-in too deep into the mix, it will stick to the sides of the tip and drip.
+You have to provide: 
+    Location of the starting tips of the P20 and the P300.
+    The number of samples.
+        Maximum number of samples = 88 (96-8)
+    When you are using PCR strips you need to provide the columns in which you
+    will put the strips. 
+        Options are columns 2, 7 and 11 or 2, 5, 8 and 11. There is enough 
+        space on the deck to use 3 columns per rack for the maximum number of
+        samples.
+    The well name of your first sample.
+        A1 is the standard for tubes and plates, A2 is the standard for PCR
+        strips. This is a variable that is especially important when you are
+        measuring samples from a plate, and your first sample to measure is 
+        not in the first well of the plate.
 
-samples toevoegen moet nog & standaarden toevoegen
-waar moeten die standaarden komen? aparte rack? vaste wells in sample rack?
-ook is er iets met de vt, dieameter top is unbound?
+The protocol calculates how much mix it needs by the number of samples that 
+you provide. It also tells you which tube you should put your Qubit mix in 
+(<26 samples 1.5mL tube, >26 samples 5mL tube). Aliquotes 48uL of mix
+to the first row of the plate, and 49uL of mix to the rest of the wells. 
+2uL of standards are added from the standard source rack, 4x STD1 from A1 of
+the standard source rack to A1 - D1 of the destination plate, 4x STD2 from 
+A2 of the standard source rack to E1 - H1 of the destination plate.
+Finally 1uL of samples is added from the sample sources to the rest of the 
+wells.
 
-220930 MB: Deleted some unnecesarry things. Outcommented the offset stuff
-Changed deck positions for Qmix and std_tubes to make it faster and mix does 
-not go over the standards.
+Updates:
+(SV) 221020: 
+    - automated qubit mix tube selection 
+    - added protocol description
+220930 MB: 
+    - Deleted some unnecesarry things. 
+    - Outcommented the offset stuff
+    - Changed deck positions for Qmix and std_tubes to make it faster and mix does 
+      not go over the standards.
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -27,21 +51,21 @@ starting_tip_p300 = 'A1'
 
 # How many samples do you want to include?
 ## For now: max. = 88 samples
-number_of_samples = 10
+number_of_samples = 88
 
 # What labware are your samples in?
-sample_tube_type = 'tube_1.5mL'  
+sample_tube_type = 'PCR_strip'  
   ## If your samples are in strips copy/paste 'PCR_strip'                                       
   ## If your samples are in a plate copy/paste 'plate_96'  
   ## If your samples are in 1.5 ml eppendorfs copy/paste 'tube_1.5mL'  
   
 # In which columns are the strips in the plate (ignore if not using strips)?
-sample_columns = ['2', '7','11']
+sample_columns = ['2', '7', '11']
   ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
   ## max 4 racks with strips!  
 
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -79,6 +103,16 @@ else: #Robot
 #     offsets = pd.read_csv(
 #         "data/user_storage/mollab_modules/labware_offset.csv", sep=';')
 #     offsets = offsets.set_index('labware')
+# Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
+  ## For samples < 26: 'tube_1.5mL'                                        
+  ## For samples > 26: 'tube_5mL'  
+if number_of_samples < 26:    
+    Qmix_tube_type = 'tube_1.5mL'
+else: 
+    Qmix_tube_type = 'tube_5mL'
+
+# In which well is your mix tube? 
+Qmix_source = 'A1'
 
 # Dispension volume of the mix for the standards
 dispension_vol_std = 48
@@ -132,7 +166,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES ================================================
 # =============================================================================
     # Create empty dict to add labware and labware_names to     
-    labwares ={}    
+    labwares = {}    
 
     # Pipette tips
     tips_200 = protocol.load_labware(
@@ -399,7 +433,6 @@ def run(protocol: protocol_api.ProtocolContext):
         first_sample_index, 
         first_sample_index + number_of_samples)
       ## Determine the slice
-   
     ## Cut sample slice out of sample_source_wells list
     sample_sources = sample_source_wells[slice_sample_sources]
     

@@ -10,28 +10,18 @@ You have to provide:
         max number of samples depends on type of tubes the samples are in
         and/or type of tubes you want the dilutions in
     
-    dilution_ratio. How many times do you want to dilute your samples?
-        Dilution_ratio 2 = 2x or 1:1 dilution
-        Dilution ratio 50 = 50x diluted or 1:49 dilution
-        For sample transfer without diluting, set dilution_ratio to 0 or 1
-        Dilution_ratio is not used when you provide a list of sample_volumes
-        
     sample_volume
         If you want every sample diluted in the same ratio or transfer a fixed 
             amount of sample, without diluting, provide a single integer or 
-            float for how many µL you want the robot to use.
-            Together with the dilution_ratio the apropriate volume of water 
-            that should be added will be determined.
+            float for how many µL of sample and water you want the robot to use.
         If you want to dilute every sample differently, provide a list of 
-            sample_volumes. Also provide a final_volume. The aropriate volume
-            of water that is needed to add up to the final_volume will be 
-            determined.
-    
-    final_volume
-        If you provide a list of sample_volumes, water will be added to reach 
-            the final_volume
-        final_volume is not used when you provide a single sample_volume
-    
+            sample_volumes or water_volumes and set the other one to a fixed
+            volume.
+            final_volume
+        If you provide a list of sample_volumes, you can either provide a list
+        of water_volumes or a final_volume. If you do not have a water_volume 
+        list, Water will be added to reach the final_volume.
+   
     sample_tubes and dilution_tubes
         Samples are provied in: plate_96', 'PCR_strips' or 'tubes_1.5mL'
         You want the dilutions/transfered samples in: plate_96', 'PCR_strips'
@@ -39,16 +29,18 @@ You have to provide:
     
 Robot does:
     1. If necesarry, water will be aliquoted.
-        water_volume is based on dilution ratio or final_volume
+        water_volume is based on a fixed volume, a list or a final_volume
         Water is taken from 5mL tube(s).
         Aliquoted in dilution labware of choice
     2. Sample is added:
-        The chosen sample_volume is taken from the sample source labware of choice
-        Transferred to dilution labware of choice
-        If there was water already, sample will be mixed by pipetting up
-Updates:
-MB 220803:  Changed some deck positions.
+        The chosen sample_volume is taken from the sample source labware of 
+        choice. Transferred to dilution labware of choice
+        If there was water already, sample will be mixed by pipetting 
+        up and down.
 
+Updates:
+MB 220803: Changed some deck positions.
+MB 221103: Made it possible to choose varying water volumes
 
 
 """
@@ -82,38 +74,32 @@ number_of_samples = 96
   ## sample_tubes == '1.5mL tubes', dilution_tubes == 'tubes_1.5mL'  MAX = 72
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
-# How many times do you want to dilute?
-dilution_ratio = 1
-  ## i.e.: dilution_ratio 2 = 2x or 1:1 dilution
-  ## i.e.: dilution ratio 50 = 50x diluted or 1:49 dilution
-  ## If you do not want to dilute but only transfer samples, enter 1
-  ## If all samples have a different ratio, enter a list of sample_volumes and 
-  ## a total volume. In that case, the dilution_ratio will not be used. 
-
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 10
+sample_volume = 5
+  ## Can be one volume or a list of volumes
+if isinstance(sample_volume, list):
+# If you enter a list of volumes, also set a final_volume
+    final_volume = 10
+      ## If you do not have a list of sample_volumes, final_volume is not used
+      ## Used to calculate how much water to add. 
+      ## final_volume - sample_volume = water_volume
+water_volume = [24.00403457065793, 36.61144787047444, 10.72007076254264, 25.03414160342187, 33.56898694640979, 16.209102890841336, 31.930189677752047, 14.89604341932225, 25.90358707449652, 3.227555354628393, 22.17286845732918, 17.26307811447122, 23.7360796688047, 14.595865474702599, 15.41359307946097, 1.9317420633351876, 17.79343860671441, 16.4042464546623, 8.2173670182323, 18.868538292462958, 26.3116360575913, 16.08459436085419, 17.8957190272823, 8.17293138919743, 1.4447857228363334, 7.317936747116221, 13.58298394780315, 11.205387063873669, 17.56554596657994, 8.92503696427578, 11.52116083351013, 2.768397151652355, 0.19788467286450562, 2.9381289433570714, 27.283361949233793, 3.5244429471499803, 6.689772404312841, 1.0973252600218517, 4.573394892863696, 1.4578246063541576, 9.57436707564181, 18.802421177359648, -5.025614183544055, -4.747532780923736, -5.030597072563975, -5.020148038694306, -4.844189561011117, -4.989187158533131, -4.945281698731052, 7.566995155813309, 12.321642300321471, 15.84555151758677, 3.401584730093065, 38.564368511280676, -2.36074133804091, -1.488140340801599, 0.4808445898687772, 0.469900033817952, -1.8666653816858734, 26.35995001079781, 18.6857001592819, 31.344233037299787, 17.66613476777365, 21.59085199501737, 17.720596320558315, 13.241701948132938, 6.98661873266933, 7.8410563508007805, 20.122700905354833, 20.77143277088482, 14.484704084129419, 12.96982745794297, 4.410526036573234, 7.0093935922759805, 16.15129940575227, 17.9101595825133, 16.589343462650888, 21.54472474660837, 19.40337535471382, 19.18043373792777, 9.03098295099343, 6.10491941116117, 3.593347763780372, 36.18786495861053, 24.48599858136445, 14.86494465593896, 3.5094041460829715, 2.1735801732773687, 9.032029945259122, 2.130497309010236, 1.5442305672622991, 8.50823914027279, 0.5400000000000009, 5.016676191820547, 0.9746387045122864, 1.3142876019947742]
   ## Can be one volume or a list of volumes
 
-# If you enter a list of volumes, also set a final_volume
-final_volume = 10
-  ## Used to calculate how much water to add. 
-  ## final_volume - sample_volume = water_volume
-  ## If you do not have a list of sample_volumes, final_volume is not used
-
 # In what kind of tubes are the samples provided?
-sample_tubes = 'tubes_1.5mL'
+sample_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    sample_strip_columns = ['1', '4', '7', '10'] 
+    sample_strip_columns = ['2', '5', '7', '11'] 
 # In what kind of tubes should the dilutions be made?  
 dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    dilution_strip_columns = ['1', '4', '7', '10'] 
+    dilution_strip_columns = ['2', '7', '11'] 
 # Are you simulating the protocol, or running it on the OT2?
-simulate =False
+simulate = True
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -139,20 +125,33 @@ if not isinstance(sample_volume, list):
     # if sample_volume is only one volume and not a list of
     # volumes we need to create a list of volumes
     sample_volumes = []
-    water_volumes = [] 
-    end_volume = sample_volume * dilution_ratio
-      ## How much volume you will end up with
     for i in range(number_of_samples):
         sample_volumes.append(sample_volume)
-        water_volumes.append(end_volume - sample_volume)
-          ## make lists with water_volume and sample_volume
+
+    if not isinstance(water_volume, list):
+        water_volumes = []
+        for i in range(number_of_samples):
+            water_volumes.append(water_volume)
+    # If sample_volume is only one volume and there is no list of water_volumes
+    # we need to create a list of water_volumes
+    else:
+        water_volumes = water_volume
+    # If sample_volume is only one volume and there is a list of water_volumes
+    # Use that list
+
 else:
-    water_volumes = []
-    for i, sample_vol in enumerate(sample_volume):
-        water = final_volume - sample_vol
-        water_volumes.append(water)
-        sample_volumes = sample_volume
-          ## Make list with water_volume
+    sample_volumes = sample_volume
+    
+    if not isinstance(water_volume, list):
+        water_volumes = []
+        for i, sample_vol in enumerate(sample_volume):
+            water = final_volume - sample_vol
+            water_volumes.append(water)
+    # If sample_volume is a list, and there is no list of water_volumes, the 
+    # final_volume will be used to calculate the water_volumes
+    else:
+        water_volumes = water_volume
+    # If sample_volumes is a list and water_volumes is a list, use both
 
 total_water_volume = sum(water_volumes)
 water_tubes = math.ceil((total_water_volume)/4800)
@@ -708,13 +707,13 @@ def run(protocol: protocol_api.ProtocolContext):
           ## or following                                                   ##
         sample_pipette.aspirate(sample_vol, sample_well)
           ## aspirate sample_volume_dil = volume for dilution from sample   ##
-        sample_pipette.air_gap(sample_vol)
+        if sample_pipette == p300:
+            sample_pipette.air_gap(sample_vol)
+        else:
+            sample_pipette.air_gap(3)
           ## airgap
         sample_pipette.dispense(sample_vol, dilution_well)
           ## dispense sample_volume_dil = volume for dilution into dil_well ##
-        if water_vol > 0:
-            sample_pipette.mix(3, sample_vol + 10, dilution_well)
-          ## pipette up&down 3x to get everything from the tip              ##
         sample_pipette.dispense(sample_vol * 2, dilution_well)
           ## instead of blow-out
         sample_pipette.drop_tip()

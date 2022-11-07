@@ -69,7 +69,7 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 3   
+number_of_samples = 10   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -86,12 +86,12 @@ mock = True
   ## False if mock is not added by the robot.                               
 
 # What is the total volume (µL) of your mix?
-start_vol = 1108.8
+start_vol = 1500
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.                                  
   
 # Are you doing a qPCR or a regular PCR?
-qPCR = True
+qPCR = False
   ## True or False                                                          
   ## Lights off if qPCR, standard sample and/or standard dilution series                                        ##
 if qPCR:
@@ -111,7 +111,7 @@ else:
     number_of_std_samples = 0
 
 # Which tube are you using for your mastermix? (options 1.5mL or 5mL)
-mastermix_tube_type = 'tube_1.5mL'
+mastermix_tube_type = 'tube_5mL'
   ## For volume < 1300: 'tube_1.5mL'                                        
   ## For volume > 1300: 'tube_5mL'                                          
 
@@ -137,7 +137,7 @@ simulate = True
   ## True for simulating protocol, False for robot protocol      
 
 # In what well should WALL-E start pipetting?
-first_R_primer = 'F12'         
+first_R_primer = 'B1'         
 # record this in the name of the protocol so that user knows which reverse 
 # primer is added to his PCR
 # =============================================================================

@@ -22,14 +22,16 @@ number_of_primers and the final_volume. It also calculates and tells you
 how many 5mL tubes with water you need to provide and how full they need to be.
 This message also reports that you need to put the water tubes in vertical 
 orientation, if you need more than 1.
+
+221103 MB: removed off-set part and is_simulating part
 """
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # If applicable: What is the starting position of the first 20µL tip?
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'D11'
 # If applicable: What is the starting position of the first 200µL tip?
-starting_tip_p200 = 'A1'
+starting_tip_p200 = 'G8'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many primers do you want to dilute? 
@@ -39,12 +41,15 @@ number_of_primers = 96
   ## primer_dilution_tubes == 'PCR_strips' MAX = 144
   ###   = 3 primer PCR strip racks & 3 dilution PCR strip racks
   
-final_volume = 50
+final_volume = 30
   ## How much primer dilution do you want to create?
   ## Advised: a minimum of 20µL and a maximum of 60µL
   
 primer_dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips'
+
+# Are you simulating the protocol, or running it on the OT2?
+simulate = False
 # =============================================================================
  
 # IMPORT STATEMENTS============================================================
@@ -53,13 +58,15 @@ primer_dilution_tubes = 'plate_96'
 from opentrons import protocol_api
                                       
 ##### Import volume_tracking module 
-# volume tracking module is imported inside the def
+if simulate:
+    import json
+    from mollab_modules import volume_tracking_v1 as vt
+else: 
+    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
                                           
 # Import other modules
 import math
   ## math to do some calculations (rounding up)  
-import pandas as pd
-  ## for opening offsets file
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -94,31 +101,10 @@ def run(protocol: protocol_api.ProtocolContext):
     """
     Dilute primers 10x - a protocol for the dilution of many primers
     """
-    # IMPORT for simulator
-    if not protocol.is_simulating(): 
-        from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-    else:
-        import json
-        from mollab_modules import volume_tracking_v1 as vt
-
-# =============================================================================
-
-# OFFSETS======================================================================
-# =============================================================================
-    # If not simulated, import the .csv from the robot with robot_specific 
-    # labware off_set values
-    if not protocol.is_simulating():
-        offsets = pd.read_csv(
-            "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-            )
-          ## import .csv
-        offsets = offsets.set_index('labware')
-          ## remove index column
 # =============================================================================
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    labwares = {}
     # Pipette tips
     if water_volume >= 19:
       ## When the volume to be dispensed >= 19, 200µL tips are          
@@ -126,40 +112,34 @@ def run(protocol: protocol_api.ProtocolContext):
         tips_200 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul', 
             10,                                  
-            '200tips')   
-        labwares[tips_200] = 'filtertips_200'                       
+            '200tips')                          
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             7,                                  
-            '20tips_1')           
-        labwares[tips_20_1] = 'filtertips_20'                     
+            '20tips_1')                             
         tips_20_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             4,                                 
-            '20tips_2')               
-        labwares[tips_20_2] = 'filtertips_20'          
+            '20tips_2')                       
         tips_20 = [tips_20_1, tips_20_2]
     else:
       ## When the mm volume to be dispensed <=19, only 20µL are needed      
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             10,                                  
-            '20tips_1')        
-        labwares[tips_20_1] = 'filtertips_20'                   
+            '20tips_1')                         
         tips_20_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             7,                                  
-            '20tips_2')    
-        labwares[tips_20_2] = 'filtertips_20'                       
+            '20tips_2')                          
         tips_20_3 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             4,                                 
-            '20tips_3')           
-        labwares[tips_20_3] = 'filtertips_20'                  
+            '20tips_3')                        
         tips_20 = [tips_20_1, tips_20_2, tips_20_3]
         
     # Pipettes
-    if total_water_volume >= 19:
+    if water_volume >= 19:
         p300 = protocol.load_instrument(
             'p300_single_gen2',             
             'right',                        
@@ -176,63 +156,53 @@ def run(protocol: protocol_api.ProtocolContext):
                 'biorad_96_wellplate_200ul_pcr',
                 6,
                 'primer_dilution_dest_1')
-            labwares[primer_dilution_dest_1] = 'plate_96'
         if primer_dilution_racks >= 2:            
             primer_dilution_dest_2 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 3,
                 'primer_dilution_dest_2')
-            labwares[primer_dilution_dest_2] = 'plate_96'
     
-    if not protocol.is_simulating():
+    if not simulate:
         if primer_stock_racks >= 1:
             primer_source_1 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 8,                                      
-                'primer_source_1')
-            labwares[primer_source_1] = 'pcr_strips'                      
+                'primer_source_1')                     
         if primer_stock_racks >= 2:
             primer_source_2 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 5,                                      
-                'primer_source_2')
-            labwares[primer_source_2] = 'pcr_strips'                      
+                'primer_source_2')                     
         if primer_stock_racks >= 3:   
             primer_source_3 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 2,                                      
-                'primer_source_3')   
-            labwares[primer_source_3] = 'pcr_strips'                   
+                'primer_source_3')                     
         if primer_stock_racks >= 4: 
             primer_source_4 = protocol.load_labware(
                 'pcrstrips_96_wellplate_200ul',         
                 1,                                      
                 'primer_source_4')   
-            labwares[primer_source_4] = 'pcr_strips'
         if primer_dilution_tubes == 'PCR_strips':
             if primer_dilution_racks >= 1:
                 primer_dilution_dest_1 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     9,                                      
-                    'primer_dilution_dest_1')   
-                labwares[primer_dilution_dest_1] = 'pcr_strips'                   
+                    'primer_dilution_dest_1')                     
             if primer_dilution_racks >= 2:
                 primer_dilution_dest_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     6,                                      
-                    'primer_dilution_dest_2')  
-                labwares[primer_dilution_dest_2] = 'pcr_strips'                     
+                    'primer_dilution_dest_2')                     
             if primer_dilution_racks >= 3:    
                 primer_dilution_dest_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     3,                                      
-                    'primer_dilution_dest_3') 
-                labwares[primer_dilution_dest_3] = 'pcr_strips'                                               
+                    'primer_dilution_dest_3')                                               
         water_tubes = protocol.load_labware(
             'eppendorfscrewcap_15_tuberack_5000ul',     
             11,                                          
             'water_tubes')  
-        labwares[water_tubes] = '5mL_screw_cap'
             
     else:
         with open("labware/pcrstrips_96_wellplate_200ul/"
@@ -243,44 +213,37 @@ def run(protocol: protocol_api.ProtocolContext):
                 labware_def_pcrstrips, 
                 8,                     
                 'primer_source_1')  
-            labwares[primer_source_1] = 'pcr_strips'
         if primer_stock_racks >= 2:
             primer_source_2 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 5,                     
                 'primer_source_2')     
-            labwares[primer_source_2] = 'pcr_strips'
         if primer_stock_racks >= 3:
             primer_source_3 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 2,                     
                 'primer_source_3')   
-            labwares[primer_source_3] = 'pcr_strips'
         if primer_stock_racks >= 4:
             primer_source_4 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, 
                 1,                     
                 'primer_source_4')  
-            labwares[primer_source_4] = 'pcr_strips'
         if primer_dilution_tubes == 'PCR_strips':
             if primer_dilution_racks >= 1:
                 primer_dilution_dest_1 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     9,                     
                     'primer_dilution_dest_1')  
-                labwares[primer_dilution_dest_1] = 'pcr_strips'
             if primer_dilution_racks >= 2:
                 primer_dilution_dest_2 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     6,                     
                     'primer_dilution_dest_2') 
-                labwares[primer_dilution_dest_2] = 'pcr_strips'
             if primer_dilution_racks >= 3:
                 primer_dilution_dest_3 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     3,                     
                     'primer_dilution_dest_3')   
-                labwares[primer_dilution_dest_3] = 'pcr_strips'
         with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                   "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                 labware_def_5mL = json.load(labware_file)
@@ -288,7 +251,6 @@ def run(protocol: protocol_api.ProtocolContext):
             labware_def_5mL, 
             9, 
             'water_tubes')  
-        labwares[water_tubes] = '5mL_screw_cap'
 # =============================================================================
 
 # SETTING LOCATIONS============================================================
@@ -329,7 +291,7 @@ def run(protocol: protocol_api.ProtocolContext):
             ([primer_source_4.columns_by_name()[column_name] 
               for column_name in ['1', '3', '5', '7', '9', '11']]))
         for column in primer_stock_columns_4:
-            primer_stock_columns.append*(column)
+            primer_stock_columns.append(column)
     # Separate columns into wells and add wells to list of primer stock sources
     for column in primer_stock_columns:
         for well in column:
@@ -373,19 +335,6 @@ def run(protocol: protocol_api.ProtocolContext):
     primer_dilution_wells = primer_dilution_wells[:number_of_primers]
 # =============================================================================      
 
-# LABWARE OFFSET===============================================================    
-# =============================================================================
-    if not protocol.is_simulating():
-        for labware in labwares:
-            offset_x = offsets.at[labwares[labware],'x_offset']
-            offset_y = offsets.at[labwares[labware],'y_offset']
-            offset_z = offsets.at[labwares[labware],'z_offset']
-            labware.set_offset(
-                x = offset_x, 
-                y = offset_y, 
-                z = offset_z)
-# =============================================================================   
-
 # MESSAGE AT THE START=========================================================
 # =============================================================================
     protocol.pause("I need "+ str(number_of_water_tubes) + " 5mL tubes. " 
@@ -404,7 +353,7 @@ def run(protocol: protocol_api.ProtocolContext):
     counter = 0
     source = water_sources[counter]
     destination = primer_dilution_wells
-    start_height = vt.cal_start_height('tube_5mL', 5000)
+    start_height = vt.cal_start_height('tube_5mL', 4800)
     current_height = start_height
     container = 'tube_5mL'
     if water_volume >= 19:
@@ -418,7 +367,7 @@ def run(protocol: protocol_api.ProtocolContext):
         if i == 0: 
             pipette.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.    
-        elif i % 8 == 0:
+        elif i % 16 == 0:
             pipette.drop_tip()
             pipette.pick_up_tip()
               ## Then, after every 8th well, drop tip and pick up new      
@@ -459,8 +408,9 @@ def run(protocol: protocol_api.ProtocolContext):
             primer_stock_sources, primer_dilution_wells):
         p20.pick_up_tip()
         p20.aspirate(primer_stock_volume, primer_stock)
-        p20.dispense(primer_stock_volume, primer_dilution)
-        primer_mix_volume = primer_stock_volume + 3 
+        p20.air_gap(5)
+        p20.dispense(primer_stock_volume + 5, primer_dilution)
+        primer_mix_volume = primer_stock_volume + 5 + 3 
         p20.mix(3, primer_mix_volume, primer_dilution)
         p20.dispense(20, primer_dilution)
         p20.drop_tip()

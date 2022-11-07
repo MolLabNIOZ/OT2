@@ -65,11 +65,11 @@ Updates:
 # What is the starting position of the 20µL tips?
 starting_tip_p20 = 'A1'
 # If mastermix dispense > 19: What is the starting position of the 200µL tips?
-starting_tip_p200 = 'A1'
+starting_tip_p200 = 'G12'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 10   
+number_of_samples = 94   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -86,7 +86,7 @@ mock = True
   ## False if mock is not added by the robot.                               
 
 # What is the total volume (µL) of your mix?
-start_vol = 1500
+start_vol = 300
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.                                  
   

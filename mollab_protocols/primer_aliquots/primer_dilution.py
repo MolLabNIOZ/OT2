@@ -29,19 +29,19 @@ orientation, if you need more than 1.
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # If applicable: What is the starting position of the first 20µL tip?
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'D11'
 # If applicable: What is the starting position of the first 200µL tip?
-starting_tip_p200 = 'A1'
+starting_tip_p200 = 'G8'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many primers do you want to dilute? 
-number_of_primers = 192
+number_of_primers = 96
   ## primer_diltution_tubes == 'plate_96'  MAX = 192
   ###   = 4 primer PCR strip racks & 2 dilution plates
   ## primer_dilution_tubes == 'PCR_strips' MAX = 144
   ###   = 3 primer PCR strip racks & 3 dilution PCR strip racks
   
-final_volume = 20
+final_volume = 30
   ## How much primer dilution do you want to create?
   ## Advised: a minimum of 20µL and a maximum of 60µL
   
@@ -49,7 +49,7 @@ primer_dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips'
 
 # Are you simulating the protocol, or running it on the OT2?
-simulate = True
+simulate = False
 # =============================================================================
  
 # IMPORT STATEMENTS============================================================

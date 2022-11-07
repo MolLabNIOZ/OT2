@@ -29,7 +29,7 @@ number_of_samples = 72 # max 96
 MastermixWater_tube = 'tube_5mL'
   ## What kind of tube will the mastermix and water be in?                   ##
   ## Options: 'tube_1.5mL' or 'tube_5mL'
-mastermix_source = 'C1'
+mastermix_source = 'A1'
   ## Where is the mastermix tube located in the rack                         ##
 MM_start_vol = 1186.25
   ## The start_vol is the volume (µl) of mastermix that is in the tube       ##

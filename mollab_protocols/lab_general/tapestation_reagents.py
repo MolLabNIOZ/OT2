@@ -40,7 +40,16 @@ sample_columns = ['2', '7','11']
   ##    4 strips per rack: ['2', '5', '8','11']
   ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
 
-first_sample = 'B2'
+# What is the location of your first sample (fill in if you have a plate)? 
+first_sample = 'A1'
+  ## 'A1' is standard for tubes and plates. 
+  ## 'A2' is standard for tube_strips
+  ## But if you have more samples in the plate than
+  ## fit in the qPCR, change the first well position.
+  
+# Do you want to simulate the protocol?
+simulate = True
+  ## True for simulating protocol, False for robot protocol          
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -48,14 +57,17 @@ first_sample = 'B2'
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
                                       
-##### Import volume_tracking module 
-# volume tracking module is imported inside the def
+if simulate: #Simulator
+    from mollab_modules import volume_tracking_v1 as vt
+    import json 
+      ## Import json to import custom labware with labware_from_definition,
+      ## so that we can use the simulate_protocol with custom labware.     
+else: #Robot
+    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
                                           
 # Import other modules
 import math
   ## math to do some calculations (rounding up)  
-
-import pandas as pd
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
@@ -113,42 +125,19 @@ def run(protocol: protocol_api.ProtocolContext):
     """
     Dilute primers 10x - a protocol for the dilution of many primers
     """
-    # IMPORT for simulator
-    if not protocol.is_simulating(): 
-        from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-    else:
-        import json
-        from mollab_modules import volume_tracking_v1 as vt
-# =============================================================================
-
-# OFFSETS======================================================================
-# =============================================================================
-    # If not simulated, import the .csv from the robot with robot_specific  
-    # labware off_set values
-    if not protocol.is_simulating():
-        offsets = pd.read_csv(
-            "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-            )
-          ## import .csv
-        offsets = offsets.set_index('labware')
-          ## remove index column
 # =============================================================================
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    labwares = {}
- 
     # Pipette tips   
     tips_20_1 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  
         10,                                  
         '20tips_1')        
-    labwares[tips_20_1] = 'filtertips_20'                   
     tips_20_2 = protocol.load_labware(
         'opentrons_96_filtertiprack_20ul',  
         7,                                  
         '20tips_2')    
-    labwares[tips_20_2] = 'filtertips_20'                                         
     tips_20 = [tips_20_1, tips_20_2]
         
     # Pipettes          
@@ -162,101 +151,87 @@ def run(protocol: protocol_api.ProtocolContext):
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
         1,
         'reagent_tube')
-    labwares[reagent_tube] = '1.5mL_tubes'
     
     destination_plate = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        
         3,                                      
         'destination_plate')  
-    labwares[destination_plate] = 'plate_96'
     
     if sample_tube_type == 'tube_1.5mL':
         sample_source_1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-            2,
+            11,
             'sample_source_1')
-        labwares[sample_source_1] = '1.5mL_tubes'
         sample_source_2 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-            5,
+            8,
             'sample_source_2')
-        labwares[sample_source_2] = '1.5mL_tubes'
         sample_source_3 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-            8,
+            5,
             'sample_source_3')
-        labwares[sample_source_3] = '1.5mL_tubes'
         sample_source_4 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-            11,
+            2,
             'sample_source_4')
-        labwares[sample_source_4] = '1.5mL_tubes'
     
     if sample_tube_type == 'plate_96':
         sample_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
-            2,                                  
+            11,                                  
             'sample_source_1')
-        labwares[sample_source_1] = 'plate_96'
         sample_source_2 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
-            5,                                  
+            8,                                  
             'sample_source_2')
-        labwares[sample_source_2] = 'plate_96'
     
-    if not protocol.is_simulating():
-        if sample_racks >= 1:
-            sample_source_1 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         
-                11,                                      
-                'sample_source_1') 
-            labwares[sample_source_1] = 'pcr_strips'
-        if sample_racks >= 2:
-            sample_source_2 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         
-                8,                                      
-                'sample_source_2') 
-            labwares[sample_source_2] = 'pcr_strips'
-        if sample_racks >= 3:
-            sample_source_3 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         
-                5,                                      
-                'sample_source_3')
-            labwares[sample_source_3] = 'pcr_strips'
-        if sample_racks >= 4:
-            sample_source_4 = protocol.load_labware(
-                'pcrstrips_96_wellplate_200ul',         
-                2,                                      
-                'sample_source_4') 
-            labwares[sample_source_4] = 'pcr_strips'
-    else:
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                labware_def_pcrstrips = json.load(labware_file)
-        if sample_racks >= 1:
-            sample_source_1 = protocol.load_labware_from_definition(
-                labware_def_pcrstrips,
-                11,
-                'sample_source_1')
-            labwares[sample_source_1] = 'pcr_strips'
-        if sample_racks >= 2:
-            sample_source_2 = protocol.load_labware_from_definition(
-                labware_def_pcrstrips,
-                8,
-                'sample_source_2')
-            labwares[sample_source_2] = 'pcr_strips'
-        if sample_racks >= 3:
-            sample_source_3 = protocol.load_labware_from_definition(
-                labware_def_pcrstrips,
-                5,
-                'sample_source_3')
-            labwares[sample_source_3] = 'pcr_strips'
-        if sample_racks >= 4:
-            sample_source_4 = protocol.load_labware_from_definition(
-                labware_def_pcrstrips,
-                2,
-                'sample_source_4')
-            labwares[sample_source_4] = 'pcr_strips'
+    if sample_tube_type == 'PCR_strips':
+        if simulate:
+    
+            with open("labware/pcrstrips_96_wellplate_200ul/"
+                      "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                    labware_def_pcrstrips = json.load(labware_file)
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition(
+                    labware_def_pcrstrips,
+                    11,
+                    'sample_source_1')
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition(
+                    labware_def_pcrstrips,
+                    8,
+                    'sample_source_2')
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition(
+                    labware_def_pcrstrips,
+                    5,
+                    'sample_source_3')
+            if sample_racks >= 4:
+                sample_source_4 = protocol.load_labware_from_definition(
+                    labware_def_pcrstrips,
+                    2,
+                    'sample_source_4')
+        else:
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    11,                                      
+                    'sample_source_1') 
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    8,                                      
+                    'sample_source_2') 
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    5,                                      
+                    'sample_source_3')
+            if sample_racks >= 4:
+                sample_source_4 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    2,                                      
+                    'sample_source_4') 
 # =============================================================================
 
 # SETTING LOCATIONS============================================================
@@ -338,7 +313,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Cut slice out off list of sample_sources, starting with the 
     ## indicated first sample and ending after the number_of_samples                        
     first_sample_index = sample_sources_string.index(
-        first_sample + ' of sample_source_1 on 2')
+        first_sample + ' of sample_source_1 on 11')
       ## Determine the index of the first sample in the list made from 
       ## strings -- we cannot find strings in the normal robot list
       ## so we needed to convert the wells to strings.
@@ -349,19 +324,6 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Cut sample slice out of sample_source_wells list
     sample_sources = sample_sources[slice_sample_sources]
 # =============================================================================      
-
-# LABWARE OFFSET===============================================================    
-# =============================================================================
-    if not protocol.is_simulating():
-        for labware in labwares:
-            offset_x = offsets.at[labwares[labware],'x_offset']
-            offset_y = offsets.at[labwares[labware],'y_offset']
-            offset_z = offsets.at[labwares[labware],'z_offset']
-            labware.set_offset(
-                x = offset_x, 
-                y = offset_y, 
-                z = offset_z)
-# =============================================================================   
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
@@ -424,7 +386,7 @@ def run(protocol: protocol_api.ProtocolContext):
         #### The actual aliquoting
         pipette.aspirate(aspiration_vol, aspiration_location)
           ## Aspirate the set volume from the source                        
-        pipette.dispense(dispension_vol + 10, well)
+        pipette.dispense(dispension_vol, well.bottom(-1))
           ## dispense the set volume + extra to avoid drops in the well     
         pipette.dispense(10, aspiration_location)
           ## Alternative for blow-out                                        

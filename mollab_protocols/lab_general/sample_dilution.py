@@ -54,7 +54,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 96
+number_of_samples = 10
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -83,7 +83,7 @@ if isinstance(sample_volume, list):
       ## If you do not have a list of sample_volumes, final_volume is not used
       ## Used to calculate how much water to add. 
       ## final_volume - sample_volume = water_volume
-water_volume = [24.00403457065793, 36.61144787047444, 10.72007076254264, 25.03414160342187, 33.56898694640979, 16.209102890841336, 31.930189677752047, 14.89604341932225, 25.90358707449652, 3.227555354628393, 22.17286845732918, 17.26307811447122, 23.7360796688047, 14.595865474702599, 15.41359307946097, 1.9317420633351876, 17.79343860671441, 16.4042464546623, 8.2173670182323, 18.868538292462958, 26.3116360575913, 16.08459436085419, 17.8957190272823, 8.17293138919743, 1.4447857228363334, 7.317936747116221, 13.58298394780315, 11.205387063873669, 17.56554596657994, 8.92503696427578, 11.52116083351013, 2.768397151652355, 0.19788467286450562, 2.9381289433570714, 27.283361949233793, 3.5244429471499803, 6.689772404312841, 1.0973252600218517, 4.573394892863696, 1.4578246063541576, 9.57436707564181, 18.802421177359648, -5.025614183544055, -4.747532780923736, -5.030597072563975, -5.020148038694306, -4.844189561011117, -4.989187158533131, -4.945281698731052, 7.566995155813309, 12.321642300321471, 15.84555151758677, 3.401584730093065, 38.564368511280676, -2.36074133804091, -1.488140340801599, 0.4808445898687772, 0.469900033817952, -1.8666653816858734, 26.35995001079781, 18.6857001592819, 31.344233037299787, 17.66613476777365, 21.59085199501737, 17.720596320558315, 13.241701948132938, 6.98661873266933, 7.8410563508007805, 20.122700905354833, 20.77143277088482, 14.484704084129419, 12.96982745794297, 4.410526036573234, 7.0093935922759805, 16.15129940575227, 17.9101595825133, 16.589343462650888, 21.54472474660837, 19.40337535471382, 19.18043373792777, 9.03098295099343, 6.10491941116117, 3.593347763780372, 36.18786495861053, 24.48599858136445, 14.86494465593896, 3.5094041460829715, 2.1735801732773687, 9.032029945259122, 2.130497309010236, 1.5442305672622991, 8.50823914027279, 0.5400000000000009, 5.016676191820547, 0.9746387045122864, 1.3142876019947742]
+water_volume = 0
   ## Can be one volume or a list of volumes
 
 # In what kind of tubes are the samples provided?
@@ -93,11 +93,11 @@ if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     sample_strip_columns = ['2', '5', '7', '11'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'plate_96'
+dilution_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    dilution_strip_columns = ['2', '7', '11'] 
+    dilution_strip_columns = ['2', '5', '7', '11'] 
 # Are you simulating the protocol, or running it on the OT2?
 simulate = True
 # =============================================================================
@@ -121,6 +121,11 @@ import math
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
+stock_vol = 800
+  ## If diluting samples stock_vol == 4800 (full water tube)
+  ## Actual tubes need to be filled to 5mL
+  ## If more than 1 water tube all tubes need to be filled with same volume
+  ## If using protocol for PCR, stock volume can be adjusted
 if not isinstance(sample_volume, list):
     # if sample_volume is only one volume and not a list of
     # volumes we need to create a list of volumes
@@ -154,7 +159,7 @@ else:
     # If sample_volumes is a list and water_volumes is a list, use both
 
 total_water_volume = sum(water_volumes)
-water_tubes = math.ceil((total_water_volume)/4800)
+water_tubes = math.ceil((total_water_volume)/stock_vol)
   ## How many tubes of 5mL water are needed 
 
 if sample_tubes == 'tubes_1.5mL':
@@ -179,6 +184,8 @@ tips_20_needed = (len([x for x in water_volumes if 0 < x < 20]) +
 tips_200_needed = (len([x for x in water_volumes if x >= 20]) +
                    len([x for x in sample_volumes if x > 17]))
 ## How many p20 / p200 tips do you need?
+
+
 # =============================================================================
 
 
@@ -273,16 +280,14 @@ def run(protocol: protocol_api.ProtocolContext):
     
     
     ##### Loading pipettes
-    if tips_20_needed > 0:
-        p20 = protocol.load_instrument(
-            'p20_single_gen2',
-            'left',
-            tip_racks = tips_20)
-    if tips_200_needed > 0:
-        p300 = protocol.load_instrument(
-            'p300_single_gen2',
-            'right',
-            tip_racks = tips_200)
+    p20 = protocol.load_instrument(
+        'p20_single_gen2',
+        'left',
+        tip_racks = tips_20)
+    p300 = protocol.load_instrument(
+        'p300_single_gen2',
+        'right',
+        tip_racks = tips_200)
 
     
     ##### Loading labware 
@@ -600,7 +605,8 @@ def run(protocol: protocol_api.ProtocolContext):
 # MESSAGE AT THE START=========================================================
 # =============================================================================
     if len([x for x in water_volumes if x > 0]) > 0:
-        protocol.pause("I need "+ str(water_tubes) + " tube(s) with 5mL of water.")
+        protocol.pause("I need " + str(water_tubes) + " tube(s) with " 
+                       + str(stock_vol) + " of water.")
 # =============================================================================
 
 # ALIQUOTING WATER=============================================================    
@@ -611,7 +617,7 @@ def run(protocol: protocol_api.ProtocolContext):
         source = tubes_5mL.wells()[counter]
         destination = dilution_wells
         container = 'tube_5mL'
-        start_height = vt.cal_start_height(container, 4800)
+        start_height = vt.cal_start_height(container, stock_vol)
         current_height = start_height
               
         for i, (well, water_vol) in enumerate(zip(destination, water_volumes)):

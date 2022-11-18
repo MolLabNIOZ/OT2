@@ -41,7 +41,8 @@ Robot does:
 Updates:
 MB 220803: Changed some deck positions.
 MB 221103: Made it possible to choose varying water volumes
-
+MB 221118: Added mixing after adding sample + changed strip positions 
+           + changed some deck positions
 
 """
 
@@ -54,7 +55,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 10
+number_of_samples = 48
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -75,7 +76,7 @@ number_of_samples = 10
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 5
+sample_volume = [2.5, 3.75, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.25, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 3.0, 5.0, 5.0, 5.0, 5.0, 3.0, 5.0, 2.25, 5.0, 5.0, 1.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 1.5, 1.0, 5.0, 5.0, 5.0, 5.0]
   ## Can be one volume or a list of volumes
 if isinstance(sample_volume, list):
 # If you enter a list of volumes, also set a final_volume
@@ -83,21 +84,22 @@ if isinstance(sample_volume, list):
       ## If you do not have a list of sample_volumes, final_volume is not used
       ## Used to calculate how much water to add. 
       ## final_volume - sample_volume = water_volume
-water_volume = 0
-  ## Can be one volume or a list of volumes
+water_volume = [2.5, 3.75, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.25, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 3.0, 5.0, 5.0, 5.0, 5.0, 3.0, 5.0, 2.25, 5.0, 5.0, 1.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 1.5, 1.0, 5.0, 5.0, 5.0, 5.0]
+  ## Can be one volume or a list of volumes. 
+  ## Will only be used when you do not have a list of sample_volumes
 
 # In what kind of tubes are the samples provided?
 sample_tubes = 'PCR_strips'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    sample_strip_columns = ['2', '5', '7', '11'] 
+    sample_strip_columns = ['2', '5', '8', '11'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'PCR_strips'
+dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
 if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    dilution_strip_columns = ['2', '5', '7', '11'] 
+    dilution_strip_columns = ['2', '5', '8', '11'] 
 # Are you simulating the protocol, or running it on the OT2?
 simulate = True
 # =============================================================================
@@ -305,7 +307,7 @@ def run(protocol: protocol_api.ProtocolContext):
         if sample_racks >= 3:
             sample_source_3 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
-                7,
+                3,
                 'sample_source_3')
     if sample_tubes == 'tubes_1.5mL':
         if sample_racks >= 1:
@@ -343,7 +345,7 @@ def run(protocol: protocol_api.ProtocolContext):
         if dilution_racks >= 3:             
             dilution_dest_3 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
-                8,
+                9,
                 'dilution_dest_3')
     if dilution_tubes == 'tubes_1.5mL':
         if dilution_racks >= 1:
@@ -359,12 +361,12 @@ def run(protocol: protocol_api.ProtocolContext):
         if dilution_racks >= 3:    
             dilution_dest_3 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-                8,                                      
+                9,                                      
                 'dilution_dest_3')                      
         if dilution_racks >= 4:
             dilution_dest_4 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-                9,                                      
+                8,                                      
                 'dilution_dest_4')                      
 
     if simulate:
@@ -406,12 +408,12 @@ def run(protocol: protocol_api.ProtocolContext):
             if dilution_racks >= 3:
                 dilution_dest_3 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
-                    8,                     
+                    9,                     
                     'dilution_dest_3')     
             if dilution_racks >= 4:
                 dilution_dest_4 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
-                    9,                     
+                    8,                     
                     'dilution_dest_4')       
         if water_tubes > 0: 
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -457,12 +459,12 @@ def run(protocol: protocol_api.ProtocolContext):
             if dilution_racks >= 3:    
                 dilution_dest_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
-                    8,                                      
+                    9,                                      
                     'dilution_dest_3')                      
             if dilution_racks >= 4:        
                 dilution_dest_4 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
-                    9,                                      
+                    8,                                      
                     'dilution_dest_4')                          
         if water_tubes > 0:
             tubes_5mL = protocol.load_labware(
@@ -703,26 +705,29 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     for sample_well, dilution_well, sample_vol, water_vol in zip(
             sample_wells, dilution_wells, sample_volumes, water_volumes):
-        ## Combine each sample with a dilution_well and a destination well  ##
-        if sample_vol > 17:
-            sample_pipette = p300
-        else:
-            sample_pipette = p20
-        sample_pipette.pick_up_tip()
-          ## p20 picks up tip from location of specified starting_tip       ##
-          ## or following                                                   ##
-        sample_pipette.aspirate(sample_vol, sample_well)
-          ## aspirate sample_volume_dil = volume for dilution from sample   ##
-        if sample_pipette == p300:
-            sample_pipette.air_gap(sample_vol)
-        else:
-            sample_pipette.air_gap(3)
-          ## airgap
-        sample_pipette.dispense(sample_vol, dilution_well)
-          ## dispense sample_volume_dil = volume for dilution into dil_well ##
-        sample_pipette.dispense(sample_vol * 2, dilution_well)
-          ## instead of blow-out
-        sample_pipette.drop_tip()
-          ## Drop tip in trashbin on 12.                                    ##
+        ## Combine each sample with a dilution_well and a destination well
+        if sample_vol > 0:
+            if sample_vol > 17:
+                sample_pipette = p300
+            else:
+                sample_pipette = p20
+            sample_pipette.pick_up_tip()
+              ## picks up tip from location of specified starting_tip     
+              ## or following 
+            sample_pipette.aspirate(sample_vol, sample_well)
+              ## aspirate sample_volume_dil = volume for dilution from sample
+            if sample_pipette == p300:
+                sample_pipette.air_gap(20)
+            else:
+                sample_pipette.air_gap(3)
+              ## airgap
+            sample_pipette.dispense(sample_vol * 2, dilution_well)
+              ## dispense sample_volume_dil = volume for dilution into dil_well
+            if water_vol > 0:
+                sample_pipette.mix(3, sample_vol + 2, dilution_well)
+            sample_pipette.dispense(sample_vol * 2, dilution_well)
+              ## instead of blow-out
+            sample_pipette.drop_tip()
+              ## Drop tip in trashbin on 12
          
 # =============================================================================

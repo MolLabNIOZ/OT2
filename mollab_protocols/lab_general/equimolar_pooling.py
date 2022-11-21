@@ -24,10 +24,10 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0])
+DNA_µL_list = ([10.0, 10.0, 8.51, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 52.8, 0.0, 66.15, 0.0, 36.4, 0.0, 10.56, 10.38, 6.64, 3.28, 9.26, 29.82, 0.0, 1.73, 11.11, 10.59, 14.94, 51.2, 52.5, 16.77, 33.73, 0.0, 20.78, 29.01, 10.0, 10.0, 7.39, 6.34, 8.25, 9.74, 9.38, 0.0, 15.29, 8.95, 7.39, 9.06, 2.0, 21.14, 0.0, 20.14, 0.0, 0.0, 0.0, 8.42, 14.6, 0.0, 0.0, 0.0, 16.44, 22.61, 8.33, 30.8, 8.71, 7.46, 0.0, 0.0, 0.0, 7.26, 5.35, 0.0, 19.95, 2.66, 3.15, 5.82, 5.59, 5.99])
 
 # Specify the number of samples, to check if the number of volumes is correct    
-number_of_samples = 96
+number_of_samples = 82
 
 # What labware are your samples in?
 sample_tube_type = 'plate_96' 
@@ -42,7 +42,7 @@ if sample_tube_type == 'PCR_strips':
       ## max 4 racks with strips!  
 
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
@@ -64,11 +64,11 @@ else: #Robot
     from data.user_storage.mollab_modules import volume_tracking_v2 as vt
 # If not simulated, import the .csv from the robot with robot_specific 
 # labware off_set values
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-        )
-      ## import .csv
-    offsets = offsets.set_index('labware')
+    # offsets = pd.read_csv(
+    #     "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
+    #     )
+    #   ## import .csv
+    # offsets = offsets.set_index('labware')
       ## remove index column
 # =============================================================================
 
@@ -144,24 +144,24 @@ def run(protocol: protocol_api.ProtocolContext):
         tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             11,                                  
-            '200tips')
+            '200tips_1')
         labwares[tips_200_1] = 'filtertips_200'
         tips_200_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             10,                                  
-            '200tips')
+            '200tips_2')
         labwares[tips_200_2] = 'filtertips_200'
     
     if any(i < 19 for i in DNA_µL_list):
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             8,                                  
-            '20tips')
+            '20tips_1')
         labwares[tips_20_1] = 'filtertips_20'
         tips_20_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             7,                                  
-            '20tips')
+            '20tips_2')
         labwares[tips_20_2] = 'filtertips_20'
         
     
@@ -202,35 +202,64 @@ def run(protocol: protocol_api.ProtocolContext):
 
     ## Tubes to get samples from
     if sample_tube_type == 'plate_96':
-        samples1 = protocol.load_labware(
-            'biorad_qpcr_plate_nioz_plateholder',
-            6,
-            'samples1')
-        labwares[samples1] = 'plate_96'
-        if sample_racks > 1:
-            samples2 = protocol.load_labware(
+        if simulate:
+            with open("labware/biorad_qpcr_plate_nioz_plateholder/"
+                      "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+                    samples1 = protocol.load_labware_from_definition( 
+                        labware_def_plate_holder,     
+                        6,                         
+                        'samples1')
+                    if sample_racks > 1:
+                        samples2 = protocol.load_labware_from_definition( 
+                            labware_def_plate_holder,     
+                            3,                         
+                            'samples2')
+                        if sample_racks > 2:
+                            samples3 = protocol.load_labware_from_definition( 
+                                labware_def_plate_holder,     
+                                2,                         
+                                'samples3')
+                            if sample_racks > 3:
+                                samples4 = protocol.load_labware_from_definition( 
+                                    labware_def_plate_holder,     
+                                    1,                         
+                                    'samples4')
+                                if sample_racks > 4:
+                                    samples5 = protocol.load_labware_from_definition( 
+                                        labware_def_plate_holder,     
+                                        4,                         
+                                        'samples5')
+        else:    
+            samples1 = protocol.load_labware(
                 'biorad_qpcr_plate_nioz_plateholder',
-                3,
-                'samples2')
-            labwares[samples2] = 'plate_96'
-            if sample_racks > 2:
-                samples3 = protocol.load_labware(
+                6,
+                'samples1')
+            labwares[samples1] = 'plate_96'
+            if sample_racks > 1:
+                samples2 = protocol.load_labware(
                     'biorad_qpcr_plate_nioz_plateholder',
-                    2,
-                    'samples3')
-                labwares[samples3] = 'plate_96'
-                if sample_racks > 3:
-                    samples4 = protocol.load_labware(
+                    3,
+                    'samples2')
+                labwares[samples2] = 'plate_96'
+                if sample_racks > 2:
+                    samples3 = protocol.load_labware(
                         'biorad_qpcr_plate_nioz_plateholder',
-                        1,
-                        'samples4')
-                    labwares[samples4] = 'plate_96'
-                    if sample_racks > 4:
-                        samples5 = protocol.load_labware(
+                        2,
+                        'samples3')
+                    labwares[samples3] = 'plate_96'
+                    if sample_racks > 3:
+                        samples4 = protocol.load_labware(
                             'biorad_qpcr_plate_nioz_plateholder',
-                            4,
-                            'samples5')
-                        labwares[samples5] = 'plate_96'
+                            1,
+                            'samples4')
+                        labwares[samples4] = 'plate_96'
+                        if sample_racks > 4:
+                            samples5 = protocol.load_labware(
+                                'biorad_qpcr_plate_nioz_plateholder',
+                                4,
+                                'samples5')
+                            labwares[samples5] = 'plate_96'
     
     elif sample_tube_type == 'PCR_strip':
         if simulate:
@@ -339,15 +368,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LABWARE OFFSET===============================================================    
 # =============================================================================
-    if not simulate:
-        for labware in labwares:
-            offset_x = offsets.at[labwares[labware],'x_offset']
-            offset_y = offsets.at[labwares[labware],'y_offset']
-            offset_z = offsets.at[labwares[labware],'z_offset']
-            labware.set_offset(
-                x = offset_x, 
-                y = offset_y, 
-                z = offset_z)
+    # if not simulate:
+    #     for labware in labwares:
+    #         offset_x = offsets.at[labwares[labware],'x_offset']
+    #         offset_y = offsets.at[labwares[labware],'y_offset']
+    #         offset_z = offsets.at[labwares[labware],'z_offset']
+    #         labware.set_offset(
+    #             x = offset_x, 
+    #             y = offset_y, 
+    #             z = offset_z)
 # =============================================================================
 
 # PREDIFINED VARIABLES=========================================================
@@ -440,40 +469,40 @@ def run(protocol: protocol_api.ProtocolContext):
     pooled_volume = 1
     for volume, well in zip(DNA_µL_list, sample_wells):
         ## for each well do the following
-        
-        # Determine pipette to use, depending on volume
-        if volume < 19:
-            pipette = p20
-        else:
-            pipette = p300
-        
-        # determine pipette_height in the pool_tube
-        direction = 'filling'
-        current_height, pip_height, bottom_reached = vt.volume_tracking(
-            pool_tube_type, volume, current_height,direction)
-        
-        # Pick up a tip
-        pipette.pick_up_tip()
-        
-        # Take up the specified volume per sample       
-        pipette.aspirate(volume, well)
-        
-        # Take an air gap, to prevent cross_contamination
-        pipette.aspirate(1, well.top())
-        
-        # Determine tube to pool in
-        pool_tube_number = math.ceil(pooled_volume / pool_volume_per_tube) - 1     
-        pool_tube_well = str(pool_tube.wells()[pool_tube_number])
-        pool_tube_well = pool_tube_well.split(" ", 1)[0]
-        
-        # Dispense in the pool_tube, 
-        pipette.dispense(volume + 10, pool_tube[pool_tube_well].bottom(pip_height))
-        
-        # Keep track of already pooled volume, to go to next tube if necesarry 
-        pooled_volume = pooled_volume + volume
-        
-        # drop tip
-        pipette.drop_tip()
+        if volume > 0:
+            # Determine pipette to use, depending on volume
+            if volume < 19:
+                pipette = p20
+            else:
+                pipette = p300
+            
+            # determine pipette_height in the pool_tube
+            direction = 'filling'
+            current_height, pip_height, bottom_reached = vt.volume_tracking(
+                pool_tube_type, volume, current_height,direction)
+            
+            # Pick up a tip
+            pipette.pick_up_tip()
+            
+            # Take up the specified volume per sample       
+            pipette.aspirate(volume, well)
+            
+            # Take an air gap, to prevent cross_contamination
+            pipette.aspirate(1, well.top())
+            
+            # Determine tube to pool in
+            pool_tube_number = math.ceil(pooled_volume / pool_volume_per_tube) - 1     
+            pool_tube_well = str(pool_tube.wells()[pool_tube_number])
+            pool_tube_well = pool_tube_well.split(" ", 1)[0]
+            
+            # Dispense in the pool_tube, 
+            pipette.dispense(volume + 10, pool_tube[pool_tube_well].bottom(pip_height))
+            
+            # Keep track of already pooled volume, to go to next tube if necesarry 
+            pooled_volume = pooled_volume + volume
+            
+            # drop tip
+            pipette.drop_tip()
 ## ============================================================================    
     
 # TURN RAIL LIGHT OFF==========================================================

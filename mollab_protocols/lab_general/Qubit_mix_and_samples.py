@@ -39,6 +39,9 @@ Updates:
     - Outcommented the offset stuff
     - Changed deck positions for Qmix and std_tubes to make it faster and mix does 
       not go over the standards.
+221118 MB:
+    - Option of 2 standards (4x2standards) or 4 standards (2x4standards) or 
+      8 standards (1x8standards)
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -51,7 +54,15 @@ starting_tip_p300 = 'A1'
 
 # How many samples do you want to include?
 ## For now: max. = 88 samples
-number_of_samples = 88
+number_of_samples = 8
+
+# How many standards do you want to include?
+number_of_standards = 2 #2, 4 or 8
+## If you choose 2 (standard Qubit standards St #1 and St #2) the robot will
+## include 4 replicates of each of the standards
+## If you choose 4 (Qubit St #1, 2 dilutions of St #2 and St #2) the robot will
+## include 2 replicates of each of the standards
+## If you choose 8 the robot will include every standard once. 
 
 # What labware are your samples in?
 sample_tube_type = 'PCR_strip'  
@@ -125,8 +136,6 @@ std_vol = 2
 
 # Volume of the sample to add
 sample_vol = 1
-
-std_wells =  ['A1', 'B1']
 
 start_vol = (number_of_samples*dispension_vol_sample) + (8*dispension_vol_std)
 # Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
@@ -362,9 +371,27 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_wells = destination_plate.wells()
         
     # Create a list of wells where the standards should go.
-    std_wells_0 = destination_wells[0:4]
-    std_wells_1 = destination_wells[4:8]
-    std_wells = std_wells_0 + std_wells_1
+    if number_of_standards == 2: 
+        std_wells_0 = destination_wells[0:4]
+        std_wells_1 = destination_wells[4:8]
+        std_wells = std_wells_0 + std_wells_1
+    elif number_of_standards == 4:
+        std_wells_0 = destination_wells[0:2]
+        std_wells_1 = destination_wells[2:4]
+        std_wells_2 = destination_wells[4:6]
+        std_wells_3 = destination_wells[6:8]
+        std_wells = std_wells_0 + std_wells_1 + std_wells_2 + std_wells_3
+    elif number_of_standards == 8:
+        std_wells_0 = destination_plate.wells_by_name()['A1']
+        std_wells_1 = destination_plate.wells_by_name()['B1']
+        std_wells_2 = destination_plate.wells_by_name()['C1']
+        std_wells_3 = destination_plate.wells_by_name()['D1']
+        std_wells_4 = destination_plate.wells_by_name()['E1']
+        std_wells_5 = destination_plate.wells_by_name()['F1']
+        std_wells_6 = destination_plate.wells_by_name()['G1']
+        std_wells_7 = destination_plate.wells_by_name()['H1']
+        std_wells = [std_wells_0,std_wells_1,std_wells_2,std_wells_3,
+                     std_wells_4,std_wells_5,std_wells_6,std_wells_7]
     # Create a list of wells where the samples should go.
     #first we need to slice the list after the standards and after the samples
     slice_sample_wells = slice(8, 8 + number_of_samples)
@@ -439,6 +466,16 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Determine standard source
     std_source_0 = std_tube.wells_by_name()['A1']
     std_source_1 = std_tube.wells_by_name()['B1']
+    if number_of_standards >= 4:
+        std_source_2 = std_tube.wells_by_name()['C1']
+        std_source_3 = std_tube.wells_by_name()['D1']
+        if number_of_standards == 8:
+            std_source_4 = std_tube.wells_by_name()['A2']
+            std_source_5 = std_tube.wells_by_name()['B2']
+            std_source_6 = std_tube.wells_by_name()['C2']
+            std_source_7 = std_tube.wells_by_name()['D2']
+            std_sources =  [std_source_0,std_source_1,std_source_2,std_source_3,
+                            std_source_4,std_source_5,std_source_6,std_source_7]
 # =============================================================================
 
 # PIPETTING====================================================================    
@@ -532,20 +569,45 @@ def run(protocol: protocol_api.ProtocolContext):
           ## bubbles)                                                       
     pipette.drop_tip()    
 # ADDING STANDARDS-------------------------------------------------------------
-    for well in std_wells_0:
-        p20.pick_up_tip()
-        p20.aspirate(std_vol, std_source_0)
-        p20.dispense(std_vol, well)           
-        p20.mix(3, std_mix_vol, well)
-        p20.dispense(10, well)
-        p20.drop_tip()
-    for well in std_wells_1:
-        p20.pick_up_tip()
-        p20.aspirate(std_vol, std_source_1)
-        p20.dispense(std_vol, well)           
-        p20.mix(3, std_mix_vol, well)
-        p20.dispense(10, well)
-        p20.drop_tip()
+    if number_of_standards != 8:
+        for well in std_wells_0:
+            p20.pick_up_tip()
+            p20.aspirate(std_vol, std_source_0)
+            p20.dispense(std_vol, well)           
+            p20.mix(3, std_mix_vol, well)
+            p20.dispense(10, well)
+            p20.drop_tip()
+        for well in std_wells_1:
+            p20.pick_up_tip()
+            p20.aspirate(std_vol, std_source_1)
+            p20.dispense(std_vol, well)           
+            p20.mix(3, std_mix_vol, well)
+            p20.dispense(10, well)
+            p20.drop_tip()
+        
+        if number_of_standards == 4:
+            for well in std_wells_2:
+                p20.pick_up_tip()
+                p20.aspirate(std_vol, std_source_2)
+                p20.dispense(std_vol, well)           
+                p20.mix(3, std_mix_vol, well)
+                p20.dispense(10, well)
+                p20.drop_tip()
+            for well in std_wells_3:
+                p20.pick_up_tip()
+                p20.aspirate(std_vol, std_source_3)
+                p20.dispense(std_vol, well)           
+                p20.mix(3, std_mix_vol, well)
+                p20.dispense(10, well)
+                p20.drop_tip()
+    else:
+        for well, std_source in zip(std_wells, std_sources):
+            p20.pick_up_tip()
+            p20.aspirate(std_vol, std_source)
+            p20.dispense(std_vol, well)           
+            p20.mix(3, std_mix_vol, well)
+            p20.dispense(10, well)
+            p20.drop_tip()
 # ADDING SAMPLES---------------------------------------------------------------
     ## Loop through source and destination wells
     for sample_tube, well in zip(sample_sources, sample_wells):

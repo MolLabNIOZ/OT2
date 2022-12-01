@@ -50,7 +50,7 @@ if sample_tube_type == 'PCR_strips':
       ## max 4 racks with strips!  
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 

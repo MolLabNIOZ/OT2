@@ -6,6 +6,12 @@ TapeStation assay from a 1.5mL tube to a 96-wells plate and add the samples
 from 1.5mL tubes, PCR strips or a 96-wells plate to the reagents. It is also
 possible to do one of the 2.
 
+You have to provide:
+    starting_tip_p20
+        You will only need 20uL tips because the volume is never higher.
+        NOTE: this protocol uses TipOne filter tips.
+    
+
 The reagent tube should always be put in A1
 """
 # VARIABLES TO SET#!!!=========================================================
@@ -30,18 +36,18 @@ tapestation_kit = 'D1000'
   ##    'HS-RNA'
 
 # What labware are your samples in?
-sample_tube_type = 'plate_96'
+sample_tube_type = 'PCR_strips'
   ## Samples in strips = 'PCR_strips'                                       
   ## Samples in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'             
-sample_columns = ['2', '7','11']
+sample_columns = ['2', '5', '8', '11']
   ## optional:
   ##    3 strips per rack: ['2', '7', '11'] 
   ##    4 strips per rack: ['2', '5', '8','11']
   ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
 
 # What is the location of your first sample (fill in if you have a plate)? 
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -118,12 +124,12 @@ elif sample_tube_type == 'plate_96':
 metadata = {
     'protocolName': 'tapestation_reagents.py',
     'author': 'MB <maartje.brouwer@nioz.nl>, SV <sanne.vreugdenhil@nioz.nl>',
-    'description': ('A protocol for the 10x dilution of many primers.'),
+    'description': ('A protocol for distribution of TapeStation reagents and samples.'),
     'apiLevel': '2.12'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Dilute primers 10x - a protocol for the dilution of many primers
+    A protocol for the distribution of TapeStation reagents and samples. 
     """
 # =============================================================================
 
@@ -131,13 +137,13 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     # Pipette tips   
     tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  
+        'tipone_96_tiprack_20uL',  
         10,                                  
-        '20tips_1')        
+        'tipone_20tips_1')        
     tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  
+        'tipone_96_tiprack_20uL',  
         7,                                  
-        '20tips_2')    
+        'tipone_20tips_2')    
     tips_20 = [tips_20_1, tips_20_2]
         
     # Pipettes          

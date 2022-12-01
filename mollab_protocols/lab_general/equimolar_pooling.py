@@ -15,8 +15,14 @@ You have to provide:
 The protocol will tell you what tube the pool will be made in.
 You need to add buffer PB before the start, so that there is already some 
 liquid to pipet small volumes in. The protocol will tell you how much
-"""
 
+Updates:
+    SV 221201: 
+        deleted all offset things
+        changed indention levels
+        changed the name of plate_96 to NIOZ_plate_96 (because we are using the plate holder)
+        added non_skirted_plate_96
+"""
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the tips?
@@ -30,15 +36,16 @@ DNA_µL_list = ([10.0, 10.0, 8.51, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.
 number_of_samples = 82
 
 # What labware are your samples in?
-sample_tube_type = 'plate_96' 
+sample_tube_type = 'non_skirted_plate_96' 
   ##Options:
-# sample_tube_type = 'plate_96'
+# sample_tube_type = 'NIOZ_plate_96' (BioRad skirted plate on NIOZ plate holder)
+# sample_tube_type = 'non_skirted_plate_96' (Thermo plate on BioRad plate)
 # sample_tube_type = 'PCR_strips'                                        
 # sample_tube_type = 'tube_1.5mL'  
 
 if sample_tube_type == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    sample_columns = ['2', '7', '11']
+    sample_columns = ['2', '5', '8', '11']
       ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
       ## max 4 racks with strips!  
 
@@ -51,8 +58,6 @@ simulate = True
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.
-import pandas as pd
-  ## For accessing offset .csv file
 import math
   ## To do some calculations 
 
@@ -111,7 +116,7 @@ pool_volume_per_tube = total_pool_volume / amount_of_tubes
 # How many sample_tube_racks are needed
 if sample_tube_type == 'tube_1.5mL':
     samples_per_rack = 24
-if sample_tube_type == 'plate_96':
+if sample_tube_type == 'NIOZ_plate_96' or 'non_skirted_plate_96':
     samples_per_rack = 96
 if sample_tube_type == 'PCR_strips':
     samples_per_rack = 8 * len(sample_columns)
@@ -137,33 +142,26 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    labwares = {}
-      ## empty dict to add labware and labware_names to, to loop through
-      
-    ##### Loading pipettetips
+    ##### Loading pipette tips
     if any(i >= 19 for i in DNA_µL_list):
         tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             11,                                  
             '200tips_1')
-        labwares[tips_200_1] = 'filtertips_200'
         tips_200_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             10,                                  
             '200tips_2')
-        labwares[tips_200_2] = 'filtertips_200'
     
     if any(i < 19 for i in DNA_µL_list):
         tips_20_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             8,                                  
             '20tips_1')
-        labwares[tips_20_1] = 'filtertips_20'
         tips_20_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_20ul',  
             7,                                  
             '20tips_2')
-        labwares[tips_20_2] = 'filtertips_20'
         
     
     ##### Loading labware
@@ -172,8 +170,7 @@ def run(protocol: protocol_api.ProtocolContext):
         pool_tube = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             5,
-            'pool_tube')
-        labwares[pool_tube] = '1.5mL_tubes'
+            'pool_tube_1.5mL')
     elif pool_tube_type == 'tube_5mL':
         if simulate:
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
@@ -182,27 +179,25 @@ def run(protocol: protocol_api.ProtocolContext):
             pool_tube = protocol.load_labware_from_definition( 
                 labware_def_5mL, 
                 5, 
-                'pool_tube')
+                'pool_tube_5mL')
         else:
             pool_tube = protocol.load_labware(
                 'eppendorfscrewcap_15_tuberack_5000ul',
                 5,
-                'pool_tube')
-            labwares[pool_tube] = '5mL_screw_cap'
-    ## NO OFFSETS YET!
+                'pool_tube_5mL')
     elif pool_tube_type == 'tube_15mL':
         pool_tube = protocol.load_labware(
             'opentrons_15_tuberack_falcon_15ml_conical',
             5,
-            'pool_tube')
+            'pool_tube_15mL')
     elif pool_tube_type == 'tube_50mL':
         pool_tube = protocol.load_labware(
             'opentrons_6_tuberack_falcon_50ml_conical',
             5,
-            'pool_tube')
+            'pool_tube_50mL')
 
     ## Tubes to get samples from
-    if sample_tube_type == 'plate_96':
+    if sample_tube_type == 'NIOZ_plate_96':
         if simulate:
             with open("labware/biorad_qpcr_plate_nioz_plateholder/"
                       "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
@@ -210,57 +205,107 @@ def run(protocol: protocol_api.ProtocolContext):
                     samples1 = protocol.load_labware_from_definition( 
                         labware_def_plate_holder,     
                         6,                         
-                        'samples1')
-                    if sample_racks > 1:
-                        samples2 = protocol.load_labware_from_definition( 
-                            labware_def_plate_holder,     
-                            3,                         
-                            'samples2')
-                        if sample_racks > 2:
-                            samples3 = protocol.load_labware_from_definition( 
-                                labware_def_plate_holder,     
-                                2,                         
-                                'samples3')
-                            if sample_racks > 3:
-                                samples4 = protocol.load_labware_from_definition( 
-                                    labware_def_plate_holder,     
-                                    1,                         
-                                    'samples4')
-                                if sample_racks > 4:
-                                    samples5 = protocol.load_labware_from_definition( 
-                                        labware_def_plate_holder,     
-                                        4,                         
-                                        'samples5')
+                        'samples1_NIOZ_plate_96')
+            if sample_racks > 1:
+                samples2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    3,                         
+                    'samples2_NIOZ_plate_96')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    2,                         
+                    'samples3_NIOZ_plate_96')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    1,                         
+                    'samples4_NIOZ_plate_96')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    4,                         
+                    'samples5_NIOZ_plate_96')
         else:    
             samples1 = protocol.load_labware(
                 'biorad_qpcr_plate_nioz_plateholder',
                 6,
-                'samples1')
-            labwares[samples1] = 'plate_96'
+                'samples1_NIOZ_plate_96')
             if sample_racks > 1:
                 samples2 = protocol.load_labware(
                     'biorad_qpcr_plate_nioz_plateholder',
                     3,
-                    'samples2')
-                labwares[samples2] = 'plate_96'
-                if sample_racks > 2:
-                    samples3 = protocol.load_labware(
-                        'biorad_qpcr_plate_nioz_plateholder',
-                        2,
-                        'samples3')
-                    labwares[samples3] = 'plate_96'
-                    if sample_racks > 3:
-                        samples4 = protocol.load_labware(
-                            'biorad_qpcr_plate_nioz_plateholder',
-                            1,
-                            'samples4')
-                        labwares[samples4] = 'plate_96'
-                        if sample_racks > 4:
-                            samples5 = protocol.load_labware(
-                                'biorad_qpcr_plate_nioz_plateholder',
-                                4,
-                                'samples5')
-                            labwares[samples5] = 'plate_96'
+                    'samples2_NIOZ_plate_96')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    2,
+                    'samples3_NIOZ_plate_96')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    1,
+                    'samples4_NIOZ_plate_96')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    4,
+                    'samples5_NIOZ_plate_96')
+                
+    if sample_tube_type == 'non_skirted_plate_96':
+        if simulate:
+            with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
+                      "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+                    samples1 = protocol.load_labware_from_definition( 
+                        labware_def_plate_holder,     
+                        6,                         
+                        'samples1_non_skirted_plate_96')
+            if sample_racks > 1:
+                samples2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    3,                         
+                    'samples2_non_skirted_plate_96')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    2,                         
+                    'samples3_non_skirted_plate_96')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    1,                         
+                    'samples4_non_skirted_plate_96')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    4,                         
+                    'samples5_non_skirted_plate_96')
+        else:    
+            samples1 = protocol.load_labware(
+                'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                6,
+                'samples1_non_skirted_plate_96')
+            if sample_racks > 1:
+                samples2 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    3,
+                    'samples2_non_skirted_plate_96')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    2,
+                    'samples3_non_skirted_plate_96')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    1,
+                    'samples4_non_skirted_plate_96')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    4,
+                    'samples5_non_skirted_plate_96')
     
     elif sample_tube_type == 'PCR_strips':
         if simulate:
@@ -270,88 +315,78 @@ def run(protocol: protocol_api.ProtocolContext):
             samples1 = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips,     
                 6,                         
-                'samples1')
+                'samples1_pcr_strips')
             if sample_racks > 1:
                 samples2 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips,     
                     3,                         
-                    'samples2')
-                if sample_racks > 2:
-                    samples3 = protocol.load_labware_from_definition( 
-                        labware_def_pcrstrips,     
-                        2,                         
-                        'samples3')
-                    if sample_racks > 3:
-                        samples4 = protocol.load_labware_from_definition( 
-                            labware_def_pcrstrips,     
-                            1,                         
-                            'samples4')
-                        if sample_racks > 4:
-                            samples5 = protocol.load_labware_from_definition( 
-                                labware_def_pcrstrips,     
-                                4,                         
-                                'samples5')
+                    'samples2_pcr_strips')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips,     
+                    2,                         
+                    'samples3_pcr_strips')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips,     
+                    1,                         
+                    'samples4_pcr_strips')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips,     
+                    4,                         
+                    'samples5pcr_strips')
         else:
             samples1 = protocol.load_labware( 
                 'pcrstrips_96_wellplate_200ul',        
                 6,                                     
-                'samples1')
-            labwares[samples1] = 'PCR_strips'
+                'samples1_pcr_strips')
             if sample_racks > 1:
                 samples2 = protocol.load_labware( 
                     'pcrstrips_96_wellplate_200ul',        
                     3,                                     
-                    'samples2')
-                labwares[samples2] = 'pcr_strips'
-                if sample_racks > 2:
-                    samples3 = protocol.load_labware( 
-                        'pcrstrips_96_wellplate_200ul',        
-                        2,                                     
-                        'samples3')
-                    labwares[samples3] = 'pcr_strips'
-                    if sample_racks > 3:
-                        samples4 = protocol.load_labware( 
-                            'pcrstrips_96_wellplate_200ul',        
-                            1,                                     
-                            'samples4')
-                        labwares[samples4] = 'pcr_strips'
-                        if sample_racks > 4:
-                            samples5 = protocol.load_labware( 
-                                'pcrstrips_96_wellplate_200ul',        
-                                4,                                     
-                                'samples5')
-                            labwares[samples5] = 'pcr_strips'
+                    'samples2_pcr_strips')
+            if sample_racks > 2:
+                samples3 = protocol.load_labware( 
+                    'pcrstrips_96_wellplate_200ul',        
+                    2,                                     
+                    'samples3_pcr_strips')
+            if sample_racks > 3:
+                samples4 = protocol.load_labware( 
+                    'pcrstrips_96_wellplate_200ul',        
+                    1,                                     
+                    'samples4_pcr_strips')
+            if sample_racks > 4:
+                samples5 = protocol.load_labware( 
+                    'pcrstrips_96_wellplate_200ul',        
+                    4,                                     
+                    'samples5_pcr_strips')
         
     elif sample_tube_type == 'tube_1.5mL':
         samples1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             6,
-            'samples1')
-        labwares[samples1] = '1.5mL_tubes'
+            'samples1_tube_1.5mL')
         if sample_racks > 1:
             samples2 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 3,
-                'samples2')
-            labwares[samples2] = '1.5mL_tubes'
-            if sample_racks > 2:
-                samples3 = protocol.load_labware(
-                    'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-                    2,
-                    'samples3')
-                labwares[samples3] = '1.5mL_tubes'
-                if sample_racks > 3:
-                    samples4 = protocol.load_labware(
-                        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-                        1,
-                        'samples4')
-                    labwares[samples4] = '1.5mL_tubes'
-                    if sample_racks > 4:
-                        samples5 = protocol.load_labware(
-                            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-                            4,
-                            'samples5')
-                        labwares[samples5] = '1.5mL_tubes'
+                'samples2_tube_1.5mL')
+        if sample_racks > 2:
+            samples3 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                2,
+                'samples3_tube_1.5mL')
+        if sample_racks > 3:
+            samples4 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                1,
+                'samples4_tube_1.5mL')
+        if sample_racks > 4:
+            samples5 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+                4,
+                'samples5_tube_1.5mL')
     
     ## Pipettes
     if any(i >= 19 for i in DNA_µL_list):
@@ -365,19 +400,6 @@ def run(protocol: protocol_api.ProtocolContext):
             'p20_single_gen2',                  
             'left',                             
             tip_racks=[tips_20_1,tips_20_2])
-# =============================================================================
-
-# LABWARE OFFSET===============================================================    
-# =============================================================================
-    # if not simulate:
-    #     for labware in labwares:
-    #         offset_x = offsets.at[labwares[labware],'x_offset']
-    #         offset_y = offsets.at[labwares[labware],'y_offset']
-    #         offset_z = offsets.at[labwares[labware],'z_offset']
-    #         labware.set_offset(
-    #             x = offset_x, 
-    #             y = offset_y, 
-    #             z = offset_z)
 # =============================================================================
 
 # PREDIFINED VARIABLES=========================================================
@@ -403,35 +425,35 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # For PCR_strips this depends on the used columns
     if sample_tube_type == 'PCR_strips':
-       sample_columns = (
-           ([samples1.columns_by_name()[column_name] 
-             for column_name in sample_columns]))
-       if sample_racks > 1:
-           sample_columns_2 = (
-               ([samples2.columns_by_name()[column_name] 
-                 for column_name in sample_columns]))
-           for column in sample_columns_2:
-               sample_columns.append(column)
-           if sample_racks > 2:
-               sample_columns_3 = (
-                   ([samples3.columns_by_name()[column_name] 
-                     for column_name in sample_columns]))
-               for column in sample_columns_3:
-                   sample_columns.append(column)
-               if sample_racks > 3:
-                   sample_columns_4 = (
-                       ([samples4.columns_by_name()[column_name] 
-                         for column_name in sample_columns]))
-                   for column in sample_columns_4:
-                       sample_columns.append(column)
-                   if sample_racks > 3:
-                       sample_columns_5 = (
-                           ([samples5.columns_by_name()[column_name] 
-                             for column_name in sample_columns]))
-                       for column in sample_columns_5:
-                           sample_columns.append(column)
+        sample_columns = (
+            ([samples1.columns_by_name()[column_name] 
+              for column_name in sample_columns]))
+        if sample_racks > 1:
+            sample_columns_2 = (
+                ([samples2.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_2:
+                sample_columns.append(column)
+        if sample_racks > 2:
+            sample_columns_3 = (
+                ([samples3.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_3:
+                sample_columns.append(column)
+        if sample_racks > 3:
+            sample_columns_4 = (
+                ([samples4.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_4:
+                sample_columns.append(column)
+        if sample_racks > 4:
+            sample_columns_5 = (
+                ([samples5.columns_by_name()[column_name] 
+                  for column_name in sample_columns]))
+            for column in sample_columns_5:
+                sample_columns.append(column)
  
-       for column in sample_columns:
+        for column in sample_columns:
             for well in column:
                 sample_wells.append(well)
     
@@ -442,15 +464,15 @@ def run(protocol: protocol_api.ProtocolContext):
             if sample_racks > 1:
                 for well in samples2.wells():
                     sample_wells.append(well)
-                if sample_racks > 2:
-                    for well in samples3.wells():
-                        sample_wells.append(well)
-                    if sample_racks > 3:
-                        for well in samples4.wells():
-                            sample_wells.append(well)
-                        if sample_racks > 4:
-                            for well in samples5.wells():
-                                sample_wells.append(well)
+            if sample_racks > 2:
+                for well in samples3.wells():
+                    sample_wells.append(well)
+            if sample_racks > 3:
+                for well in samples4.wells():
+                    sample_wells.append(well)
+            if sample_racks > 4:
+                for well in samples5.wells():
+                    sample_wells.append(well)
     
     # Cut of sample_wells list after certain amount of samples
     sample_wells = sample_wells[:number_of_samples]

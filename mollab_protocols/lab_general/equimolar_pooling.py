@@ -31,13 +31,14 @@ number_of_samples = 82
 
 # What labware are your samples in?
 sample_tube_type = 'plate_96' 
-  ##Other options:
-# sample_tube_type = 'PCR_strip'                                        
+  ##Options:
+# sample_tube_type = 'plate_96'
+# sample_tube_type = 'PCR_strips'                                        
 # sample_tube_type = 'tube_1.5mL'  
 
 if sample_tube_type == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
-    sample_columns = ['2', '7','11']
+    sample_columns = ['2', '7', '11']
       ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                     
       ## max 4 racks with strips!  
 
@@ -112,7 +113,7 @@ if sample_tube_type == 'tube_1.5mL':
     samples_per_rack = 24
 if sample_tube_type == 'plate_96':
     samples_per_rack = 96
-if sample_tube_type == 'PCR_strip':
+if sample_tube_type == 'PCR_strips':
     samples_per_rack = 8 * len(sample_columns)
 sample_racks = math.ceil(number_of_samples / samples_per_rack)
   ## How many tube_racks are needed
@@ -261,7 +262,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                 'samples5')
                             labwares[samples5] = 'plate_96'
     
-    elif sample_tube_type == 'PCR_strip':
+    elif sample_tube_type == 'PCR_strips':
         if simulate:
             with open("labware/pcrstrips_96_wellplate_200ul/"
                       "pcrstrips_96_wellplate_200ul.json") as labware_file:
@@ -295,7 +296,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'pcrstrips_96_wellplate_200ul',        
                 6,                                     
                 'samples1')
-            labwares[samples1] = 'pcr_strips'
+            labwares[samples1] = 'PCR_strips'
             if sample_racks > 1:
                 samples2 = protocol.load_labware( 
                     'pcrstrips_96_wellplate_200ul',        
@@ -401,7 +402,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_wells = []
     
     # For PCR_strips this depends on the used columns
-    if sample_tube_type == 'PCR_strip':
+    if sample_tube_type == 'PCR_strips':
        sample_columns = (
            ([samples1.columns_by_name()[column_name] 
              for column_name in sample_columns]))

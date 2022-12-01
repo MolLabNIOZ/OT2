@@ -21,15 +21,28 @@ Pipette tips:
   Opentrons 20 ul NON filtertips
     name: 'opentrons_96_tiprack_20ul'
     custom reference: '20tipsNON'
+  TipOne 300 uL filtertips
+    name: 'tipone_96_tiprack_300uL'
+    custom reference: 'tipone_300tips'
+  TipOne 20 uL filtertips
+    name: 'tipone_96_tiprack_20uL'
+    custom reference: 'tipone_20tips'
+      
 
 Tube racks & well plates:
   
   BioRad 96-wells qPCR plate
     name: 'biorad_96_wellplate_200ul_pcr'
-    custom reference: '96well_plate'
+    custom reference: 'plate_96'
   BioRad 96-wells qPCR plate in Eppendorf cool rack
     name: 'biorad_qpcr_plate_eppendorf_cool_rack'
-    custom reference: '96well_plate_rack'
+    custom reference: 'cool_rack_plate_96'
+  BioRad 96-wells qPCR plate 
+    name:'biorad_qPCR_plate_nioz_plateholder'
+    custom reference: 'NIOZ_plate_96'
+  Thermo non-skirted in BioRad skirted
+    name: 'thermononskirtedinbioradskirted_96_wellplate_200ul'
+    custom reference: 'non_skirted_plate_96'
   
   1.5 mL tubes + tube 24 rack:
     name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'

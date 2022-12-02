@@ -202,10 +202,10 @@ def run(protocol: protocol_api.ProtocolContext):
             with open("labware/biorad_qpcr_plate_nioz_plateholder/"
                       "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
                     labware_def_plate_holder = json.load(labware_file)
-                    samples1 = protocol.load_labware_from_definition( 
-                        labware_def_plate_holder,     
-                        6,                         
-                        'samples1_NIOZ_plate_96')
+            samples1 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                6,                         
+                'samples1_NIOZ_plate_96')
             if sample_racks > 1:
                 samples2 = protocol.load_labware_from_definition( 
                     labware_def_plate_holder,     
@@ -257,10 +257,10 @@ def run(protocol: protocol_api.ProtocolContext):
             with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
                       "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
                     labware_def_plate_holder = json.load(labware_file)
-                    samples1 = protocol.load_labware_from_definition( 
-                        labware_def_plate_holder,     
-                        6,                         
-                        'samples1_non_skirted_plate_96')
+            samples1 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                6,                         
+                'samples1_non_skirted_plate_96')
             if sample_racks > 1:
                 samples2 = protocol.load_labware_from_definition( 
                     labware_def_plate_holder,     

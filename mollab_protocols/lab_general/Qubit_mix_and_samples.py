@@ -278,7 +278,7 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_plate = protocol.load_labware(
             'biorad_qpcr_plate_nioz_plateholder',
             7,
-            '96well_plate')
+            '96well_NIOZplateholder')
         labwares[destination_plate] = 'plate_96'
         if Qmix_tube_type == 'tube_5mL':
             Qmix_tube = protocol.load_labware(

@@ -46,7 +46,7 @@ Tube racks & well plates:
   
   1.5 mL tubes + tube 24 rack:
     name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
-    custom reference: '1.5mL_tubes'
+    custom reference: 'tubes_1.5mL'
   
   2 mL tubes + tube 24 rack:
     name:
@@ -54,7 +54,7 @@ Tube racks & well plates:
   
   5 mL tubes screw_cap
       name: 'eppendorfscrewcap_15_tuberack_5000ul'
-      custom reference: '5mL_tubes'
+      custom reference: 'tubes_5mL'
       or simulator you need to open using json in the following way:
         with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
               "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:

@@ -43,6 +43,9 @@ MB 220803: Changed some deck positions.
 MB 221103: Made it possible to choose varying water volumes
 MB 221118: Added mixing after adding sample + changed strip positions 
            + changed some deck positions
+SV 221201: Added all types of plates (plate_96, cool_rack_plate_96, 
+                                      NIOZ_plate_96, non_skirted_plate_96)
+            and tested those in the simulator
 
 """
 
@@ -55,7 +58,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 96
+number_of_samples = 5
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -90,13 +93,25 @@ water_volume = 0
 
 # In what kind of tubes are the samples provided?
 sample_tubes = 'tubes_1.5mL'
-  ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
+  ## Options: 
+      #sample_tubes = 'plate_96' (BioRad skirted plate)
+      #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
+      #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
+      #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
+      #sample_tubes = 'PCR_strips' (strips in BioRad skirted plate)
+      #sample_tubes = 'tubes_1.5mL'
 if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     sample_strip_columns = ['2', '5', '8', '11'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'plate_96'
-  ## Options: 'plate_96', 'PCR_strips', 'tubes_1.5mL'
+dilution_tubes = 'tubes_1.5mL'
+  ## Options: 
+      #sample_tubes = 'plate_96' (BioRad skirted plate)
+      #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
+      #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
+      #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
+      #sample_tubes = 'PCR_strips' (strips in BioRad skirted plate)
+      #sample_tubes = 'tubes_1.5mL'
 if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     dilution_strip_columns = ['2', '5', '8', '11'] 
@@ -169,7 +184,10 @@ if sample_tubes == 'tubes_1.5mL':
 elif sample_tubes == 'PCR_strips':
     samples_per_rack = len(sample_strip_columns) * 8
     sample_racks = math.ceil(number_of_samples / samples_per_rack)
-elif sample_tubes == 'plate_96':
+elif (sample_tubes == 'plate_96' or 
+      sample_tubes == 'cool_rack_plate_96' or 
+      sample_tubes == 'NIOZ_plate_96' or 
+      sample_tubes == 'non_skirted_plate_96'):
     sample_racks = math.ceil(number_of_samples / 96)
   ## How many sample_racks are needed (1,2,3 or 4)
 if dilution_tubes == 'tubes_1.5mL':
@@ -177,7 +195,10 @@ if dilution_tubes == 'tubes_1.5mL':
 elif dilution_tubes == 'PCR_strips':
     dilutions_per_rack = len(dilution_strip_columns) * 8
     dilution_racks = math.ceil(number_of_samples / dilutions_per_rack)
-elif dilution_tubes == 'plate_96':
+elif (dilution_tubes == 'plate_96' or 
+      dilution_tubes == 'cool_rack_plate_96' or 
+      dilution_tubes == 'NIOZ_plate_96' or 
+      dilution_tubes == 'non_skirted_plate_96'):
     dilution_racks = math.ceil(number_of_samples / 96)
   ## How many dilution_racks are needed (1 or 2)
 
@@ -279,8 +300,6 @@ def run(protocol: protocol_api.ProtocolContext):
                     'tips_200_4')
                 tips_200.append(tips_200_4)
     
-    
-    
     ##### Loading pipettes
     p20 = protocol.load_instrument(
         'p20_single_gen2',
@@ -291,187 +310,407 @@ def run(protocol: protocol_api.ProtocolContext):
         'right',
         tip_racks = tips_200)
 
-    
     ##### Loading labware 
     if sample_tubes == 'plate_96':
         if sample_racks >= 1:            
             sample_source_1 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 1,
-                'sample_source_1')
+                'sample_source_1_plate_96')
         if sample_racks >= 2:          
             sample_source_2 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 4,
-                'sample_source_2')
+                'sample_source_2_plate_96')
         if sample_racks >= 3:
             sample_source_3 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 3,
-                'sample_source_3')
+                'sample_source_3_plate_96')
+    if sample_tubes == 'cool_rack_plate_96':
+        if simulate:
+            with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+                      "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    1,                         
+                    'sample_source_1_cool_rack_plate_96')   
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    4,                         
+                    'sample_source_2_cool_rack_plate_96')   
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    3,                         
+                    'sample_source_3_cool_rack_plate_96')   
+        else:
+            if sample_racks >= 1:            
+                sample_source_1 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    1,
+                    'sample_source_1_cool_rack_plate_96')
+            if sample_racks >= 2:          
+                sample_source_2 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    4,
+                    'sample_source_2_cool_rack_plate_96')
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    3,
+                    'sample_source_3_cool_rack_plate_96')
+    if sample_tubes == 'NIOZ_plate_96':
+        if simulate:
+            with open("labware/biorad_qpcr_plate_nioz_plateholder/"
+                      "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    1,                         
+                    'sample_source_1_NIOZ_plate_96')   
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    4,                         
+                    'sample_source_2_NIOZ_plate_96')   
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    3,                         
+                    'sample_source_3_NIOZ_plate_96')   
+        else:
+            if sample_racks >= 1:            
+                sample_source_1 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    1,
+                    'sample_source_1_NIOZ_plate_96')
+            if sample_racks >= 2:          
+                sample_source_2 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    4,
+                    'sample_source_2_NIOZ_plate_96')
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    3,
+                    'sample_source_3_NIOZ_plate_96')
+    if sample_tubes == 'non_skirted_plate_96':
+        if simulate:
+            with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
+                      "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    1,                         
+                    'sample_source_1_non_skirted_plate_96')   
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    4,                         
+                    'sample_source_2_non_skirted_plate_96')   
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    3,                         
+                    'sample_source_3_non_skirted_plate_96')   
+        else:
+            if sample_racks >= 1:            
+                sample_source_1 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    1,
+                    'sample_source_1_non_skirted_plate_96')
+            if sample_racks >= 2:          
+                sample_source_2 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    4,
+                    'sample_source_2_non_skirted_plate_96')
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    3,
+                    'sample_source_3_non_skirted_plate_96')               
     if sample_tubes == 'tubes_1.5mL':
         if sample_racks >= 1:
             sample_source_1 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 1,
-                'sample_source_1')
+                'sample_source_1_tubes_1.5mL')
         if sample_racks >= 2:    
             sample_source_2 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 4,
-                'sample_source_2')
+                'sample_source_2_tubes_1.5mL')
         if sample_racks >= 3:    
             sample_source_3 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 3,
-                'sample_source_3')
+                'sample_source_3_tubes_1.5mL')
         if sample_racks >= 4:
             sample_source_4 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 6,
-                'sample_source_4')
+                'sample_source_4_tubes_1.5mL')
+    if sample_tubes == 'PCR_strips':
+        if simulate:
+            with open("labware/pcrstrips_96_wellplate_200ul/"
+                      "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                    labware_def_pcrstrips = json.load(labware_file)
+            if sample_racks >= 1:
+                sample_source_1 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    1,                     
+                    'sample_source_1_PCR_strips')     
+            if sample_racks >= 2:
+                sample_source_2 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    4,                     
+                    'sample_source_2_PCR_strips')     
+            if sample_racks >= 3:
+                sample_source_3 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    3,                     
+                    'sample_source_3_PCR_strips')     
+            if sample_racks >= 4:
+                sample_source_4 = protocol.load_labware_from_definition( 
+                    labware_def_pcrstrips, 
+                    6,                     
+                    'sample_source_4_PCR_strips') 
+        else:
+            if sample_tubes == 'PCR_strips':
+                if sample_racks >= 1:
+                    sample_source_1 = protocol.load_labware(
+                        'pcrstrips_96_wellplate_200ul',         
+                        1,                                      
+                        'sample_source_1_PCR_strips')                      
+                if sample_racks >= 2:
+                    sample_source_2 = protocol.load_labware(
+                        'pcrstrips_96_wellplate_200ul',         
+                        4,                                      
+                        'sample_source_2_PCR_strips')                      
+                if sample_racks >= 3:   
+                    sample_source_3 = protocol.load_labware(
+                        'pcrstrips_96_wellplate_200ul',         
+                        3,                                      
+                        'sample_source_3_PCR_strips')                      
+                if sample_racks >= 4: 
+                    sample_source_4 = protocol.load_labware(
+                        'pcrstrips_96_wellplate_200ul',         
+                        6,                                      
+                        'sample_source_4')     
          
     if dilution_tubes == 'plate_96':
         if dilution_racks >= 1:        
             dilution_dest_1 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 2,
-                'dilution_dest_1')
+                'dilution_dest_1_plate_96')
         if dilution_racks >= 2:            
             dilution_dest_2 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 5,
-                'dilution_dest_2')
+                'dilution_dest_2_plate_96')
         if dilution_racks >= 3:             
             dilution_dest_3 = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 9,
-                'dilution_dest_3')
+                'dilution_dest_3_plate_96')
+    if dilution_tubes == 'cool_rack_plate_96':
+        if simulate:
+            with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+                      "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    2,                         
+                    'dilution_dest_1_cool_rack_plate_96')   
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    5,                         
+                    'dilution_dest_2_cool_rack_plate_96')   
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    9,                         
+                    'dilution_dest_3_cool_rack_plate_96')   
+        else:
+            if dilution_racks >= 1:            
+                dilution_dest_1 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    2,
+                    'dilution_dest_1_cool_rack_plate_96')
+            if dilution_racks >= 2:          
+                dilution_dest_2 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    5,
+                    'dilution_dest_2_cool_rack_plate_96')
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware(
+                    'biorad_qpcr_plate_eppendorf_cool_rack',
+                    9,
+                    'dilution_dest_3_cool_rack_plate_96')
+    if dilution_tubes == 'NIOZ_plate_96':
+        if simulate:
+            with open("labware/biorad_qpcr_plate_nioz_plateholder/"
+                      "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    2,                         
+                    'dilution_dest_1_NIOZ_plate_96')   
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    5,                         
+                    'dilution_dest_2_NIOZ_plate_96')   
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    9,                         
+                    'dilution_dest_3_NIOZ_plate_96')   
+        else:
+            if dilution_racks >= 1:            
+                dilution_dest_1 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    2,
+                    'dilution_dest_1_NIOZ_plate_96')
+            if dilution_racks >= 2:          
+                dilution_dest_2 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    5,
+                    'dilution_dest_2_NIOZ_plate_96')
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware(
+                    'biorad_qpcr_plate_nioz_plateholder',
+                    9,
+                    'dilution_dest_3_NIOZ_plate_96')
+    if dilution_tubes == 'non_skirted_plate_96':
+        if simulate:
+            with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
+                      "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    2,                         
+                    'dilution_dest_1_non_skirted_plate_96')   
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    5,                         
+                    'dilution_dest_2_non_skirted_plate_96')   
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware_from_definition( 
+                    labware_def_plate_holder,     
+                    9,                         
+                    'dilution_dest_3_non_skirted_plate_96')   
+        else:
+            if dilution_racks >= 1:            
+                dilution_dest_1 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    2,
+                    'dilution_dest_1_non_skirted_plate_96')
+            if dilution_racks >= 2:          
+                dilution_dest_2 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    5,
+                    'dilution_dest_2_non_skirted_plate_96')
+            if dilution_racks >= 3:
+                dilution_dest_3 = protocol.load_labware(
+                    'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                    9,
+                    'dilution_dest_3_non_skirted_plate_96')  
     if dilution_tubes == 'tubes_1.5mL':
         if dilution_racks >= 1:
             dilution_dest_1 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 2,                                      
-                'dilution_dest_1')                      
+                'dilution_dest_1_tubes_1.5mL')                      
         if dilution_racks >= 2:    
             dilution_dest_2 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 5,                                      
-                'dilution_dest_2')                      
+                'dilution_dest_2_tubes_1.5mL')                      
         if dilution_racks >= 3:    
             dilution_dest_3 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 9,                                      
-                'dilution_dest_3')                      
+                'dilution_dest_3_tubes_1.5mL')                      
         if dilution_racks >= 4:
             dilution_dest_4 = protocol.load_labware(
                 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
                 8,                                      
-                'dilution_dest_4')                      
-
-    if simulate:
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
-                labware_def_pcrstrips = json.load(labware_file)
-        if sample_tubes == 'PCR_strips':
-            if sample_racks >= 1:
-                sample_source_1 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips, 
-                    1,                     
-                    'sample_source_1')     
-            if sample_racks >= 2:
-                sample_source_2 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips, 
-                    4,                     
-                    'sample_source_2')     
-            if sample_racks >= 3:
-                sample_source_3 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips, 
-                    3,                     
-                    'sample_source_3')     
-            if sample_racks >= 4:
-                sample_source_4 = protocol.load_labware_from_definition( 
-                    labware_def_pcrstrips, 
-                    6,                     
-                    'sample_source_4')     
-        if dilution_tubes == 'PCR_strips':
+                'dilution_dest_4_tubes_1.5mL')                      
+    if dilution_tubes == 'PCR_strips':
+        if simulate:
+            with open("labware/pcrstrips_96_wellplate_200ul/"
+                      "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                    labware_def_pcrstrips = json.load(labware_file)
             if dilution_racks >= 1:
                 dilution_dest_1 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     2,                     
-                    'dilution_dest_1')     
+                    'dilution_dest_1_PCR_strips')     
             if dilution_racks >= 2:
                 dilution_dest_2 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     5,                     
-                    'dilution_dest_2')     
+                    'dilution_dest_2_PCR_strips')     
             if dilution_racks >= 3:
                 dilution_dest_3 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     9,                     
-                    'dilution_dest_3')     
+                    'dilution_dest_3_PCR_strips')     
             if dilution_racks >= 4:
                 dilution_dest_4 = protocol.load_labware_from_definition( 
                     labware_def_pcrstrips, 
                     8,                     
-                    'dilution_dest_4')       
-        if water_tubes > 0: 
+                    'dilution_dest_4_PCR_strips')   
+        else: 
+            if dilution_racks >= 1:
+                dilution_dest_1 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    2,                                      
+                    'dilution_dest_1_PCR_strips')                      
+            if dilution_racks >= 2:
+                dilution_dest_2 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    5,                                      
+                    'dilution_dest_2_PCR_strips')                      
+            if dilution_racks >= 3:    
+                dilution_dest_3 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    9,                                      
+                    'dilution_dest_3_PCR_strips')                      
+            if dilution_racks >= 4:        
+                dilution_dest_4 = protocol.load_labware(
+                    'pcrstrips_96_wellplate_200ul',         
+                    8,                                      
+                    'dilution_dest_4_PCR_strips')   
+   
+    if water_tubes > 0: 
+        if simulate:
             with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
                       "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
                     labware_def_5mL = json.load(labware_file)
             tubes_5mL = protocol.load_labware_from_definition( 
                 labware_def_5mL, 
                 9, 
-                '5mL_tubes')    
-    else:
-        if sample_tubes == 'PCR_strips':
-            if sample_racks >= 1:
-                sample_source_1 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    1,                                      
-                    'sample_source_1')                      
-            if sample_racks >= 2:
-                sample_source_2 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    4,                                      
-                    'sample_source_2')                      
-            if sample_racks >= 3:   
-                sample_source_3 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    3,                                      
-                    'sample_source_3')                      
-            if sample_racks >= 4: 
-                sample_source_4 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    6,                                      
-                    'sample_source_4')                      
-        if dilution_tubes == 'PCR_strips':
-            if dilution_racks >= 1:
-                dilution_dest_1 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    2,                                      
-                    'dilution_dest_1')                      
-            if dilution_racks >= 2:
-                dilution_dest_2 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    5,                                      
-                    'dilution_dest_2')                      
-            if dilution_racks >= 3:    
-                dilution_dest_3 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    9,                                      
-                    'dilution_dest_3')                      
-            if dilution_racks >= 4:        
-                dilution_dest_4 = protocol.load_labware(
-                    'pcrstrips_96_wellplate_200ul',         
-                    8,                                      
-                    'dilution_dest_4')                          
-        if water_tubes > 0:
-            tubes_5mL = protocol.load_labware(
-                'eppendorfscrewcap_15_tuberack_5000ul',     
-                9,                                          
-                'tubes_5mL')                                    
-    
+                'water_tubes_5mL')    
+        else:
+            if water_tubes > 0:
+                tubes_5mL = protocol.load_labware(
+                    'eppendorfscrewcap_15_tuberack_5000ul',     
+                    9,                                          
+                    'water_tubes_5mL')                                    
 # =============================================================================
 
 # SETTING LOCATIONS#!!!========================================================
@@ -546,13 +785,13 @@ def run(protocol: protocol_api.ProtocolContext):
     if dilution_tubes == 'PCR_strips':
         dilution_columns = []
         if dilution_racks >= 1:
-            dilution_columns_1 = (                                                           
+            dilution_columns_1 = (
                 ([dilution_dest_1.columns_by_name()[column_name] 
                   for column_name in dilution_strip_columns])) 
             for column in dilution_columns_1:
                 dilution_columns.append(column)
         if dilution_racks >= 2:
-            dilution_columns_2 = ( 
+            dilution_columns_2 = (
                 ([dilution_dest_2.columns_by_name()[column_name] 
                   for column_name in dilution_strip_columns]))
             for column in dilution_columns_2:

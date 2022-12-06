@@ -18,14 +18,14 @@ The reagent tube should always be put in A1
 # =============================================================================
 # What is the starting position of the first 20µL tip?
 starting_tip_p20 = 'A1'
-
+  
 # How many primers do you want to dilute? 
-number_of_samples = 5
+number_of_samples = 96
   ## The maximum number of samples is 96, as the TapeStation can only measure
   ## one plate at the time anyway.
 
 # Which Tapestation kit are you using?
-tapestation_kit = 'D1000'  
+tapestation_kit = 'HS-RNA'  
   ## Options are:
   ##    'D1000'
   ##    'D5000'  
@@ -36,25 +36,26 @@ tapestation_kit = 'D1000'
   ##    'HS-RNA'
 
 # What labware are your samples in?
-sample_tube_type = 'PCR_strips'
+sample_tube_type = 'plate_96'
   ## Samples in strips = 'PCR_strips'                                       
   ## Samples in plate = 'plate_96'  
   ## Samples in 1.5mL tubes = 'tube_1.5mL'             
-sample_columns = ['2', '5', '8', '11']
-  ## optional:
-  ##    3 strips per rack: ['2', '7', '11'] 
-  ##    4 strips per rack: ['2', '5', '8','11']
+if sample_tube_type == 'PCR_strips':
+    sample_columns = ['2', '5', '8', '11']
+      ## optional:
+      ##    3 strips per rack: ['2', '7', '11'] 
+      ##    4 strips per rack: ['2', '5', '8','11']
   ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
 
 # What is the location of your first sample (fill in if you have a plate)? 
-first_sample = 'A2'
+first_sample = 'A1'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
   ## fit in the qPCR, change the first well position.
   
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol          
 # =============================================================================
 
@@ -81,29 +82,37 @@ import math
 # Setting buffer and sample volume - dependent on the chosen tapestation kit
 if tapestation_kit == 'D1000':
     buffer_vol = 3
-    sample_vol = 1  
+    sample_vol = 1
+    sample_mix_vol = 2
+     ## setting the sample_mix_vol = volume for pipetting up and down    
 if tapestation_kit == 'D5000':
     buffer_vol = 10
-    sample_vol = 1  
+    sample_vol = 1
+    sample_mix_vol = 5
 if tapestation_kit == 'gDNA':
     buffer_vol = 10
     sample_vol = 1 
+    sample_mix_vol = 5
 if tapestation_kit == 'HS-D1000':
     buffer_vol = 2
     sample_vol = 2
+    sample_mix_vol = 3
 if tapestation_kit == 'HS-D5000':
     buffer_vol = 2
     sample_vol = 2
+    sample_mix_vol = 3
 if tapestation_kit == 'RNA':
     buffer_vol = 5
-    sample_vol = 1  
+    sample_vol = 1
+    sample_mix_vol = 3
 if tapestation_kit == 'HS-RNA':
     buffer_vol = 1
-    sample_vol = 2  
+    sample_vol = 2
+    sample_mix_vol = 2.5
 
 # What is the total volume of buffer that is needed for the amount of samples?
 # +10µL for minimum volume in tube
-volume_of_buffer = buffer_vol * number_of_samples + 10
+volume_of_buffer = buffer_vol * (number_of_samples + 10)
 
 # How many sample racks are needed?   
 if sample_tube_type == 'PCR_strips':
@@ -135,15 +144,28 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
-    # Pipette tips   
-    tips_20_1 = protocol.load_labware(
-        'tipone_96_tiprack_20uL',  
-        10,                                  
-        'tipone_20tips_1')        
-    tips_20_2 = protocol.load_labware(
-        'tipone_96_tiprack_20uL',  
-        7,                                  
-        'tipone_20tips_2')    
+    # Pipette tips
+    if simulate:
+        with open("labware/tipone_96_tiprack_20ul/"
+                  "tipone_96_tiprack_20ul.json") as labware_file:
+                labware_def_tipone_96_tiprack_20ul = json.load(labware_file)
+        tips_20_1 = protocol.load_labware_from_definition(
+            labware_def_tipone_96_tiprack_20ul,
+            10,                                  
+            'tipone_20tips_1')
+        tips_20_2 = protocol.load_labware_from_definition(
+            labware_def_tipone_96_tiprack_20ul,
+            7,                                  
+            'tipone_20tips_2')
+    else:    
+        tips_20_1 = protocol.load_labware(
+            'tipone_96_tiprack_20uL',  
+            10,                                  
+            'tipone_20tips_1')        
+        tips_20_2 = protocol.load_labware(
+            'tipone_96_tiprack_20uL',  
+            7,                                  
+            'tipone_20tips_2')
     tips_20 = [tips_20_1, tips_20_2]
         
     # Pipettes          
@@ -181,7 +203,7 @@ def run(protocol: protocol_api.ProtocolContext):
             2,
             'sample_source_4')
     
-    if sample_tube_type == 'plate_96':
+    elif sample_tube_type == 'plate_96':
         sample_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
             11,                                  
@@ -191,50 +213,42 @@ def run(protocol: protocol_api.ProtocolContext):
             8,                                  
             'sample_source_2')
     
-    if sample_tube_type == 'PCR_strips':
+    elif sample_tube_type == 'PCR_strips':
         if simulate:
     
             with open("labware/pcrstrips_96_wellplate_200ul/"
                       "pcrstrips_96_wellplate_200ul.json") as labware_file:
                     labware_def_pcrstrips = json.load(labware_file)
-            if sample_racks >= 1:
-                sample_source_1 = protocol.load_labware_from_definition(
+            sample_source_1 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     11,
                     'sample_source_1')
-            if sample_racks >= 2:
-                sample_source_2 = protocol.load_labware_from_definition(
+            sample_source_2 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     8,
                     'sample_source_2')
-            if sample_racks >= 3:
-                sample_source_3 = protocol.load_labware_from_definition(
+            sample_source_3 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     5,
                     'sample_source_3')
-            if sample_racks >= 4:
-                sample_source_4 = protocol.load_labware_from_definition(
+            sample_source_4 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     2,
                     'sample_source_4')
         else:
-            if sample_racks >= 1:
-                sample_source_1 = protocol.load_labware(
+            sample_source_1 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     11,                                      
                     'sample_source_1') 
-            if sample_racks >= 2:
-                sample_source_2 = protocol.load_labware(
+            sample_source_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     8,                                      
                     'sample_source_2') 
-            if sample_racks >= 3:
-                sample_source_3 = protocol.load_labware(
+            sample_source_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     5,                                      
                     'sample_source_3')
-            if sample_racks >= 4:
-                sample_source_4 = protocol.load_labware(
+            sample_source_4 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
                     'sample_source_4') 
@@ -287,7 +301,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources.append(well)
                 sample_sources_string.append(str(well))
     # Add columns to a list of columns
-    if sample_tube_type == 'pcr_strips':
+    if sample_tube_type == 'PCR_strips':
         sample_source_columns = (
                 ([sample_source_1.columns_by_name()[column_name] 
                   for column_name in sample_columns]))
@@ -349,11 +363,11 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Variables for volume tracking
     start_height = vt.cal_start_height('tube_1.5mL', volume_of_buffer)
       ## Call start height calculation function from volume tracking module.
+    if start_height < 20:
+        start_height = 0
     current_height = start_height
       ## Set the current height to start height at the beginning of the     
       ## protocol.                                                          
-    sample_mix_vol = sample_vol + 3
-     ## setting the sample_mix_vol = volume for pipetting up and down    
     source = reagent_source
       ## setting the reagent source
     destination = sample_wells
@@ -376,23 +390,26 @@ def run(protocol: protocol_api.ProtocolContext):
             container, buffer_vol, current_height)
               ## call volume_tracking function, obtain current_height,      
               ## pip_height and whether bottom_reached.                     
-        
-        if bottom_reached:
-            ## continue with next tube, reset vt                            
-            current_height = start_height
-            current_height, pip_height, bottom_reached = (
-                vt.volume_tracking(
-                    container, buffer_vol, current_height))
-            aspiration_location = source.bottom(current_height)
+        if start_height >= 20:
+            if bottom_reached:
+                ## continue with next tube, reset vt                            
+                current_height = start_height
+                current_height, pip_height, bottom_reached = (
+                    vt.volume_tracking(
+                        container, buffer_vol, current_height))
+                aspiration_location = source.bottom(current_height)
        
+            else:
+                aspiration_location = source.bottom(pip_height)
+                  ## Set the location of where to aspirate from.
         else:
-            aspiration_location = source.bottom(pip_height)
-              ## Set the location of where to aspirate from.                
+            aspiration_location = source
+              ## Set the location of where to aspirate from.
         
         #### The actual aliquoting
         pipette.aspirate(aspiration_vol, aspiration_location)
           ## Aspirate the set volume from the source                        
-        pipette.dispense(dispension_vol, well.bottom(-1))
+        pipette.dispense(dispension_vol, well)
           ## dispense the set volume + extra to avoid drops in the well     
         pipette.dispense(10, aspiration_location)
           ## Alternative for blow-out                                        

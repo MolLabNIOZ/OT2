@@ -45,7 +45,7 @@ MB 221118: Added mixing after adding sample + changed strip positions
            + changed some deck positions
 SV 221201: Added all types of plates (plate_96, cool_rack_plate_96, 
                                       NIOZ_plate_96, non_skirted_plate_96)
-            and tested those in the simulator
+           and tested those in the simulator
 
 """
 
@@ -58,7 +58,7 @@ starting_tip_p200 = 'A1'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
-number_of_samples = 5
+number_of_samples = 96
   ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
   ###   = 3 sample plates & 3 dilutions plates
   ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
@@ -79,7 +79,7 @@ number_of_samples = 5
   ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 10
+sample_volume = 5
   ## Can be one volume or a list of volumes
 if isinstance(sample_volume, list):
 # If you enter a list of volumes, also set a final_volume
@@ -87,12 +87,12 @@ if isinstance(sample_volume, list):
       ## If you do not have a list of sample_volumes, final_volume is not used
       ## Used to calculate how much water to add. 
       ## final_volume - sample_volume = water_volume
-water_volume = 0
+water_volume = 10
   ## Can be one volume or a list of volumes. 
   ## Will only be used when you do not have a list of sample_volumes
 
 # In what kind of tubes are the samples provided?
-sample_tubes = 'tubes_1.5mL'
+sample_tubes = 'PCR_strips'
   ## Options: 
       #sample_tubes = 'plate_96' (BioRad skirted plate)
       #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
@@ -104,7 +104,7 @@ if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     sample_strip_columns = ['2', '5', '8', '11'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'tubes_1.5mL'
+dilution_tubes = 'non_skirted_plate_96'
   ## Options: 
       #sample_tubes = 'plate_96' (BioRad skirted plate)
       #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
@@ -116,7 +116,7 @@ if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     dilution_strip_columns = ['2', '5', '8', '11'] 
 # Are you simulating the protocol, or running it on the OT2?
-simulate = True
+simulate = False
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================

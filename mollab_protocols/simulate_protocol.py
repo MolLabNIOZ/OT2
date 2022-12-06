@@ -7,7 +7,6 @@ from opentrons.simulate import simulate, format_runlog
 protocol_file = open("")
 
 
-
 # Simulate protocol
 runlog, _bundle = simulate(protocol_file)
 

@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("")
+protocol_file = open(" ")
 
 
 # Simulate protocol

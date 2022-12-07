@@ -11,8 +11,10 @@ You have to provide:
         You will only need 20uL tips because the volume is never higher.
         NOTE: this protocol uses TipOne filter tips.
     
-
 The reagent tube should always be put in A1
+
+## Updates
+221206 (SV) - added different plates as labware cleaned up some unnecessary stuff
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -25,7 +27,7 @@ number_of_samples = 96
   ## one plate at the time anyway.
 
 # Which Tapestation kit are you using?
-tapestation_kit = 'HS-RNA'  
+tapestation_kit = 'D5000'  
   ## Options are:
   ##    'D1000'
   ##    'D5000'  
@@ -36,23 +38,27 @@ tapestation_kit = 'HS-RNA'
   ##    'HS-RNA'
 
 # What labware are your samples in?
-sample_tube_type = 'plate_96'
-  ## Samples in strips = 'PCR_strips'                                       
-  ## Samples in plate = 'plate_96'  
-  ## Samples in 1.5mL tubes = 'tube_1.5mL'             
-if sample_tube_type == 'PCR_strips':
-    sample_columns = ['2', '5', '8', '11']
-      ## optional:
-      ##    3 strips per rack: ['2', '7', '11'] 
-      ##    4 strips per rack: ['2', '5', '8','11']
-  ##    6 strips per rack: ['1', '3', '5', '7', '9', '11']
+sample_tubes = 'non_skirted_plate_96'
+## Options: 
+    #sample_tubes = 'plate_96' (BioRad skirted plate)
+    #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
+    #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
+    #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
+    #sample_tubes = 'PCR_strips' (Westburg flat-cap strips or similar in BioRad skirted plate)
+    #sample_tubes = 'tubes_1.5mL' (any 1.5mL tubes)          
 
-# What is the location of your first sample (fill in if you have a plate)? 
+# When using PCR strips:
+sample_columns = ['2', '5', '8', '11']
+## Options: 
+    #3 strips per rack: ['2', '7', '11'] 
+    #4 strips per rack: ['2', '5', '8','11'] = STANDARD
+    #6 strips per rack: ['1', '3', '5', '7', '9', '11']
+
+# What is the location of your first sample? 
 first_sample = 'A1'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
-  ## But if you have more samples in the plate than
-  ## fit in the qPCR, change the first well position.
+
   
 # Do you want to simulate the protocol?
 simulate = False
@@ -115,16 +121,19 @@ if tapestation_kit == 'HS-RNA':
 volume_of_buffer = buffer_vol * (number_of_samples + 10)
 
 # How many sample racks are needed?   
-if sample_tube_type == 'PCR_strips':
+if sample_tubes == 'PCR_strips':
     if sample_columns == ['2', '7','11']:
         sample_racks = math.ceil(number_of_samples / 24)
     elif sample_columns == ['2', '5', '8','11']:
         sample_racks = math.ceil(number_of_samples / 32)
     elif sample_columns == ['1', '3', '5', '7', '9', '11']:
         sample_racks = math.ceil(number_of_samples / 48)
-elif sample_tube_type == 'tube_1.5mL':
+elif sample_tubes == 'tubes_1.5mL':
     sample_racks = math.ceil(number_of_samples / 24)
-elif sample_tube_type == 'plate_96':
+elif (sample_tubes == 'plate_96' or 
+      sample_tubes == 'cool_rack_plate_96' or 
+      sample_tubes == 'NIOZ_plate_96' or 
+      sample_tubes == 'non_skirted_plate_96'):
     sample_racks = math.ceil(number_of_samples / 96)
 # =============================================================================
 
@@ -178,80 +187,144 @@ def run(protocol: protocol_api.ProtocolContext):
     reagent_tube = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
         1,
-        'reagent_tube')
+        'reagent_tube_1.5mL')
     
-    destination_plate = protocol.load_labware(
+    destination = protocol.load_labware(
         'biorad_96_wellplate_200ul_pcr',        
         3,                                      
-        'destination_plate')  
+        'destination_plate_96')  
     
-    if sample_tube_type == 'tube_1.5mL':
+    if sample_tubes == 'tubes_1.5mL':
         sample_source_1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             11,
-            'sample_source_1')
+            'sample_source_1_tubes_1.5mL')
         sample_source_2 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             8,
-            'sample_source_2')
+            'sample_source_2_tubes_1.5mL')
         sample_source_3 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             5,
-            'sample_source_3')
+            'sample_source_3_tubes_1.5mL')
         sample_source_4 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             2,
-            'sample_source_4')
+            'sample_source_4_tubes_1.5mL')
     
-    elif sample_tube_type == 'plate_96':
+    if sample_tubes == 'plate_96':
         sample_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
             11,                                  
-            'sample_source_1')
+            'sample_source_1_plate_96')
         sample_source_2 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
             8,                                  
-            'sample_source_2')
-    
-    elif sample_tube_type == 'PCR_strips':
+            'sample_source_2_plate_96')
+    if sample_tubes == 'cool_rack_plate_96':
         if simulate:
-    
+            with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
+                      "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            sample_source_1 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                11,     
+                'sample_source_1_cool_rack_plate_96')                    
+            sample_source_2 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                8,                         
+                'sample_source_2_cool_rack_plate_96') 
+        else:
+            sample_source_1 = protocol.load_labware(
+                'biorad_qpcr_plate_eppendorf_cool_rack',
+                11,
+                'sample_source_1_cool_rack_plate_96')
+            sample_source_2 = protocol.load_labware(
+                'biorad_qpcr_plate_eppendorf_cool_rack',
+                8,
+                'sample_source_2_cool_rack_plate_96')
+    if sample_tubes == 'NIOZ_plate_96':
+        if simulate:
+            with open("labware/biorad_qpcr_plate_nioz_plateholder/"
+                      "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            sample_source_1 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                11,                         
+                'sample_source_1_NIOZ_plate_96')
+            sample_source_2 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                8,                         
+                'sample_source_2_NIOZ_plate_96')   
+        else:        
+            sample_source_1 = protocol.load_labware(
+                'biorad_qpcr_plate_nioz_plateholder',
+                11,
+                'sample_source_1_NIOZ_plate_96')        
+            sample_source_2 = protocol.load_labware(
+                'biorad_qpcr_plate_nioz_plateholder',
+                8,
+                'sample_source_2_NIOZ_plate_96')
+    if sample_tubes == 'non_skirted_plate_96':
+        if simulate:
+            with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
+                      "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
+                    labware_def_plate_holder = json.load(labware_file)
+            sample_source_1 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                11,                         
+                'sample_source_1_non_skirted_plate_96')   
+            sample_source_2 = protocol.load_labware_from_definition( 
+                labware_def_plate_holder,     
+                8,                         
+                'sample_source_2_non_skirted_plate_96')   
+        else:
+            sample_source_1 = protocol.load_labware(
+                'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                11,
+                'sample_source_1_non_skirted_plate_96')        
+            sample_source_2 = protocol.load_labware(
+                'thermononskirtedinbioradskirted_96_wellplate_200ul',
+                8,
+                'sample_source_2_non_skirted_plate_96')            
+    if sample_tubes == 'PCR_strips':
+        if simulate:
             with open("labware/pcrstrips_96_wellplate_200ul/"
                       "pcrstrips_96_wellplate_200ul.json") as labware_file:
                     labware_def_pcrstrips = json.load(labware_file)
             sample_source_1 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     11,
-                    'sample_source_1')
+                    'sample_source_1_PCR_strips')
             sample_source_2 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     8,
-                    'sample_source_2')
+                    'sample_source_2_PCR_strips')
             sample_source_3 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     5,
-                    'sample_source_3')
+                    'sample_source_3_PCR_strips')
             sample_source_4 = protocol.load_labware_from_definition(
                     labware_def_pcrstrips,
                     2,
-                    'sample_source_4')
+                    'sample_source_4_PCR_strips')
         else:
             sample_source_1 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     11,                                      
-                    'sample_source_1') 
+                    'sample_source_1_PCR_strips') 
             sample_source_2 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     8,                                      
-                    'sample_source_2') 
+                    'sample_source_2_PCR_strips') 
             sample_source_3 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     5,                                      
-                    'sample_source_3')
+                    'sample_source_3_PCR_strips')
             sample_source_4 = protocol.load_labware(
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
-                    'sample_source_4') 
+                    'sample_source_4_PCR_strips') 
 # =============================================================================
 
 # SETTING LOCATIONS============================================================
@@ -261,7 +334,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # Destination wells
     destination_wells = []
-    for well in destination_plate.wells():
+    for well in destination.wells():
         destination_wells.append(well)
     sample_wells = destination_wells[:number_of_samples]
     
@@ -272,36 +345,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_sources = []
     sample_sources_string = []
 
-    # Add wells to the list of sample sources, if plate_96
-    if sample_tube_type == 'plate_96':
-        if sample_racks >= 1:
-            for well in sample_source_1.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-        if sample_racks >= 2:
-            for well in sample_source_2.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-    # Add wells to the list of sample sources, if 1.5mL_tubes
-    if sample_tube_type == '1.5mL_tubes':            
-        if sample_racks >= 1:
-            for well in sample_source_1.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-        if sample_racks >= 2:
-            for well in sample_source_2.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-        if sample_racks >= 3:
-            for well in sample_source_3.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-        if sample_racks >= 4:
-            for well in sample_source_4.wells():
-                sample_sources.append(well)
-                sample_sources_string.append(str(well))
-    # Add columns to a list of columns
-    if sample_tube_type == 'PCR_strips':
+    if sample_tubes == 'PCR_strips':
         sample_source_columns = (
                 ([sample_source_1.columns_by_name()[column_name] 
                   for column_name in sample_columns]))
@@ -329,6 +373,23 @@ def run(protocol: protocol_api.ProtocolContext):
                 sample_sources.append(well)
                 sample_sources_string.append(str(well))
               ## Separate the columns into wells and append them to list 
+    else:          
+        if sample_racks >= 1:
+            for well in sample_source_1.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 2:
+            for well in sample_source_2.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 3:
+            for well in sample_source_3.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
+        if sample_racks >= 4:
+            for well in sample_source_4.wells():
+                sample_sources.append(well)
+                sample_sources_string.append(str(well))
               
     ## Cut slice out off list of sample_sources, starting with the 
     ## indicated first sample and ending after the number_of_samples                        
@@ -352,7 +413,6 @@ def run(protocol: protocol_api.ProtocolContext):
                    " a 1.5mL tube on A1 of the reagent tube rack.")              
 # =============================================================================
 
-
 ## PIPETTING===================================================================
 ## ============================================================================
 ## Variables for volume tracking and aliquoting--------------------------------
@@ -361,7 +421,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## container.         
     dispension_vol = buffer_vol                                                
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height('tube_1.5mL', volume_of_buffer)
+    start_height = vt.cal_start_height('tubes_1.5mL', volume_of_buffer)
       ## Call start height calculation function from volume tracking module.
     if start_height < 20:
         start_height = 0
@@ -372,7 +432,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## setting the reagent source
     destination = sample_wells
     current_height = start_height
-    container = 'tube_1.5mL'
+    container = 'tubes_1.5mL'
     pipette = p20 
 ## ---------------------------------------------------------------------------- 
 ## Aliquoting water------------------------------------------------------------

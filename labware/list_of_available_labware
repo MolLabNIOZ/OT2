@@ -1,104 +1,114 @@
 Labware currently available for the Opentrons OT2 pipetting robot.
 
 Pipettes:
-  p300 --->>> 300 ul pipette
-    name: 'p300_single_gen2'
-    mounted: 'right'
-  p20 --->>> 20 ul pipette
-    name: 'p20_single_gen2'
-    mounted: 'left'
+    
+    p300 --->>> 300 ul pipette
+        name: 'p300_single_gen2'
+        mounted: 'right'
+    
+    p20 --->>> 20 ul pipette
+        name: 'p20_single_gen2'
+        mounted: 'left'
 
 Pipette tips:
-  Opentrons 200 ul filtertips
-    name: 'opentrons_96_filtertiprack_200ul'
-    custom reference: '200tips'
-  Opentrons 20 ul filtertips
-    name: 'opentrons_96_filtertiprack_20ul'
-    custom reference: '20tips'
-  Opentrons 300 ul NON filtertips
-    name: 'opentrons_96_tiprack_300ul'
-    custom reference: '300tipsNON'
-  Opentrons 20 ul NON filtertips
-    name: 'opentrons_96_tiprack_20ul'
-    custom reference: '20tipsNON'
-  TipOne 300 uL filtertips
-    name: 'tipone_96_tiprack_300uL'
-    custom reference: 'tipone_300tips'
-  TipOne 20 uL filtertips
-    name: 'tipone_96_tiprack_20uL'
-    custom reference: 'tipone_20tips'
+    
+    Opentrons 200 ul filtertips
+        name: 'opentrons_96_filtertiprack_200ul'
+        custom reference: '200tips'
+    
+    Opentrons 20 ul filtertips
+        name: 'opentrons_96_filtertiprack_20ul'
+        custom reference: '20tips'
+    
+    Opentrons 300 ul NON filtertips
+        name: 'opentrons_96_tiprack_300ul'
+        custom reference: '300tipsNON'
+    
+    Opentrons 20 ul NON filtertips
+        name: 'opentrons_96_tiprack_20ul'
+        custom reference: '20tipsNON'
+    
+    TipOne 300 uL filtertips
+        name: 'tipone_96_tiprack_300uL'
+        custom reference: 'tipone_300tips'
+    
+    TipOne 20 uL filtertips
+        name: 'tipone_96_tiprack_20uL'
+        custom reference: 'tipone_20tips'
       
 
-Tube racks & well plates:
-  
-  BioRad 96-wells qPCR plate
-    name: 'biorad_96_wellplate_200ul_pcr'
-    custom reference: 'plate_96'
-  BioRad 96-wells qPCR plate in Eppendorf cool rack
-    name: 'biorad_qpcr_plate_eppendorf_cool_rack'
-    custom reference: 'cool_rack_plate_96'
-  BioRad 96-wells qPCR plate 
-    name:'biorad_qPCR_plate_nioz_plateholder'
-    custom reference: 'NIOZ_plate_96'
-  Thermo non-skirted in BioRad skirted
-    name: 'thermononskirtedinbioradskirted_96_wellplate_200ul'
-    custom reference: 'non_skirted_plate_96'
-  
-  1.5 mL tubes + tube 24 rack:
-    name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
-    custom reference: 'tubes_1.5mL'
-  
-  2 mL tubes + tube 24 rack:
-    name:
-    custom reference: 
-  
-  5 mL tubes screw_cap
-      name: 'eppendorfscrewcap_15_tuberack_5000ul'
-      custom reference: 'tubes_5mL'
-      or simulator you need to open using json in the following way:
-        with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
-              "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-        tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, #variable derived from opening json
-            2, 
-            '5mL_tubes')
-  
-  5 mL tubes snap_cap + 15 tube rack:
-    name: 'eppendorf_15_tuberack_5000ul'
-    custom reference: '5mL_tubes_snap'
-    for simulator you need to open using json in the following way:
-        with open("labware/eppendorf_15_tuberack_5000ul/"
-              "eppendorf_15_tuberack_5000ul.json") as labware_file:
-            labware_def_5mL = json.load(labware_file)
-        tubes_5mL = protocol.load_labware_from_definition( 
-            labware_def_5mL, #variable derived from opening json
-            2, 
-            '5mL_tubes_snap')
-            
-  15 mL tubes + 15 tube rack:
-    name: 'opentrons_15_tuberack_falcon_15ml_conical'
-    custom reference: '15mL_tubes'
-  
-  50 mL tubes + 50 tube rack:
-    name: 'opentrons_6_tuberack_falcon_50ml_conical'
-    custom refrence: '50mL_tubes'
+Plates:
     
-  PCR strips (Westburg) + BioRad 96-wells plate
-    name: 'pcrstrips_96_wellplate_200ul'
-    custum_reference: 'pcr_strips'
-    for simulator you need to open using json in the following way:
-        with open("labware/pcrstrips_96_wellplate_200ul/"
-              "pcrstrips_96_wellplate_200ul.json") as labware_file:
-            labware_def_pcrstrips = json.load(labware_file)
-        pcr_strips = protocol.load_labware_from_definition( 
-            labware_def_pcrstrips, #variable derived from opening json
-            2, 
-            'pcr_strips')
+    BioRad 96-wells qPCR plate
+        name: 'biorad_96_wellplate_200ul_pcr'
+        custom reference: 'plate_96'
+   
+    BioRad 96-wells qPCR plate in Eppendorf cool rack
+        name: 'biorad_qpcr_plate_eppendorf_cool_rack'
+        custom reference: 'cool_rack_plate_96'
+    
+    BioRad 96-wells qPCR plate 
+        name:'biorad_qPCR_plate_nioz_plateholder'
+        custom reference: 'NIOZ_plate_96'
+    
+    Thermo non-skirted in BioRad skirted
+        name: 'thermononskirtedinbioradskirted_96_wellplate_200ul'
+        custom reference: 'non_skirted_plate_96'
+     
+        
+Tube racks:
+    
+    1.5 mL tubes + tube 24 rack:
+        name: 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'
+        custom reference: 'tubes_1.5mL'
+    
+    5 mL tubes screw_cap + 15 tube rack:
+        name: 'eppendorfscrewcap_15_tuberack_5000ul'
+            custom reference: 'tubes_5mL'
+            for simulator you need to open using json in the following way:
+                 with open("labware/eppendorfscrewcap_15_tuberack_5000ul/"
+                       "eppendorfscrewcap_15_tuberack_5000ul.json") as labware_file:
+                     labware_def_5mL = json.load(labware_file)
+                 tubes_5mL = protocol.load_labware_from_definition( 
+                     labware_def_5mL, #variable derived from opening json
+                     2, 
+                     '5mL_tubes')
+    
+    5 mL tubes snap_cap + 15 tube rack:
+        name: 'eppendorf_15_tuberack_5000ul'
+        custom reference: '5mL_tubes_snap'
+            for simulator you need to open using json in the following way:
+                with open("labware/eppendorf_15_tuberack_5000ul/"
+                      "eppendorf_15_tuberack_5000ul.json") as labware_file:
+                    labware_def_5mL = json.load(labware_file)
+                tubes_5mL = protocol.load_labware_from_definition( 
+                    labware_def_5mL, #variable derived from opening json
+                    2, 
+                    '5mL_tubes_snap') 
+    
+    15 mL tubes + 15 tube rack:
+        name: 'opentrons_15_tuberack_falcon_15ml_conical'
+        custom reference: '15mL_tubes'
+    
+    50 mL tubes + 50 tube rack:
+        name: 'opentrons_6_tuberack_falcon_50ml_conical'
+        custom refrence: '50mL_tubes'
 
-  15mL and 50mL tubes in same rack:
-    name: 'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical'
-    custom reference: '15mL_50mL_tubes'
+    PCR strips (Westburg) + BioRad 96-wells plate
+        name: 'pcrstrips_96_wellplate_200ul'
+        custum_reference: 'pcr_strips'
+        for simulator you need to open using json in the following way:
+            with open("labware/pcrstrips_96_wellplate_200ul/"
+                  "pcrstrips_96_wellplate_200ul.json") as labware_file:
+                labware_def_pcrstrips = json.load(labware_file)
+            pcr_strips = protocol.load_labware_from_definition( 
+                labware_def_pcrstrips, #variable derived from opening json
+                2, 
+                'pcr_strips')
+
+    15mL and 50mL tubes in same rack:
+        name: 'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical'
+        custom reference: '15mL_50mL_tubes'
 
     
 

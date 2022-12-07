@@ -42,16 +42,15 @@ sample_columns = ['2', '5', '8','11']
 first_sample_well = 'A2'
   ## If you want to skip the first couple of samples, please indicate the 
   ## location in the plates of the first sample you want to pool.
-last_sample_well = 'H11'
+last_sample_well = 'H5'
   ## If you want to skip the last couple of samples, or your PCR plates are not 
   ## completely filled, please indicate the location in the plates of the last
   ## sample you want to pool.
 
 # Are there any wells between the first and last sample that need to be skipped
-skipp_samples = False
-if skipp_samples:
-    skipped_wells = (
-        ['G1','B2','F2'])
+skipp_samples = True
+skipped_wells = (
+    ['A2', 'D2', 'H2', 'B5'])
     ## Fill in the wells that need to be skipped while pooling
     
 # What is the PCR reaction_volume (per reaction)?
@@ -289,34 +288,40 @@ def run(protocol: protocol_api.ProtocolContext):
         PCR2_wells = PCR2.wells()
         if replicates > 2:
             PCR3_wells = PCR3.wells()
-    
+
     # Get indexes for wells to skip
     PCR1_wells_string = []
       ## Make an empty list to append well_names (string) to
     for well in PCR1_wells:
-        PCR1_wells_string.append(str(well))
-    
+        PCR1_wells_string.append(str(well))  
     # Get indexes of first and last wells
-    first_well_index = PCR1_wells_string.index(first_sample_well + ' of PCR1_' + sample_tube_type + ' on 9')
-    last_well_index = PCR1_wells_string.index(last_sample_well + ' of PCR1_' + sample_tube_type + ' on 9')
+    first_well_index = PCR1_wells_string.index(
+        first_sample_well + ' of PCR1_' + sample_tube_type + ' on 9')
+    last_well_index = PCR1_wells_string.index(
+        last_sample_well + ' of PCR1_' + sample_tube_type + ' on 9')
     # Slice list with wells at first and after last well (+1)
     PCR1_wells = PCR1_wells[slice(first_well_index, last_well_index +1)]
     PCR2_wells = PCR2_wells[slice(first_well_index, last_well_index +1)]
     if replicates > 2:
         PCR3_wells = PCR3_wells[slice(first_well_index, last_well_index +1)]
-    
+
+    # Get new indexes for wells to skip
+    PCR1_wells_string = []
+      ## Make an empty list to append well_names (string) to
+    for well in PCR1_wells:
+        PCR1_wells_string.append(str(well))    
     # Skip wells in the middle
     if skipp_samples:
-        counter = 0
+        counter = - 1
         for well in skipped_wells:
             counter = counter + 1
-            skipped_well_index = PCR1_wells_string.index(well + ' of PCR1 on 9')
+            skipped_well_index = PCR1_wells_string.index(
+                well + ' of PCR1_' + sample_tube_type + ' on 9')
             PCR1_wells.pop(skipped_well_index - counter)
             PCR2_wells.pop(skipped_well_index - counter)
             if replicates > 2:
                 PCR3_wells.pop(skipped_well_index - counter)
 # =============================================================================
-
 
 ## PIPETTING===================================================================
 ## ============================================================================

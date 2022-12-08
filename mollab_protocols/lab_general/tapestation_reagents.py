@@ -61,7 +61,7 @@ first_sample = 'A1'
 
   
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol          
 # =============================================================================
 
@@ -394,7 +394,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Cut slice out off list of sample_sources, starting with the 
     ## indicated first sample and ending after the number_of_samples                        
     first_sample_index = sample_sources_string.index(
-        first_sample + ' of sample_source_1 on 11')
+        first_sample + ' of sample_source_1_' + sample_tubes + ' on 11')
       ## Determine the index of the first sample in the list made from 
       ## strings -- we cannot find strings in the normal robot list
       ## so we needed to convert the wells to strings.
@@ -421,7 +421,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## container.         
     dispension_vol = buffer_vol                                                
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height('tubes_1.5mL', volume_of_buffer)
+    start_height = vt.cal_start_height('tube_1.5mL', volume_of_buffer)
       ## Call start height calculation function from volume tracking module.
     if start_height < 20:
         start_height = 0
@@ -432,7 +432,7 @@ def run(protocol: protocol_api.ProtocolContext):
       ## setting the reagent source
     destination = sample_wells
     current_height = start_height
-    container = 'tubes_1.5mL'
+    container = 'tube_1.5mL'
     pipette = p20 
 ## ---------------------------------------------------------------------------- 
 ## Aliquoting water------------------------------------------------------------

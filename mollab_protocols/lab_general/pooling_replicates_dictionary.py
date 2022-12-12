@@ -56,7 +56,7 @@ skipped_wells = ([])
     ## If you don't want to skip, set an empty list: skipped_wells = ([])
     
 # What is the PCR reaction_volume (per reaction)?
-reaction_volume = 25
+reaction_volume = 20
 
 # How many replicates do you have?
 replicates = 3
@@ -64,7 +64,7 @@ replicates = 3
   ## For now 3 is max. If you want more, protocol needs to be adjusted
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol 
 # =============================================================================
 
@@ -80,8 +80,8 @@ if simulate: #Simulator
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-# What volume needs to be aspirated (all replicates combined + airgaps)
-transfer_volume = (reaction_volume * (replicates -1)) + (replicates -1)
+# What volume needs to be aspirated (all replicates combined + airgaps of 5µL)
+transfer_volume = (reaction_volume * (replicates -1)) + ((replicates -1) * 5)
 # =============================================================================
 
 
@@ -345,8 +345,8 @@ def run(protocol: protocol_api.ProtocolContext):
         for well_PCR3, well_PCR2, well_PCR1 in zip(
                 PCR3_wells, PCR2_wells, PCR1_wells):
             pipette.pick_up_tip()
-            pipette.aspirate(reaction_volume + 1, well_PCR3)
-            pipette.aspirate(reaction_volume + 1, well_PCR2)
+            pipette.aspirate(reaction_volume + 5, well_PCR3)
+            pipette.aspirate(reaction_volume + 5, well_PCR2)
             pipette.dispense(transfer_volume, well_PCR1)
             pipette.dispense(10, well_PCR1)
             pipette.drop_tip()        

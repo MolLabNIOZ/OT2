@@ -24,6 +24,7 @@ This message also reports that you need to put the water tubes in vertical
 orientation, if you need more than 1.
 
 221103 MB: removed off-set part and is_simulating part
+221212 MB: introduced variable placing of PCR strips in racks
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -40,13 +41,19 @@ number_of_primers = 96
   ###   = 4 primer PCR strip racks & 2 dilution plates
   ## primer_dilution_tubes == 'PCR_strips' MAX = 144
   ###   = 3 primer PCR strip racks & 3 dilution PCR strip racks
-  
+# In what columns of the rack do you put the primer stock strips
+primer_columns = ['2', '5', '8', '11']
+  ## This determines how many primers you can do at once
+
+# How much primer dilution do you want to create?  
 final_volume = 30
-  ## How much primer dilution do you want to create?
   ## Advised: a minimum of 20µL and a maximum of 60µL
-  
+
+# In what kind of labware do you want the diutions?  
 primer_dilution_tubes = 'plate_96'
   ## Options: 'plate_96', 'PCR_strips'
+# If dilution in PCR strips, in what columns of the rack do you put the strips
+primer_dilution_columns = ['2', '5', '8', '11']
 
 # Are you simulating the protocol, or running it on the OT2?
 simulate = False
@@ -78,12 +85,12 @@ total_water_volume = water_volume * number_of_primers
 number_of_water_tubes = math.ceil((total_water_volume)/4800)
   ## How many tubes of 5mL water are needed 
 
-primer_stock_racks = math.ceil(number_of_primers / 48)
+primer_stock_racks = math.ceil(number_of_primers / (len(primer_columns)*8))
   ## How many primer_racks are needed (1,2,3 or 4), primer_stock_racks are
   ## always PCR strips.
   
 if primer_dilution_tubes == 'PCR_strips':
-    primer_dilution_racks = math.ceil(number_of_primers / 48)
+    primer_dilution_racks = math.ceil(number_of_primers / (len(primer_dilution_columns)*8))
 elif primer_dilution_tubes == 'plate_96':
     primer_dilution_racks = math.ceil(number_of_primers / 96)
   ## How many primer_dilution_racks are needed (1 or 2)
@@ -273,23 +280,23 @@ def run(protocol: protocol_api.ProtocolContext):
     # First make a list with columns of primer sources
     primer_stock_columns = (
         ([primer_source_1.columns_by_name()[column_name] 
-          for column_name in ['1', '3', '5', '7', '9', '11']]))
+          for column_name in primer_columns]))
     if primer_stock_racks >= 2:
         primer_stock_columns_2 = (
             ([primer_source_2.columns_by_name()[column_name] 
-              for column_name in ['1', '3', '5', '7', '9', '11']]))
+              for column_name in primer_columns]))
         for column in primer_stock_columns_2:
             primer_stock_columns.append(column)
     if primer_stock_racks >= 3:
         primer_stock_columns_3 = (
             ([primer_source_3.columns_by_name()[column_name] 
-              for column_name in ['1', '3', '5', '7', '9', '11']]))
+              for column_name in primer_columns]))
         for column in primer_stock_columns_3:
             primer_stock_columns.append(column)
     if primer_stock_racks >= 4:
         primer_stock_columns_4 = (
             ([primer_source_4.columns_by_name()[column_name] 
-              for column_name in ['1', '3', '5', '7', '9', '11']]))
+              for column_name in primer_columns]))
         for column in primer_stock_columns_4:
             primer_stock_columns.append(column)
     # Separate columns into wells and add wells to list of primer stock sources
@@ -315,17 +322,17 @@ def run(protocol: protocol_api.ProtocolContext):
     if primer_dilution_tubes == 'PCR_strips':
         primer_dilution_columns = (
             ([primer_dilution_dest_1.columns_by_name()[column_name] 
-              for column_name in ['1', '3', '5', '7', '9', '11']]))
+              for column_name in primer_dilution_columns]))
         if primer_dilution_racks >= 2:
             primer_dilution_columns_2 = (
                 ([primer_dilution_dest_2.columns_by_name()[column_name] 
-                  for column_name in ['1', '3', '5', '7', '9', '11']]))
+                  for column_name in primer_dilution_columns]))
             for column in primer_dilution_columns_2:
                 primer_dilution_columns.append(column)
         if primer_dilution_racks >= 3:
             primer_dilution_columns_3 = (
                 ([primer_dilution_dest_3.columns_by_name()[column_name] 
-                  for column_name in ['1', '3', '5', '7', '9', '11']]))
+                  for column_name in primer_dilution_columns]))
             for column in primer_dilution_columns_3:
                 primer_dilution_columns.append(column)
     # Separate columns into wells and add wells to list of primer dilution wells

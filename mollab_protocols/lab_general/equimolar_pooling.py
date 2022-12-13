@@ -22,6 +22,8 @@ Updates:
         changed indention levels
         changed the name of plate_96 to NIOZ_plate_96 (because we are using the plate holder)
         added non_skirted_plate_96
+    MB 221213:
+        changed to tipone 20µL tips and 300µL tips outcommented but ready
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -30,10 +32,10 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([10.0, 10.0, 8.51, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 52.8, 0.0, 66.15, 0.0, 36.4, 0.0, 10.56, 10.38, 6.64, 3.28, 9.26, 29.82, 0.0, 1.73, 11.11, 10.59, 14.94, 51.2, 52.5, 16.77, 33.73, 0.0, 20.78, 29.01, 10.0, 10.0, 7.39, 6.34, 8.25, 9.74, 9.38, 0.0, 15.29, 8.95, 7.39, 9.06, 2.0, 21.14, 0.0, 20.14, 0.0, 0.0, 0.0, 8.42, 14.6, 0.0, 0.0, 0.0, 16.44, 22.61, 8.33, 30.8, 8.71, 7.46, 0.0, 0.0, 0.0, 7.26, 5.35, 0.0, 19.95, 2.66, 3.15, 5.82, 5.59, 5.99])
+DNA_µL_list = ([21.28, 8.7, 6.88, 4.37, 2.8, 9.15, 24.39, 3.18, 3.1, 4.38, 4.52, 5.43, 3.52, 2.73, 3.32, 2.68, 3.66, 3.02, 6.45, 3.7, 1.63, 3.92, 3.95, 3.74, 4.26, 6.79, 4.7, 3.78, 2.97, 4.64, 3.86, 4.38, 4.3, 5.18, 6.83, 3.46, 4.62, 4.65, 4.75, 2.83, 6.19, 7.58, 4.75, 5.24, 4.78, 4.87, 7.08, 4.23, 2.56, 3.48, 4.17, 4.37, 4.27, 13.16, 5.42, 3.18, 9.2, 5.08, 3.78, 4.12, 4.08, 3.89, 3.18, 4.03, 5.17, 3.39, 3.95, 7.35, 4.27, 3.33, 3.36, 3.14, 4.81, 4.16, 4.49, 4.57, 4.37, 3.65, 11.41, 5.5, 20.55, 8.31, 4.76, 7.73, 5.58, 9.32, 9.32, 12.93, 6.07, 7.08, 5.52, 24.39, 24.39, 24.39, 24.39, 24.39])
 
 # Specify the number of samples, to check if the number of volumes is correct    
-number_of_samples = 82
+number_of_samples = 96
 
 # What labware are your samples in?
 sample_tube_type = 'non_skirted_plate_96' 
@@ -50,7 +52,7 @@ if sample_tube_type == 'PCR_strips':
       ## max 4 racks with strips!  
 
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
@@ -143,7 +145,29 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     ##### Loading pipette tips
+    
     if any(i >= 19 for i in DNA_µL_list):
+        # if simulate:
+            # with open("labware/tipone_96_tiprack_300ul/"
+            #      "tipone_96_tiprack_300ul.json") as labware_file:
+            #           labware_def_tipone_300ul = json.load(labware_file)
+            # tips_200_1= protocol.load_labware_from_definition( 
+            #     labware_def_tipone_300ul,           
+            #     11,                         
+            #     'tipone_300tips_1')
+            # tips_200_2 = protocol.load_labware_from_definition( 
+            #     labware_def_tipone_300ul,           
+            #     10,                         
+            #     'tipone_300tips_2')
+        # else:     
+            # tips_200_1 = protocol.load_labware(
+            #     'tipone_96_tiprack_300ul',  
+            #     11,                                  
+            #     'tipone_300tips_1')
+            # tips_200_2 = protocol.load_labware(
+            #     'tipone_96_tiprack_300ul',  
+            #     10,                                  
+            #     'tipone_300tips_2'))
         tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',  
             11,                                  
@@ -154,16 +178,28 @@ def run(protocol: protocol_api.ProtocolContext):
             '200tips_2')
     
     if any(i < 19 for i in DNA_µL_list):
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            8,                                  
-            '20tips_1')
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            7,                                  
-            '20tips_2')
+        if simulate:
+            with open("labware/tipone_96_tiprack_20ul/"
+                 "tipone_96_tiprack_20ul.json") as labware_file:
+                      labware_def_tipone_20ul = json.load(labware_file)
+            tips_20_1 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                8,                         
+                'tipone_20tips_1')
+            tips_20_2 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                7,                         
+                'tipone_20tips_2')
+        else:    
+            tips_20_1 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                8,                                  
+                'tipone_20tips_1')
+            tips_20_2 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                7,                                  
+                'tipone_20tips_2')
         
-    
     ##### Loading labware
     ## Tube for pooling the samples in
     if pool_tube_type == 'tube_1.5mL':

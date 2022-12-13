@@ -148,6 +148,14 @@ def run(protocol: protocol_api.ProtocolContext):
                 'opentrons_96_filtertiprack_200ul',  
                 10,                                  
                 '200tips_2')
+            # tips_1 = protocol.load_labware(
+            #     'tipone_96_tiprack_300ul',  
+            #     11,                                  
+            #     'tipone_300tips_1')
+            # tips_2 = protocol.load_labware(
+            #     'tipone_96_tiprack_300ul',  
+            #     10,                                  
+            #     'tipone_300tips_2')
         else:    
             tips_1 = protocol.load_labware(
                 'tipone_96_tiprack_20ul',  

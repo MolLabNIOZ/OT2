@@ -72,11 +72,11 @@ Tube racks:
                  tubes_5mL = protocol.load_labware_from_definition( 
                      labware_def_5mL, #variable derived from opening json
                      2, 
-                     '5mL_tubes')
+                     'tubes_5mL')
     
     5 mL tubes snap_cap + 15 tube rack:
         name: 'eppendorf_15_tuberack_5000ul'
-        custom reference: '5mL_tubes_snap'
+        custom reference: 'tubes_5mL_snap'
             for simulator you need to open using json in the following way:
                 with open("labware/eppendorf_15_tuberack_5000ul/"
                       "eppendorf_15_tuberack_5000ul.json") as labware_file:
@@ -84,19 +84,19 @@ Tube racks:
                 tubes_5mL = protocol.load_labware_from_definition( 
                     labware_def_5mL, #variable derived from opening json
                     2, 
-                    '5mL_tubes_snap') 
+                    'tubes_5mL_snap') 
     
     15 mL tubes + 15 tube rack:
         name: 'opentrons_15_tuberack_falcon_15ml_conical'
-        custom reference: '15mL_tubes'
+        custom reference: 'tubes_15mL'
     
     50 mL tubes + 50 tube rack:
         name: 'opentrons_6_tuberack_falcon_50ml_conical'
-        custom refrence: '50mL_tubes'
+        custom refrence: 'tubes_50mL'
 
     PCR strips (Westburg) + BioRad 96-wells plate
         name: 'pcrstrips_96_wellplate_200ul'
-        custum_reference: 'pcr_strips'
+        custum_reference: 'PCR_strips'
         for simulator you need to open using json in the following way:
             with open("labware/pcrstrips_96_wellplate_200ul/"
                   "pcrstrips_96_wellplate_200ul.json") as labware_file:
@@ -104,11 +104,11 @@ Tube racks:
             pcr_strips = protocol.load_labware_from_definition( 
                 labware_def_pcrstrips, #variable derived from opening json
                 2, 
-                'pcr_strips')
+                'PCR_strips')
 
     15mL and 50mL tubes in same rack:
         name: 'opentrons_10_tuberack_falcon_4x50ml_6x15ml_conical'
-        custom reference: '15mL_50mL_tubes'
+        custom reference: 'tubes_15mL_50mL'
 
     
 

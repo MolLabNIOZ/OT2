@@ -16,53 +16,58 @@ The reagent tube should always be put in A1
 ## Updates
 221206 (SV) - added different plates as labware cleaned up some unnecessary stuff
 """
+
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the first 20µL tip?
 starting_tip_p20 = 'A1'
   
-# How many primers do you want to dilute? 
+# How many samples do you have? 
 number_of_samples = 96
-  ## The maximum number of samples is 96, as the TapeStation can only measure
-  ## one plate at the time anyway.
+  ## Due to the limitations of the TapeStation, maximum number of samples is 96
 
 # Which Tapestation kit are you using?
 tapestation_kit = 'D5000'  
-  ## Options are:
-  ##    'D1000'
-  ##    'D5000'  
-  ##    'HS-D1000'
-  ##    'HS-D5000'
-  ##    'gDNA'
-  ##    'RNA'
-  ##    'HS-RNA'
+# Options:
+    ## 'D1000'
+    ## 'D5000'  
+    ## 'HS-D1000'
+    ## 'HS-D5000'
+    ## 'gDNA'
+    ## 'RNA'
+    ## 'HS-RNA'
 
 # What labware are your samples in?
-sample_tubes = 'non_skirted_plate_96'
-## Options: 
-    #sample_tubes = 'plate_96' (BioRad skirted plate)
-    #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
-    #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
-    #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
-    #sample_tubes = 'PCR_strips' (Westburg flat-cap strips or similar in BioRad skirted plate)
-    #sample_tubes = 'tubes_1.5mL' (any 1.5mL tubes)          
+sample_tube_type = 'non_skirted_plate_96'
+# Options: 
+    ## sample_tube_type = 'plate_96' 
+    ##   (BioRad skirted plate)
+    ## sample_tube_type = 'cool_rack_plate_96' 
+    ##   (BioRad skirted plate in Eppendorf cooler)
+    ## sample_tube_type = 'NIOZ_plate_96' 
+    ##   (BioRad skirted plate in NIOZ plate holder)
+    ## sample_tube_type = 'non_skirted_plate_96' 
+    ##   (Thermo non-skirted plate in BioRad skirted plate)
+    ## sample_tube_type = 'PCR_strips' 
+    ##   (Westburg flat-cap strips or similar in BioRad skirted plate)
+    ## sample_tube_type = 'tubes_1.5mL'
+    ##   (any 1.5mL tubes)          
 
-# When using PCR strips:
+# When using PCR strips as sample_tube_type:
 sample_columns = ['2', '5', '8', '11']
-## Options: 
-    #3 strips per rack: ['2', '7', '11'] 
-    #4 strips per rack: ['2', '5', '8','11'] = STANDARD
-    #6 strips per rack: ['1', '3', '5', '7', '9', '11']
+# Options: 
+    ## 3 strips per rack: ['2', '7', '11'] 
+    ## 4 strips per rack: ['2', '5', '8','11'] = STANDARD
+    ## 6 strips per rack: ['1', '3', '5', '7', '9', '11']
 
 # What is the location of your first sample? 
 first_sample = 'A1'
-  ## 'A1' is standard for tubes and plates. 
-  ## 'A2' is standard for tube_strips
+    ## 'A1' is standard for tubes and plates
+    ## 'A2' is standard for PCR_strips
 
-  
 # Do you want to simulate the protocol?
-simulate = False
-  ## True for simulating protocol, False for robot protocol          
+simulate = True
+  ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -87,55 +92,63 @@ import math
 # =============================================================================
 # Setting buffer and sample volume - dependent on the chosen tapestation kit
 if tapestation_kit == 'D1000':
-    buffer_vol = 3
-    sample_vol = 1
+    reagent_trans_vol = 3
+    sample_trans_vol = 1
     sample_mix_vol = 2
      ## setting the sample_mix_vol = volume for pipetting up and down    
 if tapestation_kit == 'D5000':
-    buffer_vol = 10
-    sample_vol = 1
+    reagent_trans_vol = 10
+    sample_trans_vol = 1
     sample_mix_vol = 5
 if tapestation_kit == 'gDNA':
-    buffer_vol = 10
-    sample_vol = 1 
+    reagent_trans_vol = 10
+    sample_trans_vol = 1 
     sample_mix_vol = 5
 if tapestation_kit == 'HS-D1000':
-    buffer_vol = 2
-    sample_vol = 2
+    reagent_trans_vol = 2
+    sample_trans_vol = 2
     sample_mix_vol = 3
 if tapestation_kit == 'HS-D5000':
-    buffer_vol = 2
-    sample_vol = 2
+    reagent_trans_vol = 2
+    sample_trans_vol = 2
     sample_mix_vol = 3
 if tapestation_kit == 'RNA':
-    buffer_vol = 5
-    sample_vol = 1
+    reagent_trans_vol = 5
+    sample_trans_vol = 1
     sample_mix_vol = 3
 if tapestation_kit == 'HS-RNA':
-    buffer_vol = 1
-    sample_vol = 2
+    reagent_trans_vol = 1
+    sample_trans_vol = 2
     sample_mix_vol = 2.5
 
 # What is the total volume of buffer that is needed for the amount of samples?
 # +10µL for minimum volume in tube
-volume_of_buffer = buffer_vol * (number_of_samples + 10)
+reagent_vol = reagent_trans_vol * (number_of_samples + 10)
 
 # How many sample racks are needed?   
-if sample_tubes == 'PCR_strips':
+if sample_tube_type == 'PCR_strips':
     if sample_columns == ['2', '7','11']:
         sample_racks = math.ceil(number_of_samples / 24)
     elif sample_columns == ['2', '5', '8','11']:
         sample_racks = math.ceil(number_of_samples / 32)
     elif sample_columns == ['1', '3', '5', '7', '9', '11']:
         sample_racks = math.ceil(number_of_samples / 48)
-elif sample_tubes == 'tubes_1.5mL':
+elif sample_tube_type == 'tubes_1.5mL':
     sample_racks = math.ceil(number_of_samples / 24)
-elif (sample_tubes == 'plate_96' or 
-      sample_tubes == 'cool_rack_plate_96' or 
-      sample_tubes == 'NIOZ_plate_96' or 
-      sample_tubes == 'non_skirted_plate_96'):
+elif (sample_tube_type == 'plate_96' or 
+      sample_tube_type == 'cool_rack_plate_96' or 
+      sample_tube_type == 'NIOZ_plate_96' or 
+      sample_tube_type == 'non_skirted_plate_96'):
     sample_racks = math.ceil(number_of_samples / 96)
+    
+# In what tube is your reagent?
+reagent_tube_type = 'tubes_1.5mL'
+
+# What is your container (reagent_tube/water_tube) that needs volume tracking? 
+if reagent_tube_type == 'tubes_1.5mL':
+    container = 'tube_1.5mL'
 # =============================================================================
+
 
 # METADATA=====================================================================
 # =============================================================================
@@ -150,6 +163,7 @@ def run(protocol: protocol_api.ProtocolContext):
     A protocol for the distribution of TapeStation reagents and samples. 
     """
 # =============================================================================
+
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -194,7 +208,7 @@ def run(protocol: protocol_api.ProtocolContext):
         3,                                      
         'destination_plate_96')  
     
-    if sample_tubes == 'tubes_1.5mL':
+    if sample_tube_type == 'tubes_1.5mL':
         sample_source_1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
             11,
@@ -212,7 +226,7 @@ def run(protocol: protocol_api.ProtocolContext):
             2,
             'sample_source_4_tubes_1.5mL')
     
-    if sample_tubes == 'plate_96':
+    if sample_tube_type == 'plate_96':
         sample_source_1 = protocol.load_labware(
             'biorad_96_wellplate_200ul_pcr',    
             11,                                  
@@ -221,7 +235,7 @@ def run(protocol: protocol_api.ProtocolContext):
             'biorad_96_wellplate_200ul_pcr',    
             8,                                  
             'sample_source_2_plate_96')
-    if sample_tubes == 'cool_rack_plate_96':
+    if sample_tube_type == 'cool_rack_plate_96':
         if simulate:
             with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
                       "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
@@ -243,7 +257,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'biorad_qpcr_plate_eppendorf_cool_rack',
                 8,
                 'sample_source_2_cool_rack_plate_96')
-    if sample_tubes == 'NIOZ_plate_96':
+    if sample_tube_type == 'NIOZ_plate_96':
         if simulate:
             with open("labware/biorad_qpcr_plate_nioz_plateholder/"
                       "biorad_qpcr_plate_nioz_plateholder.json") as labware_file:
@@ -265,7 +279,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'biorad_qpcr_plate_nioz_plateholder',
                 8,
                 'sample_source_2_NIOZ_plate_96')
-    if sample_tubes == 'non_skirted_plate_96':
+    if sample_tube_type == 'non_skirted_plate_96':
         if simulate:
             with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
                       "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:
@@ -287,7 +301,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 'thermononskirtedinbioradskirted_96_wellplate_200ul',
                 8,
                 'sample_source_2_non_skirted_plate_96')            
-    if sample_tubes == 'PCR_strips':
+    if sample_tube_type == 'PCR_strips':
         if simulate:
             with open("labware/pcrstrips_96_wellplate_200ul/"
                       "pcrstrips_96_wellplate_200ul.json") as labware_file:
@@ -327,6 +341,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     'sample_source_4_PCR_strips') 
 # =============================================================================
 
+
 # SETTING LOCATIONS============================================================
 # =============================================================================
     # Setting starting tip                                           
@@ -345,7 +360,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_sources = []
     sample_sources_string = []
 
-    if sample_tubes == 'PCR_strips':
+    if sample_tube_type == 'PCR_strips':
         sample_source_columns = (
                 ([sample_source_1.columns_by_name()[column_name] 
                   for column_name in sample_columns]))
@@ -394,7 +409,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ## Cut slice out off list of sample_sources, starting with the 
     ## indicated first sample and ending after the number_of_samples                        
     first_sample_index = sample_sources_string.index(
-        first_sample + ' of sample_source_1 on 11')
+        first_sample + ' of sample_source_1_' + sample_tube_type + ' on 11')
       ## Determine the index of the first sample in the list made from 
       ## strings -- we cannot find strings in the normal robot list
       ## so we needed to convert the wells to strings.
@@ -408,20 +423,21 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # MESSAGE AT THE START=========================================================
 # =============================================================================
-    protocol.pause("You will need " + str(volume_of_buffer) + "uL of the " +
+    protocol.comment("You will need " + str(reagent_vol) + "uL of the " +
                    tapestation_kit + " reagent buffer in"
                    " a 1.5mL tube on A1 of the reagent tube rack.")              
 # =============================================================================
 
+
 ## PIPETTING===================================================================
 ## ============================================================================
 ## Variables for volume tracking and aliquoting--------------------------------
-    aspiration_vol = buffer_vol + (buffer_vol/100*2)
+    aspiration_vol = reagent_trans_vol + (reagent_trans_vol/100*2)
       ## The aspiration_vol is the volume (µL) that is aspirated from the   
       ## container.         
-    dispension_vol = buffer_vol                                                
+    dispension_vol = reagent_trans_vol                                                
     ##### Variables for volume tracking
-    start_height = vt.cal_start_height('tubes_1.5mL', volume_of_buffer)
+    start_height = vt.cal_start_height(container, reagent_vol)
       ## Call start height calculation function from volume tracking module.
     if start_height < 20:
         start_height = 0
@@ -432,12 +448,14 @@ def run(protocol: protocol_api.ProtocolContext):
       ## setting the reagent source
     destination = sample_wells
     current_height = start_height
-    container = 'tubes_1.5mL'
-    pipette = p20 
 ## ---------------------------------------------------------------------------- 
 ## Aliquoting water------------------------------------------------------------
     for i, well in enumerate(destination):
       ## aliquot in the correct wells, for each well do the following:  
+        if aspiration_vol >= 19:
+            pipette = p300
+        else:
+            pipette = p20
         if i == 0: 
             pipette.pick_up_tip()
               ## If we are at the first well, start by picking up a tip.    
@@ -447,7 +465,7 @@ def run(protocol: protocol_api.ProtocolContext):
               ## Then, after every 8th well, drop tip and pick up new      
         
         current_height, pip_height, bottom_reached = vt.volume_tracking(
-            container, buffer_vol, current_height)
+            container, reagent_trans_vol, current_height)
               ## call volume_tracking function, obtain current_height,      
               ## pip_height and whether bottom_reached.                     
         if start_height >= 20:
@@ -456,7 +474,7 @@ def run(protocol: protocol_api.ProtocolContext):
                 current_height = start_height
                 current_height, pip_height, bottom_reached = (
                     vt.volume_tracking(
-                        container, buffer_vol, current_height))
+                        container, reagent_trans_vol, current_height))
                 aspiration_location = source.bottom(current_height)
        
             else:
@@ -476,14 +494,14 @@ def run(protocol: protocol_api.ProtocolContext):
     pipette.drop_tip()
       ## when entire plate is full, drop tip                               
 ## ----------------------------------------------------------------------------        
-## Adding samples stocks--------------------------------------------------------         
+## Adding samples stocks-------------------------------------------------------      
     for sample_source, sample_well in zip(sample_sources, sample_wells):
-        p20.pick_up_tip()
-        p20.aspirate(sample_vol, sample_source)
-        p20.dispense(sample_vol, sample_well)
-        p20.mix(3, sample_mix_vol, sample_well)
-        p20.dispense(20, sample_well)
-        p20.drop_tip()
+        pipette.pick_up_tip()
+        pipette.aspirate(sample_trans_vol, sample_source)
+        pipette.dispense(sample_trans_vol, sample_well)
+        pipette.mix(3, sample_mix_vol, sample_well)
+        pipette.dispense(20, sample_well)
+        pipette.drop_tip()
 ## ----------------------------------------------------------------------------    
 ## ============================================================================
  

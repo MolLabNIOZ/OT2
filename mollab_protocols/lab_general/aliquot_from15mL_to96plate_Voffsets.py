@@ -1,10 +1,6 @@
 """"
-VERSION: V_June22
+VERSION: V_Dec22
 aliquots a specific volume from 15mL tubes to 96 wells plates
-
-This version works with api2.12 and includes labware offsets
-
-
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -14,14 +10,14 @@ number_of_plates = 1
 # How much volume (µL) to aliquot?
 volume = 100
 
-# How much volume (µL) in 15mL tubes (all the same volume)
+# How much volume (µL) in 15mL tubes (all the same volume)?
 reagent_volume = 15000
 
 # What is the starting position of the tips?
 starting_tip_p200 = 'E1'
 
 # Do you want to simulate the protocol?
-simulate = False
+simulate = True
   ## True for simulating protocol, False for robot protocol 
 # =============================================================================
 
@@ -29,29 +25,21 @@ simulate = False
 # =============================================================================
 from opentrons import protocol_api
   ## Import opentrons protocol API v2.
-import pandas as pd
-  ## For accessing offset .csv file
 import math
   ## To do some calculations 
 
 # If not simulated, import the .csv from the robot with robot_specific 
 # labware off_set values
-if not simulate: #Robot
-    offsets = pd.read_csv(
-        "data/user_storage/mollab_modules/labware_offset.csv", sep=';'
-        )
-      ## import .csv
-    offsets = offsets.set_index('labware')
-      ## remove index column
-    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-      ## Volume_tracking module for robot
-
 if simulate: #Simulator
     from mollab_modules import volume_tracking_v1 as vt
-      ## Volume_tracking module for simulator
+      ## Volume_tracking module for robot
     import json
       ## Import json to import custom labware with labware_from_definition,
-      ## so that we can use the simulate_protocol with custom labware.     
+      ## so that we can use the simulate_protocol with custom labware.  
+
+else: #Robot
+    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
+      ## Volume_tracking module for simulator
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================

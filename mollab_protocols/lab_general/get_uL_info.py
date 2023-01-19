@@ -3,11 +3,11 @@ import pandas as pd
 
 ## Import excel sheet
 volume_data = pd.read_excel(
-    "C:/Users/mbrouwer/OneDrive - NIOZ/Documenten/GitHub/OT2/mollab_protocols/lab_general/Pooling NIOZ 164- Spreadsheet6.xlsx",
-    sheet_name='pooling without dilutions')
+    "C:/Users/mbrouwer/OneDrive - NIOZ/Documenten/GitHub/OT2/mollab_protocols/project_related/Annalisa/samples.xlsx",
+    sheet_name='Sheet1')
 
 # Make list of volumes (rounded to 2 decimals)
-dna = round(volume_data['µl to add'],2).to_list()
+dna = round(volume_data['ul DNA'],2).to_list()
 
 # remove NaNs
 dna_noNaNs = [x for x in dna if pd.isnull(x) == False and x != 'nan']

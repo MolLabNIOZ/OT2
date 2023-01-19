@@ -23,9 +23,18 @@ from mollab_modules import volume_tracking_v1 as vt
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
-number_of_samples = 80   # max 96 - NTC
+number_of_samples = 82   # max 96 - NTC
   ## How many samples do you want to include?                           ##
-number_of_NTCs = 1
+number_of_NTCs = 0
+sample_tubes = 'PCR_strips'
+  ## What kind of tubes will the samples be in?
+  ## Options: 'PCR_strips' or 'tubes_1.5mL'
+if sample_tubes == 'PCR_strips':
+    sample_strip_positions = ['2', '5', '8','11']
+    ## optional: ['2', '7', '11'] or ['2', '5', '8','11']
+water_tube_type = 'tubes_1.5mL'
+  ## What kind of tube will the water be in?
+  ## Options: 'tubes_1.5mL'or 'tubes_5mL'
 PCR_tubes = 'PCR_strips'
   ## What kind of tubes will the PCR be in?
   ## Options: 'PCR_strips' or 'plate_96'
@@ -35,9 +44,9 @@ if PCR_tubes == 'PCR_strips':
     ## max 2 racks with strips!
 starting_tip_p20 = 'A3'
   ## The starting_tip is the location of first pipette tip in the box   ##
-max_DNA_volume = 5
+max_DNA_volume = 3
   ## highest DNA volume, to add up to with water if needed
-DNA_µL_list = ([5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.5, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 2.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 5.0, 3.0, 5.0, 4.0, 4.0, 3.5, 4.0, 3.5, 2.0, 3.5, 3.0, 5.0, 5.0, 3.5, 4.0, 5.0, 4.0, 4.0, 1.5, 1.0, 1.0, 4.0, 0.75, 2.0, 3.5, 4.0, 3.5, 3.5, 3.0, 3.5, 4.0, 2.5, 1.0, 1.0, 1.0, 3.5, 5.0, 4.0, 5.0, 5.0, 5.0, 5.0, 3.5, 3.5, 5.0, 3.5, 5.0, 5.0, 4.0, 4.0, 4.0, 2.5, 4.0, 2.5, 3.0, 3.5, 4.0, 4.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 3.5, 4.0, 1.5, 2.0, 4.0, 4.0, 5.0, 5.0, 4.0, 4.0, 4.0, 3.5, 4.0, 2.0, 0.75, 1.0, 2.5, 2.5, 3.5, 1.0, 4.0, 4.0, 3.0, 4.0, 2.5, 3.0, 0.75, 0.75, 0.75, 3.5, 3.0, 3.5, 2.5, 3.5, 3.5, 3.0, 3.0, 3.0, 1.0, 1.0, 2.0, 2.0, 4.0, 5.0, 3.5, 3.0, 2.0, 2.5, 3.5, 3.0, 3.0, 0.5, 0.75, 1.5, 1.0, 2.0, 2.5, 3.5, 1.5, 3.5, 3.5, 2.5, 2.5, 2.0, 2.5, 5.0, 2.5])
+DNA_µL_list = ([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 2, 2, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 3, 3, 0, 0, 3, 1, 1, 1, 3, 1, 2, 2])
   ##How much DNA should be added for each sample (µL)
 # =============================================================================
 
@@ -52,7 +61,14 @@ if PCR_tubes == 'PCR_strips':
         PCR_tubes_per_rack = 24
     PCR_racks = math.ceil(reactions/PCR_tubes_per_rack)
   ## How many PCR tube racks
-sample_racks = math.ceil((number_of_samples + 1) / 24)
+if sample_tubes == 'tubes_1.5mL':
+    sample_racks = math.ceil((number_of_samples + 1) / 24)
+elif sample_tubes == 'PCR_strips':
+    if sample_strip_positions == ['2', '5', '8','11']:
+        sample_tubes_per_rack = 32
+    elif sample_strip_positions == ['2', '7','11']:
+        sample_tubes_per_rack = 24
+    sample_racks = math.ceil(reactions/sample_tubes_per_rack)
   ## How many tube_racks are needed (1,2,3 or 4) +1 for water_tube
 # =============================================================================
 
@@ -76,35 +92,70 @@ def run(protocol: protocol_api.ProtocolContext):
     ## For available labware see "labware/list_of_available_labware".       ##
     
     #pipette tips
+    
     tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        3,                                  #deck position
-        '20tips_1')                         #custom name       
+        'tipone_96_tiprack_20uL',  
+        3,                                  
+        'tipone_20tips_1')                         #custom name       
     tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  #labware definition
-        6,                                 #deck position
-        '20tips_2')                         #custom name
+        'tipone_96_tiprack_20uL',  
+        6,                                  
+        'tipone_20tips_2')                         #custom name
 
     # Tube_racks & plates
-    sample_tubes_1 = protocol.load_labware(
-        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
-        1,                                                       #deck position
-        'sample_tubes_1')                                        #custom name
-    if sample_racks >= 2:
-        sample_tubes_2 = protocol.load_labware(
-            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            4,                                                       #deck pos
-            'sample_tubes_2')                                        #cust name
-    if sample_racks >= 3:
-        sample_tubes_3 = protocol.load_labware(
-            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            7,                                                       #deck pos
-            'sample_tubes_3')                                        #cust name
-    if sample_racks >= 4:
-        sample_tubes_4 = protocol.load_labware(
-            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
-            10,                                                      #deck pos
-            'sample_tubes_4')                                        #cust name
+    if sample_tubes == 'tube_1.5mL':
+        sample_tubes_1 = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labware def
+            1,                                                       #deck position
+            'sample_tubes_1')                                        #custom name
+        if sample_racks >= 2:
+            sample_tubes_2 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
+                4,                                                       #deck pos
+                'sample_tubes_2')                                        #cust name
+        if sample_racks >= 3:
+            sample_tubes_3 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
+                7,                                                       #deck pos
+                'sample_tubes_3')                                        #cust name
+        if sample_racks >= 4:
+            sample_tubes_4 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',#labw def
+                10,                                                      #deck pos
+                'sample_tubes_4')                                        #cust name
+    
+    elif sample_tubes == 'PCR_strips':
+        sample_tubes_1 = protocol.load_labware( 
+            'pcrstrips_96_wellplate_200ul',
+            1,                                                       #deck position
+            'sample_tubes_1')                                        #custom name
+        if sample_racks >= 2:
+            sample_tubes_2 = protocol.load_labware( 
+                'pcrstrips_96_wellplate_200ul', 
+                4,                                                       #deck pos
+                'sample_tubes_2')                                        #cust name
+        if sample_racks >= 3:
+            sample_tubes_3 = protocol.load_labware( 
+                'pcrstrips_96_wellplate_200ul',
+                7,                                                       #deck pos
+                'sample_tubes_3')                                        #cust name
+        if sample_racks >= 4:
+            sample_tubes_4 = protocol.load_labware( 
+                'pcrstrips_96_wellplate_200ul',
+                10,                                                      #deck pos
+                'sample_tubes_4')                                        #cust name
+        
+         
+    if water_tube_type == 'tube_1.5mL':
+        water_tube = protocol.load_labware(
+            'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
+            9,
+            'mastermix_tube')
+    elif water_tube_type == 'tube_5mL':
+        water_tube = protocol.load_labware(
+            'eppendorfscrewcap_15_tuberack_5000ul',
+            9,                                     
+            'water_tube')
     
     if PCR_tubes == 'PCR_strips':
    ### !!! OPTION 1: ROBOT         
@@ -153,19 +204,11 @@ def run(protocol: protocol_api.ProtocolContext):
                   'PCR_tube_4')          #custom name
     
     if PCR_tubes == 'plate_96':
-        #### !!! OPTION 1: ROBOT 
-        # PCR_1 = protocol.load_labware(
-        #     'biorad_qpcr_plate_eppendorf_cool_rack',#labware definition
-        #     2,                                      #deck position
-        #     '96well_plate_rack')                    #custom name  
-       ##### !!! OPTION 2: SIMULATOR
-        with open("labware/biorad_qpcr_plate_eppendorf_cool_rack/"
-                    "biorad_qpcr_plate_eppendorf_cool_rack.json") as labware_file:
-                  labware_def_cool_rack = json.load(labware_file)
-        PCR_1 = protocol.load_labware_from_definition( 
-            labware_def_cool_rack,   #variable derived from opening json
-            2,                       #deck position
-            '96well_plate_rack')     #custom name 
+       PCR_1 = protocol.load_labware(
+            'biorad_qpcr_plate_nioz_plateholder',#labware definition
+            2,                                      #deck position
+            '96well_plate_NIOZholder')                    #custom name  
+
     
     # Pipettes
     p20 = protocol.load_instrument(

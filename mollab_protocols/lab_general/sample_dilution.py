@@ -46,7 +46,9 @@ MB 221118: Added mixing after adding sample + changed strip positions
 SV 221201: Added all types of plates (plate_96, cool_rack_plate_96, 
                                       NIOZ_plate_96, non_skirted_plate_96)
            and tested those in the simulator
-
+MB 221219: Made it possible to add a list of both DNA and water
+           Changed 20 uL tips to tipome tips
+           Only 96 samples max, to make loading pipette tips doable
 """
 
 # VARIABLES TO SET#!!!=========================================================
@@ -59,40 +61,23 @@ starting_tip_p200 = 'A1'
 
 # How many samples do you want to dilute? 
 number_of_samples = 96
-  ## sample_tubes == 'plate_96', dilution_tubes == 'plate_96'        MAX = 288
-  ###   = 3 sample plates & 3 dilutions plates
-  ## sample_tubes == 'plate_96', dilution_tubes == 'PCR_strips'      MAX = 192
-  ###   = 2 sample plates & 4 dilution PCR strip racks
-  ## sample_tubes == 'plate_96', dilution_tubes == 'tubes_1.5mL'     MAX = 96
-  ###   = 1 sample plate & 4 dilution 1.5 mL tube racks
-  ## sample_tubes == 'PCR_strips', diltution_tubes == 'plate_96'     MAX = 192
-  ###   = 4 sample PCR strip racks & 2 dilution plates
-  ## sample_tubes == 'PCR_strips', dilution_tubes == 'PCR_strips'    MAX = 144
-  ###   = 3 sample PCR strip racks & 3 dilution PCR strip racks
-  ## sample_tubes == 'PCR_strips', diltution_tubes == 'tubes_1.5mL'  MAX = 96
-  ###   = 2 sample PCR strip racks & 4 dilution 1.5 mL tube racks
-  ## sample_tubes == '1.5mL tubes', dilution_tubes == 'plate_96'     MAX = 96
-  ###   = 4 sample 1.5mL tube racks & 1 dilution plate
-  ## sample_tubes == '1.5mL tubes', dilution_tubes == 'PCR_strips'   MAX = 96
-  ###   = 4 sample 1.5mL tube racks & 2 dilution PCR strip racks
-  ## sample_tubes == '1.5mL tubes', dilution_tubes == 'tubes_1.5mL'  MAX = 72
-  ###   = 3 sample 1.5mL tube racks & 3 dilution 1.5mL tube racks
+  ## max 96
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 5
+sample_volume = [10.0, 10.0, 10.0, 10.0, 10.0, 29.21, 10.0, 10.0, 10.0, 12.58, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 20.82, 10.0, 10.0, 10.0, 10.0, 10.0, 27.73, 10.29, 19.49, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.08, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 16.11, 11.58, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 22.24, 10.0, 11.02, 10.0, 10.0, 10.0, 10.0, 10.0, 16.83, 49.84, 12.19, 10.0, 10.0, 10.0, 10.0, 10.0, 15.82, 10.0, 27.94, 60.0, 60.0, 20.06, 28.04, 60.0, 60.0, 46.49, 42.88, 22.3, 12.25, 10.0, 54.5, 23.25, 10.0, 60.0]
   ## Can be one volume or a list of volumes
-if isinstance(sample_volume, list):
-# If you enter a list of volumes, also set a final_volume
-    final_volume = 10
-      ## If you do not have a list of sample_volumes, final_volume is not used
-      ## Used to calculate how much water to add. 
-      ## final_volume - sample_volume = water_volume
-water_volume = 10
-  ## Can be one volume or a list of volumes. 
-  ## Will only be used when you do not have a list of sample_volumes
+water_volume = [25.1, 15.7, 0.0, 0.0, 5.2, 0.0, 29.1, 0.0, 0.0, 0.0, 0.0, 0.0, 28.4, 5.2, 19.8, 19.8, 0.0, 5.9, 15.3, 17.9, 11.9, 23.0, 28.8, 18.6, 28.0, 1.0, 0.0, 8.5, 10.0, 0.0, 15.6, 0.0, 38.6, 14.9, 0.0, 15.5, 0.0, 0.0, 0.0, 0.0, 9.5, 2.1, 13.9, 12.0, 0.0, 17.4, 1.7, 0.0, 9.5, 0.0, 22.2, 25.3, 16.1, 0.0, 0.0, 0.0, 7.1, 30.2, 35.4, 11.7, 4.8, 0.0, 0.0, 0.0, 0.0, 16.6, 0.0, 0.0, 3.9, 13.6, 0.0, 0.0, 0.0, 0.0, 0.4, 0.0, 0.0, 6.3, 0.0, 1.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  ## Can be one volume or a list of volumes.
+# Do you want a fixed final volume? If True, set the desired final_volume
+fixed_final_volume = False
+final_volume = 10
+## If fixed_final_volume == True, water_volume is not used
+## Used to calculate how much water to add. 
+## final_volume - sample_volume = water_volume
+
 
 # In what kind of tubes are the samples provided?
-sample_tubes = 'PCR_strips'
+sample_tubes = 'non_skirted_plate_96'
   ## Options: 
       #sample_tubes = 'plate_96' (BioRad skirted plate)
       #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
@@ -104,7 +89,7 @@ if sample_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     sample_strip_columns = ['2', '5', '8', '11'] 
 # In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'non_skirted_plate_96'
+dilution_tubes = 'plate_96'
   ## Options: 
       #sample_tubes = 'plate_96' (BioRad skirted plate)
       #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
@@ -116,7 +101,7 @@ if dilution_tubes == 'PCR_strips':
     # In which columns are the strips in the plate (ignore if not using strips)?
     dilution_strip_columns = ['2', '5', '8', '11'] 
 # Are you simulating the protocol, or running it on the OT2?
-simulate = False
+simulate = True
 # =============================================================================
 
 # IMPORT STATEMENTS============================================================
@@ -138,43 +123,41 @@ import math
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-stock_vol = 800
-  ## If diluting samples stock_vol == 4800 (full water tube)
-  ## Actual tubes need to be filled to 5mL
-  ## If more than 1 water tube all tubes need to be filled with same volume
-  ## If using protocol for PCR, stock volume can be adjusted
 if not isinstance(sample_volume, list):
     # if sample_volume is only one volume and not a list of
     # volumes we need to create a list of volumes
     sample_volumes = []
     for i in range(number_of_samples):
         sample_volumes.append(sample_volume)
-
-    if not isinstance(water_volume, list):
-        water_volumes = []
-        for i in range(number_of_samples):
-            water_volumes.append(water_volume)
-    # If sample_volume is only one volume and there is no list of water_volumes
-    # we need to create a list of water_volumes
-    else:
-        water_volumes = water_volume
-    # If sample_volume is only one volume and there is a list of water_volumes
-    # Use that list
-
 else:
-    sample_volumes = sample_volume
-    
-    if not isinstance(water_volume, list):
-        water_volumes = []
-        for i, sample_vol in enumerate(sample_volume):
-            water = final_volume - sample_vol
-            water_volumes.append(water)
+    sample_volumes = sample_volume        
+
+if not isinstance(water_volume, list):
+    water_volumes = []
+    for i in range(number_of_samples):
+        water_volumes.append(water_volume)
+# If sample_volume is only one volume and there is no list of water_volumes
+# we need to create a list of water_volumes
+else:
+    water_volumes = water_volume
+# If there is a list of water_volumes use that list
+
+if fixed_final_volume:    
+    water_volumes = []
+    for i, sample_vol in enumerate(sample_volumes):
+        water = final_volume - sample_vol
+        water_volumes.append(water)
     # If sample_volume is a list, and there is no list of water_volumes, the 
     # final_volume will be used to calculate the water_volumes
-    else:
-        water_volumes = water_volume
+else:
+    water_volumes = water_volume
     # If sample_volumes is a list and water_volumes is a list, use both
 
+stock_vol = 4800
+  ## If diluting samples stock_vol == 4800 (full water tube)
+  ## Actual tubes need to be filled to 5mL
+  ## If more than 1 water tube all tubes need to be filled with same volume
+  ## If using protocol for PCR, stock volume can be adjusted
 total_water_volume = sum(water_volumes)
 water_tubes = math.ceil((total_water_volume)/stock_vol)
   ## How many tubes of 5mL water are needed 
@@ -233,72 +216,54 @@ def run(protocol: protocol_api.ProtocolContext):
     ##### Loading pipettes and tips    
     tips_20 = []
     tips_200 = []
-    
-    if tips_20_needed > 0:
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      
-            11,                                     
-            'tips_20_1')
-        tips_20.append(tips_20_1)
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',      
-            10,                                     
-            'tips_20_2')
-        tips_20.append(tips_20_2)
-        if tips_20_needed > 96:
-            tips_20_3 = protocol.load_labware(
-                'opentrons_96_filtertiprack_20ul',      
-                7,                                      
-                'tips_20_3')
-            tips_20.append(tips_20_3)
-            if tips_20_needed > 192:
-                tips_20_4 = protocol.load_labware(
-                'opentrons_96_filtertiprack_20ul',      
-                8,                                      
-                'tips_20_4')
-                tips_20.append(tips_20_4)
-            elif tips_200_needed > 0:
-                tips_200_1 = protocol.load_labware(
-                    'opentrons_96_filtertiprack_200ul',      
-                    8,                                     
-                    'tips_200_1')
-                tips_200.append(tips_200_1)
-        elif tips_200_needed > 0:
-            tips_200_1 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',      
-                7,                                     
-                'tips_200_1')
-            tips_200.append(tips_200_1)
-            tips_200_2 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',      
-                8,                                     
-                'tips_200_2')
-            tips_200.append(tips_200_2)
+    if simulate:
+        with open("labware/tipone_96_tiprack_20ul/"
+                  "tipone_96_tiprack_20ul.json") as labware_file:
+                labware_def_tipone_96_tiprack_20ul = json.load(labware_file)
             
-    
-    else:
+        tips_20_1 = protocol.load_labware_from_definition(
+            labware_def_tipone_96_tiprack_20ul,
+            11,                                  
+            'tipone_20tips_1')
+        tips_20.append(tips_20_1)
+        tips_20_2 = protocol.load_labware_from_definition(
+            labware_def_tipone_96_tiprack_20ul,
+            10,                                  
+            'tipone_20tips_2')
+        tips_20.append(tips_20_2)
         tips_200_1 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',      
-            11,                                     
+            8,                                     
+            'tips_200_1')
+        tips_200.append(tips_200_1) 
+        tips_200_2 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      
+            7,                                     
+            'tips_200_2')
+        tips_200.append(tips_200_2)
+    else:    
+        tips_20_1 = protocol.load_labware(
+            'tipone_96_tiprack_20uL',  
+            11,                                  
+            'tipone_20tips_1')  
+        tips_20.append(tips_20_1)
+        tips_20_2 = protocol.load_labware(
+            'tipone_96_tiprack_20uL',  
+            10,                                  
+            'tipone_20tips_2')
+        tips_20.append(tips_20_2)
+        tips_200_1 = protocol.load_labware(
+            'opentrons_96_filtertiprack_200ul',      
+            8,                                     
             'tips_200_1')
         tips_200.append(tips_200_1)
         tips_200_2 = protocol.load_labware(
             'opentrons_96_filtertiprack_200ul',      
-            10,                                     
+            7,                                     
             'tips_200_2')
         tips_200.append(tips_200_2)
-        if tips_200_needed > 96:
-            tips_200_3 = protocol.load_labware(
-                'opentrons_96_filtertiprack_200ul',      
-                7,                                      
-                'tips_200_3')
-            tips_200.append(tips_200_3)
-            if tips_200_needed > 192:
-                tips_200_4 = protocol.load_labware(
-                    'opentrons_96_filtertiprack_200ul',      
-                    8,                                      
-                    'tips_200_4')
-                tips_200.append(tips_200_4)
+    
+    
     
     ##### Loading pipettes
     p20 = protocol.load_instrument(

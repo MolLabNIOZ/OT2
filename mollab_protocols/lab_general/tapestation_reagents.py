@@ -88,7 +88,7 @@ import math
   ## math to do some calculations (rounding up)  
 # =============================================================================
 
-# CALCULATED VARIABLES=========================================================
+# CALCULATED AND SET VARIABLES=================================================
 # =============================================================================
 # Setting buffer and sample volume - dependent on the chosen tapestation kit
 if tapestation_kit == 'D1000':
@@ -143,8 +143,17 @@ elif (sample_tube_type == 'plate_96' or
     
 # In what tube is your reagent?
 reagent_tube_type = 'tubes_1.5mL'
+# Options: 
+    ## reagent_tube_type = 'tubes_1.5mL'
+    ##   (any 1.5mL tubes)  
 
-# What is your container (reagent_tube/water_tube) that needs volume tracking? 
+# What is your destination labware?
+destination_tube_type = 'plate_96'
+# Options: 
+    ## destination_tube_type = 'plate_96' 
+    ##   (BioRad skirted plate)
+
+# What is your container (reagent_source_1/water_tube) that needs volume tracking? 
 if reagent_tube_type == 'tubes_1.5mL':
     container = 'tube_1.5mL'
 # =============================================================================
@@ -197,17 +206,14 @@ def run(protocol: protocol_api.ProtocolContext):
         'left',                             
         tip_racks=tips_20)
     
-    # Labware
-    reagent_tube = protocol.load_labware(
-        'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
-        1,
-        'reagent_tube_1.5mL')
-    
-    destination = protocol.load_labware(
-        'biorad_96_wellplate_200ul_pcr',        
-        3,                                      
-        'destination_plate_96')  
-    
+    # Labware - Reagent source
+    if reagent_tube_type == 'tubes_1.5mL':
+        reagent_source_1 = protocol.load_labware(
+                'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',         
+                1,                                      
+                'reagent_source_1_tubes_1.5mL') 
+        
+    # Labware - Sample sources
     if sample_tube_type == 'tubes_1.5mL':
         sample_source_1 = protocol.load_labware(
             'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
@@ -339,6 +345,14 @@ def run(protocol: protocol_api.ProtocolContext):
                     'pcrstrips_96_wellplate_200ul',         
                     2,                                      
                     'sample_source_4_PCR_strips') 
+
+    #Reagent and sample destination 
+    if destination_tube_type == 'plate_96':
+        destination_1 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',    
+            3,                                  
+            'destination_1_plate_96')
+       
 # =============================================================================
 
 
@@ -349,12 +363,12 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # Destination wells
     destination_wells = []
-    for well in destination.wells():
+    for well in destination_1.wells():
         destination_wells.append(well)
     sample_wells = destination_wells[:number_of_samples]
     
     # Name the well where the reagent tube is
-    reagent_source = reagent_tube.wells_by_name()['A1']
+    reagent_source = reagent_source_1.wells_by_name()['A1']
     
     # Create an empty list to append the wells for the sample_sources to
     sample_sources = []
@@ -468,20 +482,17 @@ def run(protocol: protocol_api.ProtocolContext):
             container, reagent_trans_vol, current_height)
               ## call volume_tracking function, obtain current_height,      
               ## pip_height and whether bottom_reached.                     
-        if start_height >= 20:
-            if bottom_reached:
-                ## continue with next tube, reset vt                            
-                current_height = start_height
-                current_height, pip_height, bottom_reached = (
-                    vt.volume_tracking(
-                        container, reagent_trans_vol, current_height))
-                aspiration_location = source.bottom(current_height)
-       
-            else:
-                aspiration_location = source.bottom(pip_height)
-                  ## Set the location of where to aspirate from.
+        if bottom_reached:
+            ## continue with next tube, reset vt                            
+            current_height = start_height
+            current_height, pip_height, bottom_reached = (
+                vt.volume_tracking(
+                    container, reagent_trans_vol, current_height))
+            aspiration_location = source.bottom(current_height)
         else:
-            aspiration_location = source
+            if pip_height >= 10:
+                pip_height = 0
+            aspiration_location = source.bottom(pip_height)
               ## Set the location of where to aspirate from.
         
         #### The actual aliquoting

@@ -26,6 +26,20 @@ Updates:
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 
+# Tip starting position -- standard variables
+  
+# Number of samples -- standard variables
+
+# Volumes -- standard variables
+
+# Labware types -- standard variables
+    
+# Locations (columns, first sample) -- standard variables
+
+# Other variables
+
+# Simulate -- standard variables
+
 # =============================================================================
 
 
@@ -48,8 +62,16 @@ import math
 # =============================================================================
 
 
-# CALCULATED VARIABLES=========================================================
+# CALCULATED AND SET VARIABLES=================================================
 # =============================================================================
+
+# Calculated or set volumes
+
+# Number of racks needed
+
+# Container for volume tracking
+
+# Others
 
 # =============================================================================
 
@@ -71,11 +93,25 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
 
+# Pipette tips
+
+# Pipettes
+
+# Sources (in order of pipetting)
+
+# Destinations
+
 # =============================================================================
 
 
 # SETTING LOCATIONS============================================================
 # =============================================================================
+
+# Starting tips
+
+# Source wells (in order of labware)
+
+# Destination wells 
 
 # =============================================================================   
 

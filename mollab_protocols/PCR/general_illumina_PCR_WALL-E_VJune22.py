@@ -59,6 +59,9 @@ Updates:
     and a reverse primer, starting well of reverse primer changable so that
     the lab team can provide a protocol with unique barcode combinations for 
     each user
+(MB) 230123:
+    -changed to tipone p20 tips
+    
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -69,7 +72,7 @@ starting_tip_p200 = 'G12'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 94   
+number_of_samples = 93   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -81,12 +84,12 @@ number_of_NTCs = 1
   ## NOTE: The NTC should ALWAYS be at the end of your plate!!              
 
 # Will a mock sample be included?
-mock = True
+mock = False
   ## True if mock has to be added by the robot.                             
   ## False if mock is not added by the robot.                               
 
 # What is the total volume (µL) of your mix?
-start_vol = 300
+start_vol = 1600
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.                                  
   
@@ -116,24 +119,24 @@ mastermix_tube_type = 'tube_5mL'
   ## For volume > 1300: 'tube_5mL'                                          
 
 # What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 19   
+dispension_vol = 16.8   
 
 # Where is the mastermix tube located in the rack? 
-mastermix_source = 'C1'
+mastermix_source = 'A1'
   ## convenient places:
   ## if mastermix_tube_type ==   'tube_1.5mL'  -->  D1 
   ## if mastermix_tube_type ==   'tube_5mL'    -->  C1
     
                                      
 # What is the volume (µL) of primer that needs to be added to the mix?
-primer_vol = 1.5                                       
+primer_vol = 1                                       
 
 
 # =============================================================================
 # IMPORTANT: this is only to be changed by the lab team
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol      
 
 # In what well should WALL-E start pipetting?
@@ -189,30 +192,61 @@ def run(protocol: protocol_api.ProtocolContext):
             'opentrons_96_filtertiprack_200ul', 
             2,                                  
             '200tips')                          
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            7,                                  
-            '20tips_1')                                
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            10,                                 
-            '20tips_2')                         
+        if simulate:
+            with open("labware/tipone_96_tiprack_20ul/"
+                 "tipone_96_tiprack_20ul.json") as labware_file:
+                      labware_def_tipone_20ul = json.load(labware_file)
+            tips_20_1 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                7,                         
+                'tipone_20tips_1')
+            tips_20_2 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+               10,                         
+                'tipone_20tips_2')
+        else:
+            tips_20_1 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                7,                                  
+                'tipone_20tips_1')                                
+            tips_20_2 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                10,                                 
+                'tipone_20tips_2')                         
         tips_20 = [tips_20_1, tips_20_2]
     else:
-      ## When the mm volume to be dispensed <=19, only 20µL are needed      
-        tips_20_1 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            2,                                  
-            '20tips_1')                           
-        tips_20_2 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            7,                                  
-            '20tips_2')                           
-        tips_20_3 = protocol.load_labware(
-            'opentrons_96_filtertiprack_20ul',  
-            10,                                 
-            '20tips_3')                             
-        tips_20 = [tips_20_1, tips_20_2, tips_20_3]
+      ## When the mm volume to be dispensed <=19, only 20µL are needed 
+        if simulate:
+            with open("labware/tipone_96_tiprack_20ul/"
+                 "tipone_96_tiprack_20ul.json") as labware_file:
+                      labware_def_tipone_20ul = json.load(labware_file)
+            
+            tips_20_1 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                2,                         
+                'tipone_20tips_1')
+            tips_20_2 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                7,                         
+                'tipone_20tips_2')
+            tips_20_3 = protocol.load_labware_from_definition( 
+                labware_def_tipone_20ul,           
+                10,                         
+                'tipone_20tips_3')
+        else:    
+            tips_20_1 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                2,                                  
+                'tipone_20tips_1')                           
+            tips_20_2 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                7,                                  
+                'tipone_20tips_2')                           
+            tips_20_3 = protocol.load_labware(
+                'tipone_96_tiprack_20ul',  
+                10,                                 
+                'tipone_20tips_3')                             
+            tips_20 = [tips_20_1, tips_20_2, tips_20_3]
    
     # Tube_racks & plates                                                     
     plate_96 = protocol.load_labware(

@@ -27,6 +27,8 @@ Updates:
     - rearranged variables to set
     - clean up
     - added standard sample option to strips
+(MB) 230123:
+    -Changed to tipone p20 tips
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -56,7 +58,7 @@ mock = True
 sample_tubes = 'PCR_strips'
   ## Options: 'PCR_strips' or 'tubes_1.5mL'                                 
 if sample_tubes == 'PCR_strips':
-    strip_positions = ['2', '5', '8','11']     
+    strip_positions = ['2', '7','11']     
       ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                 
       ## max 4 racks with strips!                                           
       
@@ -129,14 +131,28 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     # Pipette tips
-    tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  
-        7,                                  
-        '20tips_1')                                
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',  
-        10,                                 
-        '20tips_2')                         
+    if simulate:
+        with open("labware/tipone_96_tiprack_20ul/"
+             "tipone_96_tiprack_20ul.json") as labware_file:
+                  labware_def_tipone_20ul = json.load(labware_file)
+        tips_20_1 = protocol.load_labware_from_definition( 
+            labware_def_tipone_20ul,           
+            7,                         
+            'tipone_20tips_1')
+        tips_20_2 = protocol.load_labware_from_definition( 
+            labware_def_tipone_20ul,           
+           10,                         
+            'tipone_20tips_2')
+    else:
+        tips_20_1 = protocol.load_labware(
+            'tipone_96_tiprack_20ul',  
+            7,                                  
+            'tipone_20tips_1')                                
+        tips_20_2 = protocol.load_labware(
+            'tipone_96_tiprack_20ul',  
+            10,                                 
+            'tipone_20tips_2')                         
+                      
 
     # Tube_racks & plates
     if sample_tubes == 'tubes_1.5mL':

@@ -49,14 +49,17 @@ SV 221201: Added all types of plates (plate_96, cool_rack_plate_96,
 MB 221219: Made it possible to add a list of both DNA and water
            Changed 20 uL tips to tipome tips
            Only 96 samples max, to make loading pipette tips doable
+MB 230208: Changed pipetting with p20 and p300 simultaneuosly to pipetting
+           first all p20 and then all p300 water_volumes. Otherwise while 
+           switching pipettes the tubes side gets hit :|
 """
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # If applicable: What is the starting position of the first 20µL tip?
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'A9'
 # If applicable: What is the starting position of the first 200µL tip?
-starting_tip_p200 = 'A1'
+starting_tip_p200 = 'C5'
   ## If volume-wise p20 or p200 is not applicable, this variable won't be used
 
 # How many samples do you want to dilute? 
@@ -64,9 +67,19 @@ number_of_samples = 96
   ## max 96
 
 # How much sample volume (µL) do you want to use for the dilution?
-sample_volume = [10.0, 10.0, 10.0, 10.0, 10.0, 29.21, 10.0, 10.0, 10.0, 12.58, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 20.82, 10.0, 10.0, 10.0, 10.0, 10.0, 27.73, 10.29, 19.49, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.08, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 16.11, 11.58, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 22.24, 10.0, 11.02, 10.0, 10.0, 10.0, 10.0, 10.0, 16.83, 49.84, 12.19, 10.0, 10.0, 10.0, 10.0, 10.0, 15.82, 10.0, 27.94, 60.0, 60.0, 20.06, 28.04, 60.0, 60.0, 46.49, 42.88, 22.3, 12.25, 10.0, 54.5, 23.25, 10.0, 60.0]
+sample_volume = [10.0, 10.0, 11.34, 11.13, 10.0, 34.21, 10.0, 11.53, 12.38, 17.58, 12.1, 12.8, 10.0, 10.0, 10.0, 10.0, 12.65, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 11.19, 10.0, 10.0, 11.73, 10.0, 25.82, 10.0, 10.0, 11.05, 10.0, 13.83, 32.73, 15.29, 24.49, 10.0, 10.0, 10.0, 10.0, 14.59, 10.0, 10.0, 15.08, 10.0, 11.08, 10.0, 10.0, 10.0, 11.96, 21.11, 16.58, 10.0, 10.0, 10.0, 10.0, 10.0, 11.44, 27.24, 14.02, 16.02, 10.0, 13.92, 11.03, 10.0, 10.0, 21.83, 60.0, 17.19, 12.2, 10.0, 11.05, 11.31, 10.0, 20.82, 10.0, 32.94, 60.0, 60.0, 25.06, 33.04, 60.0, 60.0, 51.49, 47.88, 27.3, 17.25, 12.17, 59.5, 28.25, 13.41, 60.0]
+#sample_volume = [7.9, 24.7, 0.0, 3.9, 0.0, 3.1, 0.0, 0.0, 4.6, 9.5, 0.0, 0.0, 0.0, 11.5, 0.0, 3.1, 8.7, 12.4, 13.6, 1.3, 18.5, 9.7, 0.0, 1.4, 0.0, 13.0, 0.0, 13.7, 25.4, 20.0, 0.0, 13.3, 2.1, 2.2, 3.5, 15.2, 27.0, 0.0, 17.8, 22.0, 0.0, 7.4, 0.0, 7.9, 8.2, 16.9, 19.6, 23.8, 10.7, 6.5, 22.4, 0.6, 8.1, 11.6, 15.3, 8.5, 9.9, 7.3, 0.0, 0.0, 0.0, 0.0, 4.4, 13.2, 9.6, 19.2, 3.7, 28.2, 20.8, 18.0, 14.6, 17.5, 0.0, 19.5, 13.4, 29.1, 21.2, 0.0, 9.6, 23.9, 2.4, 28.3, 23.8, 26.7, 12.1, 26.5, 16.8, 0.0, 10.5, 25.8, 34.8, 6.9, 32.8, 0.0]
   ## Can be one volume or a list of volumes
 water_volume = [25.1, 15.7, 0.0, 0.0, 5.2, 0.0, 29.1, 0.0, 0.0, 0.0, 0.0, 0.0, 28.4, 5.2, 19.8, 19.8, 0.0, 5.9, 15.3, 17.9, 11.9, 23.0, 28.8, 18.6, 28.0, 1.0, 0.0, 8.5, 10.0, 0.0, 15.6, 0.0, 38.6, 14.9, 0.0, 15.5, 0.0, 0.0, 0.0, 0.0, 9.5, 2.1, 13.9, 12.0, 0.0, 17.4, 1.7, 0.0, 9.5, 0.0, 22.2, 25.3, 16.1, 0.0, 0.0, 0.0, 7.1, 30.2, 35.4, 11.7, 4.8, 0.0, 0.0, 0.0, 0.0, 16.6, 0.0, 0.0, 3.9, 13.6, 0.0, 0.0, 0.0, 0.0, 0.4, 0.0, 0.0, 6.3, 0.0, 1.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# water_volume = [7.9, 24.7, 0.0, 3.9, 0.0, 3.1, 0.0, 0.0, 4.6, 9.5, 0.0, 0.0, 0.0, 
+#                 11.5, 0.0, 3.1, 8.7, 12.4, 13.6, 1.3, 18.5, 9.7, 0.0, 1.4, 0.0,
+#                 13.0, 0.0, 13.7, 25.4, 20.0, 0.0, 13.3, 2.1, 2.2, 3.5, 15.2,
+#                 27.0, 0.0, 17.8, 22.0, 0.0, 7.4, 0.0, 7.9, 8.2, 16.9, 19.6,
+#                 23.8, 10.7, 6.5, 22.4, 0.6, 8.1, 11.6, 15.3, 8.5, 9.9, 7.3,
+#                 0.0, 0.0, 0.0, 0.0, 4.4, 13.2, 9.6, 19.2, 3.7, 28.2, 20.8,
+#                 18.0, 14.6, 17.5, 0.0, 19.5, 13.4, 29.1, 21.2, 0.0, 9.6, 23.9,
+#                 2.4, 28.3, 23.8, 26.7, 12.1, 26.5, 16.8, 0.0, 10.5, 25.8, 34.8,
+#                 6.9, 32.8, 0.0]
   ## Can be one volume or a list of volumes.
 # Do you want a fixed final volume? If True, set the desired final_volume
 fixed_final_volume = False
@@ -669,13 +682,13 @@ def run(protocol: protocol_api.ProtocolContext):
             tubes_5mL = protocol.load_labware_from_definition( 
                 labware_def_5mL, 
                 9, 
-                'water_tubes_5mL')    
+                'tubes_5mL')    
         else:
             if water_tubes > 0:
                 tubes_5mL = protocol.load_labware(
                     'eppendorfscrewcap_15_tuberack_5000ul',     
                     9,                                          
-                    'water_tubes_5mL')                                    
+                    'tubes_5mL')                                    
 # =============================================================================
 
 # SETTING LOCATIONS#!!!========================================================
@@ -825,42 +838,32 @@ def run(protocol: protocol_api.ProtocolContext):
         container = 'tube_5mL'
         start_height = vt.cal_start_height(container, stock_vol)
         current_height = start_height
-              
+        
+        well_counter = 0 # to keep track of pipette_tip use
+        
+        ### All water with p20
         for i, (well, water_vol) in enumerate(zip(destination, water_volumes)):
           ## aliquot water in the correct wells, for each well do the following:  
             
-            if water_vol > 0:
-                dispension_vol = water_vol
-                aspiration_vol = dispension_vol + (dispension_vol/100*2)
-    
-                if i == 0:
-                    if len([x for x in water_volumes[i:i+15] if x < 20]) > 0:
-                        p20.pick_up_tip()
-                    if len([x for x in water_volumes[i:i+15] if x >= 20]) > 0:
-                        p300.pick_up_tip()
-                      ## If we are at the first well, start by picking up a tip
-                elif i % 16 == 0:
-                    try:
-                        p20.drop_tip()
-                    except:
-                        pass
-                    try:
-                        p300.drop_tip()
-                    except:
-                        pass
-                      ## Then, after every 16th well, try to drop tip
-                    
-                    if len([x for x in water_volumes[i:i+15] if x < 20]) > 0:
-                        p20.pick_up_tip()
-                    if len([x for x in water_volumes[i:i+15] if x >= 20]) > 0:
-                        p300.pick_up_tip()                    
-                      ## Pick up new tip if needed in next 16                    
+              dispension_vol = water_vol
+              aspiration_vol = dispension_vol + (dispension_vol/100*2)
+              
+              if 0 < aspiration_vol <= 20:
+                      
+                if well_counter == 0:
+                    p20.pick_up_tip()
+                    ## If we are at the first well, start by picking up a tip
+
+                elif well_counter % 16 == 0:
+                    p20.drop_tip()
+                      ## Then, after every 16th well drop tip                   
+                    p20.pick_up_tip()
+                    ## Pick up new tip
                         
                 current_height, pip_height, bottom_reached = vt.volume_tracking(
                     container, dispension_vol, current_height)
                       ## call volume_tracking function, obtain current_height,     
                       ## pip_height and whether bottom_reached.                    
-                
                 if bottom_reached:
                   ## continue with next tube, reset vt                            
                     current_height = start_height
@@ -876,10 +879,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     aspiration_location = source.bottom(pip_height)
                       ## Set the location of where to aspirate from.
     
-                if aspiration_vol > 20:
-                    water_pipette = p300
-                else:
-                    water_pipette = p20
+                water_pipette = p20
                   ## What pipette to use
         
                 #### The actual aliquoting of water
@@ -894,15 +894,74 @@ def run(protocol: protocol_api.ProtocolContext):
                   ## completely when using a disposal volume by dispensing some
                   ## of the volume after each pipetting step. (blow-out too many
                   ## bubbles)
-        try: 
+                well_counter = well_counter + 1
+         
+        try:
             p20.drop_tip()
         except:
             pass
-        try:
+        
+        ### All water with p300
+        well_counter = 0
+        for i, (well, water_vol) in enumerate(zip(destination, water_volumes)):
+          ## aliquot water in the correct wells, for each well do the following:  
+            
+              dispension_vol = water_vol
+              aspiration_vol = dispension_vol + (dispension_vol/100*2)
+              
+              if aspiration_vol > 20:
+                      
+                if well_counter == 0:
+                    p300.pick_up_tip()
+                    ## If we are at the first well, start by picking up a tip
+
+                elif well_counter % 16 == 0:
+                    p300.drop_tip()
+                      ## Then, after every 16th well drop tip                   
+                    p300.pick_up_tip()
+                    ## Pick up new tip
+                        
+                current_height, pip_height, bottom_reached = vt.volume_tracking(
+                    container, dispension_vol, current_height)
+                      ## call volume_tracking function, obtain current_height,     
+                      ## pip_height and whether bottom_reached.                    
+                if bottom_reached:
+                  ## continue with next tube, reset vt                            
+                    current_height = start_height
+                    current_height, pip_height, bottom_reached = (
+                        vt.volume_tracking(
+                            container, dispension_vol, current_height))
+                    counter = counter + 1
+                    source = tubes_5mL.wells()[counter]
+                    aspiration_location = source.bottom(current_height)
+                    protocol.comment(
+                        "Continue with tube " + str(counter + 1) + " of water")
+                else:
+                    aspiration_location = source.bottom(pip_height)
+                      ## Set the location of where to aspirate from.
+    
+                water_pipette = p300
+                  ## What pipette to use
+        
+                #### The actual aliquoting of water
+                water_pipette.aspirate(aspiration_vol, aspiration_location)
+                  ## Aspirate the amount specified in aspiration_vol from the
+                  ## location specified in aspiration_location.
+                water_pipette.dispense(dispension_vol, well)
+                  ## Dispense the amount specified in dispension_vol to the
+                  ## location specified in well (looping through plate)
+                water_pipette.dispense(10, aspiration_location)
+                  ## Alternative for blow-out, make sure the tip doesn't fill
+                  ## completely when using a disposal volume by dispensing some
+                  ## of the volume after each pipetting step. (blow-out too many
+                  ## bubbles)
+                well_counter = well_counter + 1
+        try: 
             p300.drop_tip()
         except:
             pass
-          ## when entire plate is full, try to drop tip  
+               
+
 # =============================================================================
 
 # DILUTING SAMPLES=============================================================
@@ -922,14 +981,16 @@ def run(protocol: protocol_api.ProtocolContext):
               ## aspirate sample_volume_dil = volume for dilution from sample
             if sample_pipette == p300:
                 sample_pipette.air_gap(20)
+                dispense_vol = sample_vol + 30
             else:
-                sample_pipette.air_gap(3)
+                sample_pipette.air_gap(2)
+                dispense_vol = sample_vol + 3
               ## airgap
-            sample_pipette.dispense(sample_vol * 2, dilution_well)
+            sample_pipette.dispense(dispense_vol , dilution_well)
               ## dispense sample_volume_dil = volume for dilution into dil_well
             if water_vol > 0:
-                sample_pipette.mix(3, sample_vol + 2, dilution_well)
-            sample_pipette.dispense(sample_vol * 2, dilution_well)
+                sample_pipette.mix(3, dispense_vol, dilution_well)
+                sample_pipette.dispense(dispense_vol + 5, dilution_well)
               ## instead of blow-out
             sample_pipette.drop_tip()
               ## Drop tip in trashbin on 12

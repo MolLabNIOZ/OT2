@@ -42,22 +42,26 @@ Updates:
 221118 MB:
     - Option of 2 standards (4x2standards) or 4 standards (2x4standards) or 
       8 standards (1x8standards)
+230220 MB:
+    - Changed to tipone p20 tips
+230328 MB:
+    - Fixed the samples in PCRstrips part
 """
 
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
-starting_tip_p20 = 'A1'
+starting_tip_p20 = 'G2'
 # What is the starting position of the 200µL tips?
-starting_tip_p300 = 'A1'
+starting_tip_p300 = 'G11'
     ## If not applicable, you do not have to change anything
 
 # How many samples do you want to include?
 ## For now: max. = 88 samples
-number_of_samples = 8
+number_of_samples = 88
 
 # How many standards do you want to include?
-number_of_standards = 2 #2, 4 or 8
+number_of_standards = 4 #2, 4 or 8
 ## If you choose 2 (standard Qubit standards St #1 and St #2) the robot will
 ## include 4 replicates of each of the standards
 ## If you choose 4 (Qubit St #1, 2 dilutions of St #2 and St #2) the robot will
@@ -76,14 +80,14 @@ sample_columns = ['2', '7', '11']
   ## max 4 racks with strips!  
 
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A2'
+first_sample = 'A1'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
   ## fit in a plate, change the first well position.
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol
 # =============================================================================
 
@@ -137,7 +141,7 @@ std_vol = 2
 # Volume of the sample to add
 sample_vol = 1
 
-start_vol = (number_of_samples*dispension_vol_sample) + (8*dispension_vol_std)
+start_vol = ((number_of_samples + (number_of_samples * 0.1))*dispension_vol_sample) + (8*dispension_vol_std) 
 # Which tube are you using for your Qubit mix? (options 1.5mL or 5mL)
   ## For volume < 1300: 'tube_1.5mL'                                        
   ## For volume > 1300: 'tube_5mL'  
@@ -183,15 +187,27 @@ def run(protocol: protocol_api.ProtocolContext):
         10,
         '200tips')
     labwares[tips_200] = 'filtertips_200'
-    tips_20_1 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',
-        8,
-        '20tips_1')
-    labwares[tips_20_1] = 'filtertips_20'
-    tips_20_2 = protocol.load_labware(
-        'opentrons_96_filtertiprack_20ul',
-        11,
-        '20tips_2')
+    if simulate:
+        with open("labware/tipone_96_tiprack_20ul/"
+             "tipone_96_tiprack_20ul.json") as labware_file:
+                  labware_def_tipone_20ul = json.load(labware_file)
+        tips_20_1 = protocol.load_labware_from_definition( 
+            labware_def_tipone_20ul,           
+            8,                         
+            'tipone_20tips_1')
+        tips_20_2 = protocol.load_labware_from_definition( 
+            labware_def_tipone_20ul,           
+            11,                         
+            'tipone_20tips_2')
+    else:
+        tips_20_1 = protocol.load_labware(
+            'tipone_96_tiprack_20ul',  
+            8,                                  
+            'tipone_20tips_1')                                
+        tips_20_2 = protocol.load_labware(
+            'tipone_96_tiprack_20ul',  
+            11,                                 
+            'tipone_20tips_2')
     labwares[tips_20_2] = 'filtertips_20'
     tips_20 = [tips_20_1, tips_20_2]
     
@@ -278,7 +294,7 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_plate = protocol.load_labware(
             'biorad_qpcr_plate_nioz_plateholder',
             7,
-            '96well_NIOZplateholder')
+            '96well_plate_NIOZholder')
         labwares[destination_plate] = 'plate_96'
         if Qmix_tube_type == 'tube_5mL':
             Qmix_tube = protocol.load_labware(

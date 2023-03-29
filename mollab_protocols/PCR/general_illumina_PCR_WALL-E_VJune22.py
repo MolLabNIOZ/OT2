@@ -68,11 +68,11 @@ Updates:
 # What is the starting position of the 20µL tips?
 starting_tip_p20 = 'A1'
 # If mastermix dispense > 19: What is the starting position of the 200µL tips?
-starting_tip_p200 = 'G12'
+starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 93   
+number_of_samples = 92   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -89,7 +89,7 @@ mock = False
   ## False if mock is not added by the robot.                               
 
 # What is the total volume (µL) of your mix?
-start_vol = 1600
+start_vol = 1700
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.                                  
   
@@ -119,7 +119,7 @@ mastermix_tube_type = 'tube_5mL'
   ## For volume > 1300: 'tube_5mL'                                          
 
 # What is the volume (µL) of mastermix that needs to be dispensed?
-dispension_vol = 16.8   
+dispension_vol = 19.5   
 
 # Where is the mastermix tube located in the rack? 
 mastermix_source = 'A1'
@@ -129,7 +129,7 @@ mastermix_source = 'A1'
     
                                      
 # What is the volume (µL) of primer that needs to be added to the mix?
-primer_vol = 1                                       
+primer_vol = 1.25                                       
 
 
 # =============================================================================
@@ -140,7 +140,7 @@ simulate = False
   ## True for simulating protocol, False for robot protocol      
 
 # In what well should WALL-E start pipetting?
-first_R_primer = 'B1'         
+first_R_primer = 'B1'
 # record this in the name of the protocol so that user knows which reverse 
 # primer is added to his PCR
 # =============================================================================

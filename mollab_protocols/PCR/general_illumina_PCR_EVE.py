@@ -33,10 +33,10 @@ Updates:
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
 # What is the starting position of the 20µL tips?
-starting_tip_p20 = 'H2'
+starting_tip_p20 = 'A1'
 
 # How many samples do you want to include?
-number_of_samples = 6   
+number_of_samples = 92   
   ## If NOT qPCR and NOT mock                                MAX == 95      
   ## If NOT qPCR but incl. mock                              MAX == 94      
   ## If qPCR    MAX ==  number of samples -                                 
@@ -44,10 +44,10 @@ number_of_samples = 6
   ##                    number of standard sample replicates                
 
 # What volume (µL) of sample needs to be added to the mix?
-sample_vol = 8 
+sample_vol = 3 
 
 # Will a mock sample be included?
-mock = True
+mock = False
   ## True if mock has to be added by the robot.                             
   ## False if mock is not added by the robot.                               
   ## One extra sample will be added to to the total number of tubes to      
@@ -60,10 +60,10 @@ sample_tubes = 'PCR_strips'
 if sample_tubes == 'PCR_strips':
     strip_positions = ['2', '7','11']     
       ## optional: ['2', '7', '11'] or ['2', '5', '8','11']                 
-      ## max 4 racks with strips!                                           
+      ## max 4 racks with strips
       
 # Are you doing a qPCR or a regular PCR?
-qPCR = True
+qPCR = False
  ## True or False                                                           
  ## Lights off if qPCR, optionel standard sample                             
 if qPCR:
@@ -77,7 +77,7 @@ else:
     number_of_std_samples = 0
 
 # Do you want to simulate the protocol?
-simulate = True
+simulate = False
   ## True for simulating protocol, False for robot protocol                 
 # =============================================================================
 

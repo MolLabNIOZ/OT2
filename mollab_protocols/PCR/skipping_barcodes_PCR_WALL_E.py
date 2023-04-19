@@ -5,7 +5,7 @@ barcoded primers to a 96-wells plate.
 
 In this new version, we added the option to skip a list of primers. In a first 
 round of PCRs for a specific sample batch we saw that some of the samples did
-not work. In the duplicate and triplicate PCRs we wanted to skipp the not 
+not work. In the duplicate and triplicate PCRs we wanted to skip the not 
 working samples. 
 
 You have to provide:
@@ -29,7 +29,7 @@ You have to provide:
     Volume of the primers that is to be dispensed
     Location of the first Forward primer
     Location of the first Reverse primer
-    List with wells of primers to skipp
+    List with wells of primers to skip
       
 The number of unique primer combinations is based on the number of samples +
 the number of NTCs + the mock. The maximum is 96!
@@ -86,7 +86,14 @@ starting_tip_p200 = 'A1'
   ## If not applicable, you do not have to change anything
   
 # How many samples do you want to include?
-number_of_samples = 95                
+number_of_samples = 95
+# Including all skipped wells!           
+
+# What primers do you want to skip
+primers_to_skip = [4,5,7,9,12,13,16,31,32,39,40,41,42,53,54,
+                    56,57,58,59,68,70,71,72,73,78,79,84,86,87]
+# This is the index of the primers, where the first_F/R_primer = 0
+# Wells in the PCR plate will also be skipped to make pooling easier
 
 # How many NTCs to include 
 number_of_NTCs = 0 
@@ -146,12 +153,6 @@ first_F_primer = 'A1'
 first_R_primer = 'B1'         
 # record this in the name of the protocol so that user knows which reverse 
 # primer is added to his PCR
-
-# What primers do you want to skipp
-primers_to_skipp = [4,5,7,9,12,13,16,31,32,39,40,41,42,53,54,
-                    56,57,58,59,68,70,71,72,73,78,79,84,86,87]
-# This is the index of the primers, where the first_F/R_primer = 0 
-
 # =============================================================================
 # IMPORTANT: this is only to be changed by the lab team
 
@@ -414,8 +415,8 @@ def run(protocol: protocol_api.ProtocolContext):
     # Create the list of wells where MM and primers should go
     sample_wells = wells[:number_of_primers]
       ## cuts off the list after the number_of_primers number of wells
-    ## Remove wells to skipp
-    for index in sorted(primers_to_skipp, reverse=True):
+    ## Remove wells to skip
+    for index in sorted(primers_to_skip, reverse=True):
         del sample_wells[index]
         # In reverse order, so that the index does not shift
     
@@ -537,8 +538,8 @@ def run(protocol: protocol_api.ProtocolContext):
     F_primer_wells = F_primers[:number_of_primers]
     R_primer_wells = R_primers[:number_of_primers]
     
-    # Remove primers to skipp
-    for index in sorted(primers_to_skipp, reverse=True):
+    # Remove primers to skip
+    for index in sorted(primers_to_skip, reverse=True):
         del F_primer_wells[index]
         del R_primer_wells[index]
     

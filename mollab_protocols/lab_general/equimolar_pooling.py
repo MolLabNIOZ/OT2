@@ -24,6 +24,8 @@ Updates:
         added non_skirted_plate_96
     MB 221213:
         changed to tipone 20µL tips and 300µL tips outcommented but ready
+    MB 230504:
+        Added to option to use a sample plate without NIOZ holder
 """
 # VARIABLES TO SET#!!!=========================================================
 # =============================================================================
@@ -32,14 +34,15 @@ starting_tip_p20 = 'A1'
 starting_tip_p200 = 'A1'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = ([21.28, 8.7, 6.88, 4.37, 2.8, 9.15, 24.39, 3.18, 3.1, 4.38, 4.52, 5.43, 3.52, 2.73, 3.32, 2.68, 3.66, 3.02, 6.45, 3.7, 1.63, 3.92, 3.95, 3.74, 4.26, 6.79, 4.7, 3.78, 2.97, 4.64, 3.86, 4.38, 4.3, 5.18, 6.83, 3.46, 4.62, 4.65, 4.75, 2.83, 6.19, 7.58, 4.75, 5.24, 4.78, 4.87, 7.08, 4.23, 2.56, 3.48, 4.17, 4.37, 4.27, 13.16, 5.42, 3.18, 9.2, 5.08, 3.78, 4.12, 4.08, 3.89, 3.18, 4.03, 5.17, 3.39, 3.95, 7.35, 4.27, 3.33, 3.36, 3.14, 4.81, 4.16, 4.49, 4.57, 4.37, 3.65, 11.41, 5.5, 20.55, 8.31, 4.76, 7.73, 5.58, 9.32, 9.32, 12.93, 6.07, 7.08, 5.52, 24.39, 24.39, 24.39, 24.39, 24.39])
+DNA_µL_list = ([18.05, 30.4, 42.74, 69.93, 0.0, 0.0, 25.71, 0.0, 8.85, 0.0, 50.25, 9.26, 0.0, 0.0, 15.55, 42.55, 0.0, 14.75, 70.0, 70.0, 70.0, 47.17, 19.92, 70.0, 40.98, 66.23, 33.9, 70.0, 70.0, 9.26, 22.57, 0.0, 0.0, 1.55, 70.0, 16.05, 2.39, 48.08, 15.82, 0.0, 0.0, 0.0, 0.0, 70.0, 4.24, 70.0, 23.15, 37.88, 7.14, 4.61, 2.77, 70.0, 31.45, 0.0, 0.0, 70.0, 0.0, 0.0, 0.0, 0.0, 70.0, 70.0, 66.67, 45.25, 39.37, 70.0, 70.0, 27.78, 0.0, 10.66, 0.0, 0.0, 0.0, 0.0, 70.0, 37.17, 53.19, 56.5, 0.0, 0.0, 67.57, 19.69, 23.7, 15.22, 0.0, 69.44, 0.0, 0.0, 70.0, 70.0, 70.0, 70.0, 70.0, 0.43, 70.0, 0.0])
 
 # Specify the number of samples, to check if the number of volumes is correct    
 number_of_samples = 96
 
 # What labware are your samples in?
-sample_tube_type = 'non_skirted_plate_96' 
+sample_tube_type = 'plate_96' 
   ##Options:
+# sample_tube_type = 'plate_96' (BioRad skirted plate)
 # sample_tube_type = 'NIOZ_plate_96' (BioRad skirted plate on NIOZ plate holder)
 # sample_tube_type = 'non_skirted_plate_96' (Thermo plate on BioRad plate)
 # sample_tube_type = 'PCR_strips'                                        
@@ -288,7 +291,33 @@ def run(protocol: protocol_api.ProtocolContext):
                     4,
                     'samples5_NIOZ_plate_96')
                 
-    if sample_tube_type == 'non_skirted_plate_96':
+    if sample_tube_type == 'plate_96':
+        samples1 = protocol.load_labware(
+            'biorad_96_wellplate_200ul_pcr',
+            6,
+            'samples1_plate_96')
+        if sample_racks > 1:
+            samples2 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',
+                3,
+                'samples2_plate_96')
+        if sample_racks > 2:
+            samples3 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',
+                2,
+                'samples3_plate_96')
+        if sample_racks > 3:
+            samples4 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',
+                1,
+                'samples4_plate_96')
+        if sample_racks > 4:
+            samples5 = protocol.load_labware(
+                'biorad_96_wellplate_200ul_pcr',
+                4,
+                'samples5_plate_96')
+        
+    elif sample_tube_type == 'non_skirted_plate_96':
         if simulate:
             with open("labware/thermononskirtedinbioradskirted_96_wellplate_200ul/"
                       "thermononskirtedinbioradskirted_96_wellplate_200ul.json") as labware_file:

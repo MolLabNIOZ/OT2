@@ -6,28 +6,39 @@ The plate will be filled up by row, not the default by column.
 ##=============================================================================
 #VARIABLES TO SET!!!
 ##=============================================================================
-number_of_samples = 24                #enter the number of samples 
-volume_of_sample = 30                 #enter the volume of the sample
-starting_tip = 'H6'                   #enter the starting tip of either the p20 or p200 tips
+# Enter the number of samples 
+number_of_samples = 2
+# Enter the volume of the sample you want transferred
+volume_of_sample = 30                
+# Enter the starting tip of either the p20 (volume <= 18) or p200 tips
+starting_tip = 'H6'
+# Are you simulating the protocol?
+simulate = True              
 ##=============================================================================
 
 ##=============================================================================
 # IMPORT STATEMENTS
 #==============================================================================
-#Import opentrons protocol API v2
+# Import opentrons protocol API v2
 from opentrons import protocol_api
 
-#Import other modules
+# Import other modules
 import math #to do some calculations (rounding up)
+
+# For custom labware, we need json while simulating
+if simulate: #Simulator
+    import json 
+      ## Import json to import custom labware with labware_from_definition,
+      ## so that we can use the simulate_protocol with custom labware.
 ##=============================================================================
 
 ##=============================================================================
 # CALCULATED VARIABLE
 ##=============================================================================
-#Calculating how many sample racks are needed
+# Calculating how many sample racks are needed
 sample_racks = math.ceil(number_of_samples/24)
 
-#Determine how much volume to use as airgap
+# Determine how much volume to use as airgap
 if volume_of_sample <= 18:
     airgap = 2
 else:
@@ -53,8 +64,9 @@ def run(protocol: protocol_api.ProtocolContext):
 ##=============================================================================
 # LOADING LABWARE AND PIPETTES
 ##=============================================================================
-    #Loading pipettetips   
+    # Loading labware - pipettetips
     if volume_of_sample > 18:
+        # If you have a volume > 18, load 200µL tips
         tips_1 = protocol.load_labware(
                 'opentrons_96_filtertiprack_200ul',  
                 11,                                  
@@ -63,23 +75,37 @@ def run(protocol: protocol_api.ProtocolContext):
                 'opentrons_96_filtertiprack_200ul',  
                 10,                                  
                 '200tips_2')
-    else:    
-        tips_1 = protocol.load_labware(
-                'tipone_96_tiprack_20ul',  
-                11,                                  
-                'tipone_20tips_1')
-        tips_2 = protocol.load_labware(
-                'tipone_96_tiprack_20ul',  
-                10,                                  
-                'tipone_20tips_2')
+    else:
+        # If you have a volume <= 18, load 20µL tips (2µL airgap)
+        if simulate:
+            with open("labware/tipone_96_tiprack_20ul/"
+                      "tipone_96_tiprack_20ul.json") as labware_file:
+                    labware_def_tipone_96_tiprack_20ul = json.load(labware_file)
+            tips_1 = protocol.load_labware_from_definition(
+                     labware_def_tipone_96_tiprack_20ul,
+                     11,                                  
+                     'tipone_20tips_1')
+            tips_2 = protocol.load_labware_from_definition(
+                     labware_def_tipone_96_tiprack_20ul,
+                     10,                                  
+                     'tipone_20tips_2')
+        else:
+            tips_1 = protocol.load_labware(
+                    'tipone_96_tiprack_20ul',  
+                    11,                                  
+                    'tipone_20tips_1')
+            tips_2 = protocol.load_labware(
+                    'tipone_96_tiprack_20ul',  
+                    10,                                  
+                    'tipone_20tips_2')
    
-    #Loading labware - destination plate
+    # Loading labware - destination plate
     destination = protocol.load_labware(
                 'biorad_96_wellplate_200ul_pcr',
                 6,
                 'destination_plate_96')
     
-    #Loading labware - source
+    # Loading labware - source
     sample_tubes_1 = protocol.load_labware(
         'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap',
         5,                                                       
@@ -100,7 +126,7 @@ def run(protocol: protocol_api.ProtocolContext):
                     7,                                                      
                     'sample_tubes_4')
     
-    #Loading pipettes
+    # Loading pipettes
     if volume_of_sample >= 18:
         pipette = protocol.load_instrument(
             'p300_single_gen2',             
@@ -146,10 +172,18 @@ def run(protocol: protocol_api.ProtocolContext):
 ##=============================================================================
 # Transferring=================================================================
 ##=============================================================================
+    # Set a lower flow rate, so the entire sample is taken up
+    if volume_of_sample > 18: 
+        pipette.flow_rate.aspirate = 30
+        pipette.flow_rate.dispense = 30
+    
+    # The actual transferring of samples
     for source_well, destination_well in zip(source_wells, destination_wells):
         pipette.transfer(volume_of_sample,
                          source_well, 
                          destination_well, 
                          new_tip='always',
                          air_gap = airgap)
+ 
+
 ##=============================================================================

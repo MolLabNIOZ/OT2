@@ -7,13 +7,13 @@ The plate will be filled up by row, not the default by column.
 #VARIABLES TO SET!!!
 ##=============================================================================
 # Enter the number of samples 
-number_of_samples = 2
+number_of_samples = 12
 # Enter the volume of the sample you want transferred
-volume_of_sample = 30                
+volume_of_sample = 10                
 # Enter the starting tip of either the p20 (volume <= 18) or p200 tips
 starting_tip = 'H6'
 # Are you simulating the protocol?
-simulate = True              
+simulate = True             
 ##=============================================================================
 
 ##=============================================================================
@@ -176,6 +176,9 @@ def run(protocol: protocol_api.ProtocolContext):
     if volume_of_sample > 18: 
         pipette.flow_rate.aspirate = 30
         pipette.flow_rate.dispense = 30
+    else:
+        pipette.flow_rate.aspirate = 3
+        pipette.flow_rate.dispense = 3
     
     # The actual transferring of samples
     for source_well, destination_well in zip(source_wells, destination_wells):

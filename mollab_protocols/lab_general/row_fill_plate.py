@@ -1,7 +1,10 @@
 """
 This protocol transfers a desired volume of sample from 1.5mL tubes to a 96
 wells plate.
-The plate will be filled up by row, not the default by column. 
+The plate will be filled up by row, not the default by column.
+
+updates:
+    231113 MB: added option of orientation how to fill the destination_plate
 """
 ##=============================================================================
 #VARIABLES TO SET!!!
@@ -12,8 +15,11 @@ number_of_samples = 12
 volume_of_sample = 10                
 # Enter the starting tip of either the p20 (volume <= 18) or p200 tips
 starting_tip = 'H6'
+# Do you want to fill the plate per row or column?
+pipetting_direction = 'by_column'
+# Options: 'by_column' or 'by_row'
 # Are you simulating the protocol?
-simulate = True             
+simulate = False            
 ##=============================================================================
 
 ##=============================================================================
@@ -43,6 +49,13 @@ if volume_of_sample <= 18:
     airgap = 2
 else:
     airgap = 10
+# Set a lower flow rate, so the entire sample is taken up
+if volume_of_sample > 18: 
+    pipette.flow_rate.aspirate = 30
+    pipette.flow_rate.dispense = 30
+else:
+    pipette.flow_rate.aspirate = 3
+    pipette.flow_rate.dispense = 3
 ##=============================================================================
 
 ##=============================================================================
@@ -146,13 +159,16 @@ def run(protocol: protocol_api.ProtocolContext):
     pipette.starting_tip = tips_1.well(starting_tip)     
     
     #### Setting tube locations
-    # Destination wells
-    destination_wells = []
-    destination_rows = destination.rows_by_name()
-    for row, row_wells in destination_rows.items():
-        destination_wells = destination_wells + row_wells
-    # We want the robot to loop through the wells horizontally (by row) instead
-    # of the default (by column).
+    # Destination wells 
+    if pipetting_direction == 'by_column':
+        destination_wells = destination.wells()
+    else:
+        destination_wells = []
+        destination_rows = destination.rows_by_name()
+        for row, row_wells in destination_rows.items():
+            destination_wells = destination_wells + row_wells
+        # We want the robot to loop through the wells horizontally (by row) instead
+        # of the default (by column).
     destination_wells = destination_wells[:number_of_samples]
     ## cuts off the list after certain number of samples 
     
@@ -172,14 +188,9 @@ def run(protocol: protocol_api.ProtocolContext):
 ##=============================================================================
 # Transferring=================================================================
 ##=============================================================================
-    # Set a lower flow rate, so the entire sample is taken up
-    if volume_of_sample > 18: 
-        pipette.flow_rate.aspirate = 30
-        pipette.flow_rate.dispense = 30
-    else:
-        pipette.flow_rate.aspirate = 3
-        pipette.flow_rate.dispense = 3
-    
+    # Turn on light when starting
+    protocol.set_rail_lights(True)    
+        
     # The actual transferring of samples
     for source_well, destination_well in zip(source_wells, destination_wells):
         pipette.transfer(volume_of_sample,
@@ -187,6 +198,7 @@ def run(protocol: protocol_api.ProtocolContext):
                          destination_well, 
                          new_tip='always',
                          air_gap = airgap)
- 
-
+    
+    # Turn off lighht when finished
+    protocol.set_rail_lights(False)   
 ##=============================================================================

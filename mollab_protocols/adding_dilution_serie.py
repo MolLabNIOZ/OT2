@@ -25,7 +25,7 @@ sample_volume = 2
 # This region contains basic python/opentrons stuff
 # =============================================================================
 #### Simulation or robot run
-simulate = True
+simulate = False
 
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
@@ -40,7 +40,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {
-    'protocolName': 'diluting_barcoded_primer_sets.py',
+    'protocolName': 'Adding_dilution_serie.py',
     'author': 'MB <maartje.brouwer@nioz.nl>',
     'description': ('A protocol for the dilution of many primers.'),
     'apiLevel': '2.13'}

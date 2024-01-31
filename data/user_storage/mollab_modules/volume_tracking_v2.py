@@ -1,13 +1,10 @@
-# =============================================================================
-# Author(s): Maartje Brouwer & Sanne Vreugdenhil
-# Creation date: 210312
-# Version: 2 (220610)
-# Description: Module for volume tracking in different liquid containers
-#   Treats the entire tube as a cylindrical shape. Works good for
-#   volume tracking in 1.5mL, 5mL, 5mL screwcap, 15mL and 50mL tubes.
-# Update: Now also for filling up a tube
-#   Needs direction (filling or emptying) as input
-# =============================================================================
+"""
+Module for volume tracking in different liquid containers
+Treats the entire tube as a cylindrical shape. Works good for
+volume tracking in 1.5mL, 5mL, 5mL screwcap, 15mL and 50mL tubes.
+update: Now also for filling up a tube
+Needs direction (filling or emptying) as input
+"""
 
 ##### Import statements
 import math

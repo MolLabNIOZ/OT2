@@ -4,7 +4,7 @@
 from opentrons.simulate import simulate, format_runlog
 
 # Read file
-protocol_file = open("molecular_tools/transfering of volume/from epje to PCR-plate.py")
+protocol_file = open("mollab_protocols/diluting_barcoded_primer_sets.py")
 
 
 

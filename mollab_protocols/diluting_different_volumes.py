@@ -3,8 +3,6 @@ Version: Jan 2024
 A protocol written to dilute samples in varying volumes
 """
 # VARIABLES TO SET#!!!=========================================================
-# =============================================================================
-# VARIABLES TO SET#!!!=========================================================
 # This is the only region where you are allowed to change variables
 # =============================================================================
 #### Starting_tips
@@ -17,106 +15,94 @@ starting_tip_p300 = 'H8'
 #### Number of stocks to dilute 
 number_to_dilute = 5 # MAX = 144, but preferably max 96
 
-# How much sample volume (µL) do you want to use for the dilution?
-sample_volume = [10.0, 10.0, 11.34, 11.13, 10.0]
-## Can be one volume or a list of volumes
-water_volume = [25.1, 15.7, 0.0, 0.0, 5.2]
-## Can be one volume or a list of volumes.
+#### Volumes of stock and dilution reagent
+### How much volume (µL) do you want to use of each stock?
+stock_volume = [10.0, 10.0, 11.34, 11.13, 10.0]
+## Can be 1 volume or a list of volumes
 
-
-# Do you want a fixed final volume? If True, set the desired final_volume
+### How much volume (µL) do you want to add of the dilution reagent?
+## Do you want a fixed final volume? If True, set the desired final_volume
 fixed_final_volume = False
-final_volume = 10
-## If fixed_final_volume == True, water_volume is not used
-## Used to calculate how much water to add. 
-## final_volume - sample_volume = water_volume
+if fixed_final_volume:
+    final_volume = 10
+    # reagent_volume = final_volume - sample_volume
+else:
+    reagent_volume = [25.1, 15.7, 0.0, 0.0, 5.2]
+    # Can be 1 volume or a list of volumes.
 
-
-# In what kind of tubes are the samples provided?
-sample_tubes = 'non_skirted_plate_96'
-  ## Options: 
-      #sample_tubes = 'plate_96' (BioRad skirted plate)
-      #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
-      #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
-      #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
-      #sample_tubes = 'PCR_strips' (strips in BioRad skirted plate)
-      #sample_tubes = 'tubes_1.5mL'
-if sample_tubes == 'PCR_strips':
-    # In which columns are the strips in the plate (ignore if not using strips)?
-    sample_strip_columns = ['2', '5', '8', '11'] 
-# In what kind of tubes should the dilutions be made?  
-dilution_tubes = 'plate_96'
-  ## Options: 
-      #sample_tubes = 'plate_96' (BioRad skirted plate)
-      #sample_tubes = 'cool_rack_plate_96' (BioRad skirted plate in Eppendorf cooler)
-      #sample_tubes = 'NIOZ_plate_96' (BioRad skirted plate in NIOZ plate holder)
-      #sample_tubes = 'non_skirted_plate_96' (Thermo non-skirted plate in BioRad skirted plate)
-      #sample_tubes = 'PCR_strips' (strips in BioRad skirted plate)
-      #sample_tubes = 'tubes_1.5mL'
+#### In what kind of tubes are the stocks provided?
+stock_tubes = 'skirted_plate_96'
+  # Optional:   skirted_plate_96 / plate_96_NIOZholder / non_skirted_plate_96 /
+  #             PCR_strips / 1.5mL_tubes 
+if stock_tubes == 'PCR_strips':
+    # In which columns are the strips in the plate
+    stock_strip_columns = ['2', '7', '11'] 
+#### In what kind of tube(s) do you want the dilutions?
+dilution_tubes = 'skirted_plate_96'
+  # Optional:   skirted_plate_96 / plate_96_NIOZholder / non_skirted_plate_96 /
+  #             PCR_strips / 1.5mL_tubes 
 if dilution_tubes == 'PCR_strips':
-    # In which columns are the strips in the plate (ignore if not using strips)?
-    dilution_strip_columns = ['2', '5', '8', '11'] 
-# Are you simulating the protocol, or running it on the OT2?
-simulate = True
-# =============================================================================
+    # In which columns are the strips in the plate
+    dilution_strip_columns = ['2', '7', '11'] 
 
 # IMPORT STATEMENTS============================================================
+# This region contains basic python/opentrons stuff
 # =============================================================================
+#### Simulation or robot run
+simulate = True
+
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
                                       
-##### Import volume_tracking module 
-if simulate:
-    import json
-    from mollab_modules import volume_tracking_v1 as vt
-else: 
-    from data.user_storage.mollab_modules import volume_tracking_v1 as vt
-                                          
-# Import other modules
-import math
-  ## math to do some calculations (rounding up)  
+#### Import protocol module
+from data.user_storage.mollab_modules import MolLab_pipetting_modules as ML
+from data.user_storage.mollab_modules import Opentrons_LabWare as LW
+                        
+#### Import other modules
+import math # to do some calculations (rounding up)
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
+# In this region, calculations are made for later use in the protocol.
 # =============================================================================
-if not isinstance(sample_volume, list):
-    # if sample_volume is only one volume and not a list of
-    # volumes we need to create a list of volumes
-    sample_volumes = []
-    for i in range(number_of_samples):
-        sample_volumes.append(sample_volume)
+#### If not already available, make a list of volumes for stocks and reagent
+### If stock_volume is only one volume and not a list of volumes 
+### we need to create a list of volumes
+if not isinstance(stock_volume, list):
+    stock_volumes = []
+    for i in range(number_to_dilute):
+        stock_volumes.append(stock_volume)
+### If the list is already provided, use that list
 else:
-    sample_volumes = sample_volume        
+    stock_volumes = stock_volumes
 
-if not isinstance(water_volume, list):
-    water_volumes = []
-    for i in range(number_of_samples):
-        water_volumes.append(water_volume)
-# If sample_volume is only one volume and there is no list of water_volumes
-# we need to create a list of water_volumes
-else:
-    water_volumes = water_volume
-# If there is a list of water_volumes use that list
-
+#### if fixed_final_volume, calculate how much reagent to add and make a list
 if fixed_final_volume:    
-    water_volumes = []
-    for i, sample_vol in enumerate(sample_volumes):
-        water = final_volume - sample_vol
-        water_volumes.append(water)
-    # If sample_volume is a list, and there is no list of water_volumes, the 
-    # final_volume will be used to calculate the water_volumes
+    reagent_volumes = []
+    for i, stock_vol in enumerate(stock_volumes):
+        reagent_volume = final_volume - stock_vol
+        reagent_volumes.append(reagent_volume)
+#### if not fixed_final_volume, make a list or use the available list
 else:
-    water_volumes = water_volume
-    # If sample_volumes is a list and water_volumes is a list, use both
+    ### If reagent_volume is only one volume and not a list of volumes 
+    ### we need to create a list of volumes
+    if not isinstance(reagent_volume, list):
+        reagent_volumes = []
+        for i in range(number_to_dilute):
+            reagent_volumes.append(reagent_volume)
+    ### If the list is already provided, use that list
+    else:
+        reagent_volumes = reagent_volume
 
-stock_vol = 4800
-  ## If diluting samples stock_vol == 4800 (full water tube)
-  ## Actual tubes need to be filled to 5mL
-  ## If more than 1 water tube all tubes need to be filled with same volume
-  ## If using protocol for PCR, stock volume can be adjusted
-total_water_volume = sum(water_volumes)
-water_tubes = math.ceil((total_water_volume)/stock_vol)
-  ## How many tubes of 5mL water are needed 
+#### How much reagent do you need?
+total_reagent_volume = sum(reagent_volumes)
+#### In what kind of tube should the reagent be?
+reagent_tube_type, number_of_reagent_tubes = LW.which_tube_type(
+    total_reagent_volume, False)
+
+
+
+
 
 if sample_tubes == 'tubes_1.5mL':
     sample_racks = math.ceil(number_of_samples / 24)

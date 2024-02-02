@@ -280,7 +280,7 @@ def which_tube_type(total_volume, tube_type):
     import math
 
     #### How much volume can a tube hold?
-    tube_dict = {'tubes_1.5mL'          : 1500,
+    tube_dict = {'1.5mL_tubes'          : 1500,
                  '5mL_screwcap_tubes'   : 5000,
                  '15mL_tubes'           : 15000,
                  '50mL_tubes'           : 50000
@@ -306,7 +306,7 @@ def number_of_racks(number_of_tubes, tube_type, strip_columns):
     number_of_tubes : int
     tube_type : TYPE
         Optional: skirted_plate_96 / plate_96_NIOZholder / non_skirted_plate_96 
-        PCR_strips / tubes_1.5mL
+        PCR_strips / 1.5mL_tubes
     strip_columns: Boolean False or list
         Only used with tube_type PCR_strips, to determine how many tubes strips
         are placed in 1 rack
@@ -323,7 +323,7 @@ def number_of_racks(number_of_tubes, tube_type, strip_columns):
                  'plate_96_NIOZholder'
                  'non_skirted_plate_96'
                  'PCR_strips'
-                 'tubes_1.5mL'
+                 '1.5mL_tubes'
                  }
     
     

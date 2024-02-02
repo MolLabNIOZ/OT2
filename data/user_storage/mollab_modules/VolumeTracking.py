@@ -8,7 +8,7 @@ def cal_start_height(tube_type, start_volume):
     Parameters
     ----------
     tube_type : brand / size
-        'tube_1.5mL' / 'tube_5mL' / 'tube_5mL_snap' / 'tube_15mL' / 'tube_50mL'
+        '1.5mL_tubes' / '5mL_screwcap_tubes' / '5mL_snapcap_tubes' / '15mL_tubes' / '50mL_tubes'
     start_vol : int
         exact volume in µL that is present in the reagent tube(s) at the start
 
@@ -23,23 +23,23 @@ def cal_start_height(tube_type, start_volume):
     
     #### Defining tube_type dimensions, based on labware blueprints
     tube_dimensions = {
-    'tube_1.5mL': {
+    '1.5mL_tubes': {
         'diameter_top': 8.7,
         'diameter_tip': 3.6,
         'height_conical_tip': 17.8},
-    'tube_5mL': {
+    '5mL_screwcap_tubes': {
         'diameter_top': 13,
         'diameter_tip': 3.3,
         'height_conical_tip': 66.1 - 43.6 - 1.3},
-    'tube_5mL_snap': {
+    '5mL_snapcap_tubes': {
         'diameter_top': 13.3,
         'diameter_tip': 3.3,
         'height_conical_tip': 55.4 - 2.2 - 34.12},
-    'tube_15mL': {
+    '15mL_tubes': {
         'diameter_top': 15.16,
         'diameter_tip': 2.16,
         'height_conical_tip': 22.1},
-    'tube_50mL': {
+    '50mL_tubes': {
         'diameter_top': 27.48,
         'diameter_tip': 4.7,
         'height_conical_tip': 15.3}} 
@@ -60,9 +60,9 @@ def cal_start_height(tube_type, start_volume):
         # start_height = height_conical_tip + height_cylindrical_part
     
     #### Some tweaks
-    if tube_type == 'tube_15mL':
+    if tube_type == '15mL_tubes':
         start_height = start_height + 7
-    if tube_type == 'tube_5mL':
+    if tube_type == '5mL_screwcap_tubes':
         start_height = start_height - 5
         ## Initially start higher in a 15mL tube. Due to the shape of the tube,
         ## volume tracking doesn't work perfect when assuming that the entire
@@ -104,11 +104,11 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
     
     #### Defining tube_type dimensions, based on labware blueprints
     tube_diameters = {
-    'tube_1.5mL': 8.7,
-    'tube_5mL': 13,
-    'tube_5mL_snap': 13.3,
-    'tube_15mL': 15.16,
-    'tube_50mL': 27.48}
+    '1.5mL_tubes': 8.7,
+    '5mL_screwcap_tubes': 13,
+    '5mL_snapcap_tubes': 13.3,
+    '15mL_tubes': 15.16,
+    '50mL_tubes': 27.48}
  
     #### Calculate delta_height of the specified volume      
     radius = tube_diameters[tube_type] / 2
@@ -124,7 +124,7 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
         ## that level.
 
     #### Tweaks
-    if tube_type == 'tube_15mL':
+    if tube_type == '15mL_tubes':
         height_conical_tip = 22.1   #tube - straight part
         offset_height = height_conical_tip + 18 
         ## offset_height = height from where to start using

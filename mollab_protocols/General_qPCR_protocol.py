@@ -22,12 +22,12 @@ number_of_NTCs = 1
   ## NOTE: The NTC come after samples and std_samples                     
 
 # What is the total volume (µL) of your mix?
-mastermix_volume = 1800
+mastermix_volume = 2300
   ## The start_vol_m is the volume (µL) of mix that is in the source        
   ## labware at the start of the protocol.
 
 # After how many times you want to change the tip of the mastermix? 
-tip_change = 16 #times
+tip_change = 16 #after times
     # After this amount of pipetting the mastermix, it will get a new tip
 
 # Do you want the robot to pause after aliquoting mastermix?
@@ -38,23 +38,23 @@ pause = True
 skipped_samples = []
   
 # Are you doing a qPCR or a regular PCR?
-qPCR = True
+lights_on = True
   ## True or False                                                          
   ## Lights off if qPCR, standard sample and/or standard dilution series 
-if qPCR:  
-    # How many dilution serie replicates do you want to include?
-    number_of_std_series = 3 
-      ## If none -- fill in 0
-    # How many dilutions are in the standard dilution series?
-    length_std_series = 8
-      ## length_of_std_series  MAX == 8                                     
-    # How many replicates of the standard sample are you taking?
-    number_of_std_samples = 6
-else:
-    ## If we are not doing a qPCR - protocol uses these values.             
-    number_of_std_series = 0  
-    length_std_series = 0
-    number_of_std_samples = 0
+
+# Do you want to add mastermix?  
+mastermix = False
+    # If mastermix = True, it will add mastermix to the plate.
+    # If mastermix = False it won't add mastermix to the plate.
+
+# How many dilution serie replicates do you want to include?
+number_of_std_series = 3 
+  ## If none -- fill in 0
+# How many dilutions are in the standard dilution series?
+length_std_series = 8
+  ## length_of_std_series  MAX == 8                                     
+# How many replicates of the standard sample are you taking?
+number_of_std_samples = 6    
  
 mastermix_source = 'A1'
   ## convenient places:
@@ -130,7 +130,7 @@ number_of_sample_racks = math.ceil(total_number_of_samples / samples_per_rack)
 # METADATA=====================================================================
 # =============================================================================
 metadata = {
-    'protocolName': 'general_qPCR_protocol',
+    'protocolName': 'general_PCR_protocol',
     'author': 'MB <maartje.brouwer@nioz.nl>, RDB <rob.de.beer@nioz.nl>',
     'description': ('qPCR - aliquoting mix and samples'),
     'apiLevel': '2.13'}
@@ -151,9 +151,9 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # =============================================================================
 ## LIGHTS----------------------------------------------------------------------
-    if qPCR:
+    if not lights_on:
         protocol.set_rail_lights(False)
-    if not qPCR:
+    if lights_on:
         protocol.set_rail_lights(True)
 # =============================================================================
 
@@ -166,14 +166,14 @@ def run(protocol: protocol_api.ProtocolContext):
         tips_20 = LW.loading_tips(simulate = simulate,
                                   tip_type = 'tipone_20uL',
                                   amount = amount_tips_20,
-                                  deck_positions = [7,4],
+                                  deck_positions = [7,10],
                                   protocol = protocol)
         
         amount_tips_300 = 1
         tips_300 = LW.loading_tips(simulate = simulate,
                                   tip_type = 'opentrons_200uL',
                                   amount = amount_tips_300,
-                                  deck_positions = [10],
+                                  deck_positions = [11],
                                   protocol = protocol)
         
     else:
@@ -181,25 +181,26 @@ def run(protocol: protocol_api.ProtocolContext):
         tips_20 = LW.loading_tips(simulate = simulate,
                                   tip_type = 'tipone_20uL',
                                   amount = amount_tips_20,
-                                  deck_positions = [10,7,4],
+                                  deck_positions = [7,10,11],
                                   protocol = protocol) 
     
     #### Loading labware
     ### MASTERMIX
     # Deciding what tube type you need for the mastermix
-    reagent_tube_type, number_of_tubes, max_volume = LW.which_tube_type(total_volume = mastermix_volume,
-                                           tube_type = False)
+    if mastermix:
+        reagent_tube_type, number_of_tubes, max_volume = LW.which_tube_type(total_volume = mastermix_volume,
+                                                                        tube_type = False)
     
     # Loading mastermix tube
-    mastermix_racks = LW.loading_tube_racks(simulate = simulate,
+        mastermix_racks = LW.loading_tube_racks(simulate = simulate,
                                           tube_type = reagent_tube_type,
                                           reagent_type = 'Mastermix',
                                           amount = 1,
-                                          deck_positions = [1],
+                                          deck_positions = [8],
                                           protocol = protocol)
     
     ## Specific location of mastermix
-    mastermix_tube = LW.tube_locations(source_racks = mastermix_racks,
+        mastermix_tube = LW.tube_locations(source_racks = mastermix_racks,
                                        specific_columns = False,
                                        skip_wells = False,
                                        number_of_tubes = 1)
@@ -210,7 +211,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                          tube_type = sample_tube_type,
                                          reagent_type = 'sample_rack',
                                          amount = number_of_sample_racks,
-                                         deck_positions = [2,5,8,11],
+                                         deck_positions = [1,3,4,6],
                                          protocol = protocol)
     
     # Specific location of samples
@@ -229,7 +230,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                            tube_type = 'plate_96_NIOZholder',
                                            reagent_type = 'qPCR-plate',
                                            amount = 1,
-                                           deck_positions = [3],
+                                           deck_positions = [5],
                                            protocol = protocol)
   
     #### Where to pipette what?
@@ -256,7 +257,8 @@ def run(protocol: protocol_api.ProtocolContext):
         std_dilution_destinations = std_dilution_destinations + destination
     
     # Mastermix destinations
-    mastermix_destinations = sample_destinations + std_dilution_destinations
+    if mastermix:
+        mastermix_destinations = sample_destinations + std_dilution_destinations
 
    
     ## ========================================================================
@@ -274,7 +276,8 @@ def run(protocol: protocol_api.ProtocolContext):
     ## PIPETTING===============================================================
     ## ========================================================================
     # Pipetting mastermix ----------------------------------------------------
-    PM.aliquoting_reagent(reagent_source = mastermix_tube,
+    if mastermix:
+        PM.aliquoting_reagent(reagent_source = mastermix_tube,
                           reagent_tube_type = reagent_tube_type,
                           reagent_startvolume = max_volume,
                           aliquot_volume = reagent_volume,
@@ -282,7 +285,7 @@ def run(protocol: protocol_api.ProtocolContext):
                           p20 = p20,
                           p300 = p300,
                           tip_change = tip_change,
-                          action_at_bottom = 'continue_at_bottom',
+                          action_at_bottom = 'raise_error',
                           pause = pause,
                           protocol = protocol)  
     
@@ -309,6 +312,6 @@ def run(protocol: protocol_api.ProtocolContext):
                           protocol = protocol)
     ## ========================================================================
 # LIGHTS-----------------------------------------------------------------------
-    if not qPCR:
+    if lights_on:
         protocol.set_rail_lights(False)
 # -----------------------------------------------------------------------------        

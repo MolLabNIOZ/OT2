@@ -1,5 +1,0 @@
-#### Starting_tips
-starting_tip_p20 = 'A1'
-starting_tip_p200 = 'A1'
-
-####

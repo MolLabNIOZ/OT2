@@ -274,7 +274,9 @@ def which_tube_type(total_volume, tube_type):
 
     Returns
     -------
-    tube_type
+    tube_type: string with name of labware
+    number_of_tubes: int, how many tubes should be used
+    max_volume: float, how much reagent fits max in this specific type of tube
     """
     #### Import math module to allow rounding up
     import math

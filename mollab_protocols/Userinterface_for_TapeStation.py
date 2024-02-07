@@ -24,16 +24,11 @@ skipped_wells = []
 # Do you simulate the protocol on the PC?
 simulate = True
 
-metadata = {
-    'protocolName': 'TapeStation_protocol',
-    'author': 'MB <maartje.brouwer@nioz.nl>, RDB <rob.de.beer@nioz.nl>',
-    'description': ('Adding the reagent buffer and sample to a TapeStation-plate'),
-    'apiLevel': '2.13'}
+metadata = {'protocolName': 'TapeStation_run', 'apiLevel': '2.13'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
-    Aliquoting mastermix;
-    Adding primers from different labware.
+    Adding reagents and sample to a TapeStation-plate.
     """
     
     MO.tapestation(tapestation_kit,
@@ -42,3 +37,4 @@ def run(protocol: protocol_api.ProtocolContext):
                 skipped_wells,
                 simulate,
                 protocol)
+    

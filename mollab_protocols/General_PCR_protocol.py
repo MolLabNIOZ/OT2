@@ -296,7 +296,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # Pipetting mastermix -----------------------------------------------------
     PM.aliquoting_reagent(reagent_source = mastermix_tube,
                           reagent_tube_type = reagent_tube_type,
-                          reagent_startvolume = max_volume,
+                          reagent_startvolume = total_mastermix_volume,
                           aliquot_volume = mastermix_volume,
                           destination_wells = mastermix_destinations,
                           p20 = p20,

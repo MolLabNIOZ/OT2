@@ -63,7 +63,7 @@ def cal_start_height(tube_type, start_volume):
     if tube_type == '15mL_tubes':
         start_height = start_height + 7
     if tube_type == '5mL_screwcap_tubes':
-        start_height = start_height - 15
+        start_height = start_height - 5
         ## Initially start higher in a 15mL tube. Due to the shape of the tube,
         ## volume tracking doesn't work perfect when assuming that the entire
         ## tube is cylindrical. This is partly solved by adding 7 mm to the

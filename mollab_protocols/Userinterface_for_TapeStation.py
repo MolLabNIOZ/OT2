@@ -6,6 +6,9 @@ Created on Mon Feb  5 14:41:22 2024
 # Import the modules you need
 from data.user_storage.mollab_modules import MO_protocols as MO
 from opentrons import protocol_api
+from datetime import datetime
+
+info = 'TapeStation_run_' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # How many samples do you want to check on the TapeStation
 number_of_reactions = 96
@@ -24,7 +27,7 @@ skipped_wells = []
 # Do you simulate the protocol on the PC?
 simulate = True
 
-metadata = {'protocolName': 'TapeStation_run', 'apiLevel': '2.13'}
+metadata = {'protocolName': info, 'apiLevel': '2.13'}
 
 def run(protocol: protocol_api.ProtocolContext):
     """
@@ -37,4 +40,3 @@ def run(protocol: protocol_api.ProtocolContext):
                 skipped_wells,
                 simulate,
                 protocol)
-    

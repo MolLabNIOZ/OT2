@@ -60,15 +60,16 @@ def cal_start_height(tube_type, start_volume):
         # start_height = height_conical_tip + height_cylindrical_part
     
     #### Some tweaks
-    if tube_type == '15mL_tubes':
-        start_height = start_height + 7
-    if tube_type == '5mL_screwcap_tubes':
-        start_height = start_height - 5
-        ## Initially start higher in a 15mL tube. Due to the shape of the tube,
-        ## volume tracking doesn't work perfect when assuming that the entire
-        ## tube is cylindrical. This is partly solved by adding 7 mm to the
-        ## start_height.
-        ## For 5mL screwcap tubes we substract 5 mm to solve a similar problem.    
+    if tube_type == '50mL_tubes':
+        start_height = start_height + 1.7
+    elif tube_type == '15mL_tubes':
+        start_height = start_height + 27.5
+    elif tube_type == '5mL_screwcap_tubes':
+        start_height = start_height + 4
+    elif tube_type == '5mL_snapcap_tubes':
+        start_height = start_height + 4    
+    elif tube_type == '1.5mL_tubes':
+        start_height = start_height + 4  
     
     return start_height  
 

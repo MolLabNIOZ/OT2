@@ -97,10 +97,8 @@ else:
 #### How much reagent do you need?
 total_reagent_volume = sum(reagent_volumes)
 #### In what kind of tube should the reagent be?
-reagent_tube_type, number_of_reagent_tubes = LW.which_tube_type(
+reagent_tube_type, number_of_reagent_tubes, max_volume = LW.which_tube_type(
     total_reagent_volume, False)
-
-
 
 
 

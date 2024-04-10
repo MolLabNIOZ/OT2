@@ -94,7 +94,7 @@ first_sample = 'A1'
 # This region contains basic python/opentrons stuff
 # =============================================================================
 #### Simulation or robot run
-simulate = True
+simulate = False
 
 #### Import opentrons protocol API v2
 from opentrons import protocol_api

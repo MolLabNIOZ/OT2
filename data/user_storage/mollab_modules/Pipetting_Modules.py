@@ -80,6 +80,9 @@ def aliquoting_reagent(reagent_source,
         pipette = p20
         gap = 1
     
+    ## Aspirate a little more for reverse pipetting
+    aspiration_vol = aliquot_volume + gap
+    
     #### Aliquot reagent in all destination wells
     ### Loop through destination wells
     for i, well in enumerate(destination_wells):
@@ -136,7 +139,7 @@ def aliquoting_reagent(reagent_source,
         
         ## The actual aliquoting by reverse pipetting
         # Aspirate specified volume + extra from the source tube
-        pipette.aspirate(aliquot_volume + gap, aspiration_location)
+        pipette.aspirate(aspiration_vol, aspiration_location)
         # Dispense specified volume in destination well
         pipette.dispense(aliquot_volume, well.bottom(2))
         # introduce an airgap to avoid dripping
@@ -224,7 +227,7 @@ def aliquoting_varying_volumes(reagent_source,
     for pipette in [p20,p300]:
         ### Set airgap size, depending on pipette size
         if pipette  == p20:
-            gap = 2
+            gap = 1
         elif pipette == p300:
             gap = 10
         
@@ -356,7 +359,7 @@ def transferring_reagents(source_wells,
     #### Calculate airgap and mix volumes
     if airgap:
         if pipette == p20:
-            airgap_volume = 2
+            airgap_volume = 1
         else:
             airgap_volume = 10
     if mix:
@@ -445,7 +448,7 @@ def transferring_varying_volumes(source_wells,
         #### Calculate airgap and mix volumes
         if airgap:
             if pipette == p20:
-                airgap_volume = 2
+                airgap_volume = 1
             else:
                 airgap_volume = 10
         if mix:

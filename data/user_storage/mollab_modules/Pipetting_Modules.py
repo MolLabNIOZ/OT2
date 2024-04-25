@@ -227,7 +227,7 @@ def aliquoting_varying_volumes(reagent_source,
     for pipette in [p20,p300]:
         ### Set airgap size, depending on pipette size
         if pipette  == p20:
-            gap = 2
+            gap = 1
         elif pipette == p300:
             gap = 10
         
@@ -359,7 +359,7 @@ def transferring_reagents(source_wells,
     #### Calculate airgap and mix volumes
     if airgap:
         if pipette == p20:
-            airgap_volume = 2
+            airgap_volume = 1
         else:
             airgap_volume = 10
     if mix:
@@ -448,7 +448,7 @@ def transferring_varying_volumes(source_wells,
         #### Calculate airgap and mix volumes
         if airgap:
             if pipette == p20:
-                airgap_volume = 2
+                airgap_volume = 1
             else:
                 airgap_volume = 10
         if mix:

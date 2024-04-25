@@ -58,6 +58,11 @@ def aliquoting_reagent(reagent_source,
     None.
 
     """   
+    #### If a list of volumes is provided, 
+    if isinstance(aliquot_volume, list):
+        raise Exception("Use the aliquoting_varying_volumes module instead of the "
+                        "aliquoting_reagentt module")
+        
     from data.user_storage.mollab_modules import VolumeTracking as VT
     
     #### Variables for volume tracking and aliquoting        
@@ -337,6 +342,11 @@ def transferring_reagents(source_wells,
     None.
 
     """
+    #### If a list of volumes is provided, 
+    if isinstance(transfer_volume, list):
+        raise Exception("Use the transferring_variable_volumes module instead of the "
+                        "transferring_reagent module")
+    
     #### Determine which pipette to use:
     if transfer_volume <= 15:
         pipette = p20
@@ -380,9 +390,9 @@ def transferring_reagents(source_wells,
     return
         
     
-def transferring_variable_volumes(source_wells,
+def transferring_varying_volumes(source_wells,
                                   destination_wells,
-                                  stock_volumes,
+                                  transfer_volumes,
                                   reagent_volumes,
                                   final_volume,
                                   airgap,
@@ -419,13 +429,13 @@ def transferring_variable_volumes(source_wells,
     """
     
     #### If only 1 volume is provided, 
-    if not isinstance(stock_volumes, list):
+    if not isinstance(transfer_volumes, list):
         raise Exception("Use the transferring_reagent module instead of the "
-                        "transferring_variable_volumes module")
+                        "transferring_varying_volumes module")
     
     #### Loop through list of volumes and destinations
     for i, (source_well, destination_well, transfer_volume) in enumerate(
-            zip(source_wells, destination_wells, stock_volumes)):
+            zip(source_wells, destination_wells, transfer_volumes)):
         #### Determine which pipette to use:
         if transfer_volume <= 15:
             pipette = p20

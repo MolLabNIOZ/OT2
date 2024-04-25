@@ -66,5 +66,6 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     #### Pipette tips
-    # If water_volume >= 19µL use pp20 and p300, otherwise use p20 only
+    # If water_volume >= 19µL use p20 and p300, otherwise use p20 only
     #### Loading labware
+    

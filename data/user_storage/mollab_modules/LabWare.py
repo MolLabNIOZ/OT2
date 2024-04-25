@@ -301,6 +301,8 @@ def which_tube_type(total_volume, tube_type):
                     
     return tube_type, number_of_tubes, max_volume
 
+#=============================================================================
+
 def number_of_racks(number_of_tubes, tube_type, strip_columns):
     """
     Parameters
@@ -328,4 +330,44 @@ def number_of_racks(number_of_tubes, tube_type, strip_columns):
                  '1.5mL_tubes'
                  }
     
-    
+    def pipette_boxes(starting_tip_p20,
+                      starting_tip_p200,
+                      tips_needed_p20,
+                      tips_needed_p200):
+        """
+        Parameters
+        ----------
+        starting_tip_p20 : tuble with a well 'coordinate'.
+        starting_tip_p200 : tuble with a well 'coordinate'.
+        tips_needed_p20 : amount of tips needed for the P20 pipette. This needs to
+            be calculated in the protocol.
+        tips_needed_p200 :amount of tips needed for the P200 pipette. This needs 
+            to be calculated in the protocol.
+        Returns
+        -------
+        amount_tip_racks_p20  : number
+        amount_tip_racks_p200 : number
+        """
+        
+        # Generate rack positions from A1 to H12
+        rack = [f"{chr(65 + i)}{j}" for i in range(8) for j in range(1, 13)]
+        
+        # Imports math
+        import math
+        if starting_tip_p20:
+            
+            # Calculate the total number of racks needed to hold the specified number of tips
+            amount_tip_racks_p20 = math.ceil((tips_needed_p20 - (96 - rack.index(starting_tip_p20))) / 96) + 1
+        # If there is no     
+        else:
+            amount_tip_racks_p20 = 0
+        
+        if starting_tip_p200:
+            
+            # Calculate the total number of racks needed to hold the specified number of tips
+            amount_tip_racks_p200 = math.ceil((tips_needed_p200 - (96 - rack.index(starting_tip_p200))) / 96) + 1
+        
+        else:
+            amount_tip_racks_p200 = 0
+        
+        return amount_tip_racks_p20, amount_tip_racks_p200

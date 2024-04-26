@@ -9,8 +9,8 @@ Created on Wed Apr 24 14:42:59 2024
 # If applicable: What is the starting position of the first 20µL tip?
 starting_tip_p20 = 'H1'
 # If applicable: What is the starting position of the first 200µL tip?
-starting_tip_p200 = 'C11'
-  ## If volume-wise p20 or p200 is not applicable, this variable won't be used
+starting_tip_p300 = 'C11'
+  ## If volume-wise p20 or p300 is not applicable, this variable won't be used
 
 #How much sample volume (µL) do you want to use for the dilution?
 sample_volume = [50, 30, 5.0, 20, 10, 10, 50, 50, 10, 5.0, 10, 10, 5.0, 50, 50, 50, 20, 10, 20, 10, 40, 10, 50, 50, 10, 10, 10, 10, 20, 10, 5.0, 50, 30, 50, 30, 5.0, 10, 20, 50, 50, 50, 5.0, 10, 10, 10, 10, 10, 10, 30, 10, 20, 50, 10, 50, 10, 50, 10, 30, 10, 30, 20, 10, 50, 10, 20, 20, 20, 10, 50, 20, 10, 10, 20, 50, 20, 40, 40, 10, 50, 20, 30, 30, 20, 10, 10, 5.0, 50, 10, 5.0, 10, 40, 50, 10, 5.0, 30]#<Sample_lists>
@@ -47,21 +47,35 @@ total_water = sum(water_volume)
 reagent_tube_type, number_of_tubes, max_volume = LW.which_tube_type(total_volume = total_water,
                                                                 tube_type = False)
 
-# Calculates how many tips you need for this protocol
-p20_tips_needed = 0
+# Calculates how many tips you need for pipetting all the sample volumes
+p20_tips_sample, p300_tips_sample = LW.amount_of_tips(volumes = sample_volume,
+                                                      number_of_transfers = False,
+                                                      tip_change = 1,
+                                                      max_p20_volume = 15)
+# Calculates how many tips you need for pipetting all the water volumes
+p20_tips_water, p300_tips_water = LW.amount_of_tips(volumes = water_volume,
+                                                    number_of_transfers = False,
+                                                    tip_change = 16,
+                                                    max_p20_volume = 19)
+# Calculates how many tips you need by adding the sample tips with the water tips
+p20_tips_needed = p20_tips_sample + p20_tips_water
+p300_tips_needed = p300_tips_sample + p300_tips_water
 
-for value in water_volume: 
-    if 0 < value < 19:
-        p20_tips_needed += 1
-    else: pass 
-
-# Calculates how many pipette boxes you need by using the function 'pipette_boxes'
-amount_tip_racks_p20, amount_tip_racks_p200 = LW.pipette_boxes(starting_tip_p20,
-                  starting_tip_p200,
-                  tips_needed_p20,
-                  tips_needed_p200)
+# Calculates how many pipette boxes you need by using the function 'number_of_tipracks'
+amount_p20_tipracks = LW.number_of_tipracks(starting_tip = starting_tip_p20,
+                                     tips_needed = p20_tips_needed)
+amount_p300_tipracks = LW.number_of_tipracks(starting_tip = starting_tip_p300,
+                                     tips_needed = p300_tips_needed)
+# Checks whether or not you need the P20 and/or P300 and sets them to false if you dont need them
+if amount_p20_tipracks == 0:
+    P20 = False
+else:
+    P20 = True
+if amount_p300_tipracks == 0:
+    P300 = False
+else:
+    P300 = True
 # =============================================================================
-
 
 # METADATA=====================================================================
 # =============================================================================
@@ -76,10 +90,94 @@ def run(protocol: protocol_api.ProtocolContext):
     Dilute samples in a fixed or varying rates 
     or transfer samples to different tubes.
     """
+
 # =============================================================================
+## LIGHTS & COMMENT------------------------------------------------------------
+    protocol.set_rail_lights(True)
+    protocol.comment(f"You need {total_water} μl in a {reagent_tube_type}")
+# =============================================================================
+
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     #### Pipette tips
-    # If water_volume >= 19µL use p20 and p300, otherwise use p20 only
-    #### Loading labware
+    # Loading p20 tips
+    tips_20 = LW.loading_tips(simulate = simulate, 
+                     tip_type = 'tipone_20uL', 
+                     amount = amount_p20_tipracks, 
+                     deck_positions = [0], 
+                     protocol = protocol)
     
+    # Loading p300 tips
+    tips_300 = LW.loading_tips(simulate = simulate,
+                              tip_type = 'opentrons_200uL',
+                              amount = amount_p300_tipracks,
+                              deck_positions = [0],
+                              protocol = protocol)
+    
+    ### Loading pipettes
+    p20, p300 = LW.loading_pipettes(P20 = P20, 
+                                    tips_20 = tips_20,
+                                    starting_tip_p20 = starting_tip_p20,
+                                    P300 = P300, 
+                                    tips_300 = tips_300,
+                                    starting_tip_p300 = starting_tip_p300,
+                                    protocol = protocol)
+    #### Loading labware
+    # Loading water tube rack
+    water_rack = LW.loading_tube_racks (simulate = simulate, 
+                                        tube_type = reagent_tube_type, 
+                                        reagent_type = 'Water', 
+                                        amount = 1, 
+                                        deck_positions = [0], 
+                                        protocol = protocol)
+    
+    # Spefifying location of the water tube
+    water_tube = LW.tube_locations(source_racks = water_rack,
+                                   specific_columns = False,
+                                   skip_wells = False,
+                                   number_of_tubes = 1)
+    
+    # Loading source plate
+    source_plate = LW.loading_tube_racks(simulate = simulate,
+                                        tube_type = 'plate_96_NIOZholder',
+                                        reagent_type = 'source_plate',
+                                        amount = 1,
+                                        deck_positions = [0],
+                                        protocol = protocol)
+    
+    # Loading destination plate
+    destination_plate = LW.loading_tube_racks(simulate = simulate,
+                                              tube_type = 'plate_96_NIOZholder',
+                                              reagent_type = 'destination_plate',
+                                              amount = 1,
+                                              deck_positions = [0],
+                                              protocol = protocol)
+    
+    ## ========================================================================
+
+    ## PIPETTING===============================================================
+    ## ========================================================================
+    # Settings for aliquoting of the water volumes in the destination plate
+    PM.aliquoting_varying_volumes(reagent_source = water_rack, 
+                                   reagent_tube_type = reagent_tube_type, 
+                                   reagent_startvolume = total_water,
+                                   aliquot_volumes = water_volume,
+                                   destination_wells = destination_plate.wells(),
+                                   p20 = p20,
+                                   p300 = p300,
+                                   tip_change = 16,
+                                   action_at_bottom = 'continue_at_bottom',
+                                   pause = False,
+                                   protocol = protocol)
+    
+    # Settings for transfering the sample volumes in the destination plate
+    PM.transferring_varying_volumes(source_wells = source_plate.wells(),
+                                    destination_wells = destination_plate.wells(),
+                                    transfer_volumes = sample_volume,
+                                    airgap = True,
+                                    mix = True,
+                                    p20 = p20,
+                                    p300 = p300,
+                                    protocol = protocol)
+## LIGHTS & COMMENT------------------------------------------------------------
+    protocol.set_rail_lights(False)

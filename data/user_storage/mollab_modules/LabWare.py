@@ -379,7 +379,7 @@ def amount_of_tips(volumes,
     Returns
     -------
     p20_tips_needed : number of single p20 pipette tips used
-    p200_tips_needed : number of single p200 pipette tips used
+    p300_tips_needed : number of single p300 pipette tips used
     """
     #### Imports math
     import math
@@ -405,11 +405,11 @@ def amount_of_tips(volumes,
             p20_tips_needed = number_of_transfers 
 
         elif volumes > max_p20_volume: # Checks if the desired volume is bigger than 19
-            p200_tips_needed = number_of_transfers
+            p300_tips_needed = number_of_transfers
     
 
     # Calculates the tips needed by deviding the number of tips needed for the reagents by 16 (and rounding up) + the tips needed for the transfering of the samples.
     p20_tips_needed = math.ceil(p20_tips_needed/tip_change)
-    p200_tips_needed = math.ceil(p200_tips_needed/tip_change)
+    p300_tips_needed = math.ceil(p300_tips_needed/tip_change)
     
-    return p20_tips_needed , p200_tips_needed
+    return p20_tips_needed , p300_tips_needed

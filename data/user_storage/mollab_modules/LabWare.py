@@ -331,7 +331,7 @@ def number_of_racks(number_of_tubes, tube_type, strip_columns):
                  }
 
 #=============================================================================    
-def pipette_boxes(starting_tip_p20,
+def number_of_pipette_racks(starting_tip_p20,
                   starting_tip_p200,
                   tips_needed_p20,
                   tips_needed_p200):
@@ -372,3 +372,82 @@ def pipette_boxes(starting_tip_p20,
         amount_tip_racks_p200 = 0
     
     return amount_tip_racks_p20, amount_tip_racks_p200
+
+#=============================================================================
+
+def amount_of_single_pipette_tips_needed(reagent_volume,
+                 sample_volume,
+                 number_of_reactions,
+                 number_of_repeats_sample_pipetting):
+    """
+    Parameters
+    ----------
+    reagent_volume : Could be a list or a iterable. Are the volume(s) aliquoted
+        for the mastermix/water/other reagents.
+    sample_volume : Could be a list or a iterable. Are the volume(s) transfered
+        for the samples/primers/other things.
+    number_of_reactions : A iterable of the amount of reactions are performed
+    repeat_of_sample_pipetting : A iterable. This number represents the number
+        of replicates of the samples (example: if you add barcoded primers,
+        you pipette forward and reverse primers with the same variable.
+        Therefore the variable 'number_of_repeats_sample_pipetting' = 2)
+    
+    Returns
+    -------
+    p20_tips_needed : number of single p20 pipette tips used for the run
+    p200_tips_needed : number of single p200 pipette tips used for the run
+    """
+    import math
+    
+    # Checks whether or not the variable reagent_volume is a lost or not
+    if isinstance(reagent_volume,list):  
+        p20_tips_needed_reagent = 0 # Creates a counter to count the tips needed for the reagents pipetted with the p20
+        p200_tips_needed_reagent = 0 # Creates a counter to count the tips needed for the reagents pipetted with the p200
+        
+        # Creates a for loop to go through the list of reagent_volume and counts
+        # with which pipette it will be transferred and adds 1 to the variables above.
+        for value in reagent_volume: 
+            if 0.001 < value <= 19:
+                p20_tips_needed_reagent += 1
+            elif value > 19:
+                p200_tips_needed_reagent += 1
+            else: pass
+    else:
+        reagent_volume_list = [reagent_volume] # Creates a list of the single iterable
+        for value in reagent_volume_list:
+            if 0.001 < reagent_volume <= 19: # Checks if the desired volume is between 0.001 and 19
+                p20_tips_needed_reagent = number_of_reactions 
+                p200_tips_needed_reagent = 0
+            elif reagent_volume > 19: # Checks if the desired volume is bigger than 19
+                p200_tips_needed_reagent = number_of_reactions
+                p20_tips_needed_reagent = 0
+            else: pass
+    
+    # Checks whether or not the variable reagent_volume is a lost or not 
+    if isinstance(sample_volume,list):
+        p20_tips_needed_sample = 0 # Creates a counter to count the tips needed for the samples pipetted with the p20
+        p200_tips_needed_sample = 0 # Creates a counter to count the tips needed for the samples pipetted with the p200
+       
+        # Creates a for loop to go through the list of sample_volume and counts
+        # with which pipette it will be transferred and adds 1 to the variables above.
+        for value in sample_volume: 
+            if 0.001 < value <= 15:
+                p20_tips_needed_sample += 1
+            elif value > 15:
+                p200_tips_needed_sample += 1
+            else: pass
+    else:
+        sample_volume_list = [sample_volume] # Creates a list of the single iterable
+        for value in sample_volume_list:
+            if 0.001 < sample_volume <= 19: # Checks if the desired volume is between 0.001 and 19
+                p20_tips_needed_sample = math.ceil(number_of_reactions*number_of_repeats_sample_pipetting) # Multiplies the number of reactions by the number of repeats
+                p200_tips_needed_sample = 0
+            elif sample_volume > 19:
+                p200_tips_needed_sample = math.ceil(number_of_reactions*number_of_repeats_sample_pipetting) # Multiplies the number of reactions by the number of repeats
+                p20_tips_needed_sample = 0
+            else: pass
+    # Calculates the tips needed by deviding the number of tips needed for the reagents by 16 (and rounding up) + the tips needed for the transfering of the samples.
+    p20_tips_needed = ((math.ceil(p20_tips_needed_reagent/16)) + p20_tips_needed_sample)
+    p200_tips_needed = ((math.ceil(p200_tips_needed_reagent/16)) + p200_tips_needed_sample)
+
+    return p20_tips_needed,p200_tips_needed

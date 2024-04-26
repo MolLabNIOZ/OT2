@@ -73,7 +73,7 @@ def aliquoting_reagent(reagent_source,
     start_height = current_height = VT.cal_start_height(reagent_tube_type, 
                                                      reagent_startvolume)
     #### Determine which pipette to use
-    if aliquot_volume >= 19:
+    if aliquot_volume > 19:
         pipette = p300
         gap = 10
     else:

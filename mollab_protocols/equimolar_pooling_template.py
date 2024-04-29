@@ -9,7 +9,7 @@ starting_tip_p20 = 'C8'
 starting_tip_p300 = 'B2'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = [] #<DNA_list>
+DNA_µL_list = <DNA_list> 
 
 # Do you want to simulate the protocol?
 simulate = False
@@ -135,3 +135,18 @@ def run(protocol: protocol_api.ProtocolContext):
                                    specific_columns = False,
                                    skip_wells = False,
                                    number_of_tubes = 1)
+    ## ========================================================================
+
+    ## PIPETTING===============================================================
+    ## ========================================================================
+    # Settings for transfering the sample volumes in the destination plate
+    PM.transferring_varying_volumes(source_wells = source_plate.wells(),
+                                    destination_wells = destination_tube,
+                                    transfer_volumes = DNA_µL_list,
+                                    airgap = True,
+                                    mix = True,
+                                    p20 = p20,
+                                    p300 = p300,
+                                    protocol = protocol)
+## LIGHTS & COMMENT------------------------------------------------------------
+    protocol.set_rail_lights(False)

@@ -129,7 +129,7 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
         height_conical_tip = 22.1   #tube - straight part
         offset_height = height_conical_tip + 18 
         ## offset_height = height from where to start using
-        ## current_height - 1 so that the pipette tip stays submerged.                                                            ##
+        ## current_height - 1 so that the pipette tip stays submerged
         if current_height < offset_height:
             current_height = current_height - 1
     ## Volume tracking when assuming the entire tube is cylindrical doesn't

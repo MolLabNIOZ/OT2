@@ -9,7 +9,7 @@ starting_tip_p20 = 'C8'
 starting_tip_p300 = 'B2'
 
 # Use get_uL_info.py to get a list of volumes
-DNA_µL_list = <DNA_list> 
+DNA_µL_list = <DNA_volumes> 
 
 # Do you want to simulate the protocol?
 simulate = False

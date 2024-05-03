@@ -174,7 +174,7 @@ def aliquoting_varying_volumes(reagent_source,
     ----------
     reagent_source : list
         List of tube(s)/well(s) filled with reagent
-    reagent_tube_type : brand / size
+    reagent_tube_type : string
         'tube_1.5mL' / 'tube_5mL' / 'tube_15mL' / 'tube_50mL'
     reagent_startvolume : int
         exact volume in µL that is present in the reagent tube(s)
@@ -205,6 +205,7 @@ def aliquoting_varying_volumes(reagent_source,
     None.
 
     """   
+    #### Import volume tracking module
     from data.user_storage.mollab_modules import VolumeTracking as VT
     
     #### Determine start_height (at the start, current_height = start_height)
@@ -394,13 +395,13 @@ def transferring_reagents(source_wells,
         
     
 def transferring_varying_volumes(source_wells,
-                                  destination_wells,
-                                  transfer_volumes,
-                                  airgap,
-                                  mix,
-                                  p20,
-                                  p300,
-                                  protocol):
+                                 destination_wells,
+                                 transfer_volumes,
+                                 airgap,
+                                 mix,
+                                 p20,
+                                 p300,
+                                 protocol):
     """
     Parameters
     ----------
@@ -421,7 +422,7 @@ def transferring_varying_volumes(source_wells,
         Do you want to mix (pipette up and down) after dispensing
     p20 : labware definition
     p300 : labware definition
-    protocol : def run(protocol: protocol_api.ProtocolContext):
+    protocol : def run(protocol: protocol_api.ProtocolContext)
 
     Returns
     -------
@@ -434,7 +435,7 @@ def transferring_varying_volumes(source_wells,
         raise Exception("Use the transferring_reagent module instead of the "
                         "transferring_varying_volumes module")
     
-    #### Loop through list of volumes and destinations
+    #### Loop through list of volumes, sources and destinations
     for i, (source_well, destination_well, transfer_volume) in enumerate(
             zip(source_wells, destination_wells, transfer_volumes)):
         #### Determine which pipette to use:
@@ -478,4 +479,117 @@ def transferring_varying_volumes(source_wells,
             
     return
         
-        
+def pooling_varying_volumes(source_wells,
+                            pool_volumes,
+                            pool_tube,
+                            pool_tube_type,
+                            start_volume,
+                            pool_volume_per_tube,
+                            airgap,
+                            mix,
+                            p20,
+                            p300,
+                            protocol):
+    """
+    Parameters
+    ----------
+    source_wells : list
+        List of tube(s)/well(s) to get pool from
+    pool_volumes : list
+        volumes in µL that you want to pool
+    pool_tube : list
+        List of tube(s)/well(s) to pool in
+    pool_tube_type : string
+        'tube_1.5mL' / 'tube_5mL' / 'tube_15mL' / 'tube_50mL'
+    start_volume : float
+        exact volume in µL that is already present in the pool tube(s)
+    pool_volume_per_tube, : float
+        exact volume in µL that is max pooled in 1 tube
+    airgap : Boolean True or False
+        Do you want an airgap after aspiration and after dispensing
+    mix : Boolean True or False
+        Do you want to mix (pipette up and down) after dispensing
+    p20 : labware definition
+    p300 : labware definition
+    protocol : def run(protocol: protocol_api.ProtocolContext)
+
+    Returns
+    -------
+    None.
+
+    """
+    #### Import volume tracking module
+    from data.user_storage.mollab_modules import VolumeTracking as VT
+    
+    #### Determine start_height (at the start, current_height = start_height)
+    start_height = current_height = VT.cal_start_height(pool_tube_type, 
+                                                        start_volume)
+    
+    #### Variables for volume tracking and aliquoting        
+    pooled_volume = 0
+    counter = 0
+    pool = pool_tube[counter]
+    
+    #### If only 1 volume is provided, 
+    if not isinstance(pool_volumes, list):
+        raise Exception("This protocol only works with a list of volumes.")
+             
+    #### First small volumes, then large volumes
+    for pipette in [p20,p300]:
+        ### Set airgap size, depending on pipette size
+        if pipette  == p20:
+            gap = 1
+        elif pipette == p300:
+            gap = 10
+                
+        ### Loop through list of volumes and destinations
+        for well, pool_volume in zip(source_wells, pool_volumes):
+            ## Aspirate a little more for reverse pipetting
+            aspiration_vol = pool_volume + gap
+            
+            ## Determine which wells to fill with which pipette
+            if (p20 and pipette == p20 and 0 < aspiration_vol <= 20 or 
+                p300 and pipette == p300 and aspiration_vol > 20):
+
+                #### Call volume_tracking function
+                current_height, pip_height, bottom_reached = (
+                    VT.volume_tracking(pool_tube_type,
+                                       pool_volume, 
+                                       current_height,
+                                       'filling'))
+                pooled_volume += pool_volume
+                
+                #### If necesarry, continue with next tube
+                # if bottom_reached or pooled_volume > pool_volume_per_tube:
+                #     # Continue with next tube, reset volume_tracking
+                #     current_height = start_height
+                #     current_height, pip_height, bottom_reached = (
+                #         VT.volume_tracking(pool_tube_type,
+                #                            pool_volume, 
+                #                            current_height,
+                #                            'filling'))
+                #     pooled_volume = 0
+                #     counter += 1
+                #     pool = pool_tube[counter]
+
+                #### The actual pipetting                
+                # Pick up a tip
+                pipette.pick_up_tip()
+                
+                # Take up the specified volume per sample       
+                pipette.aspirate(pool_volume, well)
+                # Take an air gap, to prevent cross_contamination
+                if airgap:
+                    pipette.aspirate(gap, well.top())
+                     
+                # Dispense in the pool_tube
+                pipette.dispense(pool_volume + gap, pool.bottom(pip_height))
+                # Mix by pipetting up and down 3x
+                pipette.mix(3, aspiration_vol, pool.bottom(pip_height))
+                # Blow out
+                pipette.dispense(pool_volume, pool.bottom(pip_height + 5))
+                              
+                # drop tip
+                pipette.drop_tip()
+                
+                

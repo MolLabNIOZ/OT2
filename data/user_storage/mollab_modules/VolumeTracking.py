@@ -104,15 +104,26 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
     import math
     
     #### Defining tube_type dimensions, based on labware blueprints
-    tube_diameters = {
-    '1.5mL_tubes': 8.7,
-    '5mL_screwcap_tubes': 13,
-    '5mL_snapcap_tubes': 13.3,
-    '15mL_tubes': 15.16,
-    '50mL_tubes': 27.48}
+    tube_dimensions = {
+    '1.5mL_tubes': {
+        'diameter_top': 8.7,
+        'height': 37.8},
+    '5mL_screwcap_tubes': {
+        'diameter_top': 13,
+        'height': 64.8},
+    '5mL_snapcap_tubes': {
+        'diameter_top': 13.3,
+        'height': 55.4},
+    '15mL_tubes': {
+        'diameter_top': 15.16,
+        'height': 118.1},
+    '50mL_tubes': {
+        'diameter_top': 27.48,
+        'height': 113.3}} 
+
  
     #### Calculate delta_height of the specified volume      
-    radius = tube_diameters[tube_type] / 2
+    radius = tube_dimensions[tube_type]['diameter_top'] / 2
     delta_height =  (dispension_vol/(math.pi*((radius)**2))) #h = v/(π*r²)
 
     #### Update current_height 
@@ -146,9 +157,15 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
     ## setting the current height 5 mm below the reagent surface   
 
     #### Determine whether the pipette is reaching the bottom of the tube
-    bottom_reached = False
-    if pip_height - delta_height <= 2:
+    if direction == 'emptying':
+        bottom_reached = False
+        if pip_height - delta_height <= 2:
             bottom_reached = True
-    # not thoroughly tested yet for other tubes then tubes_5mL!!!
+        # not thoroughly tested yet for other tubes then tubes_5mL!!!
+    elif direction == 'filling':
+        bottom_reached = False
+        if pip_height + delta_height > tube_dimensions[tube_type]['height']:
+            bottom_reached = True
+        
     
     return current_height, pip_height, bottom_reached

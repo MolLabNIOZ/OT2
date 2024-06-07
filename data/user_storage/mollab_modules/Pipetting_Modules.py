@@ -76,9 +76,11 @@ def aliquoting_reagent(reagent_source,
     if aliquot_volume > 19:
         pipette = p300
         gap = 10
+        push_out_volume = 5
     else:
         pipette = p20
         gap = 1
+        push_out_volume = 2
     
     ## Aspirate a little more for reverse pipetting
     aspiration_vol = aliquot_volume + gap
@@ -145,7 +147,7 @@ def aliquoting_reagent(reagent_source,
         # introduce an airgap to avoid dripping
         pipette.air_gap(gap)
         # Dispense the remaining air + reagent back into the source tube
-        pipette.dispense(gap * 3, aspiration_location) # Blow-out
+        pipette.dispense(gap, aspiration_location, push_out=push_out_volume) # Blow-out
         
     ## When finished, drop tip
     pipette.drop_tip()
@@ -229,8 +231,13 @@ def aliquoting_varying_volumes(reagent_source,
         ### Set airgap size, depending on pipette size
         if pipette  == p20:
             gap = 1
+            push_out_volume = 2
         elif pipette == p300:
             gap = 10
+            push_out_volume = 5
+        
+        #### to keep track of tip use, to determine when to change tip
+        tip_counter = 0
         
         ### Loop through list of volumes and destinations
         for i, (well, aliquot_volume) in enumerate(zip(destination_wells, 
@@ -298,7 +305,7 @@ def aliquoting_varying_volumes(reagent_source,
                 # introduce an airgap to avoid dripping
                 pipette.air_gap(gap)
                 # Dispense the remaining air + reagent back into the source tube
-                pipette.dispense(gap * 3, aspiration_location) # Blow-out
+                pipette.dispense(gap, aspiration_location, push_out=push_out_volume) # Blow-out
                 
                 # Add 1 use to the tip_counter
                 tip_counter = tip_counter + 1
@@ -354,8 +361,10 @@ def transferring_reagents(source_wells,
     #### Determine which pipette to use:
     if transfer_volume <= 15:
         pipette = p20
+        push_out_volume = 2
     else:
         pipette = p300
+        push_out_volume = 5
     
     #### Calculate airgap and mix volumes
     if airgap:
@@ -381,13 +390,16 @@ def transferring_reagents(source_wells,
         ## If desired, include an airgap
         if airgap:
             pipette.air_gap(airgap_volume)
+            dispense_volume = transfer_volume + airgap_volume
+        else:
+            dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(transfer_volume + airgap_volume, destination_well)
+        pipette.dispense(dispense_volume, destination_well, push_out=push_out_volume)
         ## If desired, mix
         if mix:
             pipette.mix(3, mix_volume, destination_well)
-        ## Alternative for blow out
-        pipette.dispense(mix_volume, destination_well)
+        ## blow out
+        pipette.blow_out()
         ## drop tip
         pipette.drop_tip()
         
@@ -441,23 +453,24 @@ def transferring_varying_volumes(source_wells,
         #### Determine which pipette to use:
         if transfer_volume <= 15:
             pipette = p20
+            push_out_volume = 2
         else:
             pipette = p300
+            push_out_volume = 5
         
         #### Calculate airgap and mix volumes
-        if airgap:
-            if pipette == p20:
-                airgap_volume = 1
+        if pipette == p20:
+            airgap_volume = 1
+        else:
+            airgap_volume = 10
+        
+        if pipette == p20:
+            mix_volume = 5
+        else:
+            if transfer_volume <= 50:
+                mix_volume = transfer_volume
             else:
-                airgap_volume = 10
-        if mix:
-            if pipette == p20:
-                mix_volume = 5
-            else:
-                if transfer_volume <= 50:
-                    mix_volume = transfer_volume
-                else:
-                    mix_volume = 50
+                mix_volume = 50
        
         #### The actual transfer
         ## Pick up a pipette_tip
@@ -467,13 +480,17 @@ def transferring_varying_volumes(source_wells,
         ## If desired, include an airgap
         if airgap:
             pipette.air_gap(airgap_volume)
+            dispense_volume = transfer_volume + airgap_volume
+        else:
+            dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(transfer_volume + airgap_volume, destination_well)
+        pipette.dispense(dispense_volume, destination_well, push_out=push_out_volume)
         ## If desired, mix
         if mix:
             pipette.mix(3, mix_volume, destination_well)
-        ## Alternative for blow out
-        pipette.dispense(mix_volume, destination_well)
+        ## blow out
+        pipette.blow_out()
+        
         ## drop tip
         pipette.drop_tip()
             
@@ -539,8 +556,11 @@ def pooling_varying_volumes(source_wells,
         ### Set airgap size, depending on pipette size
         if pipette  == p20:
             gap = 1
+            push_out_volume = 2
+                
         elif pipette == p300:
             gap = 10
+            push_out_volume = 5
                 
         ### Loop through list of volumes and destinations
         for well, pool_volume in zip(source_wells, pool_volumes):
@@ -580,14 +600,17 @@ def pooling_varying_volumes(source_wells,
                 pipette.aspirate(pool_volume, well)
                 # Take an air gap, to prevent cross_contamination
                 if airgap:
-                    pipette.aspirate(gap, well.top())
-                     
+                    pipette.air_gap(gap)
+                    dispense_volume = pool_volume + gap
+                else:
+                    dispense_volume = pool_volume
+                    
                 # Dispense in the pool_tube
-                pipette.dispense(pool_volume + gap, pool.bottom(pip_height))
+                pipette.dispense(dispense_volume, pool.bottom(pip_height), push_out=push_out_volume)
                 # Mix by pipetting up and down 3x
-                pipette.mix(3, aspiration_vol, pool.bottom(pip_height))
+                pipette.mix(3, aspiration_vol, pool.bottom(pip_height + 5))
                 # Blow out
-                pipette.dispense(pool_volume, pool.bottom(pip_height + 5))
+                pipette.blow_out()
                               
                 # drop tip
                 pipette.drop_tip()

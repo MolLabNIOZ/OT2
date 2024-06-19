@@ -14,8 +14,8 @@ starting_tip_p300 = 'A1'
 # After how many times you want to change the tip of the mastermix pipette? 
 tip_change = 16 #after times
     # After this amount of pipetting the mastermix, it will get a new tip
-# How many samples do you want to include?
 
+# How many samples do you want to include?
 number_of_samples = 95
     ## NOTE: include in this number the mock too!!!                
 
@@ -59,7 +59,7 @@ first_R_primer = 0
 pause = True
   ## Pauses the robot, so you can put in your samples
 
-# Which specific wells do you want to skip? Leave empty if you do not want to skip
+# Which specific wells (index) do you want to skip? Leave empty if you do not want to skip
 skipped_samples = []
 
 # Do you want the light on or off

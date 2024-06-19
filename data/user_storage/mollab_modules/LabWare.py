@@ -99,6 +99,8 @@ def loading_tips(simulate,
                     f"labware/"
                     f"{labware_dict[tip_type][0]}/"
                     f"{labware_dict[tip_type][0]}.json") as labware_file:
+                labware_file = json.dumps(labware_file, encoding='utf-8')
+                print(labware_file)
                 labware = json.load(labware_file)
             tip_rack = protocol.load_labware_from_definition( 
                 labware, 

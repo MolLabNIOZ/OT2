@@ -1,5 +1,0 @@
-[build-system]
-requires = [
-    "math"
-]
-build-backend = "setuptools.build_meta"

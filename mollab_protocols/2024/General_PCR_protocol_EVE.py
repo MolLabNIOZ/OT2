@@ -12,13 +12,13 @@ starting_tip_p20 = 'A1'
 starting_tip_p300 = 'A1'
 
 # How many samples do you want to include?
-number_of_samples = 65
+number_of_samples = 64
   ## MAX ==  number of samples -                                 
   ##         (number of std series * length of std series) -     
   ##         number of standard sample replicates
 
 # How many NTCs to include 
-number_of_NTCs = 1 
+number_of_NTCs = 2 
   ## NOTE: The NTC come after samples and std_samples                     
 
 # What is the total volume (µL) of your mix?
@@ -34,8 +34,8 @@ tip_change = 16 #after times
 pause = True
   ## Pauses the robot, so you can put in your samples
 
-# Which specific wells do you want to skip? Leave empty if you do not want to skip
-skipped_samples = []
+# Which specific wells (index) do you want to skip? Leave empty if you do not want to skip
+skipped_samples = [10]
   
 # Are you doing a qPCR or a regular PCR?
 lights_on = True
@@ -48,10 +48,10 @@ mastermix = False
     # If mastermix = False it won't add mastermix to the plate.
 
 # How many dilution serie replicates do you want to include?
-number_of_std_series = 3 
+number_of_std_series = 0 
   ## If none -- fill in 0
 # How many dilutions are in the standard dilution series?
-length_std_series = 8
+length_std_series = 0
   ## length_of_std_series  MAX == 8                                     
 # How many replicates of the standard sample are you taking?
 number_of_std_samples = 6    
@@ -65,7 +65,7 @@ mastermix_source = 'A1'
 reagent_volume = 22     
 
 # What labware are your samples in?
-sample_tube_type = '1.5mL_tubes'
+sample_tube_type = 'PCR_strips'
   ## Samples in strips = 'PCR_strips'                                       
   ## Primers in plate = 'skirted_plate_96'  
   ## Samples in 1.5mL tubes = '1.5mL_tubes'                                         
@@ -82,7 +82,7 @@ else:
 sample_volume = 2
   ## MAX = 17µL
 # What is the location of your first sample (fill in if you have a plate)?                                    
-first_sample = 'A1'
+first_sample = 'A2'
   ## 'A1' is standard for tubes and plates. 
   ## 'A2' is standard for tube_strips
   ## But if you have more samples in the plate than
@@ -94,7 +94,7 @@ first_sample = 'A1'
 # This region contains basic python/opentrons stuff
 # =============================================================================
 #### Simulation or robot run
-simulate = False
+simulate = True
 
 #### Import opentrons protocol API v2
 from opentrons import protocol_api

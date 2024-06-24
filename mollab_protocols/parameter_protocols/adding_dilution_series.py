@@ -71,6 +71,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        default=" 1") 
     
 def run(protocol: protocol_api.ProtocolContext):
+    p = protocol.params
 # =============================================================================
 
 ## LIGHTS======================================================================
@@ -80,20 +81,27 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
+    #### Starting tips
+    starting_tip_p20_row = p.starting_tip_p20_row
+    starting_tip_p20_column = p.starting_tip_p20_column.strip()
+    starting_tip_p20 = starting_tip_p20_row + starting_tip_p20_column     
+    
     #### Pipette tips
-    # If water_volume >= 19µL use pp20 and p300, otherwise use p20 only
+    amount_tips_20, amount_tips_300 = LW.amount_of_tips(p.sample_volume,
+                                                        p.number_of_std_series * p.length_std_series,
+                                                        1,
+                                                        15)
+    racks_tips_20, P20 = LW.number_of_tipracks(starting_tip_p20,
+                                          amount_tips_20)
     tips_20 = LW.loading_tips(simulate = simulate,
                               tip_type = 'tipone_20uL',
-                              amount = 2,
+                              amount = racks_tips_20,
                               deck_positions = [11,10],
                               protocol = protocol)
-    #### Starting tips
-    starting_tip_p20_row = protocol.params.starting_tip_p20_row
-    starting_tip_p20_column = protocol.params.starting_tip_p20_column.strip()
-    starting_tip_p20 = starting_tip_p20_row + starting_tip_p20_column  
+ 
     
     #### Pipettes
-    p20, p300 = LW.loading_pipettes(P20 = True, 
+    p20, p300 = LW.loading_pipettes(P20 = P20, 
                                     tips_20 = tips_20,
                                     starting_tip_p20 = starting_tip_p20,
                                     P300 = False, 
@@ -116,7 +124,7 @@ def run(protocol: protocol_api.ProtocolContext):
     dilution_tubes = LW.tube_locations(source_racks = dilution_racks,
                                        specific_columns = specific_dilution_columns,
                                        skip_wells = False,
-                                       number_of_tubes = protocol.params.length_std_series)
+                                       number_of_tubes = p.length_std_series)
     
     # Loading PCR-plate
     qPCR_plate = LW.loading_tube_racks(simulate = simulate,
@@ -128,20 +136,20 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #### Define destination wells
     specific_qPCR_columns = ['12','11','10','9','8','7','6','5','4','3','2','1']
-    for i in range(protocol.params.number_of_std_series):
+    for i in range(p.number_of_std_series):
         column = []
         column.append(specific_qPCR_columns[i])
         qPCR_wells = LW.tube_locations(source_racks = qPCR_plate,
                                        specific_columns = column,
                                        skip_wells = False,
-                                       number_of_tubes = protocol.params.length_std_series)
+                                       number_of_tubes = p.length_std_series)
 # =============================================================================
 
 # THE ACTUAL PIPETTING=========================================================
 # =============================================================================       
         PM.transferring_reagents(source_wells = dilution_tubes,
                                  destination_wells = qPCR_wells,
-                                 transfer_volume = protocol.params.sample_volume,
+                                 transfer_volume = p.sample_volume,
                                  airgap = True,
                                  mix = True,
                                  p20 = p20,

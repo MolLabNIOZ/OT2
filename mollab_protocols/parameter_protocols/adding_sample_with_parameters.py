@@ -60,8 +60,8 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_float(variable_name="sample_volume",
                        display_name="sample volume per reaction",
                        description="How much sample should each reaction get?",
-                       default=0.0,
-                       minimum=0.0,
+                       default=1.0,
+                       minimum=1.0,
                        maximum=50.0,
                        unit="µL sample")
     

@@ -32,13 +32,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=1,
                        maximum=8,
                        unit="dilutions")
-    parameters.add_int(variable_name="sample_volume",
-                       display_name="sample volume",
-                       description="How much do you want to add per sample?",
-                       default=3,
-                       minimum=1,
-                       maximum=19,
-                       unit="µL")
+    parameters.add_float(variable_name="sample_volume",
+                         display_name="sample volume",
+                         description="How much do you want to add per sample?",
+                         default=3,
+                         minimum=1,
+                         maximum=19,
+                         unit="µL")
     parameters.add_str(variable_name="starting_tip_p20_row",    
                        display_name="starting tip p20 row",
                        choices=[
@@ -52,15 +52,23 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "H", "value": "H"}
                            ],
                        default="A")
-
-    parameters.add_int(variable_name="starting_tip_p20_column",
+    parameters.add_str(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
-                       description="What column number is the starting tip in?",
-                       default=1,
-                       minimum=1,
-                       maximum=12,
-                       unit="")
-    
+                       choices=[
+                           {"display_name": " 1", "value": " 1"},
+                           {"display_name": " 2", "value": " 2"},
+                           {"display_name": " 3", "value": " 3"},
+                           {"display_name": " 4", "value": " 4"},
+                           {"display_name": " 5", "value": " 5"},
+                           {"display_name": " 6", "value": " 6"},
+                           {"display_name": " 7", "value": " 7"},
+                           {"display_name": " 8", "value": " 8"},
+                           {"display_name": " 9", "value": " 9"},
+                           {"display_name": " 10", "value": " 10"},
+                           {"display_name": " 11", "value": " 11"},
+                           {"display_name": " 12", "value": " 12"}
+                           ],
+                       default=" 1") 
     
 def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
@@ -79,7 +87,12 @@ def run(protocol: protocol_api.ProtocolContext):
                               amount = 2,
                               deck_positions = [11,10],
                               protocol = protocol)
-    starting_tip_p20 = protocol.params.starting_tip_p20_row + str(protocol.params.starting_tip_p20_column)
+    #### Starting tips
+    starting_tip_p20_row = protocol.params.starting_tip_p20_row
+    starting_tip_p20_column = protocol.params.starting_tip_p20_column.strip()
+    starting_tip_p20 = starting_tip_p20_row + starting_tip_p20_column  
+    
+    #### Pipettes
     p20, p300 = LW.loading_pipettes(P20 = True, 
                                     tips_20 = tips_20,
                                     starting_tip_p20 = starting_tip_p20,
@@ -87,6 +100,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                     tips_300 = False,
                                     starting_tip_p300 = False,
                                     protocol = protocol)
+    
     #### Loading labware
     # Loading dilution serie
     dilution_racks = LW.loading_tube_racks(simulate = simulate,
@@ -112,15 +126,19 @@ def run(protocol: protocol_api.ProtocolContext):
                                        deck_positions = [7],
                                        protocol = protocol)
     
-    ## Defines the columns you need
+    #### Define destination wells
     specific_qPCR_columns = ['12','11','10','9','8','7','6','5','4','3','2','1']
     for i in range(protocol.params.number_of_std_series):
         column = []
         column.append(specific_qPCR_columns[i])
         qPCR_wells = LW.tube_locations(source_racks = qPCR_plate,
-                                 specific_columns = column,
-                                 skip_wells = False,
-                                 number_of_tubes = protocol.params.length_std_series)
+                                       specific_columns = column,
+                                       skip_wells = False,
+                                       number_of_tubes = protocol.params.length_std_series)
+# =============================================================================
+
+# THE ACTUAL PIPETTING=========================================================
+# =============================================================================       
         PM.transferring_reagents(source_wells = dilution_tubes,
                                  destination_wells = qPCR_wells,
                                  transfer_volume = protocol.params.sample_volume,
@@ -129,3 +147,4 @@ def run(protocol: protocol_api.ProtocolContext):
                                  p20 = p20,
                                  p300 = p300,
                                  protocol = protocol)
+# =============================================================================

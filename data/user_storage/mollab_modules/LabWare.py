@@ -356,8 +356,13 @@ def number_of_tipracks(starting_tip,
     #### Calculate how many racks are needed
     amount_tip_racks = math.ceil((tips_needed - (96 - rack.index(starting_tip))) / 96) + 1
     
+    if amount_tip_racks > 0:
+        pipette = True
+    else:
+        pipette = False
+
     #### Return
-    return amount_tip_racks
+    return amount_tip_racks, pipette
 
 #=============================================================================
 

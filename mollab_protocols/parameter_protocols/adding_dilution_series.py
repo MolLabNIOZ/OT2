@@ -8,7 +8,7 @@ import sys
 sys.path.append("C:/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM
-from data.user_storage.mollab_modules import LabWare as LW                       
+from data.user_storage.mollab_modules import LabWare as LW                  
 # =============================================================================
 
 # METADATA=====================================================================
@@ -55,23 +55,23 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_str(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
-                           {"display_name": " 1", "value": " 1"},
-                           {"display_name": " 2", "value": " 2"},
-                           {"display_name": " 3", "value": " 3"},
-                           {"display_name": " 4", "value": " 4"},
-                           {"display_name": " 5", "value": " 5"},
-                           {"display_name": " 6", "value": " 6"},
-                           {"display_name": " 7", "value": " 7"},
-                           {"display_name": " 8", "value": " 8"},
-                           {"display_name": " 9", "value": " 9"},
-                           {"display_name": " 10", "value": " 10"},
-                           {"display_name": " 11", "value": " 11"},
-                           {"display_name": " 12", "value": " 12"}
+                           {"display_name": "1", "value": "this_is_not_an_int1"},
+                           {"display_name": "2", "value": "this_is_not_an_int2"},
+                           {"display_name": "3", "value": "this_is_not_an_int3"},
+                           {"display_name": "4", "value": "this_is_not_an_int4"},
+                           {"display_name": "5", "value": "this_is_not_an_int5"},
+                           {"display_name": "6", "value": "this_is_not_an_int6"},
+                           {"display_name": "7", "value": "this_is_not_an_int7"},
+                           {"display_name": "8", "value": "this_is_not_an_int8"},
+                           {"display_name": "9", "value": "this_is_not_an_int9"},
+                           {"display_name": "10", "value": "this_is_not_an_int10"},
+                           {"display_name": "11", "value": "this_is_not_an_int11"},
+                           {"display_name": "12", "value": "this_is_not_an_int12"}
                            ],
-                       default=" 1") 
+                       default="this_is_not_an_int1") 
     
 def run(protocol: protocol_api.ProtocolContext):
-    p = protocol.params
+    plankton = protocol.params
 # =============================================================================
 
 ## LIGHTS======================================================================
@@ -82,13 +82,13 @@ def run(protocol: protocol_api.ProtocolContext):
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
     #### Starting tips
-    starting_tip_p20_row = p.starting_tip_p20_row
-    starting_tip_p20_column = p.starting_tip_p20_column.strip()
+    starting_tip_p20_row = plankton.starting_tip_p20_row
+    starting_tip_p20_column = plankton.starting_tip_p20_column.strip('this_is_not_an_int')
     starting_tip_p20 = starting_tip_p20_row + starting_tip_p20_column     
     
     #### Pipette tips
-    amount_tips_20, amount_tips_300 = LW.amount_of_tips(p.sample_volume,
-                                                        p.number_of_std_series * p.length_std_series,
+    amount_tips_20, amount_tips_300 = LW.amount_of_tips(plankton.sample_volume,
+                                                        plankton.number_of_std_series * plankton.length_std_series,
                                                         1,
                                                         15)
     racks_tips_20, P20 = LW.number_of_tipracks(starting_tip_p20,
@@ -124,7 +124,7 @@ def run(protocol: protocol_api.ProtocolContext):
     dilution_tubes = LW.tube_locations(source_racks = dilution_racks,
                                        specific_columns = specific_dilution_columns,
                                        skip_wells = False,
-                                       number_of_tubes = p.length_std_series)
+                                       number_of_tubes = plankton.length_std_series)
     
     # Loading PCR-plate
     qPCR_plate = LW.loading_tube_racks(simulate = simulate,
@@ -136,20 +136,20 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #### Define destination wells
     specific_qPCR_columns = ['12','11','10','9','8','7','6','5','4','3','2','1']
-    for i in range(p.number_of_std_series):
+    for i in range(plankton.number_of_std_series):
         column = []
         column.append(specific_qPCR_columns[i])
         qPCR_wells = LW.tube_locations(source_racks = qPCR_plate,
                                        specific_columns = column,
                                        skip_wells = False,
-                                       number_of_tubes = p.length_std_series)
+                                       number_of_tubes = plankton.length_std_series)
 # =============================================================================
 
 # THE ACTUAL PIPETTING=========================================================
 # =============================================================================       
         PM.transferring_reagents(source_wells = dilution_tubes,
                                  destination_wells = qPCR_wells,
-                                 transfer_volume = p.sample_volume,
+                                 transfer_volume = plankton.sample_volume,
                                  airgap = True,
                                  mix = True,
                                  p20 = p20,

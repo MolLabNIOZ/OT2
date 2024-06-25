@@ -159,7 +159,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_p300 = LW.loading_tips(simulate,
                                'opentrons_200uL',
                                tip_racks_p300,
-                               [10,7,4,1],
+                               [4,1],
                                protocol)
     
     ## ========================================================================

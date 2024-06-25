@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -76,31 +76,27 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_str(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
-                           {"display_name": " 1", "value": " 1"},
-                           {"display_name": " 2", "value": " 2"},
-                           {"display_name": " 3", "value": " 3"},
-                           {"display_name": " 4", "value": " 4"},
-                           {"display_name": " 5", "value": " 5"},
-                           {"display_name": " 6", "value": " 6"},
-                           {"display_name": " 7", "value": " 7"},
-                           {"display_name": " 8", "value": " 8"},
-                           {"display_name": " 9", "value": " 9"},
-                           {"display_name": " 10", "value": " 10"},
-                           {"display_name": " 11", "value": " 11"},
-                           {"display_name": " 12", "value": " 12"}
+                           {"display_name": "1", "value": "this_is_not_an_int1"},
+                           {"display_name": "2", "value": "this_is_not_an_int2"},
+                           {"display_name": "3", "value": "this_is_not_an_int3"},
+                           {"display_name": "4", "value": "this_is_not_an_int4"},
+                           {"display_name": "5", "value": "this_is_not_an_int5"},
+                           {"display_name": "6", "value": "this_is_not_an_int6"},
+                           {"display_name": "7", "value": "this_is_not_an_int7"},
+                           {"display_name": "8", "value": "this_is_not_an_int8"},
+                           {"display_name": "9", "value": "this_is_not_an_int9"},
+                           {"display_name": "10", "value": "this_is_not_an_int10"},
+                           {"display_name": "11", "value": "this_is_not_an_int11"},
+                           {"display_name": "12", "value": "this_is_not_an_int12"}
                            ],
-                       default=" 1")
+                       default="this_is_not_an_int1")
     
     #### Lights/Pause
     parameters.add_bool(variable_name="lights_on",
                         display_name="lights on",
                         description="Do you want the lights turned ON?",
                         default=True)
-    parameters.add_bool(variable_name="pause",
-                        display_name="pause after mix",
-                        description="Do you want to pause after adding mix, before adding primers?",
-                        default=False)
-    
+  
 def run(protocol: protocol_api.ProtocolContext):
     # Sets p as variable for protocol.params, this will make it all shorter
     plankton = protocol.params
@@ -120,8 +116,7 @@ def run(protocol: protocol_api.ProtocolContext):
         number_of_sample_racks = math.ceil(number_of_reactions/24)
     
     # Sets variables for the starting tips
-    starting_tip_p20 = plankton.starting_tip_p20_row +  plankton.starting_tip_p20_column.strip()
-    starting_tip_p300 = plankton.starting_tip_p300_row +  plankton.starting_tip_p300_column.strip()
+    starting_tip_p20 = plankton.starting_tip_p20_row +  plankton.starting_tip_p20_column.strip("this_is_not_an_int")
     
     # Calculates the amount of tips needed
     p20_tips_needed, p300_tips_needed = LW.amount_of_tips(plankton.sample_volume,
@@ -132,8 +127,6 @@ def run(protocol: protocol_api.ProtocolContext):
     # Defines how much P20 and P300 tip racks you need and if the pipette is True/False
     tip_racks_p20, P20 = LW.number_of_tipracks(starting_tip_p20,
                                           p20_tips_needed)
-    tip_racks_p300, P300 = LW.number_of_tipracks(starting_tip_p300,
-                                           p300_tips_needed) 
 ## ============================================================================
 
 ## COMMENTS====================================================================
@@ -155,13 +148,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                'tipone_20uL',
                                tip_racks_p20,
                                [1,4],
-                               protocol)
-    tips_p300 = LW.loading_tips(simulate,
-                               'opentrons_200uL',
-                               tip_racks_p300,
-                               [4,1],
-                               protocol)
-    
+                               protocol)   
     ## ========================================================================
     #### Sample racks
     # Loading sample plates
@@ -197,9 +184,9 @@ def run(protocol: protocol_api.ProtocolContext):
     p20, p300 = LW.loading_pipettes(P20, 
                                     tips_p20,
                                     starting_tip_p20,
-                                    P300, 
-                                    tips_p300,
-                                    starting_tip_p300,
+                                    False, 
+                                    [],
+                                    'A1',
                                     protocol)
 ## ============================================================================
 

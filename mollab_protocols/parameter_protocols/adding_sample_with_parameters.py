@@ -18,7 +18,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'adding_sample_to_PCR_plate',
+            'protocolName': 'adding_sample_to_PCR_plate_V1.0',
             'description': 'adding sample to the PCR plate with barcoded primers'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -29,18 +29,18 @@ requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 def add_parameters(parameters: protocol_api.Parameters):
     
     #### Samples
-    parameters.add_int(variable_name="number_of_reactions",
-                       display_name="number of unique reactions",
-                       description="Number of unique reactions. Include samples, mock, NTC, etc.",
-                       default=96,
+    parameters.add_int(variable_name="number_of_samples",
+                       display_name="number of unique samples",
+                       description="Number of unique samples. Include samples & mock but EXCLUDE the NTC.",
+                       default=95,
                        minimum=0,
-                       maximum=96,
-                       unit="reactions")
+                       maximum=95,
+                       unit="samples")
     parameters.add_int(variable_name="number_of_NTCs",
                        display_name="number of NTCs",
                        description="Number of NTCs. A NTC is a reaction without any template volume added.",
                        default=1,
-                       minimum=0,
+                       minimum=1,
                        maximum=5,
                        unit="reactions")
     parameters.add_str(variable_name="sample_tube_type",    
@@ -104,36 +104,38 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
-    number_of_reactions = plankton.number_of_reactions - plankton.number_of_NTCs
-
     if plankton.sample_tube_type == 'PCR_strips':       
         # Calculates how many sample racks were needed
         sample_loc = ['2','7','11']
         sample_per_rack = 8 * len(sample_loc)
-        number_of_sample_racks = math.ceil(number_of_reactions/sample_per_rack)
+        number_of_sample_racks = math.ceil(plankton.number_of_samples/sample_per_rack)
     else:
         sample_loc = False
-        number_of_sample_racks = math.ceil(number_of_reactions/24)
+        number_of_sample_racks = math.ceil(plankton.number_of_samples/24)
     
     # Sets variables for the starting tips
     starting_tip_p20 = plankton.starting_tip_p20_row +  plankton.starting_tip_p20_column.strip("this_is_not_an_int")
     
     # Calculates the amount of tips needed
     p20_tips_needed, p300_tips_needed = LW.amount_of_tips(plankton.sample_volume,
-                                                          plankton.number_of_reactions,
+                                                          plankton.number_of_samples,
                                                           1,
                                                           15)
     
     # Defines how much P20 and P300 tip racks you need and if the pipette is True/False
     tip_racks_p20, P20 = LW.number_of_tipracks(starting_tip_p20,
-                                          p20_tips_needed)
+                                               p20_tips_needed)
 ## ============================================================================
 
 ## COMMENTS====================================================================
 ## ============================================================================
+    number_of_reactions = plankton.number_of_samples + plankton.number_of_NTCs
+    
     if number_of_reactions > 96:
-        raise Exception(f'You have {number_of_reactions} reactions. ' +
-                        'This is more than 96 reactions and not possible.')
+        raise Exception(f'You have {plankton.number_of_samples} reactions. ' +
+                        'This is more than 96 reactions if you add the NTCs and is not possible.')
+    else: 
+        protocol.comment("You have {planktonnumber_of_reactions} samples and {plankton.number_of_NTCs}.")
 ## ============================================================================
 
 ## LIGHTS======================================================================
@@ -163,7 +165,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_tubes = LW.tube_locations(sample_racks,
                                      sample_loc,
                                      False,
-                                     number_of_reactions)
+                                     plankton.number_of_samples)
    
     ## ========================================================================
     #### PCR-plate
@@ -178,7 +180,7 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_destions = LW.tube_locations(PCR_plate,
                                         False,
                                         False,
-                                        number_of_reactions)
+                                        plankton.number_of_samples)
     ## ========================================================================
     ### Loading pipettes
     p20, p300 = LW.loading_pipettes(P20, 

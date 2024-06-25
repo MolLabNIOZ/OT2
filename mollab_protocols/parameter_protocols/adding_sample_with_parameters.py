@@ -103,14 +103,14 @@ def add_parameters(parameters: protocol_api.Parameters):
     
 def run(protocol: protocol_api.ProtocolContext):
     # Sets p as variable for protocol.params, this will make it all shorter
-    p = protocol.params
+    plankton = protocol.params
 # =============================================================================
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
-    number_of_reactions = p.number_of_reactions - p.number_of_NTCs
+    number_of_reactions = plankton.number_of_reactions - plankton.number_of_NTCs
 
-    if p.sample_tube_type == 'PCR_strips':       
+    if plankton.sample_tube_type == 'PCR_strips':       
         # Calculates how many sample racks were needed
         sample_loc = ['2','7','11']
         sample_per_rack = 8 * len(sample_loc)
@@ -120,12 +120,12 @@ def run(protocol: protocol_api.ProtocolContext):
         number_of_sample_racks = math.ceil(number_of_reactions/24)
     
     # Sets variables for the starting tips
-    starting_tip_p20 = p.starting_tip_p20_row +  p.starting_tip_p20_column.strip()
-    starting_tip_p300 = p.starting_tip_p300_row +  p.starting_tip_p300_column.strip()
+    starting_tip_p20 = plankton.starting_tip_p20_row +  plankton.starting_tip_p20_column.strip()
+    starting_tip_p300 = plankton.starting_tip_p300_row +  plankton.starting_tip_p300_column.strip()
     
     # Calculates the amount of tips needed
-    p20_tips_needed, p300_tips_needed = LW.amount_of_tips(p.sample_volume,
-                                                          p.number_of_reactions,
+    p20_tips_needed, p300_tips_needed = LW.amount_of_tips(plankton.sample_volume,
+                                                          plankton.number_of_reactions,
                                                           1,
                                                           15)
     
@@ -145,7 +145,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## LIGHTS======================================================================
 ## ============================================================================
-    protocol.set_rail_lights(p.lights_on)
+    protocol.set_rail_lights(plankton.lights_on)
 ## ============================================================================    
 
 # LOADING LABWARE AND PIPETTES=================================================
@@ -166,7 +166,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #### Sample racks
     # Loading sample plates
     sample_racks = LW.loading_tube_racks(simulate, 
-                                         p.sample_tube_type, 
+                                         plankton.sample_tube_type, 
                                          'Sample_rack', 
                                          number_of_sample_racks, 
                                          [2,5,8,11], 
@@ -208,7 +208,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # transfering samples
     PM.transferring_reagents(sample_tubes,
                             sample_destions,
-                            p.sample_volume,
+                            plankton.sample_volume,
                             True,
                             True,
                             p20,

@@ -50,19 +50,12 @@ def add_parameters(parameters: protocol_api.Parameters):
                                {"display_name": "1.5mL_tubes", "value": "1.5mL_tubes"},
                                ],
                        default="PCR_strips")
-    parameters.add_int(variable_name="sample_strips_per_rack",
-                       display_name="sample strips per rack",
-                       description="How many strips with samples do you want in each strip_rack?",
-                       default=3,
-                       minimum=1,
-                       maximum=3,
-                       unit="strips")
     parameters.add_float(variable_name="sample_volume",
                        display_name="sample volume per reaction",
                        description="How much sample should each reaction get?",
                        default=1.0,
                        minimum=1.0,
-                       maximum=50.0,
+                       maximum=15.0,
                        unit="µL sample")
     
     #### Starting tips
@@ -82,37 +75,6 @@ def add_parameters(parameters: protocol_api.Parameters):
                        default="A")
     parameters.add_str(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
-                       choices=[
-                           {"display_name": " 1", "value": " 1"},
-                           {"display_name": " 2", "value": " 2"},
-                           {"display_name": " 3", "value": " 3"},
-                           {"display_name": " 4", "value": " 4"},
-                           {"display_name": " 5", "value": " 5"},
-                           {"display_name": " 6", "value": " 6"},
-                           {"display_name": " 7", "value": " 7"},
-                           {"display_name": " 8", "value": " 8"},
-                           {"display_name": " 9", "value": " 9"},
-                           {"display_name": " 10", "value": " 10"},
-                           {"display_name": " 11", "value": " 11"},
-                           {"display_name": " 12", "value": " 12"}
-                           ],
-                       default=" 1")
-    # P300
-    parameters.add_str(variable_name="starting_tip_p300_row",    
-                       display_name="starting tip p300 row",
-                       choices=[
-                           {"display_name": "A", "value": "A"},
-                           {"display_name": "B", "value": "B"},
-                           {"display_name": "C", "value": "C"},
-                           {"display_name": "D", "value": "D"},
-                           {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "F"},
-                           {"display_name": "G", "value": "G"},
-                           {"display_name": "H", "value": "H"}
-                           ],
-                       default="A")
-    parameters.add_str(variable_name="starting_tip_p300_column",    
-                       display_name="starting tip p300 column",
                        choices=[
                            {"display_name": " 1", "value": " 1"},
                            {"display_name": " 2", "value": " 2"},
@@ -148,15 +110,9 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     number_of_reactions = p.number_of_reactions - p.number_of_NTCs
 
-    if p.sample_tube_type == 'PCR_strips':
-        #### Location of primer strips in racks
-        possible_sample_locations = {
-        1:['6'],
-        2:['3','9'],
-        3:['2','7','11']}
-        
+    if p.sample_tube_type == 'PCR_strips':       
         # Calculates how many sample racks were needed
-        sample_loc = possible_sample_locations[p.sample_strips_per_rack]
+        sample_loc = ['2','7','11']
         sample_per_rack = 8 * len(sample_loc)
         number_of_sample_racks = math.ceil(number_of_reactions/sample_per_rack)
     else:
@@ -196,7 +152,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_p20 = LW.loading_tips(simulate,
                                'tipone_20uL',
                                tip_racks_p20,
-                               [1,4,7,10],
+                               [1,4],
                                protocol)
     tips_p300 = LW.loading_tips(simulate,
                                'opentrons_200uL',
@@ -204,6 +160,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                [10,7,4,1],
                                protocol)
     
+    ## ========================================================================
     #### Sample racks
     # Loading sample plates
     sample_racks = LW.loading_tube_racks(simulate, 
@@ -219,6 +176,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                      False,
                                      number_of_reactions)
    
+    ## ========================================================================
     #### PCR-plate
     # Loading PCR-plate
     PCR_plate = LW.loading_tube_racks(simulate, 

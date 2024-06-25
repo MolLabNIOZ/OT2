@@ -138,7 +138,9 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## COMMENTS====================================================================
 ## ============================================================================
-
+    if number_of_reactions > 96:
+        raise Exception(f'You have {number_of_reactions} reactions. ' +
+                        'This is more than 96 reactions and not possible.')
 ## ============================================================================
 
 ## LIGHTS======================================================================

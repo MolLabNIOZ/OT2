@@ -6,6 +6,7 @@ simulate = True
 from opentrons import protocol_api
 import sys
 sys.path.append("C:/Program files/Opentrons")
+sys.path.append("/mnt/c/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM
 from data.user_storage.mollab_modules import LabWare as LW                  

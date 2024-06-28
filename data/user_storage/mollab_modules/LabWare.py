@@ -152,7 +152,7 @@ def loading_tube_racks(simulate,
                 ['biorad_96_wellplate_200ul_pcr',
                  'noncustom'],
             'plate_96_NIOZholder': 
-                ['biorad_qPCR_plate_nioz_plateholder',
+                ['biorad_qpcr_plate_nioz_plateholder',
                  'custom'],
             'non_skirted_plate_96': 
                 ['thermononskirtedinbioradskirted_96_wellplate_200ul',

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = False
+simulate = True
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -184,7 +184,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                        [6], 
                                        protocol)
     # Sample destinations
-    sample_destions = LW.tube_locations(PCR_plate,
+    sample_destinations = LW.tube_locations(PCR_plate,
                                         False,
                                         False,
                                         plankton.number_of_samples,
@@ -206,13 +206,13 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     # transfering samples
     PM.transferring_reagents(sample_tubes,
-                              sample_destions,
-                              plankton.sample_volume,
-                              True,
-                              True,
-                              p20,
-                              p300,
-                              protocol)
+                             sample_destinations,
+                             plankton.sample_volume,
+                             True,
+                             True,
+                             p20,
+                             p300,
+                             protocol)
 ## ============================================================================
 
 ## LIGHTS======================================================================

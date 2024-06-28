@@ -203,11 +203,53 @@ def loading_tube_racks(simulate,
         tube_racks.append(tube_rack)
         
     return tube_racks
-        
+
+def defining_liquids(reagent_type, 
+                     protocol):
+    """
+    Parameters
+    ----------
+    reagent_type: 
+        Discribe the reagent type. See reagent_dict in defining_liquids for the
+        options.
+    volume: int
+        What is the volume that is present in the tube? If this is not clear,
+        put in '1'
+     protocol : def run(protocol: protocol_api.ProtocolContext):
+         
+    Returns
+    -------
+    liquid: 
+        A defined liquid with a certain color from the dictonary.
+    
+    """
+    
+    reagent_dict = {
+        'mastermix': ['Mastermix', 'Mastermix tube', '#FF0000'],
+        'forward_primer': ['Forward Primers', 'Forward primer strips', '#00FF00'],
+        'reverse_primer': ['Reverse Primers', 'Revers primer strips', '#00F3FF'],
+        'starting_tips': ['Starting Tips', 'The starting tip for the P20 & P300','#FF0000'],
+        'samples': ['Samples', 'The samples in the strips/tubes','#FF00FF'],
+        'water': ['Water', 'Tube containing water','#0000FF'],
+        'tapestation_buffer': ['Tapestation Buffer', 'Tube containing Tapestation buffer','#A52A2A'],
+        'other': ['Other', 'remaining liquids','#000000'],
+        }
+    
+    liquid = protocol.define_liquid(
+               name= reagent_dict[reagent_type][0],
+               description= reagent_dict[reagent_type][1],
+               display_color= reagent_dict[reagent_type][2],
+               )
+    
+    return liquid
+
 def tube_locations(source_racks,
                    specific_columns,
                    skip_wells,
-                   number_of_tubes):
+                   number_of_tubes,
+                   reagent_type,
+                   volume,
+                   protocol):
     """
     Parameters
     ----------
@@ -219,12 +261,20 @@ def tube_locations(source_racks,
         List with indexes of wells to skip
     number_of_tubes : int
         How many tubes/wells are used for this specific type
+    reagent_type: 
+        Discribe the reagent type. See reagent_dict in defining_liquids for the
+        options.
+    volume: int
+        What is the volume that is present in the tube? If this is not clear,
+        put in '1'
+     protocol : def run(protocol: protocol_api.ProtocolContext):
+        
     
     Returns
     -------
     tubes : list of tube locations
-        List with all tubes for this specific type
-        
+        List with all tubes for this specific type with the color defined with
+        the function defining_liquids
 
     """
     #### Make an empty list to append tubes/wells to
@@ -254,9 +304,17 @@ def tube_locations(source_racks,
             # In reverse order, so that the index does not shift
 
     #### Cut off the list, after a specified number of tubes/wells    
-    tubes = tubes[:number_of_tubes]                           
-   
-    return tubes   
+    tubes = tubes[:number_of_tubes]                       
+    
+    liquid = defining_liquids(reagent_type, protocol)
+    
+    colored_tubes = []
+    
+    for well in tubes:
+        well_color = well.load_liquid(liquid, volume)
+        colored_tubes.append(well_color)
+        
+    return colored_tubes   
 
 def which_tube_type(total_volume, tube_type):
     """

@@ -127,6 +127,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # Defines how much P20 and P300 tip racks you need and if the pipette is True/False
     tip_racks_p20, P20 = LW.number_of_tipracks(starting_tip_p20,
                                                p20_tips_needed)
+    P300 = False
 ## ============================================================================
 
 ## COMMENTS====================================================================
@@ -152,7 +153,8 @@ def run(protocol: protocol_api.ProtocolContext):
                                'tipone_20uL',
                                tip_racks_p20,
                                [1,4],
-                               protocol)   
+                               protocol)
+    tips_p300 = []
     ## ========================================================================
     #### Sample racks
     # Loading sample plates
@@ -167,7 +169,10 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_tubes = LW.tube_locations(sample_racks,
                                      sample_loc,
                                      False,
-                                     plankton.number_of_samples)
+                                     plankton.number_of_samples,
+                                     'samples',
+                                     10,
+                                     protocol)
    
     ## ========================================================================
     #### PCR-plate
@@ -182,14 +187,17 @@ def run(protocol: protocol_api.ProtocolContext):
     sample_destions = LW.tube_locations(PCR_plate,
                                         False,
                                         False,
-                                        plankton.number_of_samples)
+                                        plankton.number_of_samples,
+                                        'other',
+                                        10,
+                                        protocol)
     ## ========================================================================
     ### Loading pipettes
     p20, p300 = LW.loading_pipettes(P20, 
                                     tips_p20,
                                     starting_tip_p20,
-                                    False, 
-                                    [],
+                                    P300, 
+                                    tips_p300,
                                     'A1',
                                     protocol)
 ## ============================================================================
@@ -198,13 +206,13 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     # transfering samples
     PM.transferring_reagents(sample_tubes,
-                            sample_destions,
-                            plankton.sample_volume,
-                            True,
-                            True,
-                            p20,
-                            p300,
-                            protocol)
+                              sample_destions,
+                              plankton.sample_volume,
+                              True,
+                              True,
+                              p20,
+                              p300,
+                              protocol)
 ## ============================================================================
 
 ## LIGHTS======================================================================

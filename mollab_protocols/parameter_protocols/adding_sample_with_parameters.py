@@ -19,7 +19,8 @@ from data.user_storage.mollab_modules import LabWare as LW
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
             'protocolName': 'Adding sample to PCR-plate V1.0',
-            'description': 'adding sample to the PCR plate with barcoded primers'}
+            'description': 'Adding your samples to the PCR plate with (barcoded) primers.'
+            ' The parameters you are able to change are: number of samples and NTCs, the labware your sample is in, what volume of template you want to add, the starting tip and whether the lights are on or off.'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
 
@@ -114,7 +115,7 @@ def run(protocol: protocol_api.ProtocolContext):
         number_of_sample_racks = math.ceil(plankton.number_of_samples/24)
     
     # Sets variables for the starting tips
-    starting_tip_p20 = plankton.starting_tip_p20_row +  plankton.starting_tip_p20_column.strip("this_is_not_an_int")
+    starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
     
     # Calculates the amount of tips needed
     p20_tips_needed, p300_tips_needed = LW.amount_of_tips(plankton.sample_volume,

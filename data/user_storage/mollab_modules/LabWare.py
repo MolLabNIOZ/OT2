@@ -232,6 +232,8 @@ def defining_liquids(reagent_type,
         'samples': ['Samples', 'The samples in the strips/tubes','#FF00FF'],
         'water': ['Water', 'Tube containing water','#0000FF'],
         'tapestation_buffer': ['Tapestation Buffer', 'Tube containing Tapestation buffer','#A52A2A'],
+        'NTC': ['NTC', 'Reaction without template volume','#FF0000'],
+        'Mock': ['MOCK', 'The tube containing your MOCK','#239B56'],
         'other': ['Other', 'remaining liquids','#000000'],
         }
     
@@ -308,13 +310,67 @@ def tube_locations(source_racks,
     
     liquid = defining_liquids(reagent_type, protocol)
     
-    colored_tubes = []
-    
     for well in tubes:
-        well_color = well.load_liquid(liquid, volume)
-        colored_tubes.append(well_color)
+        well.load_liquid(liquid, volume)
         
-    return colored_tubes   
+    return tubes
+
+def multiple_reagent_tube_locations (source_racks,
+                                     specific_columns,
+                                     skip_wells,
+                                     reagent_and_numbers_dict,
+                                     volume,
+                                     protocol):
+
+    #### Make an empty list to append tubes/wells to
+    total_tubes = []
+    
+    #### Append all wells from all racks to the list
+    if not specific_columns:
+        for rack in source_racks:
+            for tube in rack.wells():
+                total_tubes.append(tube)
+    
+    else: # if specific_columns
+        ## Separate racks into specified columns
+        for rack in source_racks:
+            rack_columns = (
+                [rack.columns_by_name()[column]
+                for column in specific_columns])
+            ## Separate columns into wells and add wells to list
+            for column in rack_columns:
+                for well in column:
+                    total_tubes.append(well)
+    
+    #### Remove total_tubes/wells to skip
+    if skip_wells:
+        for index in sorted(skip_wells, reverse=True):
+            del total_tubes[index]
+            # In reverse order, so that the index does not shift
+
+                   
+    # Creates a new list. This will be the variable that is used for the return value
+    return_list = []    
+
+    # For-loop to iterate through the dict. In the loop the following will happen
+    for reagent, number in reagent_and_numbers_dict.items():
+        # Creates a variable depending on the amount of reactions
+        tubes_reagent = (total_tubes[slice(number)])
+        return_list.append(tubes_reagent)
+        
+        # Calls function definging_liquids depending on the reagent in the dict
+        # It will save the color under liquid
+        liquid = defining_liquids(reagent, protocol)
+        
+        # Paints every liquid the right color
+        for well in tubes_reagent:
+            well.load_liquid(liquid, volume)
+        
+        # Deletes the used wells from the list
+        total_tubes = total_tubes[number:]
+    
+    return return_list
+
 
 def which_tube_type(total_volume, tube_type):
     """

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -33,11 +33,18 @@ def add_parameters(parameters: protocol_api.Parameters):
     #### Samples
     parameters.add_int(variable_name="number_of_samples",
                        display_name="number of unique samples",
-                       description="Number of unique samples. Include samples & mock but EXCLUDE the NTC.",
-                       default=95,
+                       description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
+                       default=94,
                        minimum=0,
-                       maximum=95,
+                       maximum=94,
                        unit="samples")
+    parameters.add_int(variable_name="number_of_Mocks",
+                       display_name="number of unique Mocks",
+                       description="Number of unique Mocks. Could be 0 or 1",
+                       default=1,
+                       minimum=0,
+                       maximum=1,
+                       unit="Mocks")
     parameters.add_int(variable_name="number_of_NTCs",
                        display_name="number of NTCs",
                        description="Number of NTCs. A NTC is a reaction without any template volume added.",
@@ -117,6 +124,7 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # Sets variables for the starting tips
     starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
+    starting_tip_p300 = 'A1'
     
     # Calculates the amount of tips needed
     p20_tips_needed, p300_tips_needed = LW.amount_of_tips(plankton.sample_volume,
@@ -166,14 +174,12 @@ def run(protocol: protocol_api.ProtocolContext):
                                          protocol)
     
     # Specifying the tube wells locations within the sample racks
-    sample_tubes = LW.tube_locations(sample_racks,
-                                     sample_loc,
-                                     False,
-                                     plankton.number_of_samples,
-                                     'samples',
-                                     10,
-                                     protocol)
-   
+    sample_tubes, Mock_tubes =  LW.multiple_reagent_tube_locations(source_racks = sample_racks,
+                                     specific_columns = sample_loc,
+                                     skip_wells = False,
+                                     reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks},
+                                     volume = 10,
+                                     protocol = protocol) 
     ## ========================================================================
     #### PCR-plate
     # Loading PCR-plate
@@ -183,21 +189,21 @@ def run(protocol: protocol_api.ProtocolContext):
                                        1, 
                                        [6], 
                                        protocol)
-    # Sample destinations
-    sample_destinations = LW.tube_locations(PCR_plate,
-                                        False,
-                                        False,
-                                        plankton.number_of_samples,
-                                        'other',
-                                        10,
-                                        protocol)
+
+    
+    sample_destinations, Mock_destination, NTC_destinations = LW.multiple_reagent_tube_locations(source_racks = PCR_plate,
+                                                                                                 specific_columns = False,
+                                                                                                 skip_wells = False,
+                                                                                                 reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs},
+                                                                                                 volume = 0,
+                                                                                                 protocol = protocol)   
     ## ========================================================================
     ### Loading pipettes
     p20, p300 = LW.loading_pipettes(P20, 
                                     tips_p20,
                                     starting_tip_p20,
-                                    P300, 
-                                    tips_p300,
+                                    False, 
+                                    [],
                                     'A1',
                                     protocol)
 ## ============================================================================
@@ -205,14 +211,15 @@ def run(protocol: protocol_api.ProtocolContext):
 ## PIPETTING===================================================================
 ## ============================================================================
     # transfering samples
-    PM.transferring_reagents(sample_tubes,
-                             sample_destinations,
-                             plankton.sample_volume,
-                             True,
-                             True,
-                             p20,
-                             p300,
-                             protocol)
+    PM.transferring_reagents(sample_tubes + Mock_tubes,
+                              sample_destinations + Mock_destination,
+                              plankton.sample_volume,
+                              True,
+                              True,
+                              p20,
+                              p300,
+                              protocol)
+
 ## ============================================================================
 
 ## LIGHTS======================================================================

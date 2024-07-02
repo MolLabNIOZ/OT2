@@ -101,10 +101,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                        default="this_is_not_an_int1")
     
     #### Lights/Pause
-    parameters.add_bool(variable_name="lights_on",
-                        display_name="lights on",
-                        description="Do you want the lights turned ON?",
-                        default=True)
+    parameters.add_str(variable_name="lights_on",    
+                        display_name="lights on or off",
+                        choices=[
+                            {"display_name": "on", "value": "on"},
+                            {"display_name": "off", "value": "off"},
+                            ],
+                        default="on")
   
 def run(protocol: protocol_api.ProtocolContext):
     # Sets p as variable for protocol.params, this will make it all shorter
@@ -140,18 +143,25 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## COMMENTS====================================================================
 ## ============================================================================
-    number_of_reactions = plankton.number_of_samples + plankton.number_of_NTCs
+    number_of_reactions = plankton.number_of_samples + plankton.number_of_NTCs + plankton.number_of_Mocks
+    
+
+    
     
     if number_of_reactions > 96:
-        raise Exception(f'You have {plankton.number_of_samples} reactions. ' +
+        raise Exception(f'You have {number_of_reactions} reactions. ' +
                         'This is more than 96 reactions if you add the NTCs and is not possible.')
     else: 
-        protocol.comment("You have {planktonnumber_of_reactions} samples and {plankton.number_of_NTCs}.")
+        protocol.comment(f"You have {plankton.number_of_samples} samples, {plankton.number_of_Mocks} Mocks and {plankton.number_of_NTCs} NTCs.")
 ## ============================================================================
 
 ## LIGHTS======================================================================
 ## ============================================================================
-    protocol.set_rail_lights(plankton.lights_on)
+    if plankton.lights_on == "on":
+        protocol.set_rail_lights(True)
+    
+    if plankton.lights_on == "off":
+        protocol.set_rail_lights(False)
 ## ============================================================================    
 
 # LOADING LABWARE AND PIPETTES=================================================
@@ -202,9 +212,9 @@ def run(protocol: protocol_api.ProtocolContext):
     p20, p300 = LW.loading_pipettes(P20, 
                                     tips_p20,
                                     starting_tip_p20,
-                                    False, 
-                                    [],
-                                    'A1',
+                                    P300, 
+                                    tips_p300,
+                                    starting_tip_p300,
                                     protocol)
 ## ============================================================================
 

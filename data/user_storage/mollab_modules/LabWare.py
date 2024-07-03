@@ -321,6 +321,32 @@ def multiple_reagent_tube_locations (source_racks,
                                      reagent_and_numbers_dict,
                                      volume,
                                      protocol):
+    """
+    Parameters
+    ----------
+    source_racks : list
+        List with all loaded tube_racks for this reagent
+    specific_columns : False or list with column numbers
+        PCR strips are only located in specific columns of a plate_96
+    skip_wells : False or list with indexes
+        List with indexes of wells to skip
+    reagent_and_numbers_dict: dict
+        Dict containing the names of the liquids, see reagent_dict in 
+        defining_liquids for the options and the numbers of how many times it 
+        is present in the rack.
+    volume: int
+        What is the volume that is present in the tube? If this is not clear,
+        put in '1'
+     protocol : def run(protocol: protocol_api.ProtocolContext):
+        
+    
+    Returns
+    -------
+    tubes : list of tube locations
+        List with all tubes for this specific type with the color defined with
+        the function defining_liquids
+
+    """
 
     #### Make an empty list to append tubes/wells to
     total_tubes = []

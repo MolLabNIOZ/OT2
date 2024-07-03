@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Adding sample to PCR-plate V1.0 with lights test',
+            'protocolName': 'Adding sample to PCR-plate V1.0',
             'description': 'Adding your samples to the PCR plate with (barcoded) primers.'
             ' The parameters you are able to change are: number of samples and NTCs, the labware your sample is in, what volume of template you want to add, the starting tip and whether the lights are on or off.'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}

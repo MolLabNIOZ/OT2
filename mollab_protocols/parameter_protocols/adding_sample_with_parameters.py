@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Adding sample to PCR-plate V1.0',
+            'protocolName': 'Adding sample to PCR-plate V1.0 with lights test',
             'description': 'Adding your samples to the PCR plate with (barcoded) primers.'
             ' The parameters you are able to change are: number of samples and NTCs, the labware your sample is in, what volume of template you want to add, the starting tip and whether the lights are on or off.'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -100,14 +100,11 @@ def add_parameters(parameters: protocol_api.Parameters):
                            ],
                        default="this_is_not_an_int1")
     
-    #### Lights/Pause
-    parameters.add_str(variable_name="lights_on",    
-                        display_name="lights on or off",
-                        choices=[
-                            {"display_name": "on", "value": "on"},
-                            {"display_name": "off", "value": "off"},
-                            ],
-                        default="on")
+    #### Lights/Pause  
+    parameters.add_bool(variable_name="lights_on",
+                        display_name="lights on",
+                        description="Do you want the lights turned ON?",
+                        default=True)
   
 def run(protocol: protocol_api.ProtocolContext):
     # Sets p as variable for protocol.params, this will make it all shorter
@@ -145,9 +142,6 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     number_of_reactions = plankton.number_of_samples + plankton.number_of_NTCs + plankton.number_of_Mocks
     
-
-    
-    
     if number_of_reactions > 96:
         raise Exception(f'You have {number_of_reactions} reactions. ' +
                         'This is more than 96 reactions if you add the NTCs and is not possible.')
@@ -157,11 +151,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## LIGHTS======================================================================
 ## ============================================================================
-    if plankton.lights_on == "on":
-        protocol.set_rail_lights(True)
-    
-    if plankton.lights_on == "off":
-        protocol.set_rail_lights(False)
+    protocol.set_rail_lights(plankton.lights_on)
 ## ============================================================================    
 
 # LOADING LABWARE AND PIPETTES=================================================

@@ -20,10 +20,10 @@ from data.user_storage.mollab_modules import LabWare as LW
 # calculating protocl
 # =============================================================================
 #How much sample volume (µL) do you want to use for the dilution?
-sample_volume = 0#<Sample_volumes>
+sample_volume = <Sample_volumes>
   ## Can be one volume or a list of volumes
   
-water_volume = 0#<Water_volumes>
+water_volume = <Water_volumes>
   # Can be one volume or a list of volumes.
 # =============================================================================
 
@@ -162,3 +162,88 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================    
+    #### Pipette tips
+    # Loading p20 tips
+    tips_20 = LW.loading_tips(simulate = simulate, 
+                              tip_type = 'tipone_20uL', 
+                              amount = tip_racks_p20, 
+                              deck_positions = [7,10,11,8], 
+                              protocol = protocol)
+    
+    # Loading p300 tips
+    tips_300 = LW.loading_tips(simulate = simulate,
+                               tip_type = 'opentrons_200uL',
+                               amount = tip_racks_p300,
+                               deck_positions = [8,11,10,7],
+                               protocol = protocol)
+                               
+    ### Loading pipettes
+    p20, p300 = LW.loading_pipettes(P20 = P20, 
+                                    tips_20 = tips_20,
+                                    starting_tip_p20 = starting_tip_p20,
+                                    P300 = P300, 
+                                    tips_300 = tips_300,
+                                    starting_tip_p300 = starting_tip_p300,
+                                    protocol = protocol)
+    
+    #### Loading labware
+    # Loading water tube rack
+    water_rack = LW.loading_tube_racks(simulate = simulate, 
+                                       tube_type = reagent_tube_type, 
+                                       reagent_type = 'Water', 
+                                       amount = 1, 
+                                       deck_positions = [3], 
+                                       protocol = protocol)
+    
+    # Spefifying location of the water tube
+    water_tubes = LW.tube_locations(source_racks = water_rack,
+                                    specific_columns = False,
+                                    skip_wells = False,
+                                    number_of_tubes = number_of_tubes,
+                                    reagent_type = 'water',
+                                    volume = total_water,
+                                    protocol = protocol)
+
+    # Loading source plate
+    source_plate = LW.loading_tube_racks(simulate = simulate,
+                                         tube_type = 'plate_96_NIOZholder',
+                                         reagent_type = 'source_plate',
+                                         amount = 1,
+                                         deck_positions = [1],
+                                         protocol = protocol)
+
+    # Loading destination plate
+    destination_plate = LW.loading_tube_racks(simulate = simulate,
+                                              tube_type = 'plate_96_NIOZholder',
+                                              reagent_type = 'destination_plate',
+                                              amount = 1,
+                                              deck_positions = [2],
+                                              protocol = protocol)
+## ============================================================================
+
+## PIPETTING===================================================================
+## ============================================================================
+    # Settings for aliquoting of the water volumes in the destination plate
+    PM.aliquoting_varying_volumes(reagent_source = water_tubes, 
+                                  reagent_tube_type = reagent_tube_type, 
+                                  reagent_startvolume = total_water,
+                                  aliquot_volumes = water_volume,
+                                  destination_wells = destination_plate[0].wells(),
+                                  p20 = p20,
+                                  p300 = p300,
+                                  tip_change = 16,
+                                  action_at_bottom = 'next_tube',
+                                  pause = False,
+                                  protocol = protocol)
+    
+    # Settings for transfering the sample volumes in the destination plate
+    PM.transferring_varying_volumes(source_wells = source_plate[0].wells(),
+                                    destination_wells = destination_plate[0].wells(),
+                                    transfer_volumes = sample_volume,
+                                    airgap = True,
+                                    mix = True,
+                                    p20 = p20,
+                                    p300 = p300,
+                                    protocol = protocol)
+## LIGHTS & COMMENT------------------------------------------------------------
+    protocol.set_rail_lights(False)

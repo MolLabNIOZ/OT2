@@ -222,162 +222,94 @@ def aliquoting_varying_volumes(reagent_source,
     #### Variables for volume tracking and when to change tubes     
     counter = 0
     source = reagent_source[counter]
-    #### to keep track of tip use, to determine when to change tip
-    tip_counter = 0
     
-    #### All reagent with p20
-    ### Loop through list of volumes and destinations
-    for well, aliquot_volume in zip(destination_wells, 
-                                    aliquot_volumes):
-        if 0 < aliquot_volume <= 19:
-            pipette  = p20
-            gap = 1
-            push_out_volume = 1
-            
-            ## If we are at the first well, start by picking up a tip
-            if tip_counter == 0:
-                pipette.pick_up_tip()
-            ## Change tips after x number of aliquots
-            if tip_counter % tip_change == 0:
-                pipette.drop_tip()
-                pipette.pick_up_tip()
-            
-            #### Call volume_tracking function
-            current_height, pip_height, bottom_reached = (
-                VT.volume_tracking(
-                    reagent_tube_type,
-                    aliquot_volume, 
-                    current_height, 
-                    'emptying'))
-            
-            ### What to do when the bottom of the tube is reached        
-            if bottom_reached:
-                # Continue with next tube, reset volume_tracking
-                if action_at_bottom == 'next_tube':                                          
-                    current_height = start_height
+    #### Looping through pipettes:
+    for pipette in [p20,p300]:
+        #### to keep track of tip use, to determine when to change tip
+        tip_counter = 0
+        
+        ### Loop through list of volumes and destinations
+        for well, aliquot_volume in zip(destination_wells, 
+                                        aliquot_volumes):
+            if pipette  == p20:
+                min_volume = 0
+                max_volume = 19
+                gap = 1
+                push_out_volume = 1
+            elif pipette == p300:
+                min_volume = 19
+                max_volume = 195
+                gap = 10
+                push_out_volume = 5
+                
+            if min_volume < aliquot_volume <= max_volume:
+                
+                    ## If we are at the first well, start by picking up a tip
+                    if tip_counter == 0:
+                        pipette.pick_up_tip()
+                    ## Change tips after x number of aliquots
+                    if tip_counter % tip_change == 0:
+                        pipette.drop_tip()
+                        pipette.pick_up_tip()
+                    
+                    #### Call volume_tracking function
                     current_height, pip_height, bottom_reached = (
                         VT.volume_tracking(
-                            reagent_tube_type, 
+                            reagent_tube_type,
                             aliquot_volume, 
                             current_height, 
                             'emptying'))
-                    counter = counter + 1
-                    source = reagent_source[counter]
-                    aspiration_location = source.bottom(current_height)
-                    protocol.comment(f"Continue with tube "
-                                     f"{str(counter + 1)} of reagent")
+                    
+                    ### What to do when the bottom of the tube is reached        
+                    if bottom_reached:
+                        # Continue with next tube, reset volume_tracking
+                        if action_at_bottom == 'next_tube':                                          
+                            current_height = start_height
+                            current_height, pip_height, bottom_reached = (
+                                VT.volume_tracking(
+                                    reagent_tube_type, 
+                                    aliquot_volume, 
+                                    current_height, 
+                                    'emptying'))
+                            counter = counter + 1
+                            source = reagent_source[counter]
+                            aspiration_location = source.bottom(current_height)
+                            protocol.comment(f"Continue with tube "
+                                             f"{str(counter + 1)} of reagent")
+                    
+                        # Keep pipetting from the bottom
+                        elif action_at_bottom == 'continue_at_bottom':
+                            aspiration_location = source.bottom()
+                            protocol.comment("You've reached the bottom "
+                                             "of the tube!")   
+                        
+                        # Raise an error
+                        elif action_at_bottom == 'raise_error':
+                            raise Exception("There is not enough reagent to run "
+                                            "this protocol")
             
-                # Keep pipetting from the bottom
-                elif action_at_bottom == 'continue_at_bottom':
-                    aspiration_location = source.bottom()
-                    protocol.comment("You've reached the bottom "
-                                     "of the tube!")   
+                    ### What to do when the bottom of the tube is not yet reached    
+                    else:
+                        aspiration_location = source.bottom(pip_height)
+            
+                    ## The actual aliquoting by reverse pipetting
+                    # Aspirate specified volume + extra from the source tube
+                    pipette.aspirate(aliquot_volume + gap, aspiration_location)
+                    # Dispense specified volume in destination well
+                    pipette.dispense(aliquot_volume, well.bottom(2))
+                    # introduce an airgap to avoid dripping
+                    pipette.air_gap(gap)
+                    # Dispense the remaining air + reagent back into the source tube
+                    pipette.dispense(gap * 2, aspiration_location, push_out=push_out_volume) # Blow-out
+                    
+                    # Add 1 use to the tip_counter
+                    tip_counter += 1
                 
-                # Raise an error
-                elif action_at_bottom == 'raise_error':
-                    raise Exception("There is not enough reagent to run "
-                                    "this protocol")
-    
-            ### What to do when the bottom of the tube is not yet reached    
-            else:
-                aspiration_location = source.bottom(pip_height)
-    
-            ## The actual aliquoting by reverse pipetting
-            # Aspirate specified volume + extra from the source tube
-            pipette.aspirate(aliquot_volume + gap, aspiration_location)
-            # Dispense specified volume in destination well
-            pipette.dispense(aliquot_volume, well.bottom(2))
-            # introduce an airgap to avoid dripping
-            pipette.air_gap(gap)
-            # Dispense the remaining air + reagent back into the source tube
-            pipette.dispense(gap * 2, aspiration_location, push_out=push_out_volume) # Blow-out
-            
-            # Add 1 use to the tip_counter
-            tip_counter = tip_counter + 1
-            
         ## When finished with p20 pipette, drop tip and reset counter
         try:
             pipette.drop_tip()    
         except:
             continue
-        
-        
-        #### All reagent with p300
-        tip_counter = 0
-        ### Loop through list of volumes and destinations
-        for well, aliquot_volume in zip(destination_wells, 
-                                        aliquot_volumes):
-            if aliquot_volume > 19:
-                pipette  = p300
-                gap = 10
-                push_out_volume = 5
-                
-                ## If we are at the first well, start by picking up a tip
-                if tip_counter == 0:
-                    pipette.pick_up_tip()
-                ## Change tips after x number of aliquots
-                if tip_counter % tip_change == 0:
-                    pipette.drop_tip()
-                    pipette.pick_up_tip()
-                
-                #### Call volume_tracking function
-                current_height, pip_height, bottom_reached = (
-                    VT.volume_tracking(
-                        reagent_tube_type,
-                        aliquot_volume, 
-                        current_height, 
-                        'emptying'))
-                
-                ### What to do when the bottom of the tube is reached        
-                if bottom_reached:
-                    # Continue with next tube, reset volume_tracking
-                    if action_at_bottom == 'next_tube':                                          
-                        current_height = start_height
-                        current_height, pip_height, bottom_reached = (
-                            VT.volume_tracking(
-                                reagent_tube_type, 
-                                aliquot_volume, 
-                                current_height, 
-                                'emptying'))
-                        counter = counter + 1
-                        source = reagent_source[counter]
-                        aspiration_location = source.bottom(current_height)
-                        protocol.comment(f"Continue with tube "
-                                         f"{str(counter + 1)} of reagent")
-                
-                    # Keep pipetting from the bottom
-                    elif action_at_bottom == 'continue_at_bottom':
-                        aspiration_location = source.bottom()
-                        protocol.comment("You've reached the bottom "
-                                         "of the tube!")   
-                    
-                    # Raise an error
-                    elif action_at_bottom == 'raise_error':
-                        raise Exception("There is not enough reagent to run "
-                                        "this protocol")
-        
-                ### What to do when the bottom of the tube is not yet reached    
-                else:
-                    aspiration_location = source.bottom(pip_height)
-        
-                ## The actual aliquoting by reverse pipetting
-                # Aspirate specified volume + extra from the source tube
-                pipette.aspirate(aliquot_volume + gap, aspiration_location)
-                # Dispense specified volume in destination well
-                pipette.dispense(aliquot_volume, well.bottom(2))
-                # introduce an airgap to avoid dripping
-                pipette.air_gap(gap)
-                # Dispense the remaining air + reagent back into the source tube
-                pipette.dispense(gap * 2, aspiration_location, push_out=push_out_volume) # Blow-out
-                
-                # Add 1 use to the tip_counter
-                tip_counter = tip_counter + 1
-                
-            ## When finished with p20 pipette, drop tip and reset counter
-            try:
-                pipette.drop_tip()    
-            except:
-                continue
             
     ## If desired, pause after aliquoting
     if pause:

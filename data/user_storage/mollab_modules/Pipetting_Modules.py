@@ -207,6 +207,7 @@ def aliquoting_varying_volumes(reagent_source,
     None.
 
     """   
+    protocol.comment("newest version of module")
     #### Import volume tracking module
     from data.user_storage.mollab_modules import VolumeTracking as VT
     
@@ -248,7 +249,7 @@ def aliquoting_varying_volumes(reagent_source,
                     if tip_counter == 0:
                         pipette.pick_up_tip()
                     ## Change tips after x number of aliquots
-                    if tip_counter % tip_change == 0:
+                    elif tip_counter % tip_change == 0:
                         pipette.drop_tip()
                         pipette.pick_up_tip()
                     
@@ -305,7 +306,7 @@ def aliquoting_varying_volumes(reagent_source,
                     # Add 1 use to the tip_counter
                     tip_counter += 1
                 
-        ## When finished with p20 pipette, drop tip and reset counter
+        ## When finished with pipette, drop tip and reset counter
         try:
             pipette.drop_tip()    
         except:

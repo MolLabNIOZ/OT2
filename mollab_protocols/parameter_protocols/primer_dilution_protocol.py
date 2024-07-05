@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -139,7 +139,10 @@ def run(protocol: protocol_api.ProtocolContext):
     starting_tip_p300 = plankton.starting_tip_p300_row + plankton.starting_tip_p300_column.strip("this_is_not_an_int")
 
     # Sets variable for the dilution_rate
-    dilution_rate = plankton.dilution_rate.strip("_times")
+    if plankton.dilution_rate == "10_times":
+        dilution_rate = 10
+    if plankton.dilution_rate == "5_times":
+        dilution_rate = 5
 # =============================================================================
 
 ## CALCULATED VARIABLES========================================================
@@ -233,7 +236,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                 protocol = protocol)
     ## ========================================================================
     #### Loading stock racks
-    ## Loading stock plates
+    # Loading stock plates
     stock_racks = LW.loading_tube_racks(simulate = simulate,
                                         tube_type = 'PCR_strips',
                                         reagent_type = 'stocks',
@@ -244,29 +247,55 @@ def run(protocol: protocol_api.ProtocolContext):
     stocks = LW.tube_locations(source_racks = stock_racks,
                                specific_columns = stock_strip_columns,
                                skip_wells = False,
-                               number_of_tubes = plankton.number_to_dilute,
+                               number_of_tubes = plankton.number_of_primers,
                                reagent_type = 'primer_stocks',
                                volume = stock_volume,
                                protocol = protocol)
     ## ========================================================================
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    #### Loading dilution racks
+    # Loading dilution plates
+    dilution_racks = LW.loading_tube_racks(simulate = simulate,
+                                        tube_type = 'PCR_strips',
+                                        reagent_type = 'dilution',
+                                        amount = number_dilution_racks,
+                                        deck_positions = [3,6,9],
+                                        protocol = protocol)
+    # Specific location of tubes
+    dilutions = LW.tube_locations(source_racks = dilution_racks,
+                               specific_columns = dilution_strip_columns,
+                               skip_wells = False,
+                               number_of_tubes = plankton.number_of_primers,
+                               reagent_type = 'primer_working_dilution',
+                               volume = plankton.final_volume,
+                               protocol = protocol)
+## ============================================================================
+
+## PIPETTING===================================================================
+## ============================================================================
+    # Aliquoting reagents
+    PM.aliquoting_reagent(reagent_source = reagent,
+                          reagent_tube_type = reagent_tube_type,
+                          reagent_startvolume = max_volume,
+                          aliquot_volume = reagent_volume,
+                          destination_wells = dilutions,
+                          p20 = p20,
+                          p300 = p300,
+                          tip_change = 16,
+                          action_at_bottom = 'next_tube',
+                          pause = False,
+                          protocol = protocol)
+    # Transfering stocks
+    PM.transferring_reagents(source_wells = stocks,
+                             destination_wells = dilutions,
+                             transfer_volume = stock_volume,
+                             airgap = True,
+                             mix = True,
+                             p20 = p20,
+                             p300 = p300,
+                             protocol = protocol)
+## ============================================================================
+ 
+## LIGHTS======================================================================
+## ============================================================================
+    protocol.set_rail_lights(False)
+## ============================================================================

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = False
+simulate = True
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 

@@ -189,8 +189,8 @@ def run(protocol: protocol_api.ProtocolContext):
                                      False,
                                      False,
                                      plankton.number_of_samples,
-                                     'other',
-                                     10,
+                                     'tapestation_sample',
+                                     0,
                                      protocol)
     
     #### Tapestation buffer

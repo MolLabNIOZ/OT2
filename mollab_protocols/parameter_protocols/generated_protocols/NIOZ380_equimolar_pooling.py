@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains template data that will be replaced by the TapeStation 
 # calculating protocol
 # =============================================================================
-DNA_µL_list = <DNA_volumes>
+DNA_µL_list = [100.0, 100.0, 45, 100.84, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 110.67, 45, 100.0, 100.0, 100, 100.0, 100.0, 150.96, 140.1, 100.0, 100.0, 100.0, 100.0, 45, 100.0, 100.0, 100.0, 45, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 45, 100.0, 100.0, 100.0, 100.0, 170.74, 100.0, 100.0, 170, 100.0, 100.0, 170.25, 170, 100.0, 170, 170, 170, 170.43, 100.0, 100.0, 100.0, 170, 170, 170.47, 170, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 170, 170, 100.0, 100.0, 100.0, 170, 100.0, 100.0, 100.0, 170, 100.0, 170, 100.0, 170, 170, 100.0, 100.0, 100.0, 100.0, 170, 170, 100.0, 100.0, 170, 100.0, 170]
 # =============================================================================
 
 # METADATA=====================================================================
@@ -210,7 +210,7 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_tube = LW.tube_locations(source_racks = destination_rack,
                                          specific_columns = False,
                                          skip_wells = False,
-                                         number_of_tubes = number_of_tubes/number_of_tubes/number_of_tubes,
+                                         number_of_tubes = number_of_tubes,
                                          reagent_type = 'PB-buffer',
                                          volume = PB_volume,
                                          protocol = protocol)
@@ -230,6 +230,8 @@ def run(protocol: protocol_api.ProtocolContext):
                                p20 = p20,
                                p300 = p300,
                                protocol = protocol)
+    
+    print(number_of_tubes)
 ## ============================================================================    
     
 # TURN RAIL LIGHT OFF==========================================================

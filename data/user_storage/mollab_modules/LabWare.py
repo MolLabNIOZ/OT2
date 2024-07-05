@@ -232,8 +232,10 @@ def defining_liquids(reagent_type,
         'samples': ['Samples', 'The samples in the strips/tubes','#FF00FF'],
         'water': ['Water', 'Tube containing water','#0000FF'],
         'tapestation_buffer': ['Tapestation Buffer', 'Tube containing Tapestation buffer','#A52A2A'],
+        'tapestation_sample': ['Tapestation Sample', 'Destination plate containing the Tapestation buffer and your sample','#1FB960'],
         'NTC': ['NTC', 'Reaction without template volume','#FF0000'],
         'Mock': ['MOCK', 'The tube containing your MOCK','#239B56'],
+        'PB-buffer': ['PB buffer', 'The tube with the starting amount of PB-buffer for the equimolar pooling','#FFC500'],
         'other': ['Other', 'remaining liquids','#000000'],
         }
     

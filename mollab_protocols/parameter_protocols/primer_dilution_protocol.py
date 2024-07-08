@@ -138,11 +138,8 @@ def run(protocol: protocol_api.ProtocolContext):
     starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
     starting_tip_p300 = plankton.starting_tip_p300_row + plankton.starting_tip_p300_column.strip("this_is_not_an_int")
 
-    # Sets variable for the dilution_rate
-    if plankton.dilution_rate == "10_times":
-        dilution_rate = 10
-    if plankton.dilution_rate == "5_times":
-        dilution_rate = 5
+    # Sets variable for the dilution_rate        
+    dilution_rate = int(plankton.dilution_rate.strip("_times"))
 # =============================================================================
 
 ## CALCULATED VARIABLES========================================================

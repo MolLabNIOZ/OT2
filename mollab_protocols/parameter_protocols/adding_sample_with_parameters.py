@@ -36,7 +36,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
                        default=94,
                        minimum=0,
-                       maximum=94,
+                       maximum=95,
                        unit="samples")
     parameters.add_int(variable_name="number_of_Mocks",
                        display_name="number of unique Mocks",

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = False
+simulate = True
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -19,8 +19,8 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Adding sample & mix to qPCR-plate without barcodes V1.0',
-            'description': 'Adding your samples and mix to the qPCR plate with unlabeled primers.'
+            'protocolName': 'Adding sample & mix to PCR-plate without barcodes V1.0',
+            'description': 'Adding your samples and mix to the PCR plate with unlabeled primers.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -82,29 +82,6 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=1.0,
                        maximum=15.0,
                        unit="µL sample")
-    
-    #### Standard sample and dilution serie
-    parameters.add_int(variable_name="number_of_std_series",
-                       display_name="number of dilution series",
-                       description="Number of replicates of the dilution serie used for quantification.",
-                       default= 3,
-                       minimum= 0,
-                       maximum= 4,
-                       unit="dil series")
-    parameters.add_int(variable_name="lenght_of_std_serie",
-                       display_name="length dilution series",
-                       description="The length of a single standard dilution serie. How many reacties is your standard dilution serie?",
-                       default= 8,
-                       minimum= 0,
-                       maximum= 8,
-                       unit="dil reacts")
-    parameters.add_int(variable_name="number_of_std_samples",
-                       display_name="number of standard samples",
-                       description="Number of replicates of the standard sample used for normalization between the qPCR plates.",
-                       default= 6,
-                       minimum= 0,
-                       maximum= 8,
-                       unit="STD sample")
     
     #### Starting tips
     parameters.add_str(variable_name="starting_tip_p20_row",    
@@ -168,6 +145,12 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "12", "value": "this_is_not_an_int12"}
                            ],
                        default="this_is_not_an_int1")
+    
+    #### Lights/Pause  
+    parameters.add_bool(variable_name="lights_on",
+                        display_name="lights on",
+                        description="Do you want the lights turned ON?",
+                        default=True)
 
 def run(protocol: protocol_api.ProtocolContext):
     # Sets p as variable for protocol.params, this will make it all shorter
@@ -183,15 +166,6 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
-    #### Calculating total amount of reactions
-    number_of_standard_dilution_samples = plankton.number_of_std_series * plankton.lenght_of_std_serie
-    total_reactions = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs + number_of_standard_dilution_samples + plankton.number_of_std_samples
-    if plankton.number_of_std_samples == 0:
-        standard_sample_tubes = 0
-    else:
-        standard_sample_tubes = 1
-    amount_of_unique_tubes = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs + standard_sample_tubes
-
     #### Calculating samples per rack
     if plankton.sample_tube_type == "PCR_strips":
         sample_loc = ['2','7','11']
@@ -201,16 +175,19 @@ def run(protocol: protocol_api.ProtocolContext):
         sample_loc = False
         samples_per_rack = 24
     
-    number_of_sample_racks = math.ceil(amount_of_unique_tubes/samples_per_rack)
+    # Total amount of tubes and racks
+    total_number_of_tubes = plankton.number_of_samples + plankton.number_of_Mocks
+    total_reactions = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs
+    number_of_sample_racks = math.ceil(total_number_of_tubes/samples_per_rack)
     
-    #### Pipette tips
+    #### Calculating tips and tip racks
     # Calculates amount of tips needed for the mastermix and sample
     tips_mastermix = LW.amount_of_tips(plankton.mastermix_volume,
-                                        total_reactions,
+                                        total_number_of_tubes,
                                         16,
                                         19)
     tips_sample = LW.amount_of_tips(plankton.sample_volume,
-                                    total_reactions - number_of_standard_dilution_samples,
+                                    total_number_of_tubes,
                                     1,
                                     15)
     
@@ -235,13 +212,13 @@ def run(protocol: protocol_api.ProtocolContext):
         raise Exception(f'You have {total_reactions} reactions. ' +
                         'This is more than 96 reactions and is not possible, please check again or ask a technician for help!')
     else: 
-        protocol.comment(f"You have {plankton.number_of_samples} samples, {plankton.number_of_Mocks} Mocks and {plankton.number_of_NTCs} NTCs. You also will add {plankton.number_of_std_samples} of standard samples and {plankton.number_of_std_series} standard dilution series with a lenght of {plankton.lenght_of_std_serie} reactions.")
+        protocol.comment(f"You have {plankton.number_of_samples} samples, {plankton.number_of_Mocks} Mocks and {plankton.number_of_NTCs} NTCs.")
 ## ============================================================================
 
 ## LIGHTS======================================================================
 ## ============================================================================
-    protocol.set_rail_lights(False)
-## ============================================================================    
+    protocol.set_rail_lights(plankton.lights_on)
+## ============================================================================
 
 # LOADING LABWARE AND PIPETTES=================================================
 # =============================================================================
@@ -293,12 +270,12 @@ def run(protocol: protocol_api.ProtocolContext):
                                          protocol = protocol)
     
     # Specific location of samples
-    sample_tubes_location, mock_tubes_location, standard_sample_tube_location = LW.multiple_reagent_tube_locations (source_racks = sample_racks,
-                                                                                                                    specific_columns = sample_loc,
-                                                                                                                    skip_wells = False,
-                                                                                                                    reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'standard_samples': standard_sample_tubes},
-                                                                                                                    volume = plankton.sample_volume,
-                                                                                                                    protocol = protocol)
+    sample_tubes_location, mock_tubes_location = LW.multiple_reagent_tube_locations (source_racks = sample_racks,
+                                                                                    specific_columns = sample_loc,
+                                                                                    skip_wells = False,
+                                                                                    reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks},
+                                                                                    volume = plankton.sample_volume,
+                                                                                    protocol = protocol)
     
     #### QPCR-PLATE
     # Loading qPCR-plate
@@ -310,15 +287,12 @@ def run(protocol: protocol_api.ProtocolContext):
                                            protocol = protocol)
     
     # Loading destination wells
-    sample_destination, mock_destination, NTC_destination, STD_destination, dilution_destination = LW.multiple_reagent_tube_locations (source_racks = qPCR_plate,
-                                                                                                                                       specific_columns = False,
-                                                                                                                                       skip_wells = False,
-                                                                                                                                       reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples, 'dilution_series': number_of_standard_dilution_samples},
-                                                                                                                                       volume = plankton.sample_volume,
-                                                                                                                                       protocol = protocol)
-    STD_tubes = []
-    for i in range (plankton.number_of_std_samples):
-        STD_tubes.append(standard_sample_tube_location[0])
+    sample_destination, mock_destination, NTC_destination = LW.multiple_reagent_tube_locations (source_racks = qPCR_plate,
+                                                                                                specific_columns = False,
+                                                                                                skip_wells = False,
+                                                                                                reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs},
+                                                                                                volume = plankton.sample_volume,
+                                                                                                protocol = protocol)
 ## ============================================================================
 
 ## PIPETTING===================================================================
@@ -328,7 +302,7 @@ def run(protocol: protocol_api.ProtocolContext):
                           reagent_tube_type = reagent_tube_type_mastermix,
                           reagent_startvolume = plankton.total_mastermix_volume,
                           aliquot_volume = plankton.mastermix_volume,
-                          destination_wells = sample_destination + mock_destination + NTC_destination + STD_destination + dilution_destination,
+                          destination_wells = sample_destination + mock_destination + NTC_destination,
                           p20 = p20,
                           p300 = p300,
                           tip_change = 16,
@@ -337,8 +311,8 @@ def run(protocol: protocol_api.ProtocolContext):
                           protocol = protocol)
     
     # Transfering samples to plate
-    PM.transferring_reagents(source_wells = sample_tubes_location + mock_tubes_location + STD_tubes,
-                              destination_wells = sample_destination + mock_destination + STD_destination,
+    PM.transferring_reagents(source_wells = sample_tubes_location + mock_tubes_location,
+                              destination_wells = sample_destination + mock_destination,
                               transfer_volume = plankton.sample_volume,
                               airgap = True,
                               mix = True,

@@ -235,11 +235,10 @@ def run(protocol: protocol_api.ProtocolContext):
                           False,
                           protocol)
     # Transfering samples to Tapestation plate
-    PM.transferring_reagents(source_wells,
-                             destination_wells,
-                             sample_volume,
-                             True,
-                             mixing_volume,
-                             p20,
-                             p300,
-                             protocol)
+    PM.transferring_reagents_no_bubbles(source_wells,
+                                        destination_wells,
+                                        sample_volume,
+                                        mixing_volume,
+                                        p20,
+                                        p300,
+                                        protocol)

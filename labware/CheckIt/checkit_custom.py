@@ -213,6 +213,7 @@ def run(protocol: protocol_api.ProtocolContext):
             
                 pipette.pick_up_tip(tip_rack[tip])
                 pipette.aspirate(volume, CheckIt.wells_by_name()['A2'].bottom(2))
+                pipette.move_to(CheckIt.wells_by_name()['A2'].top(5))
                 pipette.dispense(volume, wells[0].bottom(1))
                 pipette.drop_tip()
                 wells.pop(0)
@@ -237,6 +238,7 @@ def run(protocol: protocol_api.ProtocolContext):
             
                 pipette.pick_up_tip(tip_rack[tip])
                 pipette.aspirate(volume, CheckIt.wells_by_name()['A2'].bottom(2))
+                pipette.move_to(CheckIt.wells_by_name()['A2'].top(5))
                 pipette.dispense(volume, wells[0].bottom(1))
                 pipette.drop_tip()
                 wells.pop(0)

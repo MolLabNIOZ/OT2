@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Diluting barcoded primers in PCR-strips V1.0',
+            'protocolName': 'Diluting barcoded primers in PCR-strips V1.1',
             'description': 'Dilute your barcoded primers 10 or 5 times from your primer strip stocks to primer strip working dilutions.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -47,13 +47,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                        unit="µL")
     
     #### Dilution rate
-    parameters.add_str(variable_name="dilution_rate",    
+    parameters.add_int(variable_name="dilution_rate",    
                        display_name="dilution rate",
                        choices=[
-                           {"display_name": "10 times", "value": "10_times"},
-                           {"display_name": "5 times", "value": "5_times"}
+                           {"display_name": "10 times", "value": 10},
+                           {"display_name": "5 times", "value": 5}
                            ],
-                       default="10_times")
+                       default=10)
     
     #### Starting tips
     # P20
@@ -70,23 +70,23 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "H", "value": "H"}
                            ],
                        default="A")
-    parameters.add_str(variable_name="starting_tip_p20_column",    
+    parameters.add_int(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
-                           {"display_name": "1", "value": "this_is_not_an_int1"},
-                           {"display_name": "2", "value": "this_is_not_an_int2"},
-                           {"display_name": "3", "value": "this_is_not_an_int3"},
-                           {"display_name": "4", "value": "this_is_not_an_int4"},
-                           {"display_name": "5", "value": "this_is_not_an_int5"},
-                           {"display_name": "6", "value": "this_is_not_an_int6"},
-                           {"display_name": "7", "value": "this_is_not_an_int7"},
-                           {"display_name": "8", "value": "this_is_not_an_int8"},
-                           {"display_name": "9", "value": "this_is_not_an_int9"},
-                           {"display_name": "10", "value": "this_is_not_an_int10"},
-                           {"display_name": "11", "value": "this_is_not_an_int11"},
-                           {"display_name": "12", "value": "this_is_not_an_int12"}
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
                            ],
-                       default="this_is_not_an_int1")
+                       default=1)
     
     #### Starting tips
     # P300
@@ -103,23 +103,23 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "H", "value": "H"}
                            ],
                        default="A")
-    parameters.add_str(variable_name="starting_tip_p300_column",    
+    parameters.add_int(variable_name="starting_tip_p300_column",    
                        display_name="starting tip p300 column",
                        choices=[
-                           {"display_name": "1", "value": "this_is_not_an_int1"},
-                           {"display_name": "2", "value": "this_is_not_an_int2"},
-                           {"display_name": "3", "value": "this_is_not_an_int3"},
-                           {"display_name": "4", "value": "this_is_not_an_int4"},
-                           {"display_name": "5", "value": "this_is_not_an_int5"},
-                           {"display_name": "6", "value": "this_is_not_an_int6"},
-                           {"display_name": "7", "value": "this_is_not_an_int7"},
-                           {"display_name": "8", "value": "this_is_not_an_int8"},
-                           {"display_name": "9", "value": "this_is_not_an_int9"},
-                           {"display_name": "10", "value": "this_is_not_an_int10"},
-                           {"display_name": "11", "value": "this_is_not_an_int11"},
-                           {"display_name": "12", "value": "this_is_not_an_int12"}
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
                            ],
-                       default="this_is_not_an_int1")
+                       default=1)
     
     #### Lights/Pause  
     parameters.add_bool(variable_name="lights_on",
@@ -134,18 +134,15 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## CONVERTING VARIABLES========================================================
 ## ============================================================================
-    # Sets variables for the starting tips
-    starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
-    starting_tip_p300 = plankton.starting_tip_p300_row + plankton.starting_tip_p300_column.strip("this_is_not_an_int")
-
-    # Sets variable for the dilution_rate        
-    dilution_rate = int(plankton.dilution_rate.strip("_times"))
+    #### Starting tips
+    starting_tip_p20 = plankton.starting_tip_p20_row + str(plankton.starting_tip_p20_column)
+    starting_tip_p300 = plankton.starting_tip_p300_row + str(plankton.starting_tip_p300_column)
 # =============================================================================
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
     # Calculates the volumes that need to be pipetted
-    stock_volume = plankton.final_volume / dilution_rate
+    stock_volume = plankton.final_volume / plankton.dilution_rate
     reagent_volume = plankton.final_volume - stock_volume   
     total_reagent_volume = reagent_volume * plankton.number_of_primers
     reagent_tube_type, number_of_reagent_tubes, max_volume = LW.which_tube_type(total_reagent_volume,

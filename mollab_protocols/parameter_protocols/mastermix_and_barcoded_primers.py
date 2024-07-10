@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'mastermix_and_barcoded_primers',
+            'protocolName': 'mastermix_and_barcoded_primers V1.1',
             'description': 'aliquoting mix and distributing barcoded primers'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -165,6 +165,13 @@ def run(protocol: protocol_api.ProtocolContext):
     plankton = protocol.params
 # =============================================================================
 
+## CONVERTING VARIABLES========================================================
+## ============================================================================
+    #### Starting tips
+    starting_tip_p20 = plankton.starting_tip_p20_row + str(plankton.starting_tip_p20_column)
+    starting_tip_p300 = plankton.starting_tip_p300_row + str(plankton.starting_tip_p300_column)
+# =============================================================================
+
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
     number_of_barcodes = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs
@@ -185,11 +192,6 @@ def run(protocol: protocol_api.ProtocolContext):
     ## How many tube_strip_racks are needed
     primer_per_rack = 8 * len(primer_loc)
     number_of_primer_racks = math.ceil(number_of_barcodes / primer_per_rack)
-    
-    
-    #### Starting tips
-    starting_tip_p20 = plankton.starting_tip_p20_row + str(plankton.starting_tip_p20_column)
-    starting_tip_p300 = plankton.starting_tip_p300_row + str(plankton.starting_tip_p300_column)
 # =============================================================================
 
 # COMMENTS=====================================================================
@@ -339,6 +341,9 @@ def run(protocol: protocol_api.ProtocolContext):
                           pause = plankton.pause,
                           protocol = protocol)
     
+    if plankton.pause:
+        protocol.pause("Please insert the primers and then continue")
+        
     #### Forward primers
     PM.transferring_reagents(source_wells = F_primer_wells,
                              destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],

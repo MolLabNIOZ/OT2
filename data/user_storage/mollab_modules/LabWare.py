@@ -321,12 +321,12 @@ def tube_locations(source_racks,
         
     return tubes
 
-def multiple_reagent_tube_locations (source_racks,
-                                     specific_columns,
-                                     skip_wells,
-                                     reagent_and_numbers_dict,
-                                     volume,
-                                     protocol):
+def multiple_reagent_tube_locations(source_racks,
+                                    specific_columns,
+                                    skip_wells,
+                                    reagent_and_numbers_dict,
+                                    volume,
+                                    protocol):
     """
     Parameters
     ----------

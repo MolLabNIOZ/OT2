@@ -107,19 +107,24 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
     tube_dimensions = {
     '1.5mL_tubes': {
         'diameter_top': 8.7,
-        'height': 37.8},
+        'height': 37.8,
+        'max_fill_height': 35},
     '5mL_screwcap_tubes': {
         'diameter_top': 13,
-        'height': 64.8},
+        'height': 64.8,
+        'max_fill_height': 60},
     '5mL_snapcap_tubes': {
         'diameter_top': 13.3,
-        'height': 55.4},
+        'height': 55.4,
+        'max_fill_height': 50},
     '15mL_tubes': {
         'diameter_top': 15.16,
-        'height': 118.1},
+        'height': 118.1,
+        'max_fill_height': 100},
     '50mL_tubes': {
         'diameter_top': 27.48,
-        'height': 113.3}} 
+        'height': 113.3,
+        'max_fill_height': 100}} 
 
  
     #### Calculate delta_height of the specified volume      
@@ -164,7 +169,7 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
         # not thoroughly tested yet for other tubes then tubes_5mL!!!
     elif direction == 'filling':
         bottom_reached = False
-        if pip_height + delta_height > tube_dimensions[tube_type]['height']:
+        if pip_height + delta_height > tube_dimensions[tube_type]['max_fill_height']:
             bottom_reached = True
         
     

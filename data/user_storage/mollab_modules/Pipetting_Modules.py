@@ -71,11 +71,11 @@ def aliquoting_reagent(reagent_source,
     
     #### Determine start_height (at the start, current_height = start_height)
     start_height = current_height = VT.cal_start_height(reagent_tube_type, 
-                                                     reagent_startvolume)
+                                                        reagent_startvolume)
     #### Determine which pipette to use
     if aliquot_volume > 19:
         pipette = p300
-        gap = 10
+        gap = 5
         push_out_volume = 5
     else:
         pipette = p20
@@ -246,7 +246,7 @@ def aliquoting_varying_volumes(reagent_source,
             elif pipette == p300:
                 min_volume = 19
                 max_volume = 195
-                gap = 10
+                gap = 5
                 push_out_volume = 5
                 
             if min_volume < aliquot_volume <= max_volume:
@@ -633,17 +633,16 @@ def pooling_varying_volumes(source_wells,
                 
         elif pipette == p300:
             min_volume = 19
-            max_volume = 195
-            gap = 10
+            max_volume = 190
+            gap = 5
             push_out_volume = 5
                 
         ### Loop through list of volumes and destinations
         for well, pool_volume in zip(source_wells, pool_volumes):
             ## Aspirate a little more for reverse pipetting
-            aspiration_vol = pool_volume + gap
             
             ## Determine which wells to fill with which pipette
-            if min_volume < aspiration_vol <= max_volume:
+            if min_volume < pool_volume <= max_volume:
 
                 #### Call volume_tracking function
                 current_height, pip_height, bottom_reached = (
@@ -653,15 +652,15 @@ def pooling_varying_volumes(source_wells,
                                        'filling'))
                 pooled_volume += pool_volume
                 
-                #### If necesarry, continue with next tube
+                # ### If necesarry, continue with next tube
                 # if bottom_reached or pooled_volume > pool_volume_per_tube:
                 #     # Continue with next tube, reset volume_tracking
                 #     current_height = start_height
                 #     current_height, pip_height, bottom_reached = (
                 #         VT.volume_tracking(pool_tube_type,
-                #                            pool_volume, 
-                #                            current_height,
-                #                            'filling'))
+                #                             pool_volume, 
+                #                             current_height,
+                #                             'filling'))
                 #     pooled_volume = 0
                 #     counter += 1
                 #     pool = pool_tube[counter]
@@ -682,7 +681,7 @@ def pooling_varying_volumes(source_wells,
                 # Dispense in the pool_tube
                 pipette.dispense(dispense_volume, pool.bottom(pip_height), push_out=push_out_volume)
                 # Mix by pipetting up and down 3x
-                pipette.mix(3, aspiration_vol, pool.bottom(pip_height + 5))
+                pipette.mix(3, pool_volume, pool.bottom(pip_height + 5))
                 # Blow out
                 pipette.blow_out()
                               

@@ -142,8 +142,14 @@ def aliquoting_reagent(reagent_source,
         ## The actual aliquoting by reverse pipetting
         # Aspirate specified volume + extra from the source tube
         pipette.aspirate(aspiration_vol, aspiration_location)
+        
+        # Sets boundries for when pipetting on the well bottom or when 2 mm above the well bottom
+        if aliquot_volume <= 5:
+            dispense_location = well
+        else:
+            dispense_location = well.bottom(2)
         # Dispense specified volume in destination well
-        pipette.dispense(aliquot_volume, well.bottom(2))
+        pipette.dispense(aliquot_volume, dispense_location)
         # introduce an airgap to avoid dripping
         pipette.air_gap(gap)
         # Dispense the remaining air + reagent back into the source tube
@@ -620,10 +626,14 @@ def pooling_varying_volumes(source_wells,
     for pipette in [p20,p300]:
         ### Set airgap size, depending on pipette size
         if pipette  == p20:
+            min_volume = 0
+            max_volume = 19
             gap = 1
             push_out_volume = 2
                 
         elif pipette == p300:
+            min_volume = 19
+            max_volume = 195
             gap = 10
             push_out_volume = 5
                 
@@ -633,8 +643,7 @@ def pooling_varying_volumes(source_wells,
             aspiration_vol = pool_volume + gap
             
             ## Determine which wells to fill with which pipette
-            if (p20 and pipette == p20 and 0 < aspiration_vol <= 20 or 
-                p300 and pipette == p300 and aspiration_vol > 20):
+            if min_volume < aspiration_vol <= max_volume:
 
                 #### Call volume_tracking function
                 current_height, pip_height, bottom_reached = (

@@ -307,7 +307,7 @@ def aliquoting_varying_volumes(reagent_source,
                     # introduce an airgap to avoid dripping
                     pipette.air_gap(gap)
                     # Dispense the remaining air + reagent back into the source tube
-                    pipette.dispense(gap * 2, aspiration_location, push_out=push_out_volume) # Blow-out
+                    pipette.dispense(gap * 2, source.top(-5), push_out=push_out_volume) # Blow-out
                     
                     # Add 1 use to the tip_counter
                     tip_counter += 1

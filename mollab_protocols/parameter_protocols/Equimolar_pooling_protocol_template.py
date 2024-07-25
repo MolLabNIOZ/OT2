@@ -210,9 +210,9 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_tube = LW.tube_locations(source_racks = destination_rack,
                                          specific_columns = False,
                                          skip_wells = False,
-                                         number_of_tubes = number_of_tubes/number_of_tubes/number_of_tubes,
+                                         number_of_tubes = number_of_tubes,
                                          reagent_type = 'PB-buffer',
-                                         volume = PB_volume,
+                                         volume = PB_volume/number_of_tubes/number_of_tubes,
                                          protocol = protocol)
 ## ============================================================================
 

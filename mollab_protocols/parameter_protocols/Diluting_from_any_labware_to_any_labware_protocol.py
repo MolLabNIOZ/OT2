@@ -20,7 +20,10 @@ from data.user_storage.mollab_modules import LabWare as LW
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
             'protocolName': 'Diluting samples in different tube types',
-            'description': 'Diluting anything you want from different tube types to any tube type you want'
+            'description': 'Diluting anything you want from different tube '
+            'types to any tube type you want. If you put the dilution rate to '
+            '1, it will transfer the final volume to the tube type of your '
+            'choice.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -144,6 +147,10 @@ def add_parameters(parameters: protocol_api.Parameters):
                         display_name="lights on",
                         description="Do you want the lights turned ON?",
                         default=True)
+    parameters.add_bool(variable_name="pause",
+                        display_name="pause",
+                        description="Do you want to have a pause between alliqouting and transfering your samples?",
+                        default= False)
 
 def run(protocol: protocol_api.ProtocolContext):
     plankton = protocol.params
@@ -158,64 +165,61 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
+    #### Pipetting variables
     # Calculates all the volumes that needs to be pipetted
     stock_volume = plankton.final_volume / plankton.dilution_rate
     reagent_volume = plankton.final_volume - stock_volume
     total_reagent_volume = reagent_volume * plankton.number_of_dilutions
     
-    # Definees reagent tube
-    reagent_tube_type, number_of_reagent_tubes, max_volume = LW.which_tube_type(total_reagent_volume,
-                                                                                False)
+    # Defines reagent tube
+    water_tube_type, number_of_water_tubes, max_volume_water = LW.which_tube_type(total_reagent_volume,
+                                                                                  False)
+    
+    #### Final and stock racks
     # Possible locations of strips in racks
     possible_strip_locations = {
         1:['6'],
         2:['3','9'],
         3:['2','7','11'],
         4:['2','5','8','11'],
-        5:['1','3','6','9','12'],
-        6:['1','3','5','7','9','11']
         }     
+    # Possible combinations for the different tube types
+    tube_type_dict = {
+        "PCR_strips" : (possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)], len(possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)])*8),
+        "PCR_plate" : (False, 96),
+        "1.5mL_tubes" : (False, 24),
+        } 
     
     # Calculates number of stock racks
-    if plankton.sample_tube_type == "PCR_strips":
-        stock_strip_columns = possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)]    
-        samples_per_rack = len(stock_strip_columns)*8
-    if plankton.sample_tube_type == "PCR_plate":
-        stock_strip_columns = False
-        samples_per_rack = 96
-    if plankton.sample_tube_type == "1.5mL_tubes":
-        stock_strip_columns = False
-        samples_per_rack = 24
+    stock_strip_columns = tube_type_dict[plankton.sample_tube_type][0]
+    samples_per_rack = tube_type_dict[plankton.sample_tube_type][1]
     number_of_sample_racks = plankton.number_of_dilutions / samples_per_rack
-    
-    # Calculates number of destination racks
-    if plankton.final_tube_type == "PCR_strips":
-        final_strip_columns = possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)]  
-        destinations_per_rack = len(final_strip_columns)*8
-    if plankton.final_tube_type == "PCR_plate":
-        final_strip_columns = False
-        destinations_per_rack = 96
-    if plankton.final_tube_type == "1.5mL_tubes":
-        final_strip_columns = False
-        destinations_per_rack = 24
+    # Calculates number of final racks
+    final_strip_columns = tube_type_dict[plankton.final_tube_type][0]
+    destinations_per_rack = tube_type_dict[plankton.final_tube_type][1]
     number_of_final_racks = plankton.number_of_dilutions / destinations_per_rack
 
+    #### Calculates the amount of tip racks needed and set pipette True or False
+    tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = reagent_volume,
+                                                                          number_of_aliquotes = plankton.number_of_dilutions,
+                                                                          volumes_transfering = stock_volume,
+                                                                          number_of_transfers = plankton.number_of_dilutions,
+                                                                          starting_tip_p20 = starting_tip_p20,
+                                                                          starting_tip_p300 = starting_tip_p300)
 ## ============================================================================
 
-## CHECKS======================================================================
+## COMMENTS====================================================================
 ## ============================================================================
     if plankton.final_volume > 180 and plankton.final_tube_type != '1.5mL_tubes':
         check = False
     else:
         check = True
-## ============================================================================
-
-## COMMENTS====================================================================
-## ============================================================================
+        
     if stock_volume < 1:
         raise Exception(f"You would like to dilute {stock_volume} ul. Pipetting"
                         " this amount is not accurate and therefore not advised."
-                        " Please enter a bigger final volume or a smaller dilution rate to continue!")
+                        " Please enter a bigger final volume or a smaller "
+                        "dilution rate to continue!")
     elif 1 <= stock_volume < 2.0:
         protocol.comment(f"You want to pipette {stock_volume} ul of sample. "
                          "This is possible but we advise you to increase the "
@@ -226,11 +230,117 @@ def run(protocol: protocol_api.ProtocolContext):
                          "1.5mL tubes or choose a smaller final volume to "
                          "perform this protocol")
     else:    
-        protocol.comment(f"I need {number_of_reagent_tubes} of {reagent_tube_type}"
-                         f"s filled to {max_volume} ul.")
+        protocol.comment(f"I need {number_of_water_tubes} of {water_tube_type}"
+                         f"s filled to {max_volume_water} ul.")
 ## ============================================================================
 
 ## LIGHTS======================================================================
 ## ============================================================================
     protocol.set_rail_lights(plankton.lights_on)
+## ============================================================================
+
+# LOADING LABWARE AND PIPETTES=================================================
+# =============================================================================
+    #### Pipette tips
+    tips_p20 = LW.loading_tips(simulate,
+                               'tipone_20uL',
+                               tip_racks_p20,
+                               [1,4,7,10],
+                               protocol)
+    tips_p300 = LW.loading_tips(simulate,
+                               'opentrons_200uL',
+                               tip_racks_p300,
+                               [10,7,4,1],
+                               protocol)
+    ## ========================================================================
+    #### Loading pipettes
+    p20, p300 = LW.loading_pipettes(P20 = P20, 
+                                    tips_20 = tips_p20,
+                                    starting_tip_p20 = starting_tip_p20,
+                                    P300 = P300, 
+                                    tips_300 = tips_p300,
+                                    starting_tip_p300 = starting_tip_p300,
+                                    protocol = protocol)
+    ## ========================================================================
+    #### Water rack
+    # Loading water rack
+    tube_rack = LW.loading_tube_racks(simulate = simulate, 
+                                      tube_type = water_tube_type,  
+                                      reagent_type = 'Water', 
+                                      amount = 1, 
+                                      deck_positions = [11], 
+                                      protocol = protocol)
+    # Loading water tube
+    water_tube = LW.tube_locations(source_racks = tube_rack,
+                                   specific_columns = False,
+                                   skip_wells = False,
+                                   number_of_tubes = number_of_water_tubes,
+                                   reagent_type = 'water',
+                                   volume = max_volume_water/number_of_water_tubes/number_of_water_tubes,
+                                   protocol = protocol)
+    ## ========================================================================
+    #### Stock racks
+    # Loading stock racks
+    stock_racks = LW.loading_tube_racks(simulate = simulate, 
+                                        tube_type = plankton.sample_tube_type,  
+                                        reagent_type = 'samples', 
+                                        amount = int(number_of_sample_racks),
+                                        deck_positions = [2,5,8], 
+                                        protocol = protocol)
+    # Loading stock tubes
+    stock_tubes = LW.tube_locations(source_racks = stock_racks,
+                                    specific_columns = stock_strip_columns,
+                                    skip_wells = False,
+                                    number_of_tubes = plankton.number_of_dilutions,
+                                    reagent_type = 'samples',
+                                    volume = stock_volume/plankton.number_of_dilutions,
+                                    protocol = protocol)
+    ## ========================================================================
+    #### Final tube racks
+    # Loading final racks
+    destination_racks = LW.loading_tube_racks(simulate = simulate, 
+                                        tube_type = plankton.final_tube_type,  
+                                        reagent_type = 'final', 
+                                        amount = int(number_of_final_racks), 
+                                        deck_positions = [3,6,9], 
+                                        protocol = protocol)
+    # Loading stock tubes
+    destination_tubes = LW.tube_locations(source_racks = destination_racks,
+                                    specific_columns = final_strip_columns,
+                                    skip_wells = False,
+                                    number_of_tubes = plankton.number_of_dilutions,
+                                    reagent_type = 'destination',
+                                    volume = (reagent_volume + stock_volume)/plankton.number_of_dilutions,
+                                    protocol = protocol)
+## ============================================================================
+
+## PIPETTING===================================================================
+## ============================================================================
+    # Aliquoting water
+    PM.aliquoting_reagent(reagent_source = water_tube,
+                          reagent_tube_type = water_tube_type,
+                          reagent_startvolume = max_volume_water,
+                          aliquot_volume = reagent_volume,
+                          destination_wells = destination_tubes,
+                          p20 = p20,
+                          p300 = p300,
+                          tip_change = 16,
+                          action_at_bottom = 'next_tube',
+                          pause = plankton.pause,
+                          protocol = protocol)
+    ## ========================================================================
+    # Transfering stocks
+    PM.transferring_reagents(source_wells = stock_tubes,
+                             destination_wells = destination_tubes,
+                             transfer_volume = stock_volume,
+                             airgap = True,
+                             mix = True,
+                             p20 = p20,
+                             p300 = p300,
+                             protocol = protocol)
+## ============================================================================
+ 
+## LIGHTS======================================================================
+## ============================================================================
+    protocol.set_rail_lights(False)
 ## ============================================================================

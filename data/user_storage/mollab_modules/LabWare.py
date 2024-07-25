@@ -240,6 +240,7 @@ def defining_liquids(reagent_type,
         'NTC': ['NTC', 'Reaction without template volume','#FF0000'],
         'Mock': ['MOCK', 'The tube containing your MOCK','#239B56'],
         'PB-buffer': ['PB buffer', 'The tube with the starting amount of PB-buffer for the equimolar pooling','#FFC500'],
+        'Qmix': ['Qubit mix', 'The tube with the starting amount of Qubit mix','#FFDC00'],
         'other': ['Other', 'remaining liquids','#000000'],
         }
     
@@ -564,3 +565,68 @@ def amount_of_tips(volumes,
     p300_tips_needed = math.ceil(p300_tips_needed/tip_change)
     
     return p20_tips_needed , p300_tips_needed
+
+#=============================================================================
+
+def number_of_tip_racks_2_0(volumes_aliquoting,
+                            number_of_aliquotes,
+                            volumes_transfering,
+                            number_of_transfers,
+                            starting_tip_p20,
+                            starting_tip_p300):
+    """
+    Parameters
+    ----------
+    volumes_aliquoting : False, list or single number
+        The volume(s) to be aliquoted. If this is not used, set False
+    number_of_aliquotes : int
+        Number of pipette actions will be performed for aliquoting
+    volumes_transfering : False, list or single number
+        The volume(s) to be transfered. If this is not used, set False
+    number_of_transfers : int
+        Number of pipette actions will be performed for transfering
+    starting_tip_p20 : string
+        Well coordinate of the starting tip for the p20 pipette, e.g, 'A1'
+    starting_tip_p300 : string
+        Well coordinate of the starting tip for the p300 pipette, e.g, 'A1'
+   
+    Returns
+    -------
+    tip_racks_p20 : int
+        Number of tip racks for the p20 tips
+    tip_racks_p300 : int
+        Number of tip racks for the p300 tips
+    P20 : Boolean
+        True or False, it will be True if there are any pipette racks needed,
+        else it will be False.
+    P300 : Boolean
+        True or False, it will be True if there are any pipette racks needed,
+        else it will be False.
+    """
+
+    if volumes_aliquoting:
+        tips_aliquoting = amount_of_tips(volumes = volumes_aliquoting,
+                                         number_of_transfers = number_of_aliquotes,
+                                         tip_change = 16,
+                                         max_p20_volume = 19)
+                
+    else:
+        tips_aliquoting = (0,0)
+    
+    if volumes_transfering:
+        tips_transfering = amount_of_tips(volumes = volumes_transfering,
+                                          number_of_transfers = number_of_transfers,
+                                          tip_change = 1,
+                                          max_p20_volume = 15)
+    else:
+        tips_transfering = (0,0)
+
+    amount_tips_20 = tips_aliquoting[0] + tips_transfering[0]
+    amount_tips_300 = tips_aliquoting[1] + tips_transfering[1]
+    
+    tip_racks_p20, P20 = number_of_tipracks(starting_tip_p20,
+                                            amount_tips_20)
+    tip_racks_p300, P300 = number_of_tipracks(starting_tip_p300,
+                                              amount_tips_300)
+    
+    return tip_racks_p20, tip_racks_p300, P20, P300

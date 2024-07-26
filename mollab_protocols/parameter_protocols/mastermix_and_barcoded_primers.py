@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -102,7 +102,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="G")
+                       default="A")
     parameters.add_int(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
@@ -119,7 +119,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "11", "value": 11},
                            {"display_name": "12", "value": 12}
                            ],
-                       default=7)
+                       default=1)
     
     parameters.add_str(variable_name="starting_tip_p300_row",    
                        display_name="starting tip p300 row",
@@ -224,8 +224,6 @@ def run(protocol: protocol_api.ProtocolContext):
     tip_racks_p300, P300 = LW.number_of_tipracks(starting_tip_p300,
                                                  amount_tips_300)
     
-    print(tip_racks_p20,tip_racks_p300)
-
     tips_20 = LW.loading_tips(simulate = simulate,
                               tip_type = 'opentrons_20uL',
                               amount = tip_racks_p20,
@@ -330,40 +328,40 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # THE ACTUAL PIPETTING=========================================================
 # =============================================================================
-    # #### MasterMix
-    # PM.aliquoting_reagent(reagent_source = mastermix_tube,
-    #                       reagent_tube_type = reagent_tube_type,
-    #                       reagent_startvolume = plankton.total_mastermix_volume,
-    #                       aliquot_volume = plankton.mastermix_volume,
-    #                       destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
-    #                       p20 = p20,
-    #                       p300 = p300,
-    #                       tip_change = 16,
-    #                       action_at_bottom = 'continue_at_bottom',
-    #                       pause = plankton.pause,
-    #                       protocol = protocol)
+    #### MasterMix
+    PM.aliquoting_reagent(reagent_source = mastermix_tube,
+                          reagent_tube_type = reagent_tube_type,
+                          reagent_startvolume = plankton.total_mastermix_volume,
+                          aliquot_volume = plankton.mastermix_volume,
+                          destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
+                          p20 = p20,
+                          p300 = p300,
+                          tip_change = 16,
+                          action_at_bottom = 'continue_at_bottom',
+                          pause = plankton.pause,
+                          protocol = protocol)
     
-    # if plankton.pause:
-    #     protocol.pause("Please insert the primers and then continue")
+    if plankton.pause:
+        protocol.pause("Please insert the primers and then continue")
         
-    # #### Forward primers
-    # PM.transferring_reagents(source_wells = F_primer_wells,
-    #                          destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
-    #                          transfer_volume = plankton.primer_vol,
-    #                          airgap = True,
-    #                          mix = True,
-    #                          p20 = p20,
-    #                          p300 = p300,
-    #                          protocol = protocol)
-    # #### Reverse primers
-    # PM.transferring_reagents(source_wells = R_primer_wells,
-    #                           destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
-    #                           transfer_volume = plankton.primer_vol,
-    #                           airgap = True,
-    #                           mix = True,
-    #                           p20 = p20,
-    #                           p300 = p300,
-    #                           protocol = protocol)    
+    #### Forward primers
+    PM.transferring_reagents(source_wells = F_primer_wells,
+                              destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
+                              transfer_volume = plankton.primer_vol,
+                              airgap = True,
+                              mix = True,
+                              p20 = p20,
+                              p300 = p300,
+                              protocol = protocol)
+    #### Reverse primers
+    PM.transferring_reagents(source_wells = R_primer_wells,
+                              destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
+                              transfer_volume = plankton.primer_vol,
+                              airgap = True,
+                              mix = True,
+                              p20 = p20,
+                              p300 = p300,
+                              protocol = protocol)    
 # =============================================================================
 
 # LIGHTS OFF===================================================================

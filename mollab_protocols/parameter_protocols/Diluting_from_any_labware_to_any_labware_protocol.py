@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = False
+simulate = True
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -193,11 +193,11 @@ def run(protocol: protocol_api.ProtocolContext):
     # Calculates number of stock racks
     stock_strip_columns = tube_type_dict[plankton.sample_tube_type][0]
     samples_per_rack = tube_type_dict[plankton.sample_tube_type][1]
-    number_of_sample_racks = plankton.number_of_dilutions / samples_per_rack
+    number_of_sample_racks = int(plankton.number_of_dilutions / samples_per_rack)
     # Calculates number of final racks
     final_strip_columns = tube_type_dict[plankton.final_tube_type][0]
     destinations_per_rack = tube_type_dict[plankton.final_tube_type][1]
-    number_of_final_racks = plankton.number_of_dilutions / destinations_per_rack
+    number_of_final_racks = int(plankton.number_of_dilutions / destinations_per_rack)
 
     #### Calculates the amount of tip racks needed and set pipette True or False
     tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = reagent_volume,
@@ -284,7 +284,7 @@ def run(protocol: protocol_api.ProtocolContext):
     stock_racks = LW.loading_tube_racks(simulate = simulate, 
                                         tube_type = plankton.sample_tube_type,  
                                         reagent_type = 'samples', 
-                                        amount = int(number_of_sample_racks),
+                                        amount = number_of_sample_racks,
                                         deck_positions = [2,5,8], 
                                         protocol = protocol)
     # Loading stock tubes
@@ -301,7 +301,7 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_racks = LW.loading_tube_racks(simulate = simulate, 
                                         tube_type = plankton.final_tube_type,  
                                         reagent_type = 'final', 
-                                        amount = int(number_of_final_racks), 
+                                        amount = number_of_final_racks,
                                         deck_positions = [3,6,9], 
                                         protocol = protocol)
     # Loading stock tubes

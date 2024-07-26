@@ -492,13 +492,12 @@ def number_of_tipracks(starting_tip,
     -------
     amount_tip_racks  : int
     """
-    
-    #### Generate list with all possible coordinates in a rack (A1 to H12)
-    rack = [f"{chr(65 + i)}{j}" for i in range(8) for j in range(1, 13)]
-    
     #### Imports math
     import math
     
+    #### Generate list with all possible coordinates in a rack (A1 to H12)
+    rack = [f"{chr(65 + i)}{j}" for j in range(1, 13) for i in range(8)]
+
     #### Calculate how many racks are needed
     amount_tip_racks = math.ceil((tips_needed - (96 - rack.index(starting_tip))) / 96) + 1
     

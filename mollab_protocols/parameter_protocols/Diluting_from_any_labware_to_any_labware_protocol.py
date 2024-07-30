@@ -245,12 +245,12 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_p20 = LW.loading_tips(simulate,
                                'tipone_20uL',
                                tip_racks_p20,
-                               [1,4,7,10],
+                               [3,6,9],
                                protocol)
     tips_p300 = LW.loading_tips(simulate,
                                'opentrons_200uL',
                                tip_racks_p300,
-                               [10,7,4,1],
+                               [9,6,3],
                                protocol)
     ## ========================================================================
     #### Loading pipettes
@@ -285,7 +285,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                         tube_type = plankton.sample_tube_type,  
                                         reagent_type = 'samples', 
                                         amount = number_of_sample_racks,
-                                        deck_positions = [2,5,8], 
+                                        deck_positions = [1,4,7,10], 
                                         protocol = protocol)
     # Loading stock tubes
     stock_tubes = LW.tube_locations(source_racks = stock_racks,
@@ -302,7 +302,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                         tube_type = plankton.final_tube_type,  
                                         reagent_type = 'final', 
                                         amount = number_of_final_racks,
-                                        deck_positions = [3,6,9], 
+                                        deck_positions = [2,5,8], 
                                         protocol = protocol)
     # Loading stock tubes
     destination_tubes = LW.tube_locations(source_racks = destination_racks,

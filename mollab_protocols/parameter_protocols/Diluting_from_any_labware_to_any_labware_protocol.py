@@ -193,11 +193,13 @@ def run(protocol: protocol_api.ProtocolContext):
     # Calculates number of stock racks
     stock_strip_columns = tube_type_dict[plankton.sample_tube_type][0]
     samples_per_rack = tube_type_dict[plankton.sample_tube_type][1]
-    number_of_sample_racks = int(plankton.number_of_dilutions / samples_per_rack)
+    number_of_sample_racks = int(math.ceil((plankton.number_of_dilutions / samples_per_rack)))
+                                 
     # Calculates number of final racks
     final_strip_columns = tube_type_dict[plankton.final_tube_type][0]
     destinations_per_rack = tube_type_dict[plankton.final_tube_type][1]
-    number_of_final_racks = int(plankton.number_of_dilutions / destinations_per_rack)
+    number_of_final_racks = int(math.ceil((plankton.number_of_dilutions / destinations_per_rack)))
+
 
     #### Calculates the amount of tip racks needed and set pipette True or False
     tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = reagent_volume,
@@ -232,6 +234,11 @@ def run(protocol: protocol_api.ProtocolContext):
     else:    
         protocol.comment(f"I need {number_of_water_tubes} of {water_tube_type}"
                          f"s filled to {max_volume_water} ul.")
+    
+    if plankton.final_tube_type == '1.5mL_tubes' and plankton.number_of_dilutions > 72:
+        raise Exception("Unfortunately, it is not possible to dilute more then "
+                        "72 samples with the final tube type 1.5 mL tubes. "
+                        "Please, change the final tube type or do less dilutions.")        
 ## ============================================================================
 
 ## LIGHTS======================================================================

@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'mastermix_and_barcoded_primers V1.1',
+            'protocolName': 'mastermix_and_barcoded_primers V1.2',
             'description': 'aliquoting mix and distributing barcoded primers'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -223,9 +223,9 @@ def run(protocol: protocol_api.ProtocolContext):
                                                amount_tips_20)
     tip_racks_p300, P300 = LW.number_of_tipracks(starting_tip_p300,
                                                  amount_tips_300)
-    
+
     tips_20 = LW.loading_tips(simulate = simulate,
-                              tip_type = 'opentrons_20uL',
+                              tip_type = 'tipone_20uL',
                               amount = tip_racks_p20,
                               deck_positions = [7,10,11,8],
                               protocol = protocol)
@@ -243,7 +243,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                     starting_tip_p300,
                                     protocol)
     
-    #### LABWARE
+    #### LABWARE 
     ## MASTERMIX
     # Decide what tube type you need for the mastermix
     reagent_tube_type, number_of_tubes, max_volume = LW.which_tube_type(
@@ -279,7 +279,7 @@ def run(protocol: protocol_api.ProtocolContext):
     forward_tubes = LW.tube_locations(source_racks = forward_racks,
                                       specific_columns = primer_loc,
                                       skip_wells = False,
-                                      number_of_tubes = number_of_barcodes,
+                                      number_of_tubes = 96,
                                       reagent_type = 'forward_primer',
                                       volume = plankton.primer_vol/number_of_barcodes,
                                       protocol = protocol)
@@ -300,7 +300,7 @@ def run(protocol: protocol_api.ProtocolContext):
     reverse_tubes = LW.tube_locations(source_racks = reverse_racks,
                                      specific_columns = primer_loc,
                                      skip_wells = False,
-                                     number_of_tubes = number_of_barcodes,
+                                     number_of_tubes = 96,
                                      reagent_type = 'reverse_primer',
                                      volume = plankton.primer_vol/number_of_barcodes,
                                      protocol = protocol)
@@ -346,13 +346,13 @@ def run(protocol: protocol_api.ProtocolContext):
         
     #### Forward primers
     PM.transferring_reagents(source_wells = F_primer_wells,
-                              destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
-                              transfer_volume = plankton.primer_vol,
-                              airgap = True,
-                              mix = True,
-                              p20 = p20,
-                              p300 = p300,
-                              protocol = protocol)
+                             destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
+                             transfer_volume = plankton.primer_vol,
+                             airgap = True,
+                             mix = True,
+                             p20 = p20,
+                             p300 = p300,
+                             protocol = protocol)
     #### Reverse primers
     PM.transferring_reagents(source_wells = R_primer_wells,
                               destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],

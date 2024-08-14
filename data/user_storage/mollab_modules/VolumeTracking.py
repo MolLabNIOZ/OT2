@@ -63,7 +63,7 @@ def cal_start_height(tube_type, start_volume):
     if tube_type == '50mL_tubes':
         start_height = start_height + 1.7
     elif tube_type == '15mL_tubes':
-        start_height = start_height + 27.5
+        start_height = start_height + 12.5
     elif tube_type == '5mL_screwcap_tubes':
         start_height = start_height + 4
     elif tube_type == '5mL_snapcap_tubes':

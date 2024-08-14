@@ -8,7 +8,6 @@ def aliquoting_reagent(reagent_source,
                        destination_wells,
                        p20,
                        p300,
-                       tip_change,
                        action_at_bottom,
                        pause,
                        protocol):
@@ -85,7 +84,7 @@ def aliquoting_reagent(reagent_source,
         if i == 0: 
           pipette.pick_up_tip()
         ## After every #th well, drop tip and pick up new          
-        elif i % tip_change == 0:
+        elif i % 16 == 0:
               pipette.drop_tip()
               pipette.pick_up_tip()
         

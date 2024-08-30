@@ -125,7 +125,10 @@ def run(protocol: protocol_api.ProtocolContext):
     dilution_tubes = LW.tube_locations(source_racks = dilution_racks,
                                        specific_columns = specific_dilution_columns,
                                        skip_wells = False,
-                                       number_of_tubes = plankton.length_std_series)
+                                       number_of_tubes = plankton.length_std_series,
+                                       reagent_type = 'destination',
+                                       volume = 10,
+                                       protocol = protocol)
     
     # Loading PCR-plate
     qPCR_plate = LW.loading_tube_racks(simulate = simulate,
@@ -143,7 +146,10 @@ def run(protocol: protocol_api.ProtocolContext):
         qPCR_wells = LW.tube_locations(source_racks = qPCR_plate,
                                        specific_columns = column,
                                        skip_wells = False,
-                                       number_of_tubes = plankton.length_std_series)
+                                       number_of_tubes = plankton.length_std_series,
+                               			reagent_type = 'samples',
+                       					volume = 10,
+                       					protocol = protocol)
 # =============================================================================
 
 # THE ACTUAL PIPETTING=========================================================

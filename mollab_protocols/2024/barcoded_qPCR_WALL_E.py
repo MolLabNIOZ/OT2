@@ -5,106 +5,270 @@ Standard sample replicates will all get the same barcode
 Dilution series will get either all the same barcode or the same within series, 
 but unique among series
 """
-# VARIABLES TO SET#!!!=========================================================
-# =============================================================================
-
-#### Starting tips
-#Wwhat is the well of the first tipboxes for eithe p20 and p300 tips
-starting_tip_p20 = 'A1'
-starting_tip_p300 = 'A1'
-
-#### MASTERMIX
-# What is the total startvolume (µL) of your mastermix?
-total_mastermix_volume = 924
-# What is the volume (µL) of mastermix that needs to be aliquoted per reaction?
-mastermix_volume = 19
-
-#### SAMPLES
-# How many samples do you want to include?
-number_of_samples = 6     ##!!! NOTE: include in this number the mock too
-# Which specific wells (index) do you want to skip? Leave empty if you do not want to skip
-skipped_wells = []  
-# How many NTCs to include 
-number_of_NTCs = 2
-
-####STANDARDS
-# How many dilution serie replicates do you want to include?
-number_of_std_series = 3 
-  ## If none -- fill in 0
-# How many dilutions are in the standard dilution series?
-length_std_series = 8  ## length_of_std_series  MAX == 8                                     
-# How many replicates of the standard sample do you want?
-number_of_std_samples = 6 
-
-#### PRIMERS
-# In what columns of the rack are the strips located? 
-primer_loc = ['1', '3', '5', '7', '9', '11']  ## max 2 racks with strips
-# What is the volume (µL) of each primer that needs to be added to the mix?
-primer_vol = 1.5
-# How many primers should WALL-E skip, or index of first_primer?
-skipped_F_primers = 0 
-skipped_R_primers = 0
-# Should the standard samples each get unique barcodes?
-std_unique_barcodes = False
-# Should each dilution series get a unique barcode?
-stdseries_unique_barcodes = True
-# =============================================================================
-
-# SIMULATE=====================================================================
-# =============================================================================
-# Do you want to simulate the protocol?
-simulate = True
-  ## True for simulating protocol, False for robot protocol  
-# =============================================================================
-
 # IMPORT STATEMENTS============================================================
+# This region contains basic python/opentrons stuff
 # =============================================================================
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
-import math
-  ## To do some calculations  
-                                      
+import math ## To do some calculations
+#### For simulating in the app, set pathway to modules
+import sys
+sys.path.append("O:/")
+sys.path.append("/mnt/c/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM
 from data.user_storage.mollab_modules import LabWare as LW
 # =============================================================================
 
-# CALCULATED VARIABLES=========================================================
-# =============================================================================
-# If a standard sample is taken, add 1 to the total number of samples
-if number_of_std_samples >= 1:
-    total_number_of_samples = number_of_samples + 1     
-else:
-    total_number_of_samples = number_of_samples
-
-# Check if everything fits on a plate
-total_reactions = (number_of_samples + 
-                   number_of_std_samples + 
-                   number_of_NTCs + 
-                   (number_of_std_series*8))
-if total_reactions > 96:
-    raise Exception(f'You have {total_reactions} reactions. ' +
-                    'This is more than 96 reactions and not possible.')
-# Check how many unique primers are needed
-total_unique_primers = number_of_samples + number_of_NTCs
-if std_unique_barcodes:
-    total_unique_primers += number_of_std_samples     
-# =============================================================================
-
 # METADATA=====================================================================
+# This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {
-    'protocolName': 'general_PCR_protocol',
-    'author': 'MB <maartje.brouwer@nioz.nl>, RDB <rob.de.beer@nioz.nl>',
-    'description': ('qPCR - aliquoting mix and samples'),
-    'apiLevel': '2.13'}
+            'author': 'NIOZ Molecular Ecology',
+            'protocolName': 'Barcoded qPCR preperation V0.1',
+            'description': 'Aliquoting the qPCR mastermix and the barcoded primers.'
+            }
+requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
+# =============================================================================
 
+# PARAMETERS===================================================================
+# This region contains all parameters that can be changed
+# =============================================================================
+def add_parameters(parameters: protocol_api.Parameters):
+    #### Mastermix & primers
+    # Mastermix
+    parameters.add_int(variable_name="total_mastermix_volume",
+                       display_name="total mastermix volume",
+                       description="How much volume is in your mastermix tube?",
+                       default=3000,
+                       minimum=0,
+                       maximum=5000,
+                       unit="µL MM")
+    parameters.add_float(variable_name="mastermix_volume",
+                       display_name="mastermix volume per reaction",
+                       description="How much mastermix should each reaction get?",
+                       default=20.0,
+                       minimum=0.0,
+                       maximum=50.0,
+                       unit="µL MM")
+    # Primers
+    parameters.add_float(variable_name="primer_vol",
+                       display_name="primer volume",
+                       description="How much (µL) should be added of each primer?",
+                       default=1.5,
+                       minimum=0.0,
+                       maximum=5.0,
+                       unit="µL primer")    
+    parameters.add_int(variable_name="skipped_forward_barcodes",
+                       display_name="forwards to skip",
+                       description="How many forward barcodes should WALL-E skip?",
+                       default=0,
+                       minimum=0,
+                       maximum=95,
+                       unit="barcodes")
+    parameters.add_int(variable_name="skipped_reverse_barcodes",
+                       display_name="reverses to skip",
+                       description="How many reverse barcodes should WALL-E skip?",
+                       default=0,
+                       minimum=0,
+                       maximum=95,
+                       unit="barcodes")
+    
+    #### Samples
+    parameters.add_int(variable_name="number_of_samples",
+                       display_name="How many samples do you have?",
+                       description="Number of samples including extraction controls, excluding PCR controls, standard samples and dilution series.",
+                       default=65,
+                       minimum=0,
+                       maximum=95,
+                       unit="samples")
+    parameters.add_int(variable_name="number_of_NTCs",
+                       display_name="How many NTCs do you want?",
+                       description="",
+                       default=1,
+                       minimum=1,
+                       maximum=5,
+                       unit="NTCs")
+    
+    # Standard dilution series & standard sample
+    parameters.add_int(variable_name="number_of_std_series",
+                       display_name="How many dilution standard series do you have?",
+                       description="Replicates of the dilution standard serie",
+                       default=3,
+                       minimum=0,
+                       maximum=4,
+                       unit="dilution series")
+    parameters.add_int(variable_name="length_std_series",
+                       display_name="What is the length of the standard dilution serie?",
+                       description="length of the dilution standard serie",
+                       default=8,
+                       minimum=1,
+                       maximum=8,
+                       unit="reactions")
+    parameters.add_int(variable_name="number_of_std_samples",
+                       display_name="Number of std samples",
+                       description="Number of replicates of the standard sample",
+                       default=6,
+                       minimum=1,
+                       maximum=6,
+                       unit="replicates")
+    
+    #### Barcodes for standard dilution series and standard sample
+    parameters.add_bool(variable_name="stdseries_unique_barcodes",
+                        display_name="stdseries unique barcodes",
+                        description="Should each dilution series get a unique barcode?",
+                        default=False)
+    parameters.add_bool(variable_name="std_unique_barcodes",
+                        display_name="std unique barcodes",
+                        description="Should the standard samples each get unique barcodes?",
+                        default=False)
+    
+    #### Starting tips
+    # P20
+    parameters.add_str(variable_name="starting_tip_p20_row",    
+                       display_name="starting tip p20 row",
+                       choices=[
+                           {"display_name": "A", "value": "A"},
+                           {"display_name": "B", "value": "B"},
+                           {"display_name": "C", "value": "C"},
+                           {"display_name": "D", "value": "D"},
+                           {"display_name": "E", "value": "E"},
+                           {"display_name": "F", "value": "this_is_not_false"},
+                           {"display_name": "G", "value": "G"},
+                           {"display_name": "H", "value": "H"}
+                           ],
+                       default="A")
+    parameters.add_int(variable_name="starting_tip_p20_column",    
+                       display_name="starting tip p20 column",
+                       choices=[
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
+                           ],
+                       default=1)
+    # P300
+    parameters.add_str(variable_name="starting_tip_p300_row",    
+                       display_name="starting tip p300 row",
+                       choices=[
+                           {"display_name": "A", "value": "A"},
+                           {"display_name": "B", "value": "B"},
+                           {"display_name": "C", "value": "C"},
+                           {"display_name": "D", "value": "D"},
+                           {"display_name": "E", "value": "E"},
+                           {"display_name": "F", "value": "this_is_not_false"},
+                           {"display_name": "G", "value": "G"},
+                           {"display_name": "H", "value": "H"}
+                           ],
+                       default="A")
+    parameters.add_int(variable_name="starting_tip_p300_column",    
+                       display_name="starting tip p300 column",
+                       choices=[
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
+                           ],
+                       default=1)
+# =============================================================================
+# VARIABLES TO SET#!!!=========================================================
+# =============================================================================
 def run(protocol: protocol_api.ProtocolContext):
-    """
-    Aliquoting mastermix;
-    Adding samples from different labware.
-    """
+    plankton = protocol.params
+    #### Starting tips
+    #Wwhat is the well of the first tipboxes for eithe p20 and p300 tips
+    #### Starting tips
+    # Checking if the row is F
+    if plankton.starting_tip_p20_row == 'this_is_not_false':
+        starting_tip_p20_row = 'F'
+    else:
+        starting_tip_p20_row = plankton.starting_tip_p20_row
+    if plankton.starting_tip_p300_row == 'this_is_not_false':
+        starting_tip_p300_row = 'F'
+    else:
+        starting_tip_p300_row = plankton.starting_tip_p300_row
+    
+    # Combining the row-variable with the column-variable to create starting tip
+    starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
+    starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
+        
+    #### MASTERMIX
+    # What is the total startvolume (µL) of your mastermix?
+    total_mastermix_volume = plankton.total_mastermix_volume
+    # What is the volume (µL) of mastermix that needs to be aliquoted per reaction?
+    mastermix_volume = plankton.mastermix_volume
+    
+    #### SAMPLES
+    # How many samples do you want to include?
+    number_of_samples = plankton.number_of_samples     ##!!! NOTE: include in this number the mock too
+    # Which specific wells (index) do you want to skip? Leave empty if you do not want to skip
+    skipped_wells = []  
+    # How many NTCs to include 
+    number_of_NTCs = plankton.number_of_NTCs
+    
+    ####STANDARDS
+    # How many dilution serie replicates do you want to include?
+    number_of_std_series = plankton.number_of_std_series 
+      ## If none -- fill in 0
+    # How many dilutions are in the standard dilution series?
+    length_std_series = plankton.length_std_series  ## length_of_std_series  MAX == 8                                     
+    # How many replicates of the standard sample do you want?
+    number_of_std_samples = plankton.number_of_std_samples 
+    
+    #### PRIMERS
+    # In what columns of the rack are the strips located? 
+    primer_loc = ['1', '3', '5', '7', '9', '11']  ## max 2 racks with strips
+    # What is the volume (µL) of each primer that needs to be added to the mix?
+    primer_vol = plankton.primer_vol
+    # How many primers should WALL-E skip, or index of first_primer?
+    skipped_F_primers = plankton.skipped_forward_barcodes
+    skipped_R_primers = plankton.skipped_reverse_barcodes
+    # Should the standard samples each get unique barcodes?
+    std_unique_barcodes = plankton.std_unique_barcodes
+    # Should each dilution series get a unique barcode?
+    stdseries_unique_barcodes = plankton.stdseries_unique_barcodes
+    
+# =============================================================================
+
+# CALCULATED VARIABLES=========================================================
+# =============================================================================
+    # If a standard sample is taken, add 1 to the total number of samples
+    if number_of_std_samples >= 1:
+        total_number_of_samples = number_of_samples + 1     
+    else:
+        total_number_of_samples = number_of_samples
+    
+    # Check if everything fits on a plate
+    total_reactions = (number_of_samples + 
+                       number_of_std_samples + 
+                       number_of_NTCs + 
+                       (number_of_std_series*8))
+    if total_reactions > 96:
+        raise Exception(f'You have {total_reactions} reactions. ' +
+                        'This is more than 96 reactions and not possible.')
+    # Check how many unique primers are needed
+    total_unique_primers = number_of_samples + number_of_NTCs
+    if std_unique_barcodes:
+        total_unique_primers += number_of_std_samples     
+
 # =============================================================================
 
 # LIGHTS=======================================================================
@@ -129,15 +293,18 @@ def run(protocol: protocol_api.ProtocolContext):
     
     # tips needed for primers
     p20_tips_needed, p300_tips_needed = LW.amount_of_tips(primer_vol,
-                                                          total_reactions,
+                                                          total_reactions*2,
                                                           1,
                                                           19)
     p20_tips_total += p20_tips_needed
     p300_tips_total += p300_tips_needed
     
     # racks needed
-    p20_tip_racks = LW.number_of_tipracks(starting_tip_p20, p20_tips_total)
-    p300_tip_racks = LW.number_of_tipracks(starting_tip_p300, p300_tips_total)
+    p20_tip_racks, P20 = LW.number_of_tipracks(starting_tip_p20, p20_tips_total)
+    p300_tip_racks, P300 = LW.number_of_tipracks(starting_tip_p300, p300_tips_total)
+    
+    print(p20_tip_racks)
+    print(p300_tip_racks)
     
     # loading tipracks
     tips_20 = LW.loading_tips(simulate = simulate,
@@ -151,12 +318,6 @@ def run(protocol: protocol_api.ProtocolContext):
                                deck_positions = [8,11,10,7],
                                protocol = protocol)
 #### PIPETTES
-    P20 = False
-    P300 = False    
-    if p20_tip_racks > 0:
-        P20 = True
-    if p300_tip_racks > 0:
-        P300 = True
     p20, p300 = LW.loading_pipettes(P20,
                                     tips_20,
                                     starting_tip_p20,
@@ -181,7 +342,10 @@ def run(protocol: protocol_api.ProtocolContext):
     MasterMix = LW.tube_locations(source_racks = mastermix_rack,
                                   specific_columns = False,
                                   skip_wells = False,
-                                  number_of_tubes = 1)
+                                  number_of_tubes = 1,
+                                  reagent_type = 'mastermix',
+                                  volume = total_mastermix_volume,
+                                  protocol = protocol)
 
     ### PRIMERS
     # forward primer set
@@ -194,7 +358,10 @@ def run(protocol: protocol_api.ProtocolContext):
     forward_tubes = LW.tube_locations(source_racks = forward_racks,
                                       specific_columns = primer_loc,
                                       skip_wells = skipped_wells,
-                                      number_of_tubes = total_unique_primers)
+                                      number_of_tubes = total_unique_primers,
+                                      reagent_type = 'forward_primer',
+                                      volume = primer_vol/total_unique_primers,
+                                      protocol = protocol)
     # reverse primer set
     reverse_racks = LW.loading_tube_racks(simulate = simulate,
                                           tube_type = 'PCR_strips',
@@ -206,7 +373,10 @@ def run(protocol: protocol_api.ProtocolContext):
     reverse_tubes = LW.tube_locations(source_racks = reverse_racks,
                                       specific_columns = primer_loc,
                                       skip_wells = skipped_wells,
-                                      number_of_tubes = total_unique_primers)
+                                      number_of_tubes = total_unique_primers,
+                                      reagent_type = 'reverse_primer',
+                                      volume = primer_vol/total_unique_primers,
+                                      protocol = protocol)
     # primers for standard and dilution series
     primer_stock_rack = LW.loading_tube_racks(simulate = simulate,
                                               tube_type = '1.5mL_tubes',
@@ -218,20 +388,32 @@ def run(protocol: protocol_api.ProtocolContext):
         forward_stock = LW.tube_locations(source_racks = primer_stock_rack,
                                           specific_columns = ['1'],
                                           skip_wells = False,
-                                          number_of_tubes = 1)
+                                          number_of_tubes = 1,
+                                          reagent_type = 'forward_primer',
+                                          volume = primer_vol,
+                                          protocol = protocol)
         reverse_stock = LW.tube_locations(source_racks = primer_stock_rack,
                                           specific_columns = ['1'],
                                           skip_wells = [0],
-                                          number_of_tubes = 2)
+                                          number_of_tubes = 1,
+                                          reagent_type = 'reverse_primer',
+                                          volume = primer_vol,
+                                          protocol = protocol)
     else:
         forward_stock = LW.tube_locations(source_racks = primer_stock_rack,
                                           specific_columns = ['1'],
                                           skip_wells = False,
-                                          number_of_tubes = number_of_std_series)
+                                          number_of_tubes = number_of_std_series,
+                                          reagent_type = 'forward_primer',
+                                          volume = primer_vol,
+                                          protocol = protocol)
         reverse_stock = LW.tube_locations(source_racks = primer_stock_rack,
                                           specific_columns = ['6'],
                                           skip_wells = False,
-                                          number_of_tubes = number_of_std_series)
+                                          number_of_tubes = number_of_std_series,
+                                          reagent_type = 'reverse_primer',
+                                          volume = primer_vol,
+                                          protocol = protocol)
 
     protocol.comment('Forward primer for std and/or stdseries should go into '+
                      f'{forward_stock}.\n'+
@@ -255,7 +437,10 @@ def run(protocol: protocol_api.ProtocolContext):
                                         skip_wells = skipped_wells,
                                         number_of_tubes = number_of_samples + 
                                                           number_of_std_samples + 
-                                                          number_of_NTCs)
+                                                          number_of_NTCs,
+                                        reagent_type = 'standard_samples',
+                                        volume = 10,
+                                        protocol = protocol)
     
     if number_of_std_series > 0:
         specific_qPCR_columns = ['12','11','10','9','8','7','6','5','4','3','2','1']
@@ -266,7 +451,10 @@ def run(protocol: protocol_api.ProtocolContext):
             destination = LW.tube_locations(source_racks = qPCR_plate,
                                                 specific_columns = column,
                                                 skip_wells = False,
-                                                number_of_tubes = length_std_series)
+                                                number_of_tubes = length_std_series,
+                                                reagent_type = 'dilution_series',
+                                                volume = 10,
+                                                protocol = protocol)
             stdseries_dest = stdseries_dest + destination
     
    

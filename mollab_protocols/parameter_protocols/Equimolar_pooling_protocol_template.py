@@ -8,7 +8,7 @@ from opentrons import protocol_api
 import math ## To do some calculations
 #### For simulating in the app, set pathway to modules
 import sys
-sys.path.append("C:/Program files/Opentrons")
+sys.path.append("O:/")
 sys.path.append("/mnt/c/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM
@@ -27,7 +27,7 @@ DNA_µL_list = <DNA_volumes>
 # =============================================================================
 metadata = {
             'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Equimolar pooling protocol V1.0',
+            'protocolName': 'Equimolar pooling protocol for <NIOZ_NUMBER> V1.0',
             'description': 'Pools your sample equimolar after running the tapestation calculation protocol and sample diluting protocol.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}

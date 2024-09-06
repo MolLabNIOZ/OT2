@@ -8,7 +8,7 @@ from opentrons import protocol_api
 import math ## To do some calculations
 #### For simulating in the app, set pathway to modules
 import sys
-sys.path.append("\\lab-mmb-l.nioz.nl\logs\MolLab_robots")
+sys.path.append("O:/")
 sys.path.append("/mnt/c/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM

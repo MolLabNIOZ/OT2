@@ -21,7 +21,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Barcoded qPCR preperation V1.0',
+            'protocolName': 'Barcoded qPCR preperation V1.1',
             'description': 'Aliquoting mastermix for samples, standard series and standard sample and barcoded primers.'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -130,7 +130,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="A")
+                       default="H")
     parameters.add_int(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
@@ -147,7 +147,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "11", "value": 11},
                            {"display_name": "12", "value": 12}
                            ],
-                       default=1)
+                       default=12)
     
     parameters.add_str(variable_name="starting_tip_p300_row",    
                        display_name="starting tip p300 row",
@@ -263,7 +263,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                           number_of_transfers = total_reactions * 2,
                                                                           starting_tip_p20 = starting_tip_p20,
                                                                           starting_tip_p300 = starting_tip_p300)
-    # oading tip racks
+    # Loading tip racks
     tips_20 = LW.loading_tips(simulate = simulate,
                               tip_type = 'tipone_20uL',
                               amount = tip_racks_p20,

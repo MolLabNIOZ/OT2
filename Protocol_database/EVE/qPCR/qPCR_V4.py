@@ -20,7 +20,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
             'protocolName': 'qPCR V4',
-            'description': 'Adding MasterMix, samples, standards to a qPCR plate.'
+            'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -339,7 +339,7 @@ def run(protocol: protocol_api.ProtocolContext):
         dilution_destination = LW.tube_locations(source_racks = qPCR_plate,
                                                  specific_columns = columns,
                                                  skip_wells = False,
-                                                 number_of_tubes = plankton.length_std_series,
+                                                 number_of_tubes = plankton.lenght_of_std_serie,
                                                  reagent_type = 'dilution_series',
                                                  volume = plankton.sample_volume,
                                                  protocol = protocol)

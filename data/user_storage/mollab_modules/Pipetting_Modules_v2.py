@@ -83,7 +83,7 @@ def aliquoting_reagent(reagent_source,
         ## If we are at the first well, start by picking up a tip
         if i == 0: 
           pipette.pick_up_tip()
-        ## After every #th well, drop tip and pick up new          
+        ## After every 16th well, drop tip and pick up new          
         elif i % 16 == 0:
               pipette.drop_tip()
               pipette.pick_up_tip()
@@ -161,7 +161,6 @@ def aliquoting_varying_volumes(reagent_source,
                                destination_wells,
                                p20,
                                p300,
-                               tip_change,
                                action_at_bottom,
                                pause,
                                protocol):
@@ -245,7 +244,7 @@ def aliquoting_varying_volumes(reagent_source,
                     if tip_counter == 0:
                         pipette.pick_up_tip()
                     ## Change tips after x number of aliquots
-                    elif tip_counter % tip_change == 0:
+                    elif tip_counter % 16 == 0:
                         pipette.drop_tip()
                         pipette.pick_up_tip()
                     

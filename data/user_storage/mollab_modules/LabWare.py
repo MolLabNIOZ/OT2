@@ -180,7 +180,7 @@ def loading_tube_racks(simulate,
     tube_racks = []
     
     for i in range(amount):
-        rack_name = f"{reagent_type}_{tube_type}_{i + 1}"
+        rack_name = f"{i + 1}_{reagent_type}_{tube_type}"
         
         if simulate and labware_dict[tube_type][1] == 'custom':
             import json

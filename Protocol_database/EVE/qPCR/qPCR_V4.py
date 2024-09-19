@@ -333,16 +333,19 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                                                                  protocol = protocol)
     # Loading standard dilution series wells                                                                                                             
     specific_dilser_columns = ['12','11','10','9']
+    dilution_destination = []
     for i in range(plankton.number_of_std_series):
         columns = []
         columns.append(specific_dilser_columns[i])
-        dilution_destination = LW.tube_locations(source_racks = qPCR_plate,
+        destination = LW.tube_locations(source_racks = qPCR_plate,
                                                  specific_columns = columns,
                                                  skip_wells = False,
                                                  number_of_tubes = plankton.lenght_of_std_serie,
                                                  reagent_type = 'dilution_series',
                                                  volume = plankton.sample_volume,
                                                  protocol = protocol)
+        dilution_destination += destination
+        
     
     
     

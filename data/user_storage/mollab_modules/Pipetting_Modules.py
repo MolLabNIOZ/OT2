@@ -672,7 +672,11 @@ def pooling_varying_volumes(source_wells,
                 # Dispense in the pool_tube
                 pipette.dispense(dispense_volume, pool.bottom(pip_height), push_out=push_out_volume)
                 # Mix by pipetting up and down 3x
-                pipette.mix(3, pool_volume, pool.bottom(pip_height + 5))
+                if pool_tube_type == 'tube_1.5mL':
+                    mix_height = 1
+                else:
+                    mix_height = 5
+                pipette.mix(3, pool_volume, pool.bottom(pip_height + mix_height))
                 # Blow out
                 pipette.blow_out()
                               

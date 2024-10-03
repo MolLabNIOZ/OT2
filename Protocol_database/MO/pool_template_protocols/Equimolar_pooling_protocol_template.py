@@ -37,6 +37,16 @@ requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # This region contains all parameters that can be changed
 # =============================================================================
 def add_parameters(parameters: protocol_api.Parameters):
+    #### Bullsh*t
+    parameters.add_str(variable_name="Who_is_your_favourite_robot",    
+                       display_name="Who is your favourite robot",
+                       choices=[
+                           {"display_name": "WALL-E", "value": "WALL-E"},
+                           {"display_name": "EVE", "value": "EVE"},
+                           {"display_name": "MO", "value": "MO"},
+                           ],
+                       default="MO")
+    
     #### Starting tips
     # P20
     parameters.add_str(variable_name="starting_tip_p20_row",    
@@ -47,31 +57,29 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "C", "value": "C"},
                            {"display_name": "D", "value": "D"},
                            {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "F"},
+                           {"display_name": "F", "value": "this_is_not_false"},
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="A")
-    parameters.add_str(variable_name="starting_tip_p20_column",    
+                       default="H")
+    parameters.add_int(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
-                           {"display_name": "1", "value": "this_is_not_an_int1"},
-                           {"display_name": "2", "value": "this_is_not_an_int2"},
-                           {"display_name": "3", "value": "this_is_not_an_int3"},
-                           {"display_name": "4", "value": "this_is_not_an_int4"},
-                           {"display_name": "5", "value": "this_is_not_an_int5"},
-                           {"display_name": "6", "value": "this_is_not_an_int6"},
-                           {"display_name": "7", "value": "this_is_not_an_int7"},
-                           {"display_name": "8", "value": "this_is_not_an_int8"},
-                           {"display_name": "9", "value": "this_is_not_an_int9"},
-                           {"display_name": "10", "value": "this_is_not_an_int10"},
-                           {"display_name": "11", "value": "this_is_not_an_int11"},
-                           {"display_name": "12", "value": "this_is_not_an_int12"}
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
                            ],
-                       default="this_is_not_an_int1")
+                       default=12)
     
-    #### Starting tips
-    # P300
     parameters.add_str(variable_name="starting_tip_p300_row",    
                        display_name="starting tip p300 row",
                        choices=[
@@ -80,28 +88,28 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "C", "value": "C"},
                            {"display_name": "D", "value": "D"},
                            {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "F"},
+                           {"display_name": "F", "value": "this_is_not_false"},
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="A")
-    parameters.add_str(variable_name="starting_tip_p300_column",    
+                       default="H")
+    parameters.add_int(variable_name="starting_tip_p300_column",    
                        display_name="starting tip p300 column",
                        choices=[
-                           {"display_name": "1", "value": "this_is_not_an_int1"},
-                           {"display_name": "2", "value": "this_is_not_an_int2"},
-                           {"display_name": "3", "value": "this_is_not_an_int3"},
-                           {"display_name": "4", "value": "this_is_not_an_int4"},
-                           {"display_name": "5", "value": "this_is_not_an_int5"},
-                           {"display_name": "6", "value": "this_is_not_an_int6"},
-                           {"display_name": "7", "value": "this_is_not_an_int7"},
-                           {"display_name": "8", "value": "this_is_not_an_int8"},
-                           {"display_name": "9", "value": "this_is_not_an_int9"},
-                           {"display_name": "10", "value": "this_is_not_an_int10"},
-                           {"display_name": "11", "value": "this_is_not_an_int11"},
-                           {"display_name": "12", "value": "this_is_not_an_int12"}
+                           {"display_name": "1", "value": 1},
+                           {"display_name": "2", "value": 2},
+                           {"display_name": "3", "value": 3},
+                           {"display_name": "4", "value": 4},
+                           {"display_name": "5", "value": 5},
+                           {"display_name": "6", "value": 6},
+                           {"display_name": "7", "value": 7},
+                           {"display_name": "8", "value": 8},
+                           {"display_name": "9", "value": 9},
+                           {"display_name": "10", "value": 10},
+                           {"display_name": "11", "value": 11},
+                           {"display_name": "12", "value": 12}
                            ],
-                       default="this_is_not_an_int1")
+                       default=12)
     
     #### Lights/Pause
     parameters.add_bool(variable_name="lights_on",
@@ -116,9 +124,19 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # PARAMETER VARIABLES==========================================================
 # =============================================================================
-    # Sets variables for the starting tips
-    starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
-    starting_tip_p300 = plankton.starting_tip_p300_row + plankton.starting_tip_p300_column.strip("this_is_not_an_int")
+    #### Starting tips
+    if plankton.starting_tip_p20_row == 'this_is_not_false':
+        starting_tip_p20_row = 'F'
+    else:
+        starting_tip_p20_row = plankton.starting_tip_p20_row
+    if plankton.starting_tip_p300_row == 'this_is_not_false':
+        starting_tip_p300_row = 'F'
+    else:
+        starting_tip_p300_row = plankton.starting_tip_p300_row
+    
+    # Combining the row-variable with the column-variable to create starting tip
+    starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
+    starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================

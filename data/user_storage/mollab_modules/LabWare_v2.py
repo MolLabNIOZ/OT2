@@ -174,6 +174,9 @@ def loading_tube_racks(simulate,
                  'noncustom'],
             '50mL_tubes': 
                 ['opentrons_6_tuberack_falcon_50ml_conical',
+                 'noncustom'],
+            '12_Well_Reservoir': 
+                ['nest_12_reservoir_15ml',
                  'noncustom']
             }
     

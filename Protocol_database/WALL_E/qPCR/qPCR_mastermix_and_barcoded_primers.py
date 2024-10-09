@@ -21,7 +21,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Barcoded qPCR preperation V1.1',
+            'protocolName': 'Barcoded qPCR preperation V1.2',
             'description': 'Aliquoting mastermix for samples, standard series and standard sample and barcoded primers.'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -263,7 +263,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                           number_of_transfers = total_reactions * 2,
                                                                           starting_tip_p20 = starting_tip_p20,
                                                                           starting_tip_p300 = starting_tip_p300)
-    # Loading tip racks
+    # oading tip racks
     tips_20 = LW.loading_tips(simulate = simulate,
                               tip_type = 'tipone_20uL',
                               amount = tip_racks_p20,
@@ -336,7 +336,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                           amount = number_of_primer_racks,
                                           deck_positions = [3,6],
                                           protocol = protocol)    
-    # Specific location of the forward primers
+    # Specific location of the reverse primers
     reverse_tubes = LW.tube_locations(source_racks = reverse_racks,
                                      specific_columns = primer_loc,
                                      skip_wells = False,
@@ -349,6 +349,14 @@ def run(protocol: protocol_api.ProtocolContext):
     from_start_to_starting_R_primer = reverse_tubes[slice(0,plankton.skipped_reverse_barcodes)]
     R_primers = from_starting_R_primer_to_end + from_start_to_starting_R_primer
     R_primer_wells = R_primers[:number_of_barcodes]
+    
+    # Give starting primers a distinctive color
+    start_primer = protocol.define_liquid(
+        name= "start primer",
+        description = "The primer that is assigned to the first sample",
+        display_color = "#C70039")
+    F_primers[0].load_liquid(liquid=start_primer, volume = 30)
+    R_primers[0].load_liquid(liquid=start_primer, volume = 30)
     
     ## Primer stock for standard series and standard sample
     if not plankton.standards_unique_barcodes:
@@ -396,9 +404,9 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                protocol = protocol)
     sample_destination = list(itertools.chain(*sample_destination))
     
+    stdseries_dest = []
     if plankton.number_of_std_series > 0:
-        specific_qPCR_columns = ['12','11','10','9']
-        stdseries_dest = []
+        specific_qPCR_columns = ['12','11','10','9']        
         for i in range(plankton.number_of_std_series):
             column = []
             column.append(specific_qPCR_columns[i])
@@ -416,7 +424,7 @@ def run(protocol: protocol_api.ProtocolContext):
         unique_primer_dest = sample_destination + stdseries_dest
     else:
         unique_primer_dest = sample_destination[:number_of_barcodes]
-        stock_primer_dest = sample_destination[number_of_barcodes:]+ stdseries_dest              
+        stock_primer_dest = sample_destination[number_of_barcodes:] + stdseries_dest              
         
         # Make a list of len(stock_primer_dest) length with the stock tubes
         forward_stocks = []

@@ -129,19 +129,19 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-     #### Starting tips
-     if plankton.starting_tip_p20_row == 'this_is_not_false':
-         starting_tip_p20_row = 'F'
-     else:
-         starting_tip_p20_row = plankton.starting_tip_p20_row
-     if plankton.starting_tip_p300_row == 'this_is_not_false':
-         starting_tip_p300_row = 'F'
-     else:
-         starting_tip_p300_row = plankton.starting_tip_p300_row
-     
-     # Combining the row-variable with the column-variable to create starting tip
-     starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
-     starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
+    #### Starting tips
+    if plankton.starting_tip_p20_row == 'this_is_not_false':
+        starting_tip_p20_row = 'F'
+    else:
+        starting_tip_p20_row = plankton.starting_tip_p20_row
+    if plankton.starting_tip_p300_row == 'this_is_not_false':
+        starting_tip_p300_row = 'F'
+    else:
+        starting_tip_p300_row = plankton.starting_tip_p300_row
+    
+    # Combining the row-variable with the column-variable to create starting tip
+    starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
+    starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
     
     #### What tube type should be used for the dilution water?
     total_water = sum(water_volume) * 1.2 # +20%

@@ -151,7 +151,7 @@ def loading_tube_racks(simulate,
             'skirted_plate_96':
                 ['biorad_96_wellplate_200ul_pcr',
                  'noncustom'],
-            'plateholder_skirted_plate': 
+            'plate_96_NIOZholder': 
                 ['biorad_qpcr_plate_nioz_plateholder',
                  'custom'],
             'non_skirted_plate_96': 
@@ -177,9 +177,11 @@ def loading_tube_racks(simulate,
                  'noncustom'],
             '12_Well_Reservoir': 
                 ['nest_12_reservoir_15ml',
-                 'noncustom']
+                 'noncustom'],
+            'tipone_box_250ml_reservoir':
+                ['tipone_box_250ml_reservoir',
+                 'custom']
             }
-    
     tube_racks = []
     
     for i in range(amount):
@@ -233,7 +235,6 @@ def defining_liquids(reagent_type,
         'reverse_primer': ['Reverse Primers', 'Revers primer strips', '#00F3FF'],
         'primer_stocks': ['Primer stocks', 'The pcr strips containing the barcoded primer stocks','#800080'],
         'primer_working_dilution': ['Primer working dilution', 'The pcr strips containing the barcoded primer working dilution','#DD8AFF'],
-        'first_primer': ['First Primer', 'The primer that will be assigned to the first sample','#FF0000'],
         'samples': ['Samples', 'The samples in the strips/tubes','#FF00FF'],
         'standard_samples': ['Standard samples', 'The samples used in the SVEC methode for normalization','#893EAE'],
         'dilution_series': ['Dilution serie samples', 'The samples used for the dilution serie','#00FF00'],
@@ -245,6 +246,14 @@ def defining_liquids(reagent_type,
         'destination': ['Destination', 'This tubes/wells contains a mix of liquids, these are the destination tubes/wells of this protocol','#A52A2A'],
         'PB-buffer': ['PB buffer', 'The tube with the starting amount of PB-buffer for the equimolar pooling','#FFC500'],
         'Qmix': ['Qubit mix', 'The tube with the starting amount of Qubit mix','#FFDC00'],
+        'Qbitstd8': ['Qubit standard 8', 'Qubit standard 8','#0000FF'],
+        'Qbitstd7': ['Qubit standard 7', 'Qubit standard 7','#0033FF'],
+        'Qbitstd6': ['Qubit standard 6', 'Qubit standard 6','#0055FF'],
+        'Qbitstd5': ['Qubit standard 5', 'Qubit standard 5','#0077FF'],
+        'Qbitstd4': ['Qubit standard 4', 'Qubit standard 4','#0099FF'],
+        'Qbitstd3': ['Qubit standard 3', 'Qubit standard 3','#00BBFF'],
+        'Qbitstd2': ['Qubit standard 2', 'Qubit standard 2','#00FFFF'],
+        'Qbitstd1': ['Qubit standard 1', 'Qubit standard 1','#00FFEE'],
         'other': ['Other', 'remaining liquids','#000000'],
         }
     

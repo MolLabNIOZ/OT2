@@ -9,7 +9,7 @@ import math ## To do some calculations
 #### For simulating in the app, set pathway to modules
 import sys
 sys.path.append("O:/")
-sys.path.append("/mnt/c/Program files/Opentrons")
+sys.path.append("C:/Program files/Opentrons")
 #### Import mollab protocol module
 from data.user_storage.mollab_modules import Pipetting_Modules as PM
 from data.user_storage.mollab_modules import LabWare as LW
@@ -27,8 +27,8 @@ DNA_µL_lists = <DNA_volumes>
 # =============================================================================
 metadata = {
             'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Equimolar pooling protocol for <NIOZ_NUMBER> V1.0',
-            'description': 'Pools your sample equimolar after running the tapestation calculation protocol and sample diluting protocol.'
+            'protocolName': 'Equimolar pooling with multiple plates for <NIOZ_NUMBER> V1.0',
+            'description': 'Pools your sample equimolar after running the tapestation calculation protocol and sample diluting protocol. Uses 2 96-wells PCR-plates.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -37,16 +37,6 @@ requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # This region contains all parameters that can be changed
 # =============================================================================
 def add_parameters(parameters: protocol_api.Parameters):
-    #### Bullsh*t
-    parameters.add_str(variable_name="Who_is_your_favourite_robot",    
-                       display_name="Who is your favourite robot",
-                       choices=[
-                           {"display_name": "WALL-E", "value": "WALL-E"},
-                           {"display_name": "EVE", "value": "EVE"},
-                           {"display_name": "MO", "value": "MO"},
-                           ],
-                       default="MO")
-    
     #### Starting tips
     # P20
     parameters.add_str(variable_name="starting_tip_p20_row",    
@@ -57,29 +47,31 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "C", "value": "C"},
                            {"display_name": "D", "value": "D"},
                            {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "this_is_not_false"},
+                           {"display_name": "F", "value": "F"},
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="H")
-    parameters.add_int(variable_name="starting_tip_p20_column",    
+                       default="A")
+    parameters.add_str(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
-                           {"display_name": "1", "value": 1},
-                           {"display_name": "2", "value": 2},
-                           {"display_name": "3", "value": 3},
-                           {"display_name": "4", "value": 4},
-                           {"display_name": "5", "value": 5},
-                           {"display_name": "6", "value": 6},
-                           {"display_name": "7", "value": 7},
-                           {"display_name": "8", "value": 8},
-                           {"display_name": "9", "value": 9},
-                           {"display_name": "10", "value": 10},
-                           {"display_name": "11", "value": 11},
-                           {"display_name": "12", "value": 12}
+                           {"display_name": "1", "value": "this_is_not_an_int1"},
+                           {"display_name": "2", "value": "this_is_not_an_int2"},
+                           {"display_name": "3", "value": "this_is_not_an_int3"},
+                           {"display_name": "4", "value": "this_is_not_an_int4"},
+                           {"display_name": "5", "value": "this_is_not_an_int5"},
+                           {"display_name": "6", "value": "this_is_not_an_int6"},
+                           {"display_name": "7", "value": "this_is_not_an_int7"},
+                           {"display_name": "8", "value": "this_is_not_an_int8"},
+                           {"display_name": "9", "value": "this_is_not_an_int9"},
+                           {"display_name": "10", "value": "this_is_not_an_int10"},
+                           {"display_name": "11", "value": "this_is_not_an_int11"},
+                           {"display_name": "12", "value": "this_is_not_an_int12"}
                            ],
-                       default=12)
+                       default="this_is_not_an_int1")
     
+    #### Starting tips
+    # P300
     parameters.add_str(variable_name="starting_tip_p300_row",    
                        display_name="starting tip p300 row",
                        choices=[
@@ -88,28 +80,28 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "C", "value": "C"},
                            {"display_name": "D", "value": "D"},
                            {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "this_is_not_false"},
+                           {"display_name": "F", "value": "F"},
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="H")
-    parameters.add_int(variable_name="starting_tip_p300_column",    
+                       default="A")
+    parameters.add_str(variable_name="starting_tip_p300_column",    
                        display_name="starting tip p300 column",
                        choices=[
-                           {"display_name": "1", "value": 1},
-                           {"display_name": "2", "value": 2},
-                           {"display_name": "3", "value": 3},
-                           {"display_name": "4", "value": 4},
-                           {"display_name": "5", "value": 5},
-                           {"display_name": "6", "value": 6},
-                           {"display_name": "7", "value": 7},
-                           {"display_name": "8", "value": 8},
-                           {"display_name": "9", "value": 9},
-                           {"display_name": "10", "value": 10},
-                           {"display_name": "11", "value": 11},
-                           {"display_name": "12", "value": 12}
+                           {"display_name": "1", "value": "this_is_not_an_int1"},
+                           {"display_name": "2", "value": "this_is_not_an_int2"},
+                           {"display_name": "3", "value": "this_is_not_an_int3"},
+                           {"display_name": "4", "value": "this_is_not_an_int4"},
+                           {"display_name": "5", "value": "this_is_not_an_int5"},
+                           {"display_name": "6", "value": "this_is_not_an_int6"},
+                           {"display_name": "7", "value": "this_is_not_an_int7"},
+                           {"display_name": "8", "value": "this_is_not_an_int8"},
+                           {"display_name": "9", "value": "this_is_not_an_int9"},
+                           {"display_name": "10", "value": "this_is_not_an_int10"},
+                           {"display_name": "11", "value": "this_is_not_an_int11"},
+                           {"display_name": "12", "value": "this_is_not_an_int12"}
                            ],
-                       default=12)
+                       default="this_is_not_an_int1")
     
     #### Lights/Pause
     parameters.add_bool(variable_name="lights_on",
@@ -124,31 +116,22 @@ def run(protocol: protocol_api.ProtocolContext):
 
 # PARAMETER VARIABLES==========================================================
 # =============================================================================
-    #### Starting tips
-    if plankton.starting_tip_p20_row == 'this_is_not_false':
-        starting_tip_p20_row = 'F'
-    else:
-        starting_tip_p20_row = plankton.starting_tip_p20_row
-    if plankton.starting_tip_p300_row == 'this_is_not_false':
-        starting_tip_p300_row = 'F'
-    else:
-        starting_tip_p300_row = plankton.starting_tip_p300_row
-    
-    # Combining the row-variable with the column-variable to create starting tip
-    starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
-    starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
+    # Sets variables for the starting tips
+    starting_tip_p20 = plankton.starting_tip_p20_row + plankton.starting_tip_p20_column.strip("this_is_not_an_int")
+    starting_tip_p300 = plankton.starting_tip_p300_row + plankton.starting_tip_p300_column.strip("this_is_not_an_int")
 # =============================================================================
 
 # CALCULATED VARIABLES=========================================================
 # =============================================================================
-    DNA_µL_list = []
+    #### Calculate the total pool volum
+    # Creates one list
+    DNA_µL_list_total = []
     for list in DNA_µL_lists:
         for volume in list:
-            DNA_µL_list.append(volume)
-
-
+            DNA_µL_list_total.append(volume)
+    
     #### Calculate the total pool volume
-    total_pool_volume = sum(DNA_µL_list)
+    total_pool_volume = sum(DNA_µL_list_total)
     
     #### calculate total_pool_volume + buffer to add for clean-up 
     PB_volume = total_pool_volume * 5
@@ -162,10 +145,10 @@ def run(protocol: protocol_api.ProtocolContext):
     pool_volume_per_tube = total_cleanup_volume / number_of_tubes / 6
     
     #### Calculates how many tips are needed for pipetting all the DNA volumes
-    p20_tips_needed, p300_tips_needed = LW.amount_of_tips(volumes = DNA_µL_list,
+    p20_tips_needed, p300_tips_needed = LW.amount_of_tips(volumes = DNA_µL_list_total,
                                                           number_of_transfers = False,
                                                           tip_change = 1,
-                                                          max_p20_volume = 15)
+                                                          max_p20_volume = 19)
     
     # Calculates how many pipette boxes you need by using the function 'number_of_tipracks'
     tip_racks_p20, P20 = LW.number_of_tipracks(starting_tip = starting_tip_p20,
@@ -203,25 +186,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                     tips_300 = tips_300,
                                     starting_tip_p300 = starting_tip_p300,
                                     protocol = protocol)
-    
-    #### Loading labware
-    # Loading source plate
-    source_plate = LW.loading_tube_racks(simulate = simulate,
-                                         tube_type = 'plate_96_NIOZholder',
-                                         reagent_type = 'source_plate',
-                                         amount = 1,
-                                         deck_positions = [1],
-                                         protocol = protocol)
-    
-    # Spefifying location of the samples
-    source_wells = LW.tube_locations(source_plate,
-                                     False,
-                                     False,
-                                     len(DNA_µL_list),
-                                     'samples',
-                                     10,
-                                     protocol)
-    
+    #### Loading labware      
     # Loading destination tube rack
     destination_rack = LW.loading_tube_racks (simulate = simulate, 
                                               tube_type = pool_tube_type, 
@@ -238,13 +203,36 @@ def run(protocol: protocol_api.ProtocolContext):
                                          reagent_type = 'PB-buffer',
                                          volume = PB_volume/number_of_tubes/number_of_tubes,
                                          protocol = protocol)
+    
+    total_sources = []
+    plate_number = 0
+    possible_deck_positions = [1,3,4,5,6,9]
+    # Loading source plates
+    for plate in DNA_µL_lists:
+        plate_number += 1
+        source_plate = LW.loading_tube_racks(simulate = simulate, 
+                                             tube_type = 'plate_96_NIOZholder', 
+                                             reagent_type = f'plate_{plate_number}', 
+                                             amount = 1, 
+                                             deck_positions = [possible_deck_positions[plate_number-1]], 
+                                             protocol = protocol)
+    
+        # Loading source wells on plate 1
+        source_wells = LW.tube_locations(source_racks = source_plate,
+                                          specific_columns = False,
+                                          skip_wells = False,
+                                          number_of_tubes = len(plate),
+                                          reagent_type = 'samples',
+                                          volume = 1,
+                                          protocol = protocol)
+        
+        total_sources = total_sources + source_wells
 ## ============================================================================
-
 ## PIPETTING===================================================================
 ## ============================================================================
     # Settings for transfering the sample volumes in the destination plate
-    PM.pooling_varying_volumes(source_wells = source_wells,
-                               pool_volumes = DNA_µL_list,
+    PM.pooling_varying_volumes(source_wells = total_sources,
+                               pool_volumes = DNA_µL_list_total,
                                pool_tube = destination_tube,
                                pool_tube_type = pool_tube_type,
                                start_volume = PB_volume,

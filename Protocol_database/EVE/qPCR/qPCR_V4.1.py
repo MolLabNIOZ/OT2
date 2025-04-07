@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'qPCR V4',
+            'protocolName': 'qPCR V4.1',
             'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -203,8 +203,13 @@ def run(protocol: protocol_api.ProtocolContext):
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
     #### Calculating total amount of reactions
-    number_of_standard_dilution_samples = plankton.number_of_std_series * plankton.lenght_of_std_serie
-    total_reactions = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs + number_of_standard_dilution_samples + plankton.number_of_std_samples
+    if plankton.duplo:
+        number_of_standard_dilution_samples = plankton.number_of_std_series * plankton.lenght_of_std_serie
+        total_reactions = ((plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs) * 2) + number_of_standard_dilution_samples + plankton.number_of_std_samples
+    else:
+        number_of_standard_dilution_samples = plankton.number_of_std_series * plankton.lenght_of_std_serie
+        total_reactions = plankton.number_of_samples + plankton.number_of_Mocks + plankton.number_of_NTCs + number_of_standard_dilution_samples + plankton.number_of_std_samples
+    
     if plankton.number_of_std_samples == 0:
         standard_sample_tubes = 0
     else:
@@ -329,13 +334,30 @@ def run(protocol: protocol_api.ProtocolContext):
                                            protocol = protocol)
     
     # Loading destination wells
-    sample_destination, mock_destination, NTC_destination, STD_destination = LW.multiple_reagent_tube_locations (source_racks = qPCR_plate,
-                                                                                                                 specific_columns = False,
-                                                                                                                 skip_wells = False,
-                                                                                                                 reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
-                                                                                                                 volume = plankton.sample_volume,
-                                                                                                                 protocol = protocol)
-    # Loading standard dilution series wells                                                                                                             
+    if plankton.duplo == True:
+        sample_destination, mock_destination, NTC_destination, sample_destination2, mock_destination2,NTC_destination2, STD_destination = LW.multiple_reagent_tube_locations(source_racks = qPCR_plate,
+                                                                                                                                                                             specific_columns = False,
+                                                                                                                                                                             skip_wells = False,
+                                                                                                                                                                             reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
+                                                                                                                                                                             volume = plankton.sample_volume,
+                                                                                                                                                                             protocol = protocol)
+        all_locations = sample_destination + mock_destination + NTC_destination + sample_destination2 + mock_destination2 + NTC_destination2 + STD_destination
+        sample_locations = sample_destination + mock_destination + sample_destination2 + mock_destination2 + STD_destination
+        source_locations = sample_tubes_location + mock_tubes_location + sample_tubes_location + mock_tubes_location + standard_sample_tube_location
+        
+        
+    else:
+        sample_destination, mock_destination, NTC_destination, STD_destination = LW.multiple_reagent_tube_locations(source_racks = qPCR_plate,
+                                                                                                                    specific_columns = False,
+                                                                                                                    skip_wells = False,
+                                                                                                                    reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
+                                                                                                                    volume = plankton.sample_volume,
+                                                                                                                    protocol = protocol)
+        all_locations = sample_destination, mock_destination, NTC_destination, STD_destination
+        sample_locations = sample_destination, mock_destination, STD_destination
+        source_locations = sample_tubes_location + mock_tubes_location + standard_sample_tube_location
+        
+    # Loading standard dilution series wells                                        
     specific_dilser_columns = ['12','11','10','9']
     dilution_destination = []
     for i in range(plankton.number_of_std_series):
@@ -365,25 +387,22 @@ def run(protocol: protocol_api.ProtocolContext):
                           reagent_tube_type = reagent_tube_type_mastermix,
                           reagent_startvolume = plankton.total_mastermix_volume,
                           aliquot_volume = plankton.mastermix_volume,
-                          destination_wells = sample_destination + mock_destination + NTC_destination + STD_destination + dilution_destination,
+                          destination_wells = all_locations + dilution_destination,
                           p20 = p20,
                           p300 = p300,
                           tip_change = 16,
                           action_at_bottom = 'next_tube',
                           pause = False,
                           protocol = protocol)
-    
     # Transfering samples to plate
-    PM.transferring_reagents(source_wells = sample_tubes_location + mock_tubes_location + STD_tubes,
-                              destination_wells = sample_destination + mock_destination + STD_destination,
+    PM.transferring_reagents(source_wells = source_locations,
+                              destination_wells = sample_locations,
                               transfer_volume = plankton.sample_volume,
                               airgap = True,
                               mix = True,
                               p20 = p20,
                               p300 = p300,
                               protocol = protocol)
-
-
 ## ============================================================================
  
 ## LIGHTS======================================================================

@@ -177,7 +177,10 @@ def loading_tube_racks(simulate,
                  'noncustom'],
             '12_Well_Reservoir': 
                 ['nest_12_reservoir_15ml',
-                 'noncustom']
+                 'noncustom'],
+            'tipone_box_250ml_reservoir':
+                ['tipone_box_250ml_reservoir',
+                 'custom']
             }
     
     tube_racks = []
@@ -245,6 +248,14 @@ def defining_liquids(reagent_type,
         'destination': ['Destination', 'This tubes/wells contains a mix of liquids, these are the destination tubes/wells of this protocol','#A52A2A'],
         'PB-buffer': ['PB buffer', 'The tube with the starting amount of PB-buffer for the equimolar pooling','#FFC500'],
         'Qmix': ['Qubit mix', 'The tube with the starting amount of Qubit mix','#FFDC00'],
+        'Qbitstd8': ['Qubit standard 8', 'Qubit standard 8','#0000FF'],
+        'Qbitstd7': ['Qubit standard 7', 'Qubit standard 7','#0033FF'],
+        'Qbitstd6': ['Qubit standard 6', 'Qubit standard 6','#0055FF'],
+        'Qbitstd5': ['Qubit standard 5', 'Qubit standard 5','#0077FF'],
+        'Qbitstd4': ['Qubit standard 4', 'Qubit standard 4','#0099FF'],
+        'Qbitstd3': ['Qubit standard 3', 'Qubit standard 3','#00BBFF'],
+        'Qbitstd2': ['Qubit standard 2', 'Qubit standard 2','#00FFFF'],
+        'Qbitstd1': ['Qubit standard 1', 'Qubit standard 1','#00FFEE'],
         'other': ['Other', 'remaining liquids','#000000'],
         }
     

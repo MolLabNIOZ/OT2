@@ -8,6 +8,7 @@ def aliquoting_reagent(reagent_source,
                        destination_wells,
                        p20,
                        p300,
+                       tip_change,
                        action_at_bottom,
                        pause,
                        protocol):
@@ -83,8 +84,8 @@ def aliquoting_reagent(reagent_source,
         ## If we are at the first well, start by picking up a tip
         if i == 0: 
           pipette.pick_up_tip()
-        ## After every 16th well, drop tip and pick up new          
-        elif i % 16 == 0:
+        ## After every #th well, drop tip and pick up new          
+        elif i % tip_change == 0:
               pipette.drop_tip()
               pipette.pick_up_tip()
         
@@ -394,7 +395,89 @@ def transferring_reagents(source_wells,
         pipette.drop_tip()
         
     return
+
+def transferring_reagents_different_height(source_wells,
+                                           destination_wells,
+                                           transfer_volume,
+                                           pipette_height,
+                                           airgap,
+                                           mix,
+                                           p20,
+                                           p300,
+                                           protocol):
+    """
+    Parameters
+    ----------
+    source_wells : list
+        List of tube(s)/well(s) to get reagent from
+    destination_wells : list
+        List of tube(s)/well(s) to trasfer reagent to
+    transfer_volume : float
+        volume in µL that you want tranferred
+    airgap : Boolean True or False
+        Do you want an airgap after aspiration and after dispensing
+    mix : Boolean True or False
+        Do you want to mix (pipette up and down) after dispensing
+    p20 : labware definition
+    p300 : labware definition
+    protocol : def run(protocol: protocol_api.ProtocolContext):
+
+    Returns
+    -------
+    None.
+
+    """
+    #### If a list of volumes is provided, 
+    if isinstance(transfer_volume, list):
+        raise Exception("Use the transferring_variable_volumes module instead of the "
+                        "transferring_reagent module")
+    
+    #### Determine which pipette to use:
+    if transfer_volume <= 15:
+        pipette = p20
+        push_out_volume = 2
+    else:
+        pipette = p300
+        push_out_volume = 5
+    
+    #### Calculate airgap and mix volumes
+    if airgap:
+        if pipette == p20:
+            airgap_volume = 1
+        else:
+            airgap_volume = 10
+    if mix:
+        if pipette == p20:
+            mix_volume = 5
+        else:
+            if transfer_volume <= 50:
+                mix_volume = transfer_volume
+            else:
+                mix_volume = 50
+    
+    #### The actual transfer
+    for source_well, destination_well in zip(source_wells, destination_wells):
+        ## Pick up a pipette_tip
+        pipette.pick_up_tip()
+        ## Aspirate specified volume from the source_well
+        pipette.aspirate(transfer_volume, source_well.bottom(pipette_height))
+        ## If desired, include an airgap
+        if airgap:
+            pipette.air_gap(airgap_volume)
+            dispense_volume = transfer_volume + airgap_volume
+        else:
+            dispense_volume = transfer_volume
+        ## Dispense in the destination_well
+        pipette.dispense(dispense_volume, destination_well, push_out=push_out_volume)
+        ## If desired, mix
+        if mix:
+            pipette.mix(3, mix_volume, destination_well)
+        ## blow out
+        pipette.blow_out()
+        ## drop tip
+        pipette.drop_tip()
         
+    return
     
 def transferring_varying_volumes(source_wells,
                                  destination_wells,

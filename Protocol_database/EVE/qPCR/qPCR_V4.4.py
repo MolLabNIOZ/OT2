@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'qPCR V4.1',
+            'protocolName': 'qPCR V4.4',
             'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -353,8 +353,8 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                                                                     reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
                                                                                                                     volume = plankton.sample_volume,
                                                                                                                     protocol = protocol)
-        all_locations = sample_destination, mock_destination, NTC_destination, STD_destination
-        sample_locations = sample_destination, mock_destination, STD_destination
+        all_locations = sample_destination + mock_destination + NTC_destination + STD_destination
+        sample_locations = sample_destination + mock_destination + STD_destination
         source_locations = sample_tubes_location + mock_tubes_location + standard_sample_tube_location
         
     # Loading standard dilution series wells                                        

@@ -338,7 +338,7 @@ def run(protocol: protocol_api.ProtocolContext):
         sample_destination, mock_destination, NTC_destination, sample_destination2, mock_destination2,NTC_destination2, STD_destination = LW.multiple_reagent_tube_locations(source_racks = qPCR_plate,
                                                                                                                                                                              specific_columns = False,
                                                                                                                                                                              skip_wells = False,
-                                                                                                                                                                             reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'samples2': plankton.number_of_samples, 'Mock2': plankton.number_of_Mocks, 'NTC2': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
+                                                                                                                                                                             reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs, 'standard_samples': plankton.number_of_std_samples},
                                                                                                                                                                              volume = plankton.sample_volume,
                                                                                                                                                                              protocol = protocol)
         all_locations = sample_destination + mock_destination + NTC_destination + sample_destination2 + mock_destination2 + NTC_destination2 + STD_destination
@@ -391,7 +391,7 @@ def run(protocol: protocol_api.ProtocolContext):
                           p20 = p20,
                           p300 = p300,
                           tip_change = 16,
-                          action_at_bottom = 'next_tube',
+                          action_at_bottom = 'continue_at_bottom',
                           pause = False,
                           protocol = protocol)
     # Transfering samples to plate

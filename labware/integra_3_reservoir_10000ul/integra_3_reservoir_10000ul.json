@@ -1,0 +1,90 @@
+{
+    "ordering": [
+        [
+            "A1"
+        ],
+        [
+            "A2"
+        ],
+        [
+            "A3"
+        ]
+    ],
+    "brand": {
+        "brand": "Integra",
+        "brandId": []
+    },
+    "metadata": {
+        "displayName": "Integra 3 Reservoir 10000 µL",
+        "displayCategory": "reservoir",
+        "displayVolumeUnits": "µL",
+        "tags": []
+    },
+    "dimensions": {
+        "xDimension": 127,
+        "yDimension": 85,
+        "zDimension": 31
+    },
+    "wells": {
+        "A1": {
+            "depth": 20,
+            "totalLiquidVolume": 10000,
+            "shape": "rectangular",
+            "xDimension": 5,
+            "yDimension": 75,
+            "x": 22,
+            "y": 45,
+            "z": 11
+        },
+        "A2": {
+            "depth": 20,
+            "totalLiquidVolume": 10000,
+            "shape": "rectangular",
+            "xDimension": 5,
+            "yDimension": 75,
+            "x": 64.5,
+            "y": 45,
+            "z": 11
+        },
+        "A3": {
+            "depth": 20,
+            "totalLiquidVolume": 10000,
+            "shape": "rectangular",
+            "xDimension": 5,
+            "yDimension": 75,
+            "x": 107,
+            "y": 45,
+            "z": 11
+        }
+    },
+    "groups": [
+        {
+            "metadata": {
+                "wellBottomShape": "v"
+            },
+            "wells": [
+                "A1",
+                "A2",
+                "A3"
+            ]
+        }
+    ],
+    "parameters": {
+        "format": "irregular",
+        "quirks": [
+            "centerMultichannelOnWells",
+            "touchTipDisabled"
+        ],
+        "isTiprack": false,
+        "isMagneticModuleCompatible": false,
+        "loadName": "integra_3_reservoir_10000ul"
+    },
+    "namespace": "custom_beta",
+    "version": 1,
+    "schemaVersion": 2,
+    "cornerOffsetFromSlot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+    }
+}

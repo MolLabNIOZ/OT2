@@ -1,0 +1,54 @@
+{
+  "ordering": [["A1"]],
+  "brand": {
+    "brand": "TipOne_box",
+    "brandId": [],
+    "links": []
+  },
+  "metadata": {
+    "displayName": "TipOne box 250mL reservoir",
+    "displayCategory": "reservoir",
+    "displayVolumeUnits": "mL",
+    "tags": []
+  },
+  "dimensions": {
+    "xDimension": 123,
+    "yDimension": 83,
+    "zDimension": 55
+  },
+  "wells": {
+    "A1": {
+      "depth": 50,
+      "shape": "rectangular",
+      "xDimension": 120,
+      "yDimension": 80,
+      "totalLiquidVolume": 250000,
+      "x": 61.50,
+      "y": 41.5,
+      "z": 5
+    }
+  },
+  "groups": [
+    {
+      "wells": ["A1"],
+      "metadata": {
+        "wellBottomShape": "flat"
+      }
+    }
+  ],
+  "parameters": {
+    "format": "trough",
+    "isTiprack": false,
+    "isMagneticModuleCompatible": false,
+    "loadName": "tipone_box_250ml_reservoir",
+    "quirks": ["centerMultichannelOnWells", "touchTipDisabled"]
+  },
+  "namespace": "custom",
+  "version": 1,
+  "schemaVersion": 2,
+  "cornerOffsetFromSlot": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  }
+}

@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Diluting samples in different tube types V1.1',
+            'protocolName': 'Diluting samples in different tube types V1.3',
             'description': 'Diluting anything you want from different tube '
             'types to any tube type you want. If you put the dilution rate to '
             '1, it will transfer the final volume to the tube type of your '
@@ -72,7 +72,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        display_name="dilution rate",
                        description="How many times you want to dilute your samples?",
                        default=10,
-                       minimum=0,
+                       minimum=1,
                        maximum=100000,
                        unit="times")
     
@@ -196,7 +196,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # Possible combinations for the different tube types
     tube_type_dict = {
         "PCR_strips" : (possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)], len(possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)])*8),
-        "PCR_plate" : (False, 96),
+        "skirted_plate_96" : (False, 96),
         "1.5mL_tubes" : (False, 24),
         } 
     
@@ -288,12 +288,16 @@ def run(protocol: protocol_api.ProtocolContext):
                                       deck_positions = [11], 
                                       protocol = protocol)
     # Loading water tube
+    if number_of_water_tubes > 0:
+        water_volume = max_volume_water/number_of_water_tubes/number_of_water_tubes
+    else: 
+        water_volume = 0
     water_tube = LW.tube_locations(source_racks = tube_rack,
                                    specific_columns = False,
                                    skip_wells = False,
                                    number_of_tubes = number_of_water_tubes,
                                    reagent_type = 'water',
-                                   volume = max_volume_water/number_of_water_tubes/number_of_water_tubes,
+                                   volume = water_volume,
                                    protocol = protocol)
     ## ========================================================================
     #### Stock racks
@@ -334,17 +338,18 @@ def run(protocol: protocol_api.ProtocolContext):
 ## PIPETTING===================================================================
 ## ============================================================================
     # Aliquoting water
-    PM.aliquoting_reagent(reagent_source = water_tube,
-                          reagent_tube_type = water_tube_type,
-                          reagent_startvolume = max_volume_water,
-                          aliquot_volume = reagent_volume,
-                          destination_wells = destination_tubes,
-                          p20 = p20,
-                          p300 = p300,
-                          tip_change = 16,
-                          action_at_bottom = 'next_tube',
-                          pause = plankton.pause,
-                          protocol = protocol)
+    if number_of_water_tubes > 0:
+        PM.aliquoting_reagent(reagent_source = water_tube,
+                              reagent_tube_type = water_tube_type,
+                              reagent_startvolume = max_volume_water,
+                              aliquot_volume = reagent_volume,
+                              destination_wells = destination_tubes,
+                              p20 = p20,
+                              p300 = p300,
+                              tip_change = 16,
+                              action_at_bottom = 'next_tube',
+                              pause = plankton.pause,
+                              protocol = protocol)
     ## ========================================================================
     # Transfering stocks
     PM.transferring_reagents(source_wells = stock_tubes,

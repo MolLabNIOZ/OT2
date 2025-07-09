@@ -19,11 +19,8 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Diluting samples in different tube types V1.1',
-            'description': 'Diluting anything you want from different tube '
-            'types to any tube type you want. If you put the dilution rate to '
-            '1, it will transfer the final volume to the tube type of your '
-            'choice.'
+            'protocolName': 'Transferring from and to different tube types V1.0',
+            'description': 'Transferring from any to any tube type.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -34,9 +31,9 @@ requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 def add_parameters(parameters: protocol_api.Parameters):
     
     #### Samples
-    parameters.add_int(variable_name="number_of_dilutions",
+    parameters.add_int(variable_name="number_of_transfers",
                        display_name="How many samples do you have?",
-                       description="Number of samples you want to dilute. Max is 96 samples.",
+                       description="Number of samples you want to transfer. Max is 96 samples.",
                        default=96,
                        minimum=0,
                        maximum=96,
@@ -50,7 +47,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "PCR-plate", "value": "skirted_plate_96"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
-                       default="PCR_strips")
+                       default="1.5mL_tubes")
     parameters.add_str(variable_name="final_tube_type",    
                        display_name="final tube type",
                        choices=[
@@ -58,23 +55,16 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "PCR-plate", "value": "skirted_plate_96"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
-                       default="PCR_strips")
+                       default="skirted_plate_96")
     
-    #### Dilution
-    parameters.add_float(variable_name="final_volume",
-                         display_name="final volume",
-                         description="wat would you like to be your final volume after diluting?",
-                         default=30.0,
+    #### Transfer
+    parameters.add_float(variable_name="transfer_volume",
+                         display_name="transfer volume",
+                         description="What volume would you like to transfer?",
+                         default=25.0,
                          minimum=10.0,
                          maximum=1400.0,
                          unit="ul")
-    parameters.add_int(variable_name="dilution_rate",
-                       display_name="dilution rate",
-                       description="How many times you want to dilute your samples?",
-                       default=10,
-                       minimum=0,
-                       maximum=100000,
-                       unit="times")
     
     #### Starting tips
     # P20
@@ -123,7 +113,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="A")
+                       default="H")
     parameters.add_int(variable_name="starting_tip_p300_column",    
                        display_name="starting tip p300 column",
                        choices=[
@@ -140,17 +130,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "11", "value": 11},
                            {"display_name": "12", "value": 12}
                            ],
-                       default=1)
+                       default=12)
     
     #### Lights/Pause  
     parameters.add_bool(variable_name="lights_on",
                         display_name="lights on",
                         description="Do you want the lights turned ON?",
                         default=True)
-    parameters.add_bool(variable_name="pause",
-                        display_name="pause",
-                        description="Do you want to have a pause between alliqouting and transfering your samples?",
-                        default= False)
 
 def run(protocol: protocol_api.ProtocolContext):
     plankton = protocol.params
@@ -175,16 +161,6 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
-    #### Pipetting variables
-    # Calculates all the volumes that needs to be pipetted
-    stock_volume = plankton.final_volume / plankton.dilution_rate
-    reagent_volume = plankton.final_volume - stock_volume
-    total_reagent_volume = reagent_volume * plankton.number_of_dilutions
-    
-    # Defines reagent tube
-    water_tube_type, number_of_water_tubes, max_volume_water = LW.which_tube_type(total_reagent_volume,
-                                                                                  False)
-    
     #### Final and stock racks
     # Possible locations of strips in racks
     possible_strip_locations = {
@@ -195,60 +171,29 @@ def run(protocol: protocol_api.ProtocolContext):
         }     
     # Possible combinations for the different tube types
     tube_type_dict = {
-        "PCR_strips" : (possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)], len(possible_strip_locations[math.ceil(plankton.number_of_dilutions/8/3)])*8),
-        "PCR_plate" : (False, 96),
+        "PCR_strips" : (possible_strip_locations[math.ceil(plankton.number_of_transfers/8/3)], len(possible_strip_locations[math.ceil(plankton.number_of_transfers/8/3)])*8),
+        "skirted_plate_96" : (False, 96),
         "1.5mL_tubes" : (False, 24),
         } 
     
     # Calculates number of stock racks
     stock_strip_columns = tube_type_dict[plankton.sample_tube_type][0]
     samples_per_rack = tube_type_dict[plankton.sample_tube_type][1]
-    number_of_sample_racks = int(math.ceil((plankton.number_of_dilutions / samples_per_rack)))
+    number_of_sample_racks = int(math.ceil((plankton.number_of_transfers / samples_per_rack)))
                                  
     # Calculates number of final racks
     final_strip_columns = tube_type_dict[plankton.final_tube_type][0]
     destinations_per_rack = tube_type_dict[plankton.final_tube_type][1]
-    number_of_final_racks = int(math.ceil((plankton.number_of_dilutions / destinations_per_rack)))
+    number_of_final_racks = int(math.ceil((plankton.number_of_transfers / destinations_per_rack)))
 
 
     #### Calculates the amount of tip racks needed and set pipette True or False
-    tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = reagent_volume,
-                                                                          number_of_aliquotes = plankton.number_of_dilutions,
-                                                                          volumes_transfering = stock_volume,
-                                                                          number_of_transfers = plankton.number_of_dilutions,
+    tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = 0,
+                                                                          number_of_aliquotes = 0,
+                                                                          volumes_transfering = plankton.transfer_volume,
+                                                                          number_of_transfers = plankton.number_of_transfers,
                                                                           starting_tip_p20 = starting_tip_p20,
                                                                           starting_tip_p300 = starting_tip_p300)
-## ============================================================================
-
-## COMMENTS====================================================================
-## ============================================================================
-    if plankton.final_volume > 180 and plankton.final_tube_type != '1.5mL_tubes':
-        check = False
-    else:
-        check = True
-        
-    if stock_volume < 1:
-        raise Exception(f"You would like to dilute {stock_volume} ul. Pipetting"
-                        " this amount is not accurate and therefore not advised."
-                        " Please enter a bigger final volume or a smaller "
-                        "dilution rate to continue!")
-    elif 1 <= stock_volume < 2.0:
-        protocol.comment(f"You want to pipette {stock_volume} ul of sample. "
-                         "This is possible but we advise you to increase the "
-                         "final volume or lower the dilution rate a little bit.")
-    elif stock_volume >= 2.0 and check == False:
-        protocol.comment(f"It is not possible to pipette {plankton.final_volume}"
-                         " in {plankton.final_tube_type}. Please select the "
-                         "1.5mL tubes or choose a smaller final volume to "
-                         "perform this protocol")
-    else:    
-        protocol.comment(f"I need {number_of_water_tubes} of {water_tube_type}"
-                         f"s filled to {max_volume_water} ul.")
-    
-    if plankton.final_tube_type == '1.5mL_tubes' and plankton.number_of_dilutions > 72:
-        raise Exception("Unfortunately, it is not possible to dilute more then "
-                        "72 samples with the final tube type 1.5 mL tubes. "
-                        "Please, change the final tube type or do less dilutions.")        
 ## ============================================================================
 
 ## LIGHTS======================================================================
@@ -279,23 +224,6 @@ def run(protocol: protocol_api.ProtocolContext):
                                     starting_tip_p300 = starting_tip_p300,
                                     protocol = protocol)
     ## ========================================================================
-    #### Water rack
-    # Loading water rack
-    tube_rack = LW.loading_tube_racks(simulate = simulate, 
-                                      tube_type = water_tube_type,  
-                                      reagent_type = 'Water', 
-                                      amount = 1, 
-                                      deck_positions = [11], 
-                                      protocol = protocol)
-    # Loading water tube
-    water_tube = LW.tube_locations(source_racks = tube_rack,
-                                   specific_columns = False,
-                                   skip_wells = False,
-                                   number_of_tubes = number_of_water_tubes,
-                                   reagent_type = 'water',
-                                   volume = max_volume_water/number_of_water_tubes/number_of_water_tubes,
-                                   protocol = protocol)
-    ## ========================================================================
     #### Stock racks
     # Loading stock racks
     stock_racks = LW.loading_tube_racks(simulate = simulate, 
@@ -308,9 +236,9 @@ def run(protocol: protocol_api.ProtocolContext):
     stock_tubes = LW.tube_locations(source_racks = stock_racks,
                                     specific_columns = stock_strip_columns,
                                     skip_wells = False,
-                                    number_of_tubes = plankton.number_of_dilutions,
+                                    number_of_tubes = plankton.number_of_transfers,
                                     reagent_type = 'samples',
-                                    volume = stock_volume/plankton.number_of_dilutions,
+                                    volume = plankton.transfer_volume/plankton.number_of_transfers,
                                     protocol = protocol)
     ## ========================================================================
     #### Final tube racks
@@ -321,37 +249,24 @@ def run(protocol: protocol_api.ProtocolContext):
                                         amount = number_of_final_racks,
                                         deck_positions = [2,5,8], 
                                         protocol = protocol)
-    # Loading stock tubes
+    # Loading stock tubesf
     destination_tubes = LW.tube_locations(source_racks = destination_racks,
                                     specific_columns = final_strip_columns,
                                     skip_wells = False,
-                                    number_of_tubes = plankton.number_of_dilutions,
+                                    number_of_tubes = plankton.number_of_transfers,
                                     reagent_type = 'destination',
-                                    volume = (reagent_volume + stock_volume)/plankton.number_of_dilutions,
+                                    volume = plankton.transfer_volume/plankton.number_of_transfers,
                                     protocol = protocol)
 ## ============================================================================
 
 ## PIPETTING===================================================================
 ## ============================================================================
-    # Aliquoting water
-    PM.aliquoting_reagent(reagent_source = water_tube,
-                          reagent_tube_type = water_tube_type,
-                          reagent_startvolume = max_volume_water,
-                          aliquot_volume = reagent_volume,
-                          destination_wells = destination_tubes,
-                          p20 = p20,
-                          p300 = p300,
-                          tip_change = 16,
-                          action_at_bottom = 'next_tube',
-                          pause = plankton.pause,
-                          protocol = protocol)
-    ## ========================================================================
-    # Transfering stocks
+    #### Transfering stocks
     PM.transferring_reagents(source_wells = stock_tubes,
                              destination_wells = destination_tubes,
-                             transfer_volume = stock_volume,
-                             airgap = True,
-                             mix = True,
+                             transfer_volume = plankton.transfer_volume,
+                             airgap = False,
+                             mix = False,
                              p20 = p20,
                              p300 = p300,
                              protocol = protocol)

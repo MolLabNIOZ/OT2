@@ -20,6 +20,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # calculating protocol
 # =============================================================================
 DNA_µL_list = <DNA_volumes>
+bead_ratio = <bead_ratio>
 # =============================================================================
 
 # METADATA=====================================================================
@@ -27,7 +28,7 @@ DNA_µL_list = <DNA_volumes>
 # =============================================================================
 metadata = {
             'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Equimolar pooling protocol for <NIOZ_NUMBER> V1.0',
+            'protocolName': 'Equimolar pooling protocol for <NIOZ_NUMBER> V2.0',
             'description': 'Pools your sample equimolar after running the tapestation calculation protocol and sample diluting protocol.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -147,7 +148,7 @@ def run(protocol: protocol_api.ProtocolContext):
     total_pool_volume = sum(DNA_µL_list)
     
     #### calculate total_pool_volume + buffer to add for clean-up 
-    bead_volume = total_pool_volume
+    bead_volume = total_pool_volume * float(bead_ratio)
     total_cleanup_volume = total_pool_volume + bead_volume
     
     # Determine what tube type you need to pool everything

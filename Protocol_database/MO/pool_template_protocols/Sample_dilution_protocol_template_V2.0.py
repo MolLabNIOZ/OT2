@@ -259,10 +259,10 @@ def run(protocol: protocol_api.ProtocolContext):
     water_color = protocol.define_liquid(
         name= "Water",
         description = "Wells containing water",
-        display_color = "##0000FF")
+        display_color = "#0000FF")
     
     for well,volume in zip(destination_wells,water_volume):
-        well[0].load_liquid(liquid=start_primer, volume = volume)
+        well.load_liquid(liquid=water_color, volume = volume)
 ## ============================================================================
 
 ## PIPETTING===================================================================

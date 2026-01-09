@@ -37,7 +37,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_float(variable_name="mastermix_volume",
                        display_name="mastermix volume per reaction",
                        description="How much mastermix should each reaction get?",
-                       default=15.0,
+                       default=43.0,
                        minimum=0.0,
                        maximum=50.0,
                        unit="µL MM")
@@ -45,7 +45,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_samples",
                        display_name="How many samples do you have?",
                        description="Number of samples including extraction controls, excluding PCR controls.",
-                       default=14,
+                       default=90,
                        minimum=0,
                        maximum=95,
                        unit="samples")
@@ -292,14 +292,12 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                reagent_and_numbers_dict = {'samples': plankton.number_of_samples, 'Mock': plankton.number_of_Mocks, 'NTC': plankton.number_of_NTCs},
                                                                volume = (plankton.mastermix_volume + (plankton.primer_vol *2))/number_of_barcodes + 5,
                                                                protocol = protocol)
-    
 # =============================================================================
 
 # THE ACTUAL PIPETTING=========================================================
 # =============================================================================   
-    if plankton.mastermix_volume <= 19:
-        left_pipette.reset_tipracks()
-        left_pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_20)      
+    left_pipette.reset_tipracks()
+    left_pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_20)      
 
 #### MasterMix    
     PM.aliquoting_reagent(reagent_source = mastermix_tube,
@@ -309,7 +307,6 @@ def run(protocol: protocol_api.ProtocolContext):
                           destination_wells = PCR_plate_destination[0]+PCR_plate_destination[1]+PCR_plate_destination[2],
                           p20 = left_pipette,
                           p300 = right_pipette,
-                          tip_change = 8,
                           action_at_bottom = 'continue_at_bottom',
                           pause = plankton.pause,
                           protocol = protocol)

@@ -1,5 +1,5 @@
 """
-version: Jan_2024
+version: Jan_2025
 """
 def aliquoting_reagent(reagent_source,
                        reagent_tube_type, 
@@ -8,7 +8,6 @@ def aliquoting_reagent(reagent_source,
                        destination_wells,
                        p20,
                        p300,
-                       tip_change,
                        action_at_bottom,
                        pause,
                        protocol):
@@ -71,8 +70,8 @@ def aliquoting_reagent(reagent_source,
         push_out_volume = 5
     else:
         if "8-Channel" in str(p20):
-            if reagent_tube_type == 'tube_15mL' or reagent_tube_type == 'tube_50mL':
-                raise Exception("The p20 multichannel cannot pipet from 15 or 50 mL tubes.")
+            if reagent_tube_type == '15mL_tubes' or reagent_tube_type == '50mL_tubes' or reagent_tube_type == '5mL_screwcap_tubes':
+                raise Exception("The p20 multichannel cannot pipet from 5, 15 or 50 mL tubes.")
         pipette = p20
         gap = 1
         push_out_volume = 2
@@ -82,16 +81,20 @@ def aliquoting_reagent(reagent_source,
     
     #### Aliquot reagent in all destination wells
     ### Loop through destination wells
+    current_tip = 0
     for i, well in enumerate(destination_wells):
-        # aliquot in the correct wells, for each well do the following:  
-        
+        # aliquot in the correct wells, for each well do the following:
         ## If we are at the first well, start by picking up a tip
-        if i == 0: 
+        if i == 0:
             pipette.pick_up_tip()
-        ## After every #th well, drop tip and pick up new          
-        elif i % tip_change == 0:
-              pipette.drop_tip()
-              pipette.pick_up_tip()
+        ## After every #th well, drop tip and pick up new
+        ## Always use 8 tips exactly!
+        import math ## To do some calculations
+        tip_index = math.floor(i * 8 / len(destination_wells))
+        if tip_index != current_tip:
+            current_tip = tip_index
+            pipette.drop_tip()
+            pipette.pick_up_tip()
         
         ## Call volume_tracking function
         current_height, pip_height, bottom_reached = VT.volume_tracking(
@@ -434,9 +437,6 @@ def transferring_reagents_multichannel(source_wells,
 
     """   
     #### If a list of volumes is provided, 
-    if isinstance(transfer_volume, list):
-        raise Exception("Use the transferring_variable_volumes module instead of the "
-                        "transferring_reagent module")
     
     #### Import
     from opentrons import protocol_api
@@ -485,7 +485,7 @@ def transferring_reagents_multichannel(source_wells,
         else:
             dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(dispense_volume, destination_well)
+        pipette.dispense(dispense_volume, destination_well.bottom(), end_location=destination_well.bottom(z=5), push_out=push_out_volume)
         ## If desired, mix
         if mix:
             pipette.mix(3, mix_volume, destination_well)
@@ -498,20 +498,23 @@ def transferring_reagents_multichannel(source_wells,
 
     # set pipette to partial
     if extra_tubes > 0:
-        partial_tip_dict = {2:"G1", 3:"F1", 4:"E1", 5:"D1", 6:"C1", 7:"B1"}
-        end_tip = partial_tip_dict[int(extra_tubes)]
-        print(end_tip)
-        if transfer_volume <= 18:
-            pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_20)
-        else:
-            pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_300)
+        if extra_tubes == 1:
+            if transfer_volume <= 18:
+                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_20)
+            else:
+                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_300)
+
+        if extra_tubes > 1:
+            partial_tip_dict = {2:"G1", 3:"F1", 4:"E1", 5:"D1", 6:"C1", 7:"B1"}
+            end_tip = partial_tip_dict[int(extra_tubes)]
+            if transfer_volume <= 18:
+                pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_20)
+            else:
+                pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_300)
+        
         # determine where to get the samples from
         source_well = source_wells[number_of_full_columns*8+1]
         destination_well = destination_wells[number_of_full_columns*8+1]
-        # # Somehow the first partial tip is always in row 1, but that is already used
-        # This deals with that
-        pipette.pick_up_tip()
-        pipette.drop_tip()
         ## Pick up a pipette_tip
         pipette.pick_up_tip()
         ## Aspirate specified volume from the source_well
@@ -523,7 +526,7 @@ def transferring_reagents_multichannel(source_wells,
         else:
             dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(dispense_volume, destination_well)
+        pipette.dispense(dispense_volume, destination_well.bottom(), end_location=destination_well.bottom(z=5), push_out=push_out_volume)
         ## If desired, mix
         if mix:
             pipette.mix(3, mix_volume, destination_well)

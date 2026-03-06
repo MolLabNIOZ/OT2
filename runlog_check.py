@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 
 # Define path to raw run log
-path_to_raw_runlog = '//lab-mmb.nioz.nl/logs/MolLab_robots/run logs/EVE_Qubit V1.0_2024-11-07T10_40_43.476Z.json'
+path_to_raw_runlog = 'O:/Protocol_database/MO/Generated_protocols/NIOZ433/MO_Equimolar pooling protocol for NIOZ433 V2.1_2025-11-05T16_07_27.263Z.json'
 output_path = path_to_raw_runlog.replace('.json', '.txt')
 
 # Load the raw run log from JSON file

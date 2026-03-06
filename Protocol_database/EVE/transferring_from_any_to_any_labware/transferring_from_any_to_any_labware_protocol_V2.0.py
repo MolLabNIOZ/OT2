@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Transferring from and to different tube types V1.0',
+            'protocolName': 'Transferring from and to different tube types V2.0',
             'description': 'Transferring from any to any tube type.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -45,6 +45,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        choices=[
                            {"display_name": "PCR-strips", "value": "PCR_strips"},
                            {"display_name": "PCR-plate", "value": "skirted_plate_96"},
+                           {"display_name": "PCR-plate_holder", "value": "plate_96_NIOZholder"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
                        default="1.5mL_tubes")
@@ -53,6 +54,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        choices=[
                            {"display_name": "PCR-strips", "value": "PCR_strips"},
                            {"display_name": "PCR-plate", "value": "skirted_plate_96"},
+                           {"display_name": "PCR-plate_holder", "value": "plate_96_NIOZholder"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
                        default="skirted_plate_96")
@@ -173,6 +175,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tube_type_dict = {
         "PCR_strips" : (possible_strip_locations[math.ceil(plankton.number_of_transfers/8/3)], len(possible_strip_locations[math.ceil(plankton.number_of_transfers/8/3)])*8),
         "skirted_plate_96" : (False, 96),
+        "plate_96_NIOZholder" : (False, 96),
         "1.5mL_tubes" : (False, 24),
         } 
     

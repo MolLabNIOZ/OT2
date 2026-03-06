@@ -627,6 +627,99 @@ def transferring_varying_volumes(source_wells,
             
     return
 
+def transferring_varying_volumes_duplicate(source_wells,
+                                           destination_wells,
+                                           transfer_volumes,
+                                           airgap,
+                                           mix,
+                                           p20,
+                                           p300,
+                                           protocol):
+    """
+    Parameters
+    ----------
+    source_wells : list
+        List of tube(s)/well(s) to get reagent from
+    destination_wells : a list of lists
+        List of lists of tube(s)/well(s) to trasfer reagent to
+    stock_volumes : list
+       list with volumes in µL to take from every stock
+    reagent_volumes : list
+       list with volumes in µL to use of the dilution reagent
+    final_volume : Boolean False or float
+        if float, this will be used to calculate how much reagent to add
+        if False, the list with reagent_volumes will be used
+    airgap : Boolean True or False
+        Do you want an airgap after aspiration and after dispensing
+    mix : Boolean True or False
+        Do you want to mix (pipette up and down) after dispensing
+    p20 : labware definition
+    p300 : labware definition
+    protocol : def run(protocol: protocol_api.ProtocolContext)
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    #### If only 1 volume is provided, 
+    if not isinstance(transfer_volumes, list):
+        raise Exception("Use the transferring_reagent module instead of the "
+                        "transferring_varying_volumes module")
+    
+    #### Loop through list of volumes, sources and destinations
+
+    for i, (source_well, transfer_volume) in enumerate(
+            zip(source_wells, transfer_volumes)):
+        #### Determine which pipette to use:
+        if transfer_volume <= 15:
+            pipette = p20
+            push_out_volume = 2
+        else:
+            pipette = p300
+            push_out_volume = 5
+        
+        #### Calculate airgap and mix volumes
+        if pipette == p20:
+            airgap_volume = 1
+        else:
+            airgap_volume = 10
+        
+        if pipette == p20:
+            mix_volume = 5
+        else:
+            if transfer_volume <= 50:
+                mix_volume = transfer_volume
+            else:
+                mix_volume = 50
+       
+        #### The actual transfer
+        ## Pick up a pipette_tip
+        pipette.pick_up_tip()
+        for duplicate in range(len(destination_wells)):
+            destination_well = destination_wells[duplicate][i]
+            ## Aspirate specified volume from the source_well
+            pipette.aspirate(transfer_volume, source_well)
+            ## If desired, include an airgap
+            if airgap:
+                pipette.air_gap(airgap_volume)
+                dispense_volume = transfer_volume + airgap_volume
+            else:
+                dispense_volume = transfer_volume
+            ## Dispense in the destination_well
+            pipette.dispense(dispense_volume, destination_well, push_out=push_out_volume)
+            ## If desired, mix
+            if mix:
+                pipette.mix(3, mix_volume, destination_well)
+            ## blow out
+            pipette.blow_out()
+            
+        ## drop tip
+        pipette.drop_tip()
+            
+    return
+
 def transferring_reagents_no_bubbles(source_wells,
                                      destination_wells,
                                      transfer_volume,

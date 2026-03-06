@@ -427,6 +427,76 @@ def multiple_reagent_tube_locations(source_racks,
     
     return return_list
 
+def tube_locations_varying_liquid(source_racks,
+                                  specific_columns,
+                                  skip_wells,
+                                  number_of_tubes,
+                                  reagent_type,
+                                  volume_list,
+                                  protocol):
+    """
+    Parameters
+    ----------
+    source_racks : list
+        List with all loaded tube_racks for this reagent
+    specific_columns : False or list with column numbers
+        PCR strips are only located in specific columns of a plate_96
+    skip_wells : False or list with indexes
+        List with indexes of wells to skip
+    number_of_tubes : int
+        How many tubes/wells are used for this specific type
+    reagent_type: 
+        Discribe the reagent type. See reagent_dict in defining_liquids for the
+        options.
+    volume: int
+        What is the volume that is present in the tube? If this is not clear,
+        put in '1'
+     protocol : def run(protocol: protocol_api.ProtocolContext):
+        
+    
+    Returns
+    -------
+    tubes : list of tube locations
+        List with all tubes for this specific type with the color defined with
+        the function defining_liquids
+
+    """
+    #### Make an empty list to append tubes/wells to
+    tubes = []
+    
+    #### Append all wells from all racks to the list
+    if not specific_columns:
+        for rack in source_racks:
+            for tube in rack.wells():
+                tubes.append(tube)
+    
+    else: # if specific_columns
+        ## Separate racks into specified columns
+        for rack in source_racks:
+            rack_columns = (
+                [rack.columns_by_name()[column]
+                for column in specific_columns])
+            ## Separate columns into wells and add wells to list
+            for column in rack_columns:
+                for well in column:
+                    tubes.append(well)
+
+    #### Remove tubes/wells to skip
+    if skip_wells:
+        for index in sorted(skip_wells, reverse=True):
+            del tubes[index]
+            # In reverse order, so that the index does not shift
+
+    #### Cut off the list, after a specified number of tubes/wells    
+    tubes = tubes[:number_of_tubes]                       
+    
+    liquid = defining_liquids(reagent_type, protocol)
+    
+    for well,volume in zip(tubes,volume_list):
+        well.load_liquid(liquid, volume)
+        
+    return tubes
+
 
 def which_tube_type(total_volume, tube_type):
     """

@@ -37,7 +37,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_float(variable_name="mastermix_volume",
                        display_name="mastermix volume per reaction",
                        description="How much mastermix should each reaction get?",
-                       default=43.0,
+                       default=15.0,
                        minimum=0.0,
                        maximum=50.0,
                        unit="µL MM")
@@ -45,7 +45,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_samples",
                        display_name="How many samples do you have?",
                        description="Number of samples including extraction controls, excluding PCR controls.",
-                       default=90,
+                       default=80,
                        minimum=0,
                        maximum=95,
                        unit="samples")

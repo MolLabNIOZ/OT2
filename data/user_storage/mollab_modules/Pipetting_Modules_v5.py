@@ -18,7 +18,7 @@ def aliquoting_reagent(reagent_source,
     reagent_source : list
         List of tube(s)/well(s) filled with reagent
     reagent_tube_type : brand / size
-        'tube_1.5mL' / 'tube_5mL' / 'tube_15mL' / 'tube_50mL'
+        '1.5mL_tubes' / '5mL_screwcap_tubes' / '15mL_tubes' / '50mL_tubes'
     reagent_startvolume : int
         exact volume in µL that is present in the reagent tube(s)
     aliquot_volume : float
@@ -70,7 +70,7 @@ def aliquoting_reagent(reagent_source,
         push_out_volume = 5
     else:
         if "8-Channel" in str(p20):
-            if reagent_tube_type == '15mL_tubes' or reagent_tube_type == '50mL_tubes' or reagent_tube_type == '5mL_screwcap_tubes':
+            if reagent_tube_type != '1.5mL_tubes':
                 raise Exception("The p20 multichannel cannot pipet from 5, 15 or 50 mL tubes.")
         pipette = p20
         gap = 1

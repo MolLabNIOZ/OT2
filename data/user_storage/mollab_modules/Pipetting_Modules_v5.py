@@ -211,7 +211,6 @@ def aliquoting_varying_volumes(reagent_source,
     None.
 
     """   
-    protocol.comment("newest version of module")
     #### Import volume tracking module
     from data.user_storage.mollab_modules import VolumeTracking as VT
     
@@ -393,7 +392,7 @@ def transferring_reagents(source_wells,
         else:
             dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(dispense_volume, destination_well, push_out=push_out_volume)
+        pipette.dispense(dispense_volume, destination_well)
         ## If desired, mix
         if mix:
             pipette.mix(3, mix_volume, destination_well)
@@ -436,20 +435,17 @@ def transferring_reagents_multichannel(source_wells,
     None.
 
     """   
-    #### If a list of volumes is provided, 
-    
     #### Import
     from opentrons import protocol_api
-    import math ## To do some calculations
     
     #### Determine which pipette to use:
     if transfer_volume <= 18:
         pipette = p20
-        pipette.configure_nozzle_layout(style=protocol_api.ALL, tip_racks=tips_20)
+        tips = tips_20
         push_out_volume = 2
     else:
         pipette = p300
-        pipette.configure_nozzle_layout(style=protocol_api.ALL, tip_racks=tips_300)
+        tips = tips_300
         push_out_volume = 5
     
     #### Calculate airgap and mix volumes
@@ -468,16 +464,51 @@ def transferring_reagents_multichannel(source_wells,
                 mix_volume = 50
     
     #### The actual transfer
-    ### separate full/halve columns
-    number_of_full_columns = math.floor(len(source_wells)/8)
-    extra_tubes = (len(source_wells)/8 - number_of_full_columns) * 8
-
-    ## full columns loop through every 8th well of the wells, for multichannel use
-    for source_well, destination_well in zip(source_wells[0:8*number_of_full_columns:8], destination_wells[0:8*number_of_full_columns:8]):
+    
+    #### Devide stocks and dilutions in groups of 8 wells
+    source_wells_8 = []
+    destination_wells_8 = []
+    for i in range(0,len(source_wells), 8):
+        source_wells_8.append(source_wells[i:i+8])
+        destination_wells_8.append(destination_wells[i:i+8])
+        
+    ## Loop through every 8 wells, for multichannel use
+    for sources, destinations in zip(source_wells_8, destination_wells_8):
+        if str(destinations[0])[0] == 'A':
+            if len(sources) == 8:
+                # Determine nozzle / well use for multichannel
+                partial_tip_dict = {'H': ['B',0], 'G': ['C',1], 'F': ['D',2], 'E': ['E',3], 'D': ['F',4], 'C': ['G',5], 'B': ['H',6], 'A': ['A',0]}
+                first_nozzle = str(sources[0])[0]
+                first_source = sources[partial_tip_dict[first_nozzle][1]]
+                first_destination = destinations[partial_tip_dict[first_nozzle][1]]
+                
+                if first_nozzle == 'A':
+                    pipette.configure_nozzle_layout(style=protocol_api.ALL, tip_racks=tips)  
+                elif first_nozzle == 'H':
+                    pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='H1', tip_racks=tips)
+                else:
+                    pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=first_nozzle +"1", tip_racks=tips)                
+            
+            elif len(sources) == 1:
+                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='H1', tip_racks=tips)
+                first_source = sources[0]
+                first_destination = destinations[0]
+            
+            else:
+                if str(sources[0])[0] == 'A':
+                    partial_tip_dict2 = {2: 'G1', 3:'F1', 4: 'E1', 5: 'D1', 6: 'C1', 7: 'B1'}
+                    end_nozzle = partial_tip_dict2[len(sources)]
+                    first_source = sources[-1]
+                    first_destination = destinations[-1]
+                    pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_nozzle, tip_racks=tips)
+                else:
+                    raise Exception("partial_error")
+        else:
+            raise Exception("destination error")
         ## Pick up a pipette_tip
         pipette.pick_up_tip()
         ## Aspirate specified volume from the source_well
-        pipette.aspirate(transfer_volume, source_well)
+        pipette.aspirate(transfer_volume, first_source)
         ## If desired, include an airgap
         if airgap:
             pipette.air_gap(airgap_volume)
@@ -485,58 +516,49 @@ def transferring_reagents_multichannel(source_wells,
         else:
             dispense_volume = transfer_volume
         ## Dispense in the destination_well
-        pipette.dispense(dispense_volume, destination_well.bottom(), end_location=destination_well.bottom(z=5), push_out=push_out_volume)
+        pipette.dispense(dispense_volume, first_destination)
         ## If desired, mix
         if mix:
-            pipette.mix(3, mix_volume, destination_well)
+            pipette.mix(3, mix_volume, first_destination)
         ## blow out
         pipette.blow_out()
         ## drop tip
         pipette.drop_tip()
-    
-    ## partial columns
-
-    # set pipette to partial
-    if extra_tubes > 0:
-        if extra_tubes == 1:
-            if transfer_volume <= 18:
-                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_20)
+            
+        # For partial columns, do also the second part
+        if not first_nozzle == 'A':
+            partial_tip_dict = {'H': ['B',0], 'G': ['C',1], 'F': ['D',2], 'E': ['E',3], 'D': ['F',4], 'C': ['G',5], 'B': ['H',6], 'A': ['A',0]}
+            second_nozzle = partial_tip_dict[first_nozzle][0]
+            second_source = sources[-1]
+            second_destination = destinations[-1]
+            
+            if first_nozzle == 'B':
+                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='H1', tip_racks=tips)
             else:
-                pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_300)
-
-        if extra_tubes > 1:
-            partial_tip_dict = {2:"G1", 3:"F1", 4:"E1", 5:"D1", 6:"C1", 7:"B1"}
-            end_tip = partial_tip_dict[int(extra_tubes)]
-            if transfer_volume <= 18:
-                pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_20)
+                pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=second_nozzle +"1", tip_racks=tips)
+            ## Pick up a pipette_tip
+            pipette.pick_up_tip()
+            ## Aspirate specified volume from the source_well
+            pipette.aspirate(transfer_volume, second_source)
+            ## If desired, include an airgap
+            if airgap:
+                pipette.air_gap(airgap_volume)
+                dispense_volume = transfer_volume + airgap_volume
             else:
-                pipette.configure_nozzle_layout(style=protocol_api.PARTIAL_COLUMN, start="H1", end=end_tip, tip_racks=tips_300)
-        
-        # determine where to get the samples from
-        source_well = source_wells[number_of_full_columns*8+1]
-        destination_well = destination_wells[number_of_full_columns*8+1]
-        ## Pick up a pipette_tip
-        pipette.pick_up_tip()
-        ## Aspirate specified volume from the source_well
-        pipette.aspirate(transfer_volume, source_well)
-        ## If desired, include an airgap
-        if airgap:
-            pipette.air_gap(airgap_volume)
-            dispense_volume = transfer_volume + airgap_volume
-        else:
-            dispense_volume = transfer_volume
-        ## Dispense in the destination_well
-        pipette.dispense(dispense_volume, destination_well.bottom(), end_location=destination_well.bottom(z=5), push_out=push_out_volume)
-        ## If desired, mix
-        if mix:
-            pipette.mix(3, mix_volume, destination_well)
-        ## blow out
-        pipette.blow_out()
-        ## drop tip
-        pipette.drop_tip()  
-        
+                dispense_volume = transfer_volume
+            ## Dispense in the destination_well
+            pipette.dispense(dispense_volume, second_destination)
+            ## If desired, mix
+            if mix:
+                pipette.mix(3, mix_volume, second_destination)
+            ## blow out
+            pipette.blow_out()
+            ## drop tip
+            pipette.drop_tip()
+         
     return
-    
+
+
 def transferring_varying_volumes(source_wells,
                                  destination_wells,
                                  transfer_volumes,

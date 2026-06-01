@@ -141,7 +141,7 @@ def volume_tracking(tube_type, dispension_vol, current_height, direction):
         ## that level.
 
     #### Tweaks
-    if tube_type == '15mL_tubes':
+    if tube_type == '15mL_tubes' and direction == 'emptying':
         height_conical_tip = 22.1   #tube - straight part
         offset_height = height_conical_tip + 18 
         ## offset_height = height from where to start using

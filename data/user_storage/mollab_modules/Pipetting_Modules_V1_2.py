@@ -643,6 +643,7 @@ def pooling_varying_volumes(source_wells,
                                        pool_volume, 
                                        current_height,
                                        'filling'))
+                
                 pooled_volume += pool_volume
                 
                 # ### If necesarry, continue with next tube

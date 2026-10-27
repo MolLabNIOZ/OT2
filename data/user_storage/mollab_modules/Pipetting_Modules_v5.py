@@ -88,13 +88,14 @@ def aliquoting_reagent(reagent_source,
         if i == 0:
             pipette.pick_up_tip()
         ## After every #th well, drop tip and pick up new
-        ## Always use 8 tips exactly!
+        ## When aliquoting > 24 wells, always use 8 tips exactly!
         import math ## To do some calculations
-        tip_index = math.floor(i * 8 / len(destination_wells))
-        if tip_index != current_tip:
-            current_tip = tip_index
-            pipette.drop_tip()
-            pipette.pick_up_tip()
+        if len(destination_wells) > 24:
+            tip_index = math.floor(i * 8 / len(destination_wells))
+            if tip_index != current_tip:
+                current_tip = tip_index
+                pipette.drop_tip()
+                pipette.pick_up_tip()
         
         ## Call volume_tracking function
         current_height, pip_height, bottom_reached = VT.volume_tracking(

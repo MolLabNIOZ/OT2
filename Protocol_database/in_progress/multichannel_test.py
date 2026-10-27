@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = False
+simulate = True
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### For simulating in the app, set pathway to modules
@@ -91,32 +91,17 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
 ## PIPETTING===================================================================
 ## ============================================================================
-    # # transfering samples
-    #     PM.transferring_reagents_multichannel(source_wells = sample_tubes,
-    #                                           destination_wells = sample_destination,
-    #                                           transfer_volume = volume,
-    #                                           airgap = True,
-    #                                           mix = True,
-    #                                           p20 = left_pipette,
-    #                                           tips_20 = tips_p20,
-    #                                           p300 = right_pipette,
-    #                                           tips_300 = False,
-    #                                           protocol = protocol)
-        ## Pick up a pipette_tip
-        left_pipette.pick_up_tip()
-        ## Aspirate specified volume from the source_well
-        left_pipette.aspirate(volume, sample_tubes[0])
-        ## If desired, include an airgap
-        left_pipette.air_gap(2)
-        dispense_volume = volume + 2
-        ## Dispense in the destination_well
-        left_pipette.dispense(dispense_volume, sample_destination[0].bottom(), end_location=sample_destination[0].bottom(z=5), push_out=5)
-        ## If desired, mix
-        left_pipette.mix(3, volume, sample_destination[0])
-        ## blow out
-        left_pipette.blow_out()
-        ## drop tip
-        left_pipette.drop_tip()
+    # transfering samples
+        PM.transferring_reagents_multichannel(source_wells = sample_tubes,
+                                              destination_wells = sample_destination,
+                                              transfer_volume = volume,
+                                              airgap = True,
+                                              mix = True,
+                                              p20 = left_pipette,
+                                              tips_20 = tips_p20,
+                                              p300 = right_pipette,
+                                              tips_300 = False,
+                                              protocol = protocol)
 
 ## ============================================================================
 

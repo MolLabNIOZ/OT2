@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Qubit V1.0',
+            'protocolName': 'Qubit V1.1',
             'description': 'aliquoting of Qubit mix to a plate, standards are '
             'added from 1.5mL tubes to the first row of the plate, then samples'
             ' are added from either strips, a plate or 1.5mL tubes.'
@@ -64,7 +64,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "PCR-plate", "value": "skirted_plate_96"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
-                       default="PCR_strips")
+                       default="1.5mL_tubes")
     
     #### Starting tips
     # P20
@@ -80,7 +80,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="H")
+                       default="A")
     parameters.add_int(variable_name="starting_tip_p20_column",    
                        display_name="starting tip p20 column",
                        choices=[
@@ -97,7 +97,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "11", "value": 11},
                            {"display_name": "12", "value": 12}
                            ],
-                       default=12)
+                       default=1)
     
     #### Starting tips
     # P300
@@ -315,7 +315,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 ## COMMENTS====================================================================
 ## ============================================================================
-    protocol.comment(f'Provide {number_of_Qmix_tubes} {Qmix_tube_type} containing ' +
+    protocol.pause(f'Provide {number_of_Qmix_tubes} {Qmix_tube_type} containing ' +
                      f'{Qmix_start_volume} µL of Qubit mix in A1 on slot 9')
     
 ## ============================================================================

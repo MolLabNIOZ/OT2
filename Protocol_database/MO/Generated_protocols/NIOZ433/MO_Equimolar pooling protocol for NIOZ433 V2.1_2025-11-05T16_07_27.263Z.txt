@@ -1,0 +1,1763 @@
+run log for the following protocol:
+O:/Protocol_database/MO/Generated_protocols/NIOZ433/MO_Equimolar pooling protocol for NIOZ433 V2.1_2025-11-05T16_07_27.263Z
+
+Date of the run: 2025-11-06
+Total run time: 0:45:02
+
+Parameters:
+starting tip p20 row: G 
+starting tip p20 column: 6 
+starting tip p300 row: H 
+starting tip p300 column: 5 
+lights on: True 
+
+The following labware is loaded:
+tipone_20uL_1 on deck position 7
+opentrons_200uL_1 on deck position 8
+1_source_plate_plate_96_NIOZholder on deck position 1
+1_pool_tube_5mL_screwcap_tubes on deck position 2
+
+Steps performed in this protocol:
+
+Lights are turned ON
+
+Tip pickup by p20_single_gen2 from G6 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H6 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B7 of tipone_20uL_1 on slot 7
+
+5.85µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from C7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from D7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from E7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from G7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H7 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from C8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from D8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from E8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F8 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from G8 of tipone_20uL_1 on slot 7
+
+6.54µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+7.54µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.54µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H8 of tipone_20uL_1 on slot 7
+
+6.98µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+7.98µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+6.98µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A9 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B9 of tipone_20uL_1 on slot 7
+
+18.78µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+19.78µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+18.78µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from C9 of tipone_20uL_1 on slot 7
+
+7.21µL aspirated from well F4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well F4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+8.21µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+7.21µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from D9 of tipone_20uL_1 on slot 7
+
+10.05µL aspirated from well G4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well G4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11.05µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+10.05µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from E9 of tipone_20uL_1 on slot 7
+
+15.87µL aspirated from well H4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+16.869999999999997µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+15.87µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F9 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well E5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from G9 of tipone_20uL_1 on slot 7
+
+8.33µL aspirated from well H5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+9.33µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.33µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H9 of tipone_20uL_1 on slot 7
+
+8.85µL aspirated from well C6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+9.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+8.85µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A10 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well C9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from H5 of opentrons_200uL_1 on slot 8
+
+22.22µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+27.22µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+22.22µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well C5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E7 of opentrons_200uL_1 on slot 8
+
+34.48µL aspirated from well F5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+39.48µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+34.48µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F7 of opentrons_200uL_1 on slot 8
+
+25.32µL aspirated from well G5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G5 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+30.32µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.32µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G7 of opentrons_200uL_1 on slot 8
+
+19.8µL aspirated from well A6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+24.8µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+19.8µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well H6 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H8 of opentrons_200uL_1 on slot 8
+
+25.16µL aspirated from well C7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well C7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+30.16µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+25.16µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A9 of opentrons_200uL_1 on slot 8
+
+33.9µL aspirated from well D7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+38.9µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+33.9µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well H7 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well C8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well H8 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well H9 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well A10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well B10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well C10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well D10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well E10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well F10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+5µL aspirated from well G10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+45µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL aspirated from well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+40µL dispensed into well A1 of 1_pool_tube_5mL_screwcap_tubes on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Lights are turned OFF
+

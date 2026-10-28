@@ -72,7 +72,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        display_name="dilution rate",
                        description="How many times you want to dilute your samples?",
                        default=10,
-                       minimum=1,
+                       minimum=0,
                        maximum=100000,
                        unit="times")
     
@@ -288,16 +288,12 @@ def run(protocol: protocol_api.ProtocolContext):
                                       deck_positions = [11], 
                                       protocol = protocol)
     # Loading water tube
-    if max_volume_water > 0:
-        water_volume = max_volume_water/number_of_water_tubes/number_of_water_tubes
-    else: 
-        water_volume = 0
     water_tube = LW.tube_locations(source_racks = tube_rack,
                                    specific_columns = False,
                                    skip_wells = False,
                                    number_of_tubes = number_of_water_tubes,
                                    reagent_type = 'water',
-                                   volume = water_volume,
+                                   volume = max_volume_water/number_of_water_tubes/number_of_water_tubes,
                                    protocol = protocol)
     ## ========================================================================
     #### Stock racks

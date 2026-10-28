@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'mastermix_and_barcoded_primers V1.3',
+            'protocolName': 'mastermix and barcoded primers V1.3',
             'description': 'aliquoting mix and distributing barcoded primers'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================

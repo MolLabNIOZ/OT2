@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'qPCR V4.3.1',
+            'protocolName': 'qPCR V4.3',
             'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -269,14 +269,11 @@ def run(protocol: protocol_api.ProtocolContext):
                               amount = tip_racks_p20,
                               deck_positions = [1,4,7,10],
                               protocol = protocol)
-    if P300:
-        tips_300 = LW.loading_tips(simulate = simulate,
-                                   tip_type = 'opentrons_200uL',
-                                   amount = tip_racks_p300,
-                                   deck_positions = [10,7,4,1],
-                                   protocol = protocol)  
-    else:
-        tips_300 = []
+    tips_300 = LW.loading_tips(simulate = simulate,
+                               tip_type = 'opentrons_200uL',
+                               amount = tip_racks_p300,
+                               deck_positions = [10,7,4,1],
+                               protocol = protocol)     
     
     #### PIPETTES       
     p20, p300 = LW.loading_pipettes(P20,
@@ -394,4 +391,3 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     protocol.set_rail_lights(False)
 ## ============================================================================
-    protocol.comment(f'{tip_racks_p300} , {P300}, {tips_300}, {p300}')

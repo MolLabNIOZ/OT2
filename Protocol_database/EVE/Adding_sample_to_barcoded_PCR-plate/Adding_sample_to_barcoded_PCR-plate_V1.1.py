@@ -31,13 +31,26 @@ def add_parameters(parameters: protocol_api.Parameters):
     
     #### Samples
     parameters.add_int(variable_name="number_of_samples",
-                       display_name="number of samples",
-                       description="Number of unique samples. Include samples, Mock & NTCs.",
-                       default=96,
+                       display_name="number of unique samples",
+                       description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
+                       default=94,
                        minimum=0,
-                       maximum=96,
-                       unit="samples + controls")
-
+                       maximum=94,
+                       unit="samples")
+    parameters.add_int(variable_name="number_of_Mocks",
+                       display_name="number of unique Mocks",
+                       description="Number of unique Mocks. Could be 0 or 1",
+                       default=1,
+                       minimum=0,
+                       maximum=1,
+                       unit="Mocks")
+    parameters.add_int(variable_name="number_of_NTCs",
+                       display_name="number of NTCs",
+                       description="Number of NTCs. A NTC is a reaction without any template volume added.",
+                       default=1,
+                       minimum=1,
+                       maximum=5,
+                       unit="reactions")
     parameters.add_str(variable_name="sample_tube_type",    
                        display_name="sample tube type",
                        choices=[

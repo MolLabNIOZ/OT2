@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'qPCR V5',
+            'protocolName': 'qPCR V5.1',
             'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -39,14 +39,14 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="total_mastermix_volume",
                        display_name="total mastermix volume",
                        description="How much volume is in your mastermix tube?",
-                       default=3000,
+                       default=2000,
                        minimum=0,
                        maximum=50000,
                        unit="µL MM")
     parameters.add_int(variable_name="mastermix_volume",
                        display_name="mastermix vol per reaction",
                        description="How much mastermix should each reaction get?",
-                       default=20,
+                       default=22,
                        minimum=0,
                        maximum=50,
                        unit="µL MM")
@@ -55,7 +55,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_samples",
                        display_name="number of unique samples",
                        description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
-                       default=64,
+                       default=88,
                        minimum=0,
                        maximum=94,
                        unit="samples")
@@ -69,14 +69,14 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_Mocks",
                        display_name="number of unique Mocks",
                        description="Number of unique Mocks. Could be 0 or 1",
-                       default=1,
+                       default=0,
                        minimum=0,
                        maximum=1,
                        unit="Mocks")
     parameters.add_int(variable_name="number_of_NTCs",
                        display_name="number of NTCs",
                        description="Number of NTCs. A NTC is a reaction without any template volume added.",
-                       default=1,
+                       default=2,
                        minimum=1,
                        maximum=5,
                        unit="reactions")
@@ -90,7 +90,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_float(variable_name="sample_volume",
                        display_name="sample vol per reaction",
                        description="How much sample should each reaction get?",
-                       default=1.0,
+                       default=3.0,
                        minimum=1.0,
                        maximum=15.0,
                        unit="µL sample")
@@ -99,14 +99,14 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_std_series",
                        display_name="number of dilution series",
                        description="Number of replicates of the dilution serie used for quantification.",
-                       default= 3,
+                       default= 0,
                        minimum= 0,
                        maximum= 4,
                        unit="dil series")
     parameters.add_int(variable_name="lenght_of_std_serie",
                        display_name="length dilution series",
                        description="The length of a single standard dilution serie.",
-                       default= 8,
+                       default= 0,
                        minimum= 0,
                        maximum= 8,
                        unit="dilutions")

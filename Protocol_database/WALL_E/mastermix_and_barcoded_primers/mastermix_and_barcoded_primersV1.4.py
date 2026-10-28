@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'mastermix_and_barcoded_primers V1.3',
+            'protocolName': 'mastermix and barcoded primers V1.4',
             'description': 'aliquoting mix and distributing barcoded primers'}
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
 # =============================================================================
@@ -74,13 +74,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=0.0,
                        maximum=5.0,
                        unit="µL primer")    
-    parameters.add_int(variable_name="skipped_forward_barcodes",
-                       display_name="forwards to skip",
-                       description="How many forward barcodes should WALL-E skip?",
-                       default=0,
-                       minimum=0,
-                       maximum=95,
-                       unit="barcodes")
+    # parameters.add_int(variable_name="skipped_forward_barcodes",
+    #                    display_name="forwards to skip",
+    #                    description="How many forward barcodes should WALL-E skip?",
+    #                    default=0,
+    #                    minimum=0,
+    #                    maximum=95,
+    #                    unit="barcodes")
     parameters.add_int(variable_name="skipped_reverse_barcodes",
                        display_name="reverses to skip",
                        description="How many reverse barcodes should WALL-E skip?",
@@ -134,7 +134,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "G", "value": "G"},
                            {"display_name": "H", "value": "H"}
                            ],
-                       default="H")
+                       default="A")
     parameters.add_int(variable_name="starting_tip_p300_column",    
                        display_name="starting tip p300 column",
                        choices=[
@@ -151,7 +151,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                            {"display_name": "11", "value": 11},
                            {"display_name": "12", "value": 12}
                            ],
-                       default=12)
+                       default=1)
     
     parameters.add_bool(variable_name="lights_on",
                         display_name="lights on",
@@ -199,7 +199,7 @@ def run(protocol: protocol_api.ProtocolContext):
         5:['1','3','6','9','12'],
         6:['1','3','5','7','9','11']
         }    
-    primer_loc = possible_primer_locations[math.ceil(number_of_barcodes/8/2)]    
+    primer_loc = possible_primer_locations[math.ceil(number_of_barcodes/8/2)]   
     ## How many tube_strip_racks are needed
     primer_per_rack = 8 * len(primer_loc)
     number_of_primer_racks = math.ceil(number_of_barcodes / primer_per_rack)
@@ -290,15 +290,18 @@ def run(protocol: protocol_api.ProtocolContext):
     forward_tubes = LW.tube_locations(source_racks = forward_racks,
                                       specific_columns = primer_loc,
                                       skip_wells = False,
-                                      number_of_tubes = 96,
+                                      number_of_tubes = number_of_barcodes,
                                       reagent_type = 'forward_primer',
                                       volume = plankton.primer_vol/number_of_barcodes,
                                       protocol = protocol)
     # Creating Forward primer list, based on skipped primers
-    from_starting_F_primer_to_end = forward_tubes[slice(plankton.skipped_forward_barcodes, 96)]
-    from_start_to_starting_F_primer = forward_tubes[slice(0,plankton.skipped_forward_barcodes)]
-    F_primers = from_starting_F_primer_to_end + from_start_to_starting_F_primer
-    F_primer_wells = F_primers[:number_of_barcodes]
+    # from_starting_F_primer_to_end = forward_tubes[slice(plankton.skipped_forward_barcodes, 96)]
+    # from_start_to_starting_F_primer = forward_tubes[slice(0,plankton.skipped_forward_barcodes)]
+    # F_primers = from_starting_F_primer_to_end + from_start_to_starting_F_primer
+    # F_primer_wells = F_primers[:number_of_barcodes]
+    F_primers = forward_tubes
+    F_primer_wells = forward_tubes
+    
     
     # Loading reverse primers
     reverse_racks = LW.loading_tube_racks(simulate = simulate,

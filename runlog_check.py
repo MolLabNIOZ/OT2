@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 
 # Define path to raw run log
-path_to_raw_runlog = 'O:/Protocol_database/MO/Generated_protocols/NIOZ433/MO_Equimolar pooling protocol for NIOZ433 V2.1_2025-11-05T16_07_27.263Z.json'
+path_to_raw_runlog = 'O:/run logs/NIOZ448_WALLE_mastermix and barcoded primers with multichannel V1_2026-04-20T09_32_39.515Z.json'
 output_path = path_to_raw_runlog.replace('.json', '.txt')
 
 # Load the raw run log from JSON file

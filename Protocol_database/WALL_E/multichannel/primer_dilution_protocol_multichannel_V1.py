@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -48,8 +48,8 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_float(variable_name="final_volume",
                        display_name="final volume",
                        description="What do you want the final volume to be?",
-                       default=20.0,
-                       minimum=1.0,
+                       default=30.0,
+                       minimum=30.0,
                        maximum=50.0,
                        unit="µL")
     #### Dilution rate
@@ -123,10 +123,8 @@ def run(protocol: protocol_api.ProtocolContext):
         2:['3','9'],
         3:['2','7','11'],
         4:['2','5','8','11'],
-        5:['1','3','6','9','12'],
-        6:['1','3','5','7','9','11']
         }    
-    stock_strip_columns = dilution_strip_columns = possible_primer_locations[math.ceil(plankton.number_of_primers/8/2)]
+    stock_strip_columns = dilution_strip_columns = possible_primer_locations[math.ceil(plankton.number_of_primers/8/3)]
     ## How many tube_strip_racks are needed
     primer_per_rack = 8 * len(stock_strip_columns)
     # How many strip_racks are needed (1,2,3 or 4)
@@ -137,7 +135,7 @@ def run(protocol: protocol_api.ProtocolContext):
     p20_tips_needed_stock, p300_tips_needed_stock = LW.amount_of_tips(stock_volume,
                                                                       plankton.number_of_primers,
                                                                       1,
-                                                                      19)
+                                                                      18)
     p20_tips_needed_reagent, p300_tips_needed_reagent = LW.amount_of_tips(reagent_volume,
                                                                           plankton.number_of_primers,
                                                                           16,
@@ -150,7 +148,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tip_racks_p20, P20 = LW.number_of_tipracks(starting_tip_p20,
                                                p20_tips_needed)
     tip_racks_p300, P300 = LW.number_of_tipracks(starting_tip_p300,
-                                               p300_tips_needed)
+                                                 p300_tips_needed)
 ## ============================================================================
 
 ## LIGHTS======================================================================
@@ -164,20 +162,18 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_20 = LW.loading_tips(simulate,
                               'tipone_20uL',
                               tip_racks_p20,
-                              [4,7,10],
+                              [7],
                               protocol)
     tips_300 = LW.loading_tips(simulate,
                                'opentrons_200uL',
                                tip_racks_p300,
-                               [10],
+                               [1],
                                protocol)
     ## ========================================================================
     #### Loading pipettes
     left = 'P20multi'
-    if P300:
-        right = 'P300'
-    else:
-        right = False
+    right = 'P300'
+
     left_pipette, right_pipette = LW.loading_pipettes(left,
                                                       right,
                                                       tips_20,
@@ -189,20 +185,13 @@ def run(protocol: protocol_api.ProtocolContext):
     #### Loading reagent racks
     # Decide what tube type you need for the dilution reagent
     total_reagent_volume = (reagent_volume * plankton.number_of_primers) * 1.2 #+20%
-    # Multichannel can only pipette from 1.5ml tubes or smaller
-    if total_reagent_volume > 1500 and reagent_volume <= 19:
-        reagent_tube_type = '1.5mL_tubes'
-    else:
-        reagent_tube_type = False
-    
-    reagent_tube_type, number_of_reagent_tubes, max_volume = LW.which_tube_type(total_reagent_volume,
-                                                                                reagent_tube_type)
+    reagent_tube_type, number_of_reagent_tubes, max_volume = LW.which_tube_type(total_reagent_volume, False)
     # Loading reagent rack 
     reagent_racks = LW.loading_tube_racks(simulate = simulate,
                                           tube_type = reagent_tube_type,
                                           reagent_type = 'dilution_reagent',
                                           amount = 1,
-                                          deck_positions = [11],
+                                          deck_positions = [4],
                                           protocol = protocol)
     ## Specific location of tubes
     reagent = LW.tube_locations(source_racks = reagent_racks,
@@ -210,7 +199,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                 skip_wells = False,
                                 number_of_tubes = number_of_reagent_tubes,
                                 reagent_type = 'water',
-                                volume = max_volume,
+                                volume = total_reagent_volume,
                                 protocol = protocol)
     ## ========================================================================
     #### Loading stock racks
@@ -219,7 +208,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                         tube_type = 'PCR_strips',
                                         reagent_type = 'stocks',
                                         amount = number_stock_racks,
-                                        deck_positions = [5,8],
+                                        deck_positions = [2,5,8],
                                         protocol = protocol)
     # Specific location of tubes
     stocks = LW.tube_locations(source_racks = stock_racks,
@@ -229,6 +218,10 @@ def run(protocol: protocol_api.ProtocolContext):
                                reagent_type = 'primer_stocks',
                                volume = stock_volume,
                                protocol = protocol)
+    # Change list based on desired start primer
+    from_start_primer_to_end = stocks[slice(plankton.start_primer - 1, plankton.number_of_primers)]
+    from_start_to_start_primer = stocks[slice(0, plankton.start_primer -1 )]
+    stocks = from_start_primer_to_end + from_start_to_start_primer
     ## ========================================================================
     #### Loading dilution racks
     # Loading dilution plates
@@ -236,7 +229,7 @@ def run(protocol: protocol_api.ProtocolContext):
                                         tube_type = 'PCR_strips',
                                         reagent_type = 'dilution',
                                         amount = number_dilution_racks,
-                                        deck_positions = [6,9],
+                                        deck_positions = [3,6,9],
                                         protocol = protocol)
     # Specific location of tubes
     dilutions = LW.tube_locations(source_racks = dilution_racks,
@@ -251,44 +244,37 @@ def run(protocol: protocol_api.ProtocolContext):
 ## COMMENTS====================================================================
 ## ============================================================================
     protocol.comment(f"I need {number_of_reagent_tubes} {reagent_tube_type}"
-                     f" filled to {math.ceil((total_reagent_volume / number_of_reagent_tubes)*1.2)}µL with reagent.")
+                     f" filled to at least {math.ceil((total_reagent_volume / number_of_reagent_tubes)*1.2)}µL with reagent.")
     protocol.comment("Put your primer strips in the following columns"
                      f"{stock_strip_columns}")
 ## ============================================================================
 
 ## PIPETTING===================================================================
 ## ============================================================================
-    # Aliquoting reagents
-    left_pipette.reset_tipracks()
-    left_pipette.configure_nozzle_layout(style=protocol_api.SINGLE, start='A1', tip_racks=tips_20)      
-    
-    if number_of_reagent_tubes > 1:
-        action_at_bottom = 'next_tube'
-    else:
-        action_at_bottom = 'continue_at_bottom'
-        
+    # Aliquoting reagents           
     PM.aliquoting_reagent(reagent_source = reagent,
                           reagent_tube_type = reagent_tube_type,
-                          reagent_startvolume = total_reagent_volume / number_of_reagent_tubes,
+                          reagent_startvolume = total_reagent_volume,
                           aliquot_volume = reagent_volume,
                           destination_wells = dilutions,
                           p20 = left_pipette,
                           p300 = right_pipette,
-                          action_at_bottom = action_at_bottom,
+                          action_at_bottom = 'continue_at_bottom',
                           pause = False,
                           protocol = protocol)
     
-    # # Transfering stocks
-    PM.transferring_reagents_multichannel(source_wells = stocks,
-                                           destination_wells = dilutions,
-                                           transfer_volume = stock_volume,
-                                           airgap = True,
-                                           mix = True,
-                                           p20 = left_pipette,
-                                           tips_20 = tips_20,
-                                           p300 = right_pipette,
-                                           tips_300 = tips_300,
-                                           protocol = protocol)
+    left_pipette.reset_tipracks()
+    PM.transferring_reagents_multichannel_partial(source_wells = stocks,
+                                                  destination_wells = dilutions,
+                                                  transfer_volume = stock_volume,
+                                                  airgap = True,
+                                                  mix = True,
+                                                  p20 = left_pipette,
+                                                  tips_20 = tips_20,
+                                                  p300 = right_pipette,
+                                                  tips_300 = tips_300,
+                                                  protocol = protocol)
+
 ## ============================================================================
  
 ## LIGHTS======================================================================

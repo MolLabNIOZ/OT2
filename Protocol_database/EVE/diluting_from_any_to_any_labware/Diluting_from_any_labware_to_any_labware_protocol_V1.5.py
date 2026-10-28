@@ -67,7 +67,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                          default=30.0,
                          minimum=10.0,
                          maximum=1400.0,
-                         unit="µl")
+                         unit="ul")
     parameters.add_int(variable_name="dilution_rate",
                        display_name="dilution rate",
                        description="How many times you want to dilute your samples?",
@@ -146,7 +146,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_bool(variable_name="adding_sample",
                         display_name="adding sample",
                         description="Do you want to add sample to your dilution?",
-                        default= False)
+                        default= True)
     parameters.add_bool(variable_name="lights_on",
                         display_name="lights on",
                         description="Do you want the lights turned ON?",

@@ -146,7 +146,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_p20 = LW.loading_tips(simulate = simulate,
                               tip_type = 'tipone_20uL',
                               amount = tip_racks_p20,
-                              deck_positions = [7,10],
+                              deck_positions = [7,8,11],
                               protocol = protocol)
     
     ### Pipettes

@@ -47,7 +47,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        display_name="sample tube type",
                        choices=[
                            {"display_name": "PCR-strips", "value": "PCR_strips"},
-                           {"display_name": "PCR-plate", "value": "skirted_plate_96"},
+                           {"display_name": "PCR-plate", "value": "PCR_plate"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
                        default="PCR_strips")
@@ -55,7 +55,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        display_name="final tube type",
                        choices=[
                            {"display_name": "PCR-strips", "value": "PCR_strips"},
-                           {"display_name": "PCR-plate", "value": "skirted_plate_96"},
+                           {"display_name": "PCR-plate", "value": "PCR_plate"},
                            {"display_name": "1.5mL tubes", "value": "1.5mL_tubes"},
                            ],
                        default="PCR_strips")

@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'qPCR V4',
+            'protocolName': 'qPCR V4.3',
             'description': 'Adding MasterMix (optional), samples, standards to a qPCR plate.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}
@@ -55,7 +55,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_samples",
                        display_name="number of unique samples",
                        description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
-                       default=64,
+                       default=88,
                        minimum=0,
                        maximum=94,
                        unit="samples")
@@ -73,10 +73,6 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=1,
                        maximum=5,
                        unit="reactions")
-    parameters.add_bool(variable_name="duplo",
-                        display_name="Duplicates?",
-                        description="Do you your reactions in duplo?",
-                        default= False)
     parameters.add_str(variable_name="sample_tube_type",    
                        display_name="sample tube type",
                        choices=[
@@ -96,7 +92,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_std_series",
                        display_name="number of dilution series",
                        description="Number of replicates of the dilution serie used for quantification.",
-                       default= 3,
+                       default= 0,
                        minimum= 0,
                        maximum= 4,
                        unit="dil series")
@@ -224,10 +220,12 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #### Pipette tips
     # Calculates amount of tips needed for the mastermix and sample
-    tips_mastermix = LW.amount_of_tips(plankton.mastermix_volume,
-                                        total_reactions,
-                                        16,
-                                        19)
+    tips_mastermix = (0,0)
+    if plankton.mastermix_included:
+        tips_mastermix = LW.amount_of_tips(plankton.mastermix_volume,
+                                            total_reactions,
+                                            16,
+                                            19)
     tips_sample = LW.amount_of_tips(plankton.sample_volume,
                                     total_reactions - number_of_standard_dilution_samples,
                                     1,
@@ -244,8 +242,9 @@ def run(protocol: protocol_api.ProtocolContext):
                                                  p300_tips_needed)
     
     #### Mastermix tube type
-    reagent_tube_type_mastermix, number_of_tubes_mastermix, max_volume_mastermix = LW.which_tube_type(total_volume = plankton.total_mastermix_volume,
-                                                                                                      tube_type = False)
+    if plankton.mastermix_included:
+        reagent_tube_type_mastermix, number_of_tubes_mastermix, max_volume_mastermix = LW.which_tube_type(total_volume = plankton.total_mastermix_volume,
+                                                                                                          tube_type = False)
 ## ============================================================================
 
 ## COMMENTS====================================================================
@@ -287,20 +286,21 @@ def run(protocol: protocol_api.ProtocolContext):
     
     #### MASTERMIX
     # Load mastermix rack
-    mastermix_racks = LW.loading_tube_racks(simulate = simulate,
-                                            tube_type = reagent_tube_type_mastermix,
-                                            reagent_type = 'Mastermix',
-                                            amount = number_of_tubes_mastermix,
-                                            deck_positions = [9],
-                                            protocol = protocol)
-    # Specific location of mastermix
-    mastermix_tube = LW.tube_locations(source_racks = mastermix_racks,
-                                       specific_columns = False,
-                                       skip_wells = False,
-                                       number_of_tubes = number_of_tubes_mastermix,
-                                       reagent_type = 'mastermix',
-                                       volume = plankton.total_mastermix_volume,
-                                       protocol = protocol)
+    if plankton.mastermix_included:
+        mastermix_racks = LW.loading_tube_racks(simulate = simulate,
+                                                tube_type = reagent_tube_type_mastermix,
+                                                reagent_type = 'Mastermix',
+                                                amount = number_of_tubes_mastermix,
+                                                deck_positions = [9],
+                                                protocol = protocol)
+        # Specific location of mastermix
+        mastermix_tube = LW.tube_locations(source_racks = mastermix_racks,
+                                           specific_columns = False,
+                                           skip_wells = False,
+                                           number_of_tubes = number_of_tubes_mastermix,
+                                           reagent_type = 'mastermix',
+                                           volume = plankton.total_mastermix_volume,
+                                           protocol = protocol)
     
     #### SAMPLES   
     # Loading sample plates
@@ -322,12 +322,12 @@ def run(protocol: protocol_api.ProtocolContext):
     #### QPCR-PLATE
     # Loading qPCR-plate
     qPCR_plate = LW.loading_tube_racks(simulate = simulate,
-                                           tube_type = 'plate_96_NIOZholder',
-                                           reagent_type = 'qPCR-plate',
-                                           amount = 1,
-                                           deck_positions = [6],
-                                           protocol = protocol)
-    
+                                       tube_type = 'plate_96_NIOZholder',
+                                       reagent_type = 'qPCR-plate',
+                                       amount = 1,
+                                       deck_positions = [6],
+                                       protocol = protocol)
+
     # Loading destination wells
     sample_destination, mock_destination, NTC_destination, STD_destination = LW.multiple_reagent_tube_locations (source_racks = qPCR_plate,
                                                                                                                  specific_columns = False,
@@ -361,17 +361,18 @@ def run(protocol: protocol_api.ProtocolContext):
 ## PIPETTING===================================================================
 ## ============================================================================
     # Aliquoting mastermix
-    PM.aliquoting_reagent(reagent_source = mastermix_tube,
-                          reagent_tube_type = reagent_tube_type_mastermix,
-                          reagent_startvolume = plankton.total_mastermix_volume,
-                          aliquot_volume = plankton.mastermix_volume,
-                          destination_wells = sample_destination + mock_destination + NTC_destination + STD_destination + dilution_destination,
-                          p20 = p20,
-                          p300 = p300,
-                          tip_change = 16,
-                          action_at_bottom = 'next_tube',
-                          pause = False,
-                          protocol = protocol)
+    if plankton.mastermix_included:
+        PM.aliquoting_reagent(reagent_source = mastermix_tube,
+                              reagent_tube_type = reagent_tube_type_mastermix,
+                              reagent_startvolume = plankton.total_mastermix_volume,
+                              aliquot_volume = plankton.mastermix_volume,
+                              destination_wells = sample_destination + mock_destination + NTC_destination + STD_destination + dilution_destination,
+                              p20 = p20,
+                              p300 = p300,
+                              tip_change = 16,
+                              action_at_bottom = 'next_tube',
+                              pause = False,
+                              protocol = protocol)
     
     # Transfering samples to plate
     PM.transferring_reagents(source_wells = sample_tubes_location + mock_tubes_location + STD_tubes,

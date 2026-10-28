@@ -19,7 +19,7 @@ from data.user_storage.mollab_modules import LabWare as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Diluting samples in different tube types',
+            'protocolName': 'Diluting samples in different tube types without adding sample',
             'description': 'commented out the transfer part. Can be Used for aliquoting.'
             }
 requirements = {'apiLevel': '2.18', 'robotType': 'OT-2'}

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -38,12 +38,12 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=0,
                        maximum=50000,
                        unit="µL MM")
-    parameters.add_int(variable_name="mastermix_volume",
+    parameters.add_float(variable_name="mastermix_volume",
                        display_name="mastermix volume per reaction",
                        description="How much mastermix should each reaction get?",
-                       default=20,
-                       minimum=0,
-                       maximum=50,
+                       default=20.0,
+                       minimum=0.0,
+                       maximum=50.0,
                        unit="µL MM")
     
     #### Samples
@@ -234,7 +234,7 @@ def run(protocol: protocol_api.ProtocolContext):
 # =============================================================================
     #### PIPETTE TIPS
     tips_20 = LW.loading_tips(simulate = simulate,
-                              tip_type = 'opentrons_20uL',
+                              tip_type = 'tipone_20uL',
                               amount = tip_racks_p20,
                               deck_positions = [1,4,7,10],
                               protocol = protocol)

@@ -1,7 +1,7 @@
 # IMPORT STATEMENTS============================================================
 # This region contains basic python/opentrons stuff
 # =============================================================================
-simulate = True
+simulate = False
 #### Import opentrons protocol API v2
 from opentrons import protocol_api
 #### Import math 
@@ -59,38 +59,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        maximum=3,
                        unit="replicates")
     
-    #### Starting tips
-    parameters.add_str(variable_name="starting_tip_p20_row",    
-                       display_name="starting tip p20 row",
-                       choices=[
-                           {"display_name": "A", "value": "A"},
-                           {"display_name": "B", "value": "B"},
-                           {"display_name": "C", "value": "C"},
-                           {"display_name": "D", "value": "D"},
-                           {"display_name": "E", "value": "E"},
-                           {"display_name": "F", "value": "this_is_not_false"},
-                           {"display_name": "G", "value": "G"},
-                           {"display_name": "H", "value": "H"}
-                           ],
-                       default="A")
-    parameters.add_int(variable_name="starting_tip_p20_column",    
-                       display_name="starting tip p20 column",
-                       choices=[
-                           {"display_name": "1", "value": 1},
-                           {"display_name": "2", "value": 2},
-                           {"display_name": "3", "value": 3},
-                           {"display_name": "4", "value": 4},
-                           {"display_name": "5", "value": 5},
-                           {"display_name": "6", "value": 6},
-                           {"display_name": "7", "value": 7},
-                           {"display_name": "8", "value": 8},
-                           {"display_name": "9", "value": 9},
-                           {"display_name": "10", "value": 10},
-                           {"display_name": "11", "value": 11},
-                           {"display_name": "12", "value": 12}
-                           ],
-                       default=1)
-    
+    #### Starting tips    
     parameters.add_str(variable_name="starting_tip_p300_row",    
                        display_name="starting tip p300 row",
                        choices=[
@@ -129,17 +98,12 @@ def run(protocol: protocol_api.ProtocolContext):
 ## CONVERTING VARIABLES========================================================
 ## ============================================================================
     #### Starting tips
-    if plankton.starting_tip_p20_row == 'this_is_not_false':
-        starting_tip_p20_row = 'F'
-    else:
-        starting_tip_p20_row = plankton.starting_tip_p20_row
     if plankton.starting_tip_p300_row == 'this_is_not_false':
         starting_tip_p300_row = 'F'
     else:
         starting_tip_p300_row = plankton.starting_tip_p300_row
     
     # Combining the row-variable with the column-variable to create starting tip
-    starting_tip_p20 = starting_tip_p20_row + str(plankton.starting_tip_p20_column)
     starting_tip_p300 = starting_tip_p300_row + str(plankton.starting_tip_p300_column)
 # =============================================================================
 
@@ -175,14 +139,10 @@ def run(protocol: protocol_api.ProtocolContext):
                                                                           number_of_aliquotes = False,
                                                                           volumes_transfering = transfer_volume,
                                                                           number_of_transfers = plankton.number_of_samples,
-                                                                          starting_tip_p20 = starting_tip_p20,
+                                                                          starting_tip_p20 = 'A1',
                                                                           starting_tip_p300 = starting_tip_p300)
     # Loading tip racks
-    tips_20 = LW.loading_tips(simulate = simulate,
-                              tip_type = 'tipone_20uL',
-                              amount = tip_racks_p20,
-                              deck_positions = [11,10],
-                              protocol = protocol)
+
     tips_300 = LW.loading_tips(simulate = simulate,
                                tip_type = 'opentrons_200uL',
                                amount = tip_racks_p300,
@@ -190,9 +150,9 @@ def run(protocol: protocol_api.ProtocolContext):
                                protocol = protocol)
     
     #### PIPETTES       
-    p20, p300 = LW.loading_pipettes(P20,
-                                    tips_20,
-                                    starting_tip_p20,
+    p20, p300 = LW.loading_pipettes(False,
+                                    False,
+                                    False,
                                     P300, 
                                     tips_300,
                                     starting_tip_p300,
@@ -265,7 +225,7 @@ def run(protocol: protocol_api.ProtocolContext):
             
             pipette.aspirate(plankton.PCR_volume, rep2_well)
             # To get everything out of the well
-            protocol.delay(seconds=2)
+            protocol.delay(seconds=1)
             pipette.aspirate(5, rep2_well)
             
             pipette.dispense(transfer_volume, pool_well, push_out=push_out_volume)

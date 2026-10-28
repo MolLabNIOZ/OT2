@@ -1,0 +1,2038 @@
+run log for the following protocol:
+O:/Protocol_database/MO/Generated_protocols/NIOZ431/MO_Sample dilution protocol for NIOZ431 V2.0_2025-10-27T15_55_30.320Z
+
+Date of the run: 2025-10-29
+Total run time: 0:49:36
+
+Parameters:
+Who is your favourite robot: MO 
+starting tip p20 row: A 
+starting tip p20 column: 11 
+starting tip p300 row: this_is_not_false 
+starting tip p300 column: 6 
+lights on: True 
+
+The following labware is loaded:
+tipone_20uL_1 on deck position 7
+tipone_20uL_2 on deck position 10
+opentrons_200uL_1 on deck position 8
+opentrons_200uL_2 on deck position 11
+1_Water_1.5mL_tubes on deck position 3
+1_source_plate_plate_96_NIOZholder on deck position 1
+1_source_plate_plate_96_NIOZholder on deck position 4
+1_destination_plate_plate_96_NIOZholder on deck position 2
+
+Steps performed in this protocol:
+
+Lights are turned ON
+
+Comment: You need 1 1.5mL_tubes(s) filled to 441 μL with PCR grade water
+
+Comment: newest version of module
+
+Tip pickup by p20_single_gen2 from A11 of tipone_20uL_1 on slot 7
+
+9µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+8µL dispensed into well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.62µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16.62µL dispensed into well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+11.81µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+10.81µL dispensed into well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16.439999999999998µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+15.44µL dispensed into well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16.880000000000003µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+15.88µL dispensed into well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+13.5µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12.5µL dispensed into well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+13.56µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12.56µL dispensed into well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+15µL dispensed into well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+18.69µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.69µL dispensed into well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12.75µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+11.75µL dispensed into well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+18.38µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.38µL dispensed into well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.44µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16.44µL dispensed into well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+11.19µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+10.19µL dispensed into well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.19µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16.19µL dispensed into well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+18.25µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17.25µL dispensed into well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+19.44µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+18.44µL dispensed into well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B11 of tipone_20uL_1 on slot 7
+
+14.88µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+13.88µL dispensed into well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+13.06µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12.06µL dispensed into well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+6.75µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+5.75µL dispensed into well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+6.38µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+5.38µL dispensed into well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+3.49µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+2.49µL dispensed into well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+6.06µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+5.06µL dispensed into well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+3.18µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+2.18µL dispensed into well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+9.12µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+8.12µL dispensed into well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+17µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+16µL dispensed into well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+11µL dispensed into well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+12µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+11µL dispensed into well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+1µL aspirated from well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+2µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from F6 of opentrons_200uL_1 on slot 8
+
+27.38µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p300_single_gen2
+
+22.38µL dispensed into well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+5µL aspirated from well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+10µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p300_single_gen2
+
+24.25µL aspirated from well A1 of 1_Water_1.5mL_tubes on slot 3 by p300_single_gen2
+
+19.25µL dispensed into well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+5µL aspirated from well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+10µL dispensed into well A1 of 1_Water_1.5mL_tubes on slot 3 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from C11 of tipone_20uL_1 on slot 7
+
+10µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from G6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H6 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from D11 of tipone_20uL_1 on slot 7
+
+10µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from B7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from E11 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F11 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H1 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from G11 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H11 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from C7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from B12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H2 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from G7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from C12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from H7 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from D12 of tipone_20uL_1 on slot 7
+
+10µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from E12 of tipone_20uL_1 on slot 7
+
+10µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from G12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from H12 of tipone_20uL_1 on slot 7
+
+5µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H3 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from A1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well A4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from C1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well C4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from D1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from E1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F1 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well E10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well E10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+6µL dispensed into well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from A8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well G10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well H10 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H4 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well A11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well B11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well C11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well D11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well E11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from G1 of tipone_20uL_2 on slot 10
+
+10µL aspirated from well F11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well F11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from H8 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well G11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well H11 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H5 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well A12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from H1 of tipone_20uL_2 on slot 10
+
+10µL aspirated from well B12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+1µL aspirated from well B12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p20_single_gen2
+
+11µL dispensed into well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from C9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well C12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well D12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well E12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well F12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well G12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H9 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+10µL aspirated from well H12 of 1_source_plate_plate_96_NIOZholder on slot 1 by p300_single_gen2
+
+50µL dispensed into well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H6 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well A1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well B1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well C1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well D1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from A2 of tipone_20uL_2 on slot 10
+
+15µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well E1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+16µL dispensed into well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well E7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from B2 of tipone_20uL_2 on slot 10
+
+15µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well F1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+16µL dispensed into well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well F7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from E10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well G1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well H1 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H7 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well A2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from C2 of tipone_20uL_2 on slot 10
+
+15µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well B2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+16µL dispensed into well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from H10 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well C2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well D2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well E2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from C11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well F2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from D11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well G2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well H2 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H8 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well A3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well B3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well B9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H11 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well C3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from D2 of tipone_20uL_2 on slot 10
+
+10µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well D3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+11µL dispensed into well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well D9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from A12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well E3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from B12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well F3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from E2 of tipone_20uL_2 on slot 10
+
+10µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well G3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+11µL dispensed into well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well G9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p20_single_gen2 from F2 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well H3 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+6µL dispensed into well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well H9 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from C12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well A4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well A10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p20_single_gen2 from G2 of tipone_20uL_2 on slot 10
+
+5µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+1µL aspirated from well B4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p20_single_gen2
+
+6µL dispensed into well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL aspirated from well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+5µL dispensed into well B10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p20_single_gen2
+
+Drop tip by p20_single_gen2
+
+Tip pickup by p300_single_gen2 from D12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well C4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well C10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from E12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well D4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well D10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from F12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well E4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well E10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from G12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well F4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well F4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well F10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from H12 of opentrons_200uL_1 on slot 8
+
+40µL aspirated from well G4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well G4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well G10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Tip pickup by p300_single_gen2 from A1 of opentrons_200uL_2 on slot 11
+
+40µL aspirated from well H4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+10µL aspirated from well H4 of 1_source_plate_plate_96_NIOZholder on slot 4 by p300_single_gen2
+
+50µL dispensed into well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL aspirated from well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+40µL dispensed into well H10 of 1_destination_plate_plate_96_NIOZholder on slot 2 by p300_single_gen2
+
+Drop tip by p300_single_gen2
+
+Lights are turned OFF
+

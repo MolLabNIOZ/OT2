@@ -20,7 +20,7 @@ from data.user_storage.mollab_modules import LabWare_v3 as LW
 # This region contains metadata that will be used by the app while running
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
-            'protocolName': 'Diluting samples from strips to strips or plate with a multichannel V1',
+            'protocolName': 'Diluting samples from strips to strips or plate with a multichannel V3',
             'description': 'Diluting samples from strips to strips or plate with a multichannel'
             'If you put the dilution rate to 1, it will transfer the final volume to the tube type of your choice.'
             }

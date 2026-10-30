@@ -160,6 +160,14 @@ def run(protocol: protocol_api.ProtocolContext):
     final_strip_columns = tube_type_dict[plankton.final_tube_type][0]
     destinations_per_rack = tube_type_dict[plankton.final_tube_type][1]
     number_of_final_racks = int(math.ceil((final_number_of_samples / destinations_per_rack)))
+
+        #### Calculates the amount of tip racks needed and set pipette True or False
+    tip_racks_p20, tip_racks_p300, P20, P300 = LW.number_of_tip_racks_2_0(volumes_aliquoting = reagent_volume,
+                                                                          number_of_aliquotes = final_number_of_samples,
+                                                                          volumes_transfering = stock_volume,
+                                                                          number_of_transfers = final_number_of_samples,
+                                                                          starting_tip_p20 = starting_tip_p20,
+                                                                          starting_tip_p300 = starting_tip_p300)
 ## COMMENTS====================================================================
 ## ============================================================================
     if stock_volume < 1:
@@ -187,8 +195,8 @@ def run(protocol: protocol_api.ProtocolContext):
                                protocol)
     tips_p300 = LW.loading_tips(simulate,
                                'opentrons_200uL',
-                               1,
-                               [7],
+                               tip_racks_p300,
+                               [7,10],
                                protocol)
     ## ========================================================================
     #### PIPETTES

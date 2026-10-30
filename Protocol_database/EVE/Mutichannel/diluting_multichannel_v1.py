@@ -39,6 +39,10 @@ def add_parameters(parameters: protocol_api.Parameters):
                         minimum=0,
                         maximum=96,
                         unit="samples")
+    parameters.add_bool(variable_name="fill_extra_tubes",
+                        display_name="fill extra tubes",
+                        description="If samples are not devisible by 8, fill extra tubes with reagent",
+                        default=True)
     
    #### Dilution
     parameters.add_str(variable_name="final_tube_type",
@@ -122,6 +126,7 @@ def run(protocol: protocol_api.ProtocolContext):
     else:
         final_number_of_samples = plankton.number_of_samples 
 # =============================================================================
+
 ## CALCULATED VARIABLES========================================================
 ## ============================================================================
     #### Pipetting variables
@@ -275,12 +280,17 @@ def run(protocol: protocol_api.ProtocolContext):
         action_at_bottom = 'next_tube'
     else:
         action_at_bottom = 'continue_at_bottom'
+    if plankton.fill_extra_tubes:
+        destination_wells = sample_destination + empty_destination
+    else:
+        destination_wells = sample_destination
+
     if number_of_water_tubes > 0:
         PM.aliquoting_reagent(reagent_source = water_tube,
                               reagent_tube_type = water_tube_type,
                               reagent_startvolume = max_volume_water,
                               aliquot_volume = reagent_volume,
-                              destination_wells = sample_destination + empty_destination,
+                              destination_wells = destination_wells,
                               p20 = left_pipette,
                               p300 = right_pipette,
                               action_at_bottom = action_at_bottom,

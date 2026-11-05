@@ -280,9 +280,9 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     # Aliquoting water
     if number_of_water_tubes == 1:
-        action_at_bottom = 'next_tube'
-    else:
         action_at_bottom = 'continue_at_bottom'
+    else:
+        action_at_bottom = 'next_tube'
     if plankton.neg_dil_control:
         destination_wells = sample_destination[0] + sample_destination[1]
     else:

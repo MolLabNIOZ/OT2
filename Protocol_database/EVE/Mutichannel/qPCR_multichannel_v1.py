@@ -97,16 +97,7 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum= 0,
                        maximum= 8,
                        unit="STD sample")
-
-    #### PCR
-    parameters.add_str(variable_name="PCR_tube_type",
-                        display_name="PCR tube type",
-                        choices=[
-                            {"display_name": "PCR-strips", "value": "PCR_strips"},
-                            {"display_name": "PCR-plate", "value": "skirted_plate_96"}
-                            ],
-                        default="skirted_plate_96")
-
+    
     #### Starting tips
     # P300
     parameters.add_str(variable_name="starting_tip_p300_row",    

@@ -21,7 +21,7 @@ from data.user_storage.mollab_modules import LabWare_v3 as LW
 # =============================================================================
 metadata = {'author': 'NIOZ Molecular Ecology',
             'protocolName': 'qPCR with a multichannel v1',
-            'description': 'Aliquoting mastermix, samples, standard, room for dilution series'
+            'description': 'Aliquoting mastermix, samples, standard and room for dilution series'
             }
 requirements = {'apiLevel': '2.27', 'robotType': 'OT-2'}
 # =============================================================================
@@ -42,14 +42,14 @@ def add_parameters(parameters: protocol_api.Parameters):
                        display_name="mastermix vol per reaction",
                        description="How much mastermix should each reaction get?",
                        default=22,
-                       minimum=19,
+                       minimum=0,
                        maximum=50,
                        unit="µL MM")
     #### Samples
     parameters.add_int(variable_name="number_of_samples",
                        display_name="number of unique samples",
-                       description="Number of unique samples. Include samples but EXCLUDE the Mock & NTC.",
-                       default=32,
+                       description="Number of unique samples. Include samples but EXCLUDE NTCs.",
+                       default=65,
                        minimum=0,
                        maximum=94,
                        unit="samples")
@@ -63,7 +63,7 @@ def add_parameters(parameters: protocol_api.Parameters):
     parameters.add_int(variable_name="number_of_NTCs",
                        display_name="number of NTCs",
                        description="Number of NTCs.",
-                       default=2,
+                       default=1,
                        minimum=1,
                        maximum=5,
                        unit="NTCs")
@@ -74,6 +74,13 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum=1,
                        maximum=3,
                        unit="replicates")
+    parameters.add_int(variable_name="number_of_std_samples",
+                       display_name="number of standard samples",
+                       description="Number of replicates of the standard sample.",
+                       default= 6,
+                       minimum= 0,
+                       maximum= 8,
+                       unit="STD sample")
 
     #### Standard sample and dilution serie
     parameters.add_int(variable_name="number_of_std_series",
@@ -90,13 +97,6 @@ def add_parameters(parameters: protocol_api.Parameters):
                        minimum= 0,
                        maximum= 8,
                        unit="dilutions")
-    parameters.add_int(variable_name="number_of_std_samples",
-                       display_name="number of standard samples",
-                       description="Number of replicates of the standard sample.",
-                       default= 6,
-                       minimum= 0,
-                       maximum= 8,
-                       unit="STD sample")
     
     #### Starting tips
     # P300
@@ -231,13 +231,13 @@ def run(protocol: protocol_api.ProtocolContext):
                                     deck_positions = [7],
                                     protocol = protocol)
     # Loading MM tubes
-    MM_volume = max_volume_MM/number_of_MM_tubes
+    MM_volume_per_tube = plankton.total_mastermix_volume/number_of_MM_tubes
     MM_tubes = LW.tube_locations(source_racks = MM_rack,
                                  specific_columns = False,
                                  skip_wells = False,
                                  number_of_tubes = number_of_MM_tubes,
                                  reagent_type = 'mastermix',
-                                 volume = MM_volume,
+                                 volume = MM_volume_per_tube,
                                  protocol = protocol)
     ## ========================================================================
     #### Samples
@@ -312,14 +312,15 @@ def run(protocol: protocol_api.ProtocolContext):
 ## ============================================================================
     # Aliquoting mastermix
     left_pipette.reset_tipracks()
-    if number_of_MM_tubes == 1:
-        action_at_bottom = 'continue_at_bottom'
-    else:
+    
+    if number_of_MM_tubes > 1:
         action_at_bottom = 'next_tube'
+    else:
+        action_at_bottom = 'continue_at_bottom'
     flat_qPCR_destinations = [item for sublist in qPCR_destinations for item in sublist]
     PM.aliquoting_reagent(reagent_source = MM_tubes,
                           reagent_tube_type = MM_tube_type,
-                          reagent_startvolume = plankton.total_mastermix_volume,
+                          reagent_startvolume = MM_volume_per_tube,
                           aliquot_volume = plankton.mastermix_volume,
                           destination_wells = flat_qPCR_destinations + qPCR_dilution_wells,
                           p20 = left_pipette,
